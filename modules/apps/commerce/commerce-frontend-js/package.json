@@ -22,10 +22,9 @@
 		"@clayui/tooltip": "3.3.5",
 		"classnames": "^2.2.6",
 		"frontend-js-react-web": "*",
-		"moment": "^2.22.2",
+		"frontend-js-web": "*",
 		"prop-types": "^15.7.2",
-		"react": "16.12.0",
-		"react-dom": "16.12.0"
+		"react-transition-group": "^4.4.1"
 	},
 	"devDependencies": {
 		"clay-css": "^2.16.2"

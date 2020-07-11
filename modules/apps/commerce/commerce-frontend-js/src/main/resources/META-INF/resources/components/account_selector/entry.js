@@ -13,6 +13,6 @@
  */
 
 import launcher from '../../utilities/launcher';
-import Autocomplete from './Autocomplete';
+import AccountSelector from './AccountSelector';
 
-export default (...data) => launcher(Autocomplete, ...data);
+export default (...data) => launcher(AccountSelector, ...data);

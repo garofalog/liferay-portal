@@ -1,4 +1,4 @@
-/**
+zqw/**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
@@ -12,7 +12,13 @@
  * details.
  */
 
-import launcher from '../../utilities/launcher';
-import Autocomplete from './Autocomplete';
+import {composeAPI} from '../composeAPI';
+import * as v1 from './v1.0/index';
 
-export default (...data) => launcher(Autocomplete, ...data);
+const BASE_ENDPOINT = '/o/headless-commerce-admin-account/';
+
+const APIs = {
+	v1,
+};
+
+export default (version) => composeAPI(version, APIs, BASE_ENDPOINT);

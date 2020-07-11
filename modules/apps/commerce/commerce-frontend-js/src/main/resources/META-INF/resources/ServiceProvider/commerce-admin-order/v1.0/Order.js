@@ -12,7 +12,17 @@
  * details.
  */
 
-import launcher from '../../utilities/launcher';
-import Autocomplete from './Autocomplete';
+import AJAX from '../../../utilities/AJAX/index';
 
-export default (...data) => launcher(Autocomplete, ...data);
+const ACCOUNTS_PATH = '/orders';
+
+const VERSION = 'v1.0';
+
+function resolveCatalogPath(basePath = '') {
+	return `${basePath}${VERSION}${ACCOUNTS_PATH}`;
+}
+
+export default (basePath) => ({
+	getAccounts: () =>
+		AJAX.GET(resolveCatalogPath(basePath)),
+});

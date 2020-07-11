@@ -12,7 +12,4 @@
  * details.
  */
 
-import launcher from '../../utilities/launcher';
-import Autocomplete from './Autocomplete';
-
-export default (...data) => launcher(Autocomplete, ...data);
+export {default as accountAPI} from './Order';
