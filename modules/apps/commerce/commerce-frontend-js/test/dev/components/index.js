@@ -63,4 +63,9 @@ module.exports = [
 		name: 'Step tracker',
 		page: 'step-tracker.html',
 	},
+	{
+		entry: 'AccountSelector',
+		name: 'Account Selector',
+		page: 'account-selector.html',
+	},
 ];

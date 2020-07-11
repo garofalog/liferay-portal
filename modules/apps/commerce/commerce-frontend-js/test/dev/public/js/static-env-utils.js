@@ -27,6 +27,7 @@ window.Liferay = {
 		getLanguageId: () => 'it_IT',
 		getPathThemeImages: () => '/assets',
 		getPortalURL: () => window.location.origin,
+		getScopeGroupId: () => 111111,
 	},
 	component: () => {},
 	detach: (name, fn) => {
@@ -51,3 +52,5 @@ window.Liferay = {
 		'Content-Type': 'application/json',
 	}),
 };
+
+window.themeDisplay = window.Liferay.ThemeDisplay;

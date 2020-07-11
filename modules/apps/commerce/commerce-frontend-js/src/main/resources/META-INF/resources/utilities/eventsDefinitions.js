@@ -12,11 +12,11 @@
  * details.
  */
 
-export const ADD_TO_ORDER = 'refreshCartUsingData';
+export const ADD_PRODUCT_TO_ORDER = 'refreshCartUsingData';
 export const AUTOCOMPLETE_VALUE_UPDATED = 'autocomplete-updated';
 export const CART_PRODUCT_QUANTITY_CHANGED = 'quantity-changed-from-cart';
-export const CHANGE_ACCOUNT = 'accountSelected';
-export const CHANGE_ORDER = 'orderSelected';
+export const CURRENT_ACCOUNT_CHANGED = 'currentAccountChanged';
+export const CURRENT_ORDER_CHANGED = 'currentOrderChanged';
 export const CLOSE_MODAL = 'close-modal';
 export const CLOSE_SIDE_PANEL = 'close-side-panel';
 export const CP_INSTANCE_CHANGED = 'product-instance-changed';
@@ -32,26 +32,3 @@ export const PRODUCT_OPTIONS_CHANGED = 'product-options-changed';
 export const PRODUCT_REMOVED = 'productRemovedFromCart';
 export const SIDE_PANEL_CLOSED = 'side-panel-closed';
 export const UPDATE_DATASET_DISPLAY = 'update-data-set-display';
-
-export default {
-	ADD_TO_ORDER,
-	AUTOCOMPLETE_VALUE_UPDATED,
-	CART_PRODUCT_QUANTITY_CHANGED,
-	CHANGE_ACCOUNT,
-	CHANGE_ORDER,
-	CLOSE_MODAL,
-	CLOSE_SIDE_PANEL,
-	CP_INSTANCE_CHANGED,
-	CURRENT_PRODUCT_STATUS_CHANGED,
-	CURRENT_PRODUCT_UPDATED,
-	DATASET_ACTION_PERFORMED,
-	DATASET_DISPLAY_UPDATED,
-	IFRAME_LOADED,
-	IS_LOADING_MODAL,
-	OPEN_MODAL,
-	OPEN_SIDE_PANEL,
-	PRODUCT_OPTIONS_CHANGED,
-	PRODUCT_REMOVED,
-	SIDE_PANEL_CLOSED,
-	UPDATE_DATASET_DISPLAY,
-};
