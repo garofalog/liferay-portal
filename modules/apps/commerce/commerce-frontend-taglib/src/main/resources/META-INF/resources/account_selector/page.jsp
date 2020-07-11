@@ -1,3 +1,4 @@
+<%--
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
@@ -11,8 +12,20 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
+--%>
 
-import launcher from '../../utilities/launcher';
-import Autocomplete from './Autocomplete';
+<%@ include file="/account_selector/init.jsp" %>
 
-export default (...data) => launcher(Autocomplete, ...data);
+<div class="account-selector-root" id="<%= accountSelectorId %>"></div>
+
+<aui:script require="commerce-frontend-js/components/account_selector/entry as accountSelector">
+	accountSelector.default(
+		'<%= accountSelectorId %>',
+		'<%= accountSelectorId %>',
+		{
+			spritemap: '<%= spritemap %>',
+			createNewOrderUrl: '<%= createNewOrderUrl %>',
+			viewOrderUrl: '<%= viewOrderUrl %>',
+		}
+	);
+</aui:script>
