@@ -90,7 +90,11 @@ function BulkActions(props) {
 	}
 
 	function handleAsyncAction(action) {
-		executeAsyncBulkAction(action.href, action.method, action.bodyKeys);
+		executeAsyncBulkAction(
+			action.href,
+			action.method,
+			action.bodyKeys || 'id'
+		);
 	}
 
 	function handleActionClick(e, action) {

@@ -35,6 +35,7 @@ function ManagementBar(props) {
 				<BulkActions
 					bulkActions={props.bulkActions}
 					fluid={props.fluid}
+					formId={props.formId}
 					selectAllItems={props.selectAllItems}
 					selectedItemsKey={props.selectedItemsKey}
 					selectedItemsValue={props.selectedItemsValue}
@@ -71,6 +72,7 @@ Wrapper.propTypes = {
 	creationMenuItems: PropTypes.array,
 	filters: PropTypes.array,
 	fluid: PropTypes.bool,
+	formId: PropTypes.string,
 	onFiltersChange: PropTypes.func.isRequired,
 	selectedItemsKey: PropTypes.string.isRequired,
 	selectionType: PropTypes.oneOf(['single', 'multiple']).isRequired,

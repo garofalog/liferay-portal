@@ -307,6 +307,7 @@ function DatasetDisplay(props) {
 				creationMenuItems={props.creationMenuItems}
 				filters={filters}
 				fluid={props.style === 'fluid'}
+				formId={props.namespace + props.formId}
 				onFiltersChange={updateFilters}
 				selectAllItems={() =>
 					selectItems(
