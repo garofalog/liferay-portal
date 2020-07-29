@@ -14,12 +14,17 @@
 
 package com.liferay.commerce.order.web.internal.display.context;
 
+import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
+import com.liferay.portal.kernel.theme.PortletDisplay;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.Constants;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.order.web.internal.display.context.util.CommerceOrderRequestHelper;
 import com.liferay.commerce.order.web.internal.search.CommerceOrderDisplayTerms;
 import com.liferay.commerce.order.web.internal.security.permission.resource.CommerceOrderPermission;
 import com.liferay.commerce.service.CommerceOrderNoteService;
 import com.liferay.frontend.taglib.clay.data.set.servlet.taglib.util.ClayDataSetActionDropdownItem;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.SortItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.SortItemList;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -34,6 +39,8 @@ import com.liferay.portal.kernel.util.Validator;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.portlet.ActionRequest;
+import javax.portlet.PortletRequest;
 import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
 
@@ -55,8 +62,35 @@ public class CommerceOrderListDisplayContext {
 		_keywords = ParamUtil.getString(renderRequest, "keywords");
 	}
 
+	public List<DropdownItem> getBulkActionDropdownItems() {
+		List<DropdownItem> bulkActions = new ArrayList<>();
+
+		PortletDisplay portletDisplay =
+			_commerceOrderRequestHelper.getPortletDisplay();
+
+		ThemeDisplay themeDisplay =
+			_commerceOrderRequestHelper.getThemeDisplay();
+
+		PortletURL portletURL = PortletURLFactoryUtil.create(
+			_commerceOrderRequestHelper.getRequest(), portletDisplay.getId(),
+			themeDisplay.getPlid(), PortletRequest.ACTION_PHASE);
+
+		portletURL.setParameter("redirect", themeDisplay.getURLCurrent());
+		portletURL.setParameter(ActionRequest.ACTION_NAME, "editCommerceOrder");
+		portletURL.setParameter(Constants.CMD, Constants.DELETE);
+
+		bulkActions.add(
+			new ClayDataSetActionDropdownItem(
+				portletURL.toString(), "trash", "delete", "delete",
+				LanguageUtil.get(
+					_commerceOrderRequestHelper.getRequest(), "delete"),
+				"delete", null));
+
+		return bulkActions;
+	}
+
 	public List<ClayDataSetActionDropdownItem>
-			getClayDataSetActionDropdownItems()
+	getClayDataSetActionDropdownItems()
 		throws PortalException {
 
 		List<ClayDataSetActionDropdownItem> clayDataSetActionDropdownItems =
@@ -92,8 +126,8 @@ public class CommerceOrderListDisplayContext {
 		throws PortalException {
 
 		if (CommerceOrderPermission.contains(
-				_commerceOrderRequestHelper.getPermissionChecker(),
-				commerceOrder, ActionKeys.UPDATE_DISCUSSION)) {
+			_commerceOrderRequestHelper.getPermissionChecker(),
+			commerceOrder, ActionKeys.UPDATE_DISCUSSION)) {
 
 			return _commerceOrderNoteService.getCommerceOrderNotesCount(
 				commerceOrder.getCommerceOrderId());
