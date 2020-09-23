@@ -17,19 +17,38 @@ import ClayForm, {ClayInput} from '@clayui/form';
 import PropTypes from 'prop-types';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 
+// import Autocomplete from './../autocomplete/Autocomplete'
+
+
 function AccountSearch(props) {
+	const [accounts, setAccounts] = useState(null);
+
 	const [text, setText] = useState('');
 
 	return (
 		<ClayForm.Group>
 			<ClayInput.Group>
+
+				{/* <Autocomplete 
+					apiUrl="/account-selector/search-accounts"
+					autofill={true}
+					id="accounts.accountId"
+					inputName="account-search"
+					itemsKey="accountId"
+					itemsLabel="name"
+					onItemSelected={item => console.log(item)}
+
+				/> */}
+
 				<ClayInput.GroupItem prepend>
 					<ClayInput
-						classname="m-2"
+						className="m-2"
+						onChange={e => setText(e.target.value)}
 						placeholder="Search Account"
 						type="text"
 					/>
 				</ClayInput.GroupItem>
+
 				<ClayInput.GroupItem append shrink>
 					<ClayButtonWithIcon
 						aria-label="Search"
@@ -38,6 +57,7 @@ function AccountSearch(props) {
 						symbol="search"
 					/>
 				</ClayInput.GroupItem>
+
 			</ClayInput.Group>
 		</ClayForm.Group>
 	);

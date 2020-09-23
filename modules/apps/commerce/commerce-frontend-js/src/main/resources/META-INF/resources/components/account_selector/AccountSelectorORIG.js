@@ -33,7 +33,7 @@ import ClayIcon from '@clayui/icon';
 
 // import ClayIcon, {ClayIconSpriteContext} from '@clayui/icon';
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { CSSTransition } from 'react-transition-group';
 
 import { getData, getValueFromItem } from '../../utilities/index';
@@ -85,6 +85,12 @@ function AccountSelector(props) {
 				<span className="icon-right">{props.rightIcon}</span>
 			</a>
 
+			// <ClayDropDown.Item 
+			// 	key={props.item.accountId}
+			// 	onClick={() => props.goToMenu && setActiveMenu(props.goToMenu)}>
+			// 	{props.item.name}
+			// </ClayDropDown.Item>
+
 		);
 	}
 
@@ -95,6 +101,7 @@ function AccountSelector(props) {
 
 	return (
 
+		// <div className="account-selector">
 
 		<ClayDropDown
 			active={active}
@@ -117,8 +124,28 @@ function AccountSelector(props) {
 					</div>
 				</button>
 
+				// <ClayButtonWithIcon
+				// 	aria-label="Cut"
+				// 	className="ml-3"
+				// 	spritemap={props.spritemap}
+				// 	symbol="user" />
+
+				// <ClayIconSpriteContext.Provider value={props.spritemap}>
+				// 		<ClayIcon
+				// 			className = "ml-3"
+				// 			symbol = "users"
+				// 			value={props.spritemap}
+				// />
+				// </ClayIconSpriteContext.Provider>
+				// <button className="btn btn-primary">Click here!</button>
+
 			}
 		>
+
+			{/* <div 
+					className="dropdown-itemlist" 
+					ref={dropdownRef} 
+					> */}
 
 			<ClayDropDown.ItemList>
 
@@ -133,6 +160,8 @@ function AccountSelector(props) {
 
 						<h2>Accounts</h2>
 
+
+						{/* <AccountSearch /> */}
 						<Autocomplete
 							apiUrl="/account-selector/search-accounts"
 							autofill={true}
@@ -142,10 +171,23 @@ function AccountSelector(props) {
 							itemsLabel="name"
 							onItemSelected={item => {
 								console.log(item)
-								getOrders(item.accountId)
+								
 							}}
 
 						/>
+
+						{/* {accounts && accounts.length > 0 && (
+							<ClayDropDown.Group header="Accounts">
+								{accounts.map((item) => (
+									<ClayDropDown.Item 	goToMenu={item.accountId}
+														key={item.accountId}
+														onClick={() => getOrders(item.accountId) && props.goToMenu && setActiveMenu(props.goToMenu)}>
+										{item.name}
+									</ClayDropDown.Item>
+								))}
+							</ClayDropDown.Group>
+
+						)} */}
 
 						{accounts && accounts.length === 0 && (
 							<ClayDropDown.Group header="Group #1">
@@ -160,41 +202,46 @@ function AccountSelector(props) {
 							leftIcon={"CogIcon"}
 							rightIcon={"<ChevronIcon />"}>
 							Settings
-						</DropdownItem>
+									</DropdownItem>
 						<DropdownItem
 							goToMenu="animals"
 							leftIcon="🦧"
 							rightIcon={"<ChevronIcon />"}>
 							Animals
-						</DropdownItem>
+									</DropdownItem>
 
 					</div>
 				</CSSTransition>
 
+				{orders && orders.length > 0 && (
 
-				<CSSTransition
-					classNames="menu-secondary"
-					in={activeMenu === orders.orders[0].accountId}
-					key={orders.orders[0].accountId}
-					onEnter={calcHeight}
-					timeout={100}
-					unmountOnExit>
+					<CSSTransition
+						classNames="menu-secondary"
+						in={activeMenu === orders.orders[0].accountId}
+						key={orders.orders[0].accountId}
+						onEnter={calcHeight}
+						timeout={100}
+						unmountOnExit>
 
-					<Autocomplete
-						apiUrl="/account-selector/search-accounts"
-						autofill={true}
-						id="accounts.accountId"
-						inputName="account-search"
-						itemsKey="accountId"
-						itemsLabel="name"
-						onItemSelected={item => {
-							console.log(item)
+						<div className="menu">
 
-						}}
+							<DropdownItem
+								goToMenu="main"
+								leftIcon={<ClayIcon
+								spritemap={props.spritemap} 
+								symbol="order-arrow-left" />}
+							>
+								<h2>Orders</h2>
+							</DropdownItem>
+							<DropdownItem leftIcon={"<BoltIcon />"}>HTML</DropdownItem>
+							<DropdownItem leftIcon={"<BoltIcon />"}>CSS</DropdownItem>
+							<DropdownItem leftIcon={"<BoltIcon />"}>JavaScript</DropdownItem>
+							<DropdownItem leftIcon={"<BoltIcon />"}>Awesome!</DropdownItem>
+						</div>
 
-					/>
+					</CSSTransition>
 
-				</CSSTransition>
+				)} 
 
 
 				<CSSTransition
@@ -236,7 +283,36 @@ function AccountSelector(props) {
 					</div>
 				</CSSTransition>
 
+				{/* 
+					<AccountSearch />
+
+					{accounts && accounts.length > 0 && (
+						<ClayDropDown.Group header="Group #1">
+							{accounts.map((item) => (
+								<ClayDropDown.Item key={item.accountId}>
+									{item.name}
+								</ClayDropDown.Item>
+							))}
+						</ClayDropDown.Group>
+
+					)}
+
+					{accounts && accounts.length === 0 && (
+						<ClayDropDown.Group header="Group #1">
+							<ClayDropDown.Item>
+								No Accounts Found
+									</ClayDropDown.Item>
+						</ClayDropDown.Group>
+					)}
+				*/}
+
 			</ClayDropDown.ItemList>
+
+			{/* <ClayDropDown.Caption>
+						{'... or maybe not.'}
+					</ClayDropDown.Caption> */}
+
+			{/* </div> */}
 
 		</ClayDropDown>
 	);
