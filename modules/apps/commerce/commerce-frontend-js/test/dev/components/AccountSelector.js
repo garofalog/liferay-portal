@@ -15,6 +15,7 @@
 import launcher from '../../../src/main/resources/META-INF/resources/components/account_selector/entry';
 
 import '../../../src/main/resources/META-INF/resources/styles/main.scss';
+import '../../../../../frontend-taglib/frontend-taglib-clay/src/main/resources/META-INF/resources/data_set_display/styles/main.scss';
 
 launcher('account_selector', 'account-selector-id', {
 	accountsAPI: '/account-selector/',

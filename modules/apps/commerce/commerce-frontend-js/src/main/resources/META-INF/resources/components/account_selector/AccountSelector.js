@@ -15,16 +15,24 @@
 import {ClayButtonWithIcon} from '@clayui/button';
 import ClayDropDown from '@clayui/drop-down';
 import {ClayIconSpriteContext} from '@clayui/icon';
+import ClayLabel from '@clayui/label';
+import ClayTable from '@clayui/table';
 import PropTypes from 'prop-types';
 import React, {useState} from 'react';
 import {CSSTransition} from 'react-transition-group';
 
+import DateRenderer from '../../../../../../../../../frontend-taglib/frontend-taglib-clay/src/main/resources/META-INF/resources/data_set_display/data_renderers/DateRenderer';
+import StatusRenderer from '../../../../../../../../../frontend-taglib/frontend-taglib-clay/src/main/resources/META-INF/resources/data_set_display/data_renderers/StatusRenderer';
 import Autocomplete from './../autocomplete/Autocomplete';
 
+
 function AccountSelector(props) {
+
 	const [active, setActive] = useState(false);
-	const [selectedAccount, updateSelectedAccount] = useState(null);
+	const [selectedAccount, updateSelectedAccount] = useState([null, null]);
 	const [currentView, setCurrentView] = useState('accounts');
+
+	const [value, setValue] = useState("one");
 
 	return (
 		<ClayIconSpriteContext.Provider value={props.spritemap}>
@@ -41,7 +49,7 @@ function AccountSelector(props) {
 							width="40"
 						/>
 						<div className="account-selector-info ml-3">
-							<h6>Forward Auto Service</h6>
+							<h6>{selectedAccount[1] || Liferay.Language.get('select-account-and-order') }</h6>
 							<div className="account-selector-info-details d-flex">
 								<p>AR567834</p>&nbsp;|&nbsp;<p>Draft</p>
 							</div>
@@ -65,7 +73,7 @@ function AccountSelector(props) {
 									<ClayDropDown.ItemList>
 										<ClayDropDown.Group
 											header={Liferay.Language.get(
-												'accounts'
+												'select-accounts'
 											)}
 										>
 											{props.items.map((item) => (
@@ -75,9 +83,10 @@ function AccountSelector(props) {
 														setCurrentView(
 															'orders'
 														);
-														updateSelectedAccount(
-															item.id
-														);
+														updateSelectedAccount([
+															item.id,
+															item.name
+														]);
 													}}
 												>
 													{item.name}
@@ -89,7 +98,9 @@ function AccountSelector(props) {
 							);
 						}}
 						infinityScrollMode={true}
+						inputClass="p-2"
 						inputName="account-search"
+						inputPlaceholder={Liferay.Language.get("search-accounts")}
 						itemsKey="id"
 						itemsLabel="name"
 					/>
@@ -101,37 +112,82 @@ function AccountSelector(props) {
 					timeout={100}
 					unmountOnExit
 				>
-					<ClayButtonWithIcon
-						displayType="secondary"
-						onClick={() => {
-							setCurrentView('accounts');
-						}}
-						symbol="angle-left-small"
-					/>
-					<Autocomplete
-						alwaysActive={true}
-						apiUrl={`/o/headless-commerce-admin-order/v1.0/orders?filter=(accountId/any(x:(x eq ${selectedAccount})))`}
-						autofill={true}
-						customView={(props) => {
-							return props.items ? (
-								<ClayDropDown.ItemList>
-									<ClayDropDown.Group
-										header={Liferay.Language.get('orders')}
-									>
-										{props.items.map((item) => (
-											<ClayDropDown.Item key={item.id}>
-												{item.id}
-											</ClayDropDown.Item>
-										))}
-									</ClayDropDown.Group>
-								</ClayDropDown.ItemList>
-							) : null;
-						}}
-						infinityScrollMode={true}
-						inputName="order-search"
-						itemsKey="id"
-						itemsLabel="name"
-					/>
+					<>
+						<div className="inline-item p-2">
+							<ClayButtonWithIcon
+								displayType="secondary"
+								onClick={() => {
+									setCurrentView('accounts');
+								}}
+								symbol="angle-left-small"
+							/>
+							<h3 className="m-auto pl-4">{selectedAccount[1]}</h3>
+						</div>
+						
+						<Autocomplete
+							alwaysActive={true}
+							apiUrl={`/o/headless-commerce-admin-order/v1.0/orders?filter=(accountId/any(x:(x eq ${selectedAccount[0]})))`}
+							autofill={true}
+							customView={(props) => {
+								return props.items ? (
+										<ClayDropDown.ItemList>
+											<ClayDropDown.Group
+
+												// header={Liferay.Language.get('orders')}
+
+											>
+											<ClayTable 
+												borderless
+												hover
+											>
+												<ClayTable.Head>
+													<ClayTable.Row>
+														<ClayTable.Cell headingCell>
+															{Liferay.Language.get("order-number")}
+														</ClayTable.Cell>
+														<ClayTable.Cell headingCell>
+															{Liferay.Language.get("status")}
+															</ClayTable.Cell>
+														<ClayTable.Cell headingCell>
+															{Liferay.Language.get("last-modified")}
+														</ClayTable.Cell>
+													</ClayTable.Row>
+												</ClayTable.Head>
+												<ClayTable.Body>
+
+													{props.items.map((item) => (
+														<ClayTable.Row key={item.id}>
+															<ClayTable.Cell headingTitle>{item.id}</ClayTable.Cell>
+															<ClayTable.Cell>
+																
+																<StatusRenderer
+																	value={item.orderStatusInfo}
+																/>
+															</ClayTable.Cell>
+															<ClayTable.Cell>
+																<DateRenderer value={item.modifiedDate} />
+															</ClayTable.Cell>
+														</ClayTable.Row>
+													))}
+													
+												</ClayTable.Body>
+											</ClayTable>
+												
+										</ClayDropDown.Group>
+									</ClayDropDown.ItemList>
+
+								) : (
+										<ClayDropDown.Caption>{'... or maybe not.'}</ClayDropDown.Caption>
+								)
+							}}
+							infinityScrollMode={true}
+							inputClass="p-2"
+							inputName="order-search"
+							inputPlaceholder={Liferay.Language.get("search-order")}
+							itemsKey="id"
+							itemsLabel="name"
+						/>
+					</>
 				</CSSTransition>
 			</ClayDropDown>
 		</ClayIconSpriteContext.Provider>

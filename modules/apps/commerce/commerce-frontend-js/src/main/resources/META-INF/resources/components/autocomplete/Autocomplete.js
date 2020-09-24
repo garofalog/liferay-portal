@@ -160,7 +160,9 @@ function Autocomplete({onValueUpdated, ...props}) {
 	return (
 		<>
 			<FocusScope>
-				<ClayAutocomplete ref={node}>
+				<ClayAutocomplete 						
+					className={props.inputClass}
+					ref={node}>
 					<input
 						id={props.inputId || props.inputName}
 						name={props.inputName}
@@ -258,6 +260,7 @@ Autocomplete.propTypes = {
 		.isRequired,
 	initialValue: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
 		.isRequired,
+	inputClass: PropTypes.string,
 	inputId: PropTypes.string,
 	inputName: PropTypes.string.isRequired,
 	inputPlaceholder: PropTypes.string,
