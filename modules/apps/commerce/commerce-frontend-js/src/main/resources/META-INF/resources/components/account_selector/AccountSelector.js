@@ -39,8 +39,6 @@ import { CSSTransition } from 'react-transition-group';
 import { getData, getValueFromItem } from '../../utilities/index';
 import Autocomplete from './../autocomplete/Autocomplete'
 
-import AccountSearch from './AccountSearch';
-
 function AccountSelector(props) {
 	const [active, setActive] = useState(false);
 	const [accounts, setAccounts] = useState(null);
@@ -136,12 +134,27 @@ function AccountSelector(props) {
 						<Autocomplete
 							apiUrl="/account-selector/search-accounts"
 							autofill={true}
-							id="accounts.accountId"
+							id="cul"
+							infinityScrollMode={true}
 							inputName="account-search"
 							itemsKey="accountId"
 							itemsLabel="name"
-							onItemSelected={item => {
+							onItemSelected={item => 
+							// 	{
+							// 	<DropdownItem
+							// 		goToMenu="settings"
+							// 		leftIcon={"CogIcon"}
+							// 		rightIcon={"<ChevronIcon />"}>
+							// 		{item.accountId}
+							// 	</DropdownItem>
+							// 	}
+							// }
+
+								{
 								console.log(item)
+
+								// goToMenu("secondary")
+
 								getOrders(item.accountId)
 							}}
 
@@ -171,11 +184,11 @@ function AccountSelector(props) {
 					</div>
 				</CSSTransition>
 
-
+				{/* orders.orders[0].accountId */}
 				<CSSTransition
 					classNames="menu-secondary"
-					in={activeMenu === orders.orders[0].accountId}
-					key={orders.orders[0].accountId}
+					in={activeMenu === "account1"}
+					key="account1"
 					onEnter={calcHeight}
 					timeout={100}
 					unmountOnExit>
@@ -183,7 +196,8 @@ function AccountSelector(props) {
 					<Autocomplete
 						apiUrl="/account-selector/search-accounts"
 						autofill={true}
-						id="accounts.accountId"
+						id="yoyo"
+						infinityScrollMode={true}
 						inputName="account-search"
 						itemsKey="accountId"
 						itemsLabel="name"
@@ -195,7 +209,6 @@ function AccountSelector(props) {
 					/>
 
 				</CSSTransition>
-
 
 				<CSSTransition
 					classNames="menu-secondary"
