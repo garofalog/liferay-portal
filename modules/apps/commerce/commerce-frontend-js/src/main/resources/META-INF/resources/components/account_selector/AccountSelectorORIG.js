@@ -13,18 +13,18 @@
  */
 
 /**
-* Copyright (c) 2000-present Liferay, Inc. All rights reserved.
-*
-* This library is free software; you can redistribute it and/or modify it under
-* the terms of the GNU Lesser General Public License as published by the Free
-* Software Foundation; either version 2.1 of the License, or (at your option)
-* any later version.
-*
-* This library is distributed in the hope that it will be useful, but WITHOUT
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-* FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
-* details.
-*/
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ */
 
 // import {ClayButtonWithIcon, ClayButton} from '@clayui/button';
 
@@ -32,12 +32,13 @@ import ClayDropDown from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
 
 // import ClayIcon, {ClayIconSpriteContext} from '@clayui/icon';
-import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { CSSTransition } from 'react-transition-group';
 
-import { getData, getValueFromItem } from '../../utilities/index';
-import Autocomplete from './../autocomplete/Autocomplete'
+import PropTypes from 'prop-types';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {CSSTransition} from 'react-transition-group';
+
+import {getData, getValueFromItem} from '../../utilities/index';
+import Autocomplete from './../autocomplete/Autocomplete';
 
 import AccountSearch from './AccountSearch';
 
@@ -47,7 +48,7 @@ function AccountSelector(props) {
 	const [orders, setOrders] = useState(null);
 
 	const [activeMenu, setActiveMenu] = useState('main');
-	const [menuHeight, setMenuHeight] = useState("200");
+	const [menuHeight, setMenuHeight] = useState('200');
 	const dropdownRef = useRef(null);
 
 	// function _getAccounts() {
@@ -57,35 +58,41 @@ function AccountSelector(props) {
 	// }
 
 	const getOrders = (id) => {
-		getData(props.accountsAPI + 'search-accounts/' + id + "/orders").then(data => {
-			setOrders(data.accounts);
-		});
-	}
+		getData(props.accountsAPI + 'search-accounts/' + id + '/orders').then(
+			(data) => {
+				setOrders(data.accounts);
+			}
+		);
+	};
 
 	useEffect(() => {
 		if (active && !accounts) {
-			getData(props.accountsAPI + 'search-accounts/').then(data => {
+			getData(props.accountsAPI + 'search-accounts/').then((data) => {
 				setAccounts(data.accounts);
 			});
 		}
-	}, [accounts, active, props.accountsAPI])
+	}, [accounts, active, props.accountsAPI]);
 
 	useEffect(() => {
-		const dropRef = dropdownRef.current ? dropdownRef.current.firstChild.offsetHeight : null
-		setMenuHeight(dropRef)
-	}, [])
+		const dropRef = dropdownRef.current
+			? dropdownRef.current.firstChild.offsetHeight
+			: null;
+		setMenuHeight(dropRef);
+	}, []);
 
 	function DropdownItem(props) {
 		return (
-			<a className="menu-item"
+			<a
+				className="menu-item"
 				href="#"
-				onClick={() => props.goToMenu && setActiveMenu(props.goToMenu)}>
+				onClick={() => props.goToMenu && setActiveMenu(props.goToMenu)}
+			>
 				<span className="icon-button">{props.leftIcon}</span>
 				{props.children}
 				<span className="icon-right">{props.rightIcon}</span>
 			</a>
 
-			// <ClayDropDown.Item 
+			// <ClayDropDown.Item
 			// 	key={props.item.accountId}
 			// 	onClick={() => props.goToMenu && setActiveMenu(props.goToMenu)}>
 			// 	{props.item.name}
@@ -141,25 +148,21 @@ function AccountSelector(props) {
 
 			}
 		>
-
 			{/* <div 
 					className="dropdown-itemlist" 
 					ref={dropdownRef} 
 					> */}
 
 			<ClayDropDown.ItemList>
-
 				<CSSTransition
 					className="menu-primary"
 					in={activeMenu === 'main'}
 					onEnter={calcHeight}
 					timeout={500}
-					unmountOnExit>
-
+					unmountOnExit
+				>
 					<div className="menu">
-
 						<h2>Accounts</h2>
-
 
 						{/* <AccountSearch /> */}
 						<Autocomplete
@@ -169,11 +172,9 @@ function AccountSelector(props) {
 							inputName="account-search"
 							itemsKey="accountId"
 							itemsLabel="name"
-							onItemSelected={item => {
-								console.log(item)
-								
+							onItemSelected={(item) => {
+								console.log(item);
 							}}
-
 						/>
 
 						{/* {accounts && accounts.length > 0 && (
@@ -193,76 +194,95 @@ function AccountSelector(props) {
 							<ClayDropDown.Group header="Group #1">
 								<ClayDropDown.Item>
 									No Accounts Found
-										</ClayDropDown.Item>
+								</ClayDropDown.Item>
 							</ClayDropDown.Group>
 						)}
 
 						<DropdownItem
 							goToMenu="settings"
-							leftIcon={"CogIcon"}
-							rightIcon={"<ChevronIcon />"}>
+							leftIcon={'CogIcon'}
+							rightIcon={'<ChevronIcon />'}
+						>
 							Settings
-									</DropdownItem>
+						</DropdownItem>
 						<DropdownItem
 							goToMenu="animals"
 							leftIcon="🦧"
-							rightIcon={"<ChevronIcon />"}>
+							rightIcon={'<ChevronIcon />'}
+						>
 							Animals
-									</DropdownItem>
-
+						</DropdownItem>
 					</div>
 				</CSSTransition>
 
 				{orders && orders.length > 0 && (
-
 					<CSSTransition
 						classNames="menu-secondary"
 						in={activeMenu === orders.orders[0].accountId}
 						key={orders.orders[0].accountId}
 						onEnter={calcHeight}
 						timeout={100}
-						unmountOnExit>
-
+						unmountOnExit
+					>
 						<div className="menu">
-
 							<DropdownItem
 								goToMenu="main"
-								leftIcon={<ClayIcon
-								spritemap={props.spritemap} 
-								symbol="order-arrow-left" />}
+								leftIcon={
+									<ClayIcon
+										spritemap={props.spritemap}
+										symbol="order-arrow-left"
+									/>
+								}
 							>
 								<h2>Orders</h2>
 							</DropdownItem>
-							<DropdownItem leftIcon={"<BoltIcon />"}>HTML</DropdownItem>
-							<DropdownItem leftIcon={"<BoltIcon />"}>CSS</DropdownItem>
-							<DropdownItem leftIcon={"<BoltIcon />"}>JavaScript</DropdownItem>
-							<DropdownItem leftIcon={"<BoltIcon />"}>Awesome!</DropdownItem>
+							<DropdownItem leftIcon={'<BoltIcon />'}>
+								HTML
+							</DropdownItem>
+							<DropdownItem leftIcon={'<BoltIcon />'}>
+								CSS
+							</DropdownItem>
+							<DropdownItem leftIcon={'<BoltIcon />'}>
+								JavaScript
+							</DropdownItem>
+							<DropdownItem leftIcon={'<BoltIcon />'}>
+								Awesome!
+							</DropdownItem>
 						</div>
-
 					</CSSTransition>
-
-				)} 
-
+				)}
 
 				<CSSTransition
 					classNames="menu-secondary"
 					in={activeMenu === 'settings'}
 					onEnter={calcHeight}
 					timeout={500}
-					unmountOnExit>
+					unmountOnExit
+				>
 					<div className="menu">
 						<DropdownItem
 							goToMenu="main"
 							leftIcon={
-								<ClayIcon spritemap={props.spritemap} symbol="order-arrow-left" />
+								<ClayIcon
+									spritemap={props.spritemap}
+									symbol="order-arrow-left"
+								/>
 							}
 						>
 							<h2>My Tutorial</h2>
 						</DropdownItem>
-						<DropdownItem leftIcon={"<BoltIcon />"}>HTML</DropdownItem>
-						<DropdownItem leftIcon={"<BoltIcon />"}>CSS</DropdownItem>
-						<DropdownItem leftIcon={"<BoltIcon />"}>JavaScript</DropdownItem>
-						<DropdownItem leftIcon={"<BoltIcon />"}>Awesome!</DropdownItem>
+						<DropdownItem leftIcon={'<BoltIcon />'}>
+							HTML
+						</DropdownItem>
+						<DropdownItem leftIcon={'<BoltIcon />'}>
+							CSS
+						</DropdownItem>
+						<DropdownItem leftIcon={'<BoltIcon />'}>
+							JavaScript
+						</DropdownItem>
+						<DropdownItem leftIcon={'<BoltIcon />'}>
+							Awesome!
+						</DropdownItem>
 					</div>
 				</CSSTransition>
 
@@ -271,9 +291,13 @@ function AccountSelector(props) {
 					in={activeMenu === 'animals'}
 					onEnter={calcHeight}
 					timeout={500}
-					unmountOnExit>
+					unmountOnExit
+				>
 					<div className="menu">
-						<DropdownItem goToMenu="main" leftIcon={"<ArrowIcon />"}>
+						<DropdownItem
+							goToMenu="main"
+							leftIcon={'<ArrowIcon />'}
+						>
 							<h2>Animals</h2>
 						</DropdownItem>
 						<DropdownItem leftIcon="🦘">Kangaroo</DropdownItem>
@@ -305,7 +329,6 @@ function AccountSelector(props) {
 						</ClayDropDown.Group>
 					)}
 				*/}
-
 			</ClayDropDown.ItemList>
 
 			{/* <ClayDropDown.Caption>
@@ -313,13 +336,12 @@ function AccountSelector(props) {
 					</ClayDropDown.Caption> */}
 
 			{/* </div> */}
-
 		</ClayDropDown>
 	);
 }
 
 AccountSelector.propTypes = {
-	spritemap: PropTypes.string.isRequired
+	spritemap: PropTypes.string.isRequired,
 };
 
 export default AccountSelector;

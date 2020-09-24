@@ -61,11 +61,11 @@ module.exports = [
 	{
 		entry: 'StepTracker',
 		name: 'Step tracker',
-		page: 'step-tracker.html'
+		page: 'step-tracker.html',
 	},
 	{
 		entry: 'AccountSelector',
 		name: 'Account Selector',
-		page: 'account-selector.html'
-	}
+		page: 'account-selector.html',
+	},
 ];

@@ -20,5 +20,5 @@ launcher('account_selector', 'account-selector-id', {
 	accountsAPI: '/account-selector/',
 	spritemap: './assets/icons.svg',
 	viewAllAccountsLink: 'okli',
-	viewAllOrdersLink: ''
+	viewAllOrdersLink: '',
 });
