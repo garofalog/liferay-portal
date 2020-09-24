@@ -26,7 +26,7 @@ function defineServerResponses(app) {
 					name: 'account1',
 					success: true,
 					thumbnail:
-						'/image/organization_logo?img_id=0&t=1594042140514'
+						'/image/organization_logo?img_id=0&t=1594042140514',
 				},
 				{
 					accountId: '41212',
@@ -34,19 +34,20 @@ function defineServerResponses(app) {
 					name: 'account2',
 					success: true,
 					thumbnail:
-						'/image/organization_logo?img_id=0&t=1594042140514'
+						'/image/organization_logo?img_id=0&t=1594042140514',
 				},
 				{
 					accountId: '31234',
 					errorMessages: null,
 					name: 'account3',
 					success: true,
-					thumbnail: '/image/organization_logo?img_id=0&t=1594042140514'
-				}
+					thumbnail:
+						'/image/organization_logo?img_id=0&t=1594042140514',
+				},
 			],
 			count: 2,
 			errorMessages: null,
-			success: true
+			success: true,
 		});
 	});
 
@@ -65,7 +66,7 @@ function defineServerResponses(app) {
 					lastEdit: '1 Minute Ago',
 					purchaseOrderNumber: '',
 					status: 'approved',
-					success: true
+					success: true,
 				},
 				{
 					accountId: 41212,
@@ -77,21 +78,22 @@ function defineServerResponses(app) {
 					lastEdit: '3 Days Ago',
 					purchaseOrderNumber: '',
 					status: 'approved',
-					success: true
+					success: true,
 				},
 				{
 					accountId: 31234,
 					accountName: 'account3',
-					addOrderLink: 'http://localhost:8080/group/minium/pending-orders?p_p_id=com_liferay_commerce_order_content_web_internal_portlet_CommerceOpenOrderContentPortlet&p_p_lifecycle=1&_com_liferay_commerce_order_content_web_internal_portlet_CommerceOpenOrderContentPortlet_javax.portlet.action=editCommerceOrder&_com_liferay_commerce_order_content_web_internal_portlet_CommerceOpenOrderContentPortlet_cmd=setCurrent&_com_liferay_commerce_order_content_web_internal_portlet_CommerceOpenOrderContentPortlet_commerceOrderId=41216&p_auth=WvVJ7p92',
+					addOrderLink:
+						'http://localhost:8080/group/minium/pending-orders?p_p_id=com_liferay_commerce_order_content_web_internal_portlet_CommerceOpenOrderContentPortlet&p_p_lifecycle=1&_com_liferay_commerce_order_content_web_internal_portlet_CommerceOpenOrderContentPortlet_javax.portlet.action=editCommerceOrder&_com_liferay_commerce_order_content_web_internal_portlet_CommerceOpenOrderContentPortlet_cmd=setCurrent&_com_liferay_commerce_order_content_web_internal_portlet_CommerceOpenOrderContentPortlet_commerceOrderId=41216&p_auth=WvVJ7p92',
 					errorMessages: null,
 					id: 41216,
 					lastEdit: '5 Days Ago',
 					purchaseOrderNumber: '',
 					status: 'approved',
-					success: true
-				}
+					success: true,
+				},
 			],
-			success: true
+			success: true,
 		});
 	});
 
