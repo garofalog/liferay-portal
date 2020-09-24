@@ -26,8 +26,10 @@ import {showErrorNotification} from '../../utilities/notifications';
 
 function Autocomplete({onValueUpdated, ...props}) {
 	const [query, setQuery] = useState(props.initialLabel || '');
-	const [initialised, setInitialised] = useState(false);
-	const [debouncedGetItems, updateDebouncedGetItems] = useState(null);
+	const [initialised, setInitialised] = useState(props.alwaysActive);
+	const [debouncedGetItems, updateDebouncedGetItems] = useState(() =>
+		debouncePromise(getData, props.fetchDataDebounce)
+	);
 	const [active, setActive] = useState(false);
 	const [selectedItem, updateSelectedItem] = useState(props.initialValue);
 	const [items, updateItems] = useState(null);
@@ -244,6 +246,7 @@ function Autocomplete({onValueUpdated, ...props}) {
 }
 
 Autocomplete.propTypes = {
+	alwaysActive: PropTypes.bool,
 	apiUrl: PropTypes.string.isRequired,
 	autofill: PropTypes.bool,
 	customView: PropTypes.func,
@@ -268,6 +271,7 @@ Autocomplete.propTypes = {
 };
 
 Autocomplete.defaultProps = {
+	alwaysActive: true,
 	autofill: false,
 	fetchDataDebounce: 200,
 	infinityScrollMode: false,
