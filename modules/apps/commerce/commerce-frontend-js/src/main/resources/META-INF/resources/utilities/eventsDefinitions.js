@@ -15,8 +15,9 @@
 export const ADD_TO_ORDER = 'refreshCartUsingData';
 export const AUTOCOMPLETE_VALUE_UPDATED = 'autocomplete-updated';
 export const CART_PRODUCT_QUANTITY_CHANGED = 'quantity-changed-from-cart';
-export const CHANGE_ACCOUNT = 'accountSelected';
+export const  ACCOUNT_CHANGED = 'accountSelected';
 export const CHANGE_ORDER = 'orderSelected';
+export const ORDER_CHANGED = 'orderChanged';
 export const CLOSE_MODAL = 'close-modal';
 export const CLOSE_SIDE_PANEL = 'close-side-panel';
 export const CP_INSTANCE_CHANGED = 'product-instance-changed';
@@ -34,10 +35,10 @@ export const SIDE_PANEL_CLOSED = 'side-panel-closed';
 export const UPDATE_DATASET_DISPLAY = 'update-data-set-display';
 
 export default {
+	ACCOUNT_CHANGED,
 	ADD_TO_ORDER,
 	AUTOCOMPLETE_VALUE_UPDATED,
 	CART_PRODUCT_QUANTITY_CHANGED,
-	CHANGE_ACCOUNT,
 	CHANGE_ORDER,
 	CLOSE_MODAL,
 	CLOSE_SIDE_PANEL,

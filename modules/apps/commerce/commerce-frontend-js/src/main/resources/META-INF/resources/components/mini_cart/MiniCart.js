@@ -19,7 +19,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import ServiceProvider from '../../ServiceProvider/index';
 import {
 	ADD_TO_ORDER,
-	CHANGE_ACCOUNT,
+	ACCOUNT_CHANGED,
 	CHANGE_ORDER,
 } from '../../utilities/eventsDefinitions';
 import {showErrorNotification} from '../../utilities/notifications';
@@ -98,10 +98,10 @@ function MiniCart({
 	}, [orderId]);
 
 	useEffect(() => {
-		Liferay.on(CHANGE_ACCOUNT, resetCartState);
+		Liferay.on(ACCOUNT_CHANGED, resetCartState);
 
 		return () => {
-			Liferay.detach(CHANGE_ACCOUNT, resetCartState);
+			Liferay.detach(ACCOUNT_CHANGED, resetCartState);
 		};
 	}, [resetCartState]);
 

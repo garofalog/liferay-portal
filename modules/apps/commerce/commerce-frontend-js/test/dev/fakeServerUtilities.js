@@ -13,7 +13,7 @@
  */
 
 function defineServerResponses(app) {
-	app.post('/account-selector/set-current-account', (_, res) => {
+	app.post('/account-selector/setCurrentAccounts', (_, res) => {
 		res.json({});
 	});
 

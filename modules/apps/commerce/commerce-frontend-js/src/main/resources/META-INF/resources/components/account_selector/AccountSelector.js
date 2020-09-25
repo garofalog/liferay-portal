@@ -16,53 +16,82 @@ import {ClayButtonWithIcon} from '@clayui/button';
 import ClayDropDown from '@clayui/drop-down';
 import {ClayIconSpriteContext} from '@clayui/icon';
 import ClayLabel from '@clayui/label';
+import ClaySticker from '@clayui/sticker';
 import ClayTable from '@clayui/table';
+import {fetch} from 'frontend-js-web';
 import PropTypes from 'prop-types';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {CSSTransition} from 'react-transition-group';
 
 import DateRenderer from '../../../../../../../../../frontend-taglib/frontend-taglib-clay/src/main/resources/META-INF/resources/data_set_display/data_renderers/DateRenderer';
 import StatusRenderer from '../../../../../../../../../frontend-taglib/frontend-taglib-clay/src/main/resources/META-INF/resources/data_set_display/data_renderers/StatusRenderer';
+import { ACCOUNT_CHANGED, ORDER_CHANGED } from '../../utilities/eventsDefinitions'
+
 import Autocomplete from './../autocomplete/Autocomplete';
 
 
 function AccountSelector(props) {
 
 	const [active, setActive] = useState(false);
-	const [selectedAccount, updateSelectedAccount] = useState([null, null]);
+	const [selectedAccount, updateSelectedAccount] = useState(props.selectedAccount);
+	const [selectedOrder, updateSelectedOrder] = useState(props.selectedOrder);
 	const [currentView, setCurrentView] = useState('accounts');
 
-	const [value, setValue] = useState("one");
+	useEffect(() => {
+		const formData = new FormData();
+		formData.append('accountId', selectedAccount.id);
+		
+		fetch(
+			props.setCurrentAccountAPIEndpoint,
+			{
+				body: formData,
+				method: 'POST',
+			}
+		).then(() => {
+			updateSelectedOrder(null);
+
+			Liferay.fire('accountSelected', selectedAccount);
+		});
+	}, [selectedAccount, props.setCurrentAccountAPIEndpoint])
 
 	return (
 		<ClayIconSpriteContext.Provider value={props.spritemap}>
 			<ClayDropDown
 				active={active}
+				className="dropdown-wide dropdown-wide-container"
 				onActiveChange={setActive}
 				trigger={
-					<button className="b-dropdown btn d-block d-flex">
-						<img
-							alt="FS"
-							className="my-auto rounded-circle"
-							height="40"
-							src="http://lorempixel.com/75/50/abstract/"
-							width="40"
-						/>
+					<button className="b-dropdown btn btn-secondary d-block d-flex">
+						{selectedAccount.thumbnail ? 
+							<ClaySticker shape="user-icon" size="xl" >
+								<ClaySticker.Image
+									alt={selectedAccount.name}
+									src={selectedAccount.thumbnail}
+								/>
+							</ClaySticker>
+							:
+							<ClaySticker shape="user-icon" size="xl" >
+								{selectedAccount.name.split(' ').map(a => a.charAt(0)).join('').toUpperCase().replace(',','')}
+							</ClaySticker>
+						}
 						<div className="account-selector-info ml-3">
-							<h6>{selectedAccount[1] || Liferay.Language.get('select-account-and-order') }</h6>
+							<h6>{selectedAccount?.name || Liferay.Language.get('select-account-and-order') }</h6>
 							<div className="account-selector-info-details d-flex">
-								<p>AR567834</p>&nbsp;|&nbsp;<p>Draft</p>
+								<span className="info-order-id">{selectedOrder?.id}</span>
+								<span className="mx-3 vertical-divider">|</span>
+								<span className="info-order-status-label">{selectedOrder?.status.label_i18n}</span>
 							</div>
 						</div>
 					</button>
 				}
 			>
-				<CSSTransition
+				{/* <CSSTransition
 					className="menu-primary"
 					in={currentView === 'accounts'}
 					timeout={100}
 					unmountOnExit
-				>
+				> */}
+				{currentView === 'accounts' && (
 					<Autocomplete
 						alwaysActive={true}
 						apiUrl="/o/headless-commerce-admin-account/v1.0/accounts/"
@@ -83,10 +112,7 @@ function AccountSelector(props) {
 														setCurrentView(
 															'orders'
 														);
-														updateSelectedAccount([
-															item.id,
-															item.name
-														]);
+														updateSelectedAccount(item);
 													}}
 												>
 													{item.name}
@@ -104,14 +130,16 @@ function AccountSelector(props) {
 						itemsKey="id"
 						itemsLabel="name"
 					/>
-				</CSSTransition>
+				)}
+				{/* </CSSTransition> */}
 
-				<CSSTransition
+				{/* <CSSTransition
 					classNames="menu-secondary"
 					in={currentView === 'orders'}
 					timeout={100}
 					unmountOnExit
-				>
+				> */}
+				{currentView === 'orders' && (
 					<>
 						<div className="inline-item p-2">
 							<ClayButtonWithIcon
@@ -121,12 +149,12 @@ function AccountSelector(props) {
 								}}
 								symbol="angle-left-small"
 							/>
-							<h3 className="m-auto pl-4">{selectedAccount[1]}</h3>
+							<h3 className="m-auto pl-4">{selectedAccount?.name}</h3>
 						</div>
 						
 						<Autocomplete
 							alwaysActive={true}
-							apiUrl={`/o/headless-commerce-admin-order/v1.0/orders?filter=(accountId/any(x:(x eq ${selectedAccount[0]})))`}
+							apiUrl={`/o/headless-commerce-admin-order/v1.0/orders?filter=(accountId/any(x:(x eq ${selectedAccount.id})))`}
 							autofill={true}
 							customView={(props) => {
 								return props.items ? (
@@ -159,7 +187,6 @@ function AccountSelector(props) {
 														<ClayTable.Row key={item.id}>
 															<ClayTable.Cell headingTitle>{item.id}</ClayTable.Cell>
 															<ClayTable.Cell>
-																
 																<StatusRenderer
 																	value={item.orderStatusInfo}
 																/>
@@ -188,13 +215,28 @@ function AccountSelector(props) {
 							itemsLabel="name"
 						/>
 					</>
-				</CSSTransition>
+				)}
+				{/* </CSSTransition> */}
 			</ClayDropDown>
 		</ClayIconSpriteContext.Provider>
 	);
 }
 
 AccountSelector.propTypes = {
+	selectedAccount: PropTypes.shape({
+		id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+		name: PropTypes.string.isRequired,
+		thumbnail: PropTypes.string.isRequired
+	}),
+	selectedOrder: PropTypes.shape({
+		id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+		status: PropTypes.shape({
+			code: PropTypes.number,
+			label: PropTypes.string,
+			label_i18n: PropTypes.string,
+		}),
+	}),
+	setCurrentAccountsAPIEndpoint: PropTypes.string,
 	spritemap: PropTypes.string.isRequired,
 };
 
