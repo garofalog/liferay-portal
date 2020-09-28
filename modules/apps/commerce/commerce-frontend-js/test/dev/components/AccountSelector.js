@@ -25,7 +25,6 @@ launcher('account_selector', 'account-selector-id', {
 		name: "Giovanni",
 		thumbnail: "http://lorempixel.com/75/75/abstract/",
 	},
-	setCurrentAccountAPIEndpoint: '/account-selector/setCurrentAccounts',
 	selectedOrder: {
 		id: 32402,
 		status: {
@@ -34,6 +33,8 @@ launcher('account_selector', 'account-selector-id', {
 			label_i18n: "Completed",
 		},
 	},
+	setCurrentAccountAPIEndpoint: '/account-selector/setCurrentAccounts',
+	setCurrentOrderUrl: '/',
 	spritemap: './assets/icons.svg',
 	viewAllAccountsLink: 'okli',
 	viewAllOrdersLink: '',

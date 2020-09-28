@@ -30,29 +30,26 @@ import { ACCOUNT_CHANGED, ORDER_CHANGED } from '../../utilities/eventsDefinition
 import Autocomplete from './../autocomplete/Autocomplete';
 
 
-function AccountSelector(props) {
+function updateRemoteSelectedAccount(account, endpoint) {
+	const formData = new FormData();
+	formData.append('accountId', account.id);
+	
+	return fetch(
+		endpoint,
+		{
+			body: formData,
+			method: 'POST',
+		}
+	).then(() => {
+		return Liferay.fire('accountSelected', account);
+	});
+};
 
+function AccountSelector(props) {
 	const [active, setActive] = useState(false);
 	const [selectedAccount, updateSelectedAccount] = useState(props.selectedAccount);
 	const [selectedOrder, updateSelectedOrder] = useState(props.selectedOrder);
 	const [currentView, setCurrentView] = useState('accounts');
-
-	useEffect(() => {
-		const formData = new FormData();
-		formData.append('accountId', selectedAccount.id);
-		
-		fetch(
-			props.setCurrentAccountAPIEndpoint,
-			{
-				body: formData,
-				method: 'POST',
-			}
-		).then(() => {
-			updateSelectedOrder(null);
-
-			Liferay.fire('accountSelected', selectedAccount);
-		});
-	}, [selectedAccount, props.setCurrentAccountAPIEndpoint])
 
 	return (
 		<ClayIconSpriteContext.Provider value={props.spritemap}>
@@ -78,7 +75,6 @@ function AccountSelector(props) {
 							<h6>{selectedAccount?.name || Liferay.Language.get('select-account-and-order') }</h6>
 							<div className="account-selector-info-details d-flex">
 								<span className="info-order-id">{selectedOrder?.id}</span>
-								<span className="mx-3 vertical-divider">|</span>
 								<span className="info-order-status-label">{selectedOrder?.status.label_i18n}</span>
 							</div>
 						</div>
@@ -109,10 +105,10 @@ function AccountSelector(props) {
 												<ClayDropDown.Item
 													key={item.id}
 													onClick={(_) => {
-														setCurrentView(
-															'orders'
-														);
+														setCurrentView('orders');
 														updateSelectedAccount(item);
+														updateSelectedOrder(null);
+														updateRemoteSelectedAccount(item, props.setCurrentAccountAPIEndpoint);
 													}}
 												>
 													{item.name}
@@ -158,13 +154,9 @@ function AccountSelector(props) {
 							autofill={true}
 							customView={(props) => {
 								return props.items ? (
-										<ClayDropDown.ItemList>
-											<ClayDropDown.Group
-
-												// header={Liferay.Language.get('orders')}
-
-											>
-											<ClayTable 
+									<ClayDropDown.ItemList>
+										<ClayDropDown.Group>
+											<ClayTable
 												borderless
 												hover
 											>
@@ -182,10 +174,13 @@ function AccountSelector(props) {
 													</ClayTable.Row>
 												</ClayTable.Head>
 												<ClayTable.Body>
-
 													{props.items.map((item) => (
 														<ClayTable.Row key={item.id}>
-															<ClayTable.Cell headingTitle>{item.id}</ClayTable.Cell>
+															<ClayTable.Cell headingTitle>
+																<a href={formatUrl()}>
+																	{item.id}
+																</a>
+															</ClayTable.Cell>
 															<ClayTable.Cell>
 																<StatusRenderer
 																	value={item.orderStatusInfo}
@@ -196,15 +191,12 @@ function AccountSelector(props) {
 															</ClayTable.Cell>
 														</ClayTable.Row>
 													))}
-													
 												</ClayTable.Body>
 											</ClayTable>
-												
 										</ClayDropDown.Group>
 									</ClayDropDown.ItemList>
-
 								) : (
-										<ClayDropDown.Caption>{'... or maybe not.'}</ClayDropDown.Caption>
+									<ClayDropDown.Caption>{'... or maybe not.'}</ClayDropDown.Caption>
 								)
 							}}
 							infinityScrollMode={true}
@@ -236,7 +228,8 @@ AccountSelector.propTypes = {
 			label_i18n: PropTypes.string,
 		}),
 	}),
-	setCurrentAccountsAPIEndpoint: PropTypes.string,
+	setCurrentAccountAPIEndpoint: PropTypes.string,
+	setCurrentOrderUrl: PropTypes.string,
 	spritemap: PropTypes.string.isRequired,
 };
 
