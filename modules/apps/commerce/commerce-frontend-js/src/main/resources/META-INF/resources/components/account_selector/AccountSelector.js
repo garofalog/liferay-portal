@@ -21,8 +21,8 @@ import PropTypes from 'prop-types';
 import React, {useEffect, useState} from 'react';
 import {CSSTransition} from 'react-transition-group';
 
-import DateRenderer from '../../../../../../../../../frontend-taglib/frontend-taglib-clay/src/main/resources/META-INF/resources/data_set_display/data_renderers/DateRenderer';
-import StatusRenderer from '../../../../../../../../../frontend-taglib/frontend-taglib-clay/src/main/resources/META-INF/resources/data_set_display/data_renderers/StatusRenderer';
+import DateRenderer from '../data_renderers/DateRenderer';
+import StatusRenderer from '../data_renderers/StatusRenderer';
 import {
 	ACCOUNT_CHANGED,
 	ORDER_CHANGED,
