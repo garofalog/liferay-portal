@@ -12,14 +12,13 @@
  * details.
  */
 
-import launcher from '../../../src/main/resources/META-INF/resources/components/account_selector/entry';
+import {composeAPI} from '../composeAPI';
+import * as v1 from './v1.0/index';
 
-import '../../../src/main/resources/META-INF/resources/styles/main.scss';
+const BASE_ENDPOINT = '/o/headless-commerce-admin-order/';
 
-import '../../../../../frontend-taglib/frontend-taglib-clay/src/main/resources/META-INF/resources/data_set_display/styles/main.scss';
+const APIs = {
+	v1,
+};
 
-launcher('account_selector', 'account-selector', {
-	createNewOrderUrl: '/asdasdasd',
-	spritemap: './assets/icons.svg',
-	viewOrderUrl: '/test-url/{id}',
-});
+export default (version) => composeAPI(version, APIs, BASE_ENDPOINT);

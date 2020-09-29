@@ -14,6 +14,9 @@
 
 import ClayAutocomplete from '@clayui/autocomplete';
 import ClayDropDown from '@clayui/drop-down';
+
+// import ClayIcon from '@clayui/icon';
+
 import {FocusScope} from '@clayui/shared';
 import PropTypes from 'prop-types';
 import React, {useEffect, useRef, useState} from 'react';
@@ -206,6 +209,9 @@ function Autocomplete({onItemsUpdated, onValueUpdated, ...props}) {
 						required={props.required || false}
 						value={currentLabel || query}
 					/>
+					{/* {props.inputIcon &&  (
+						<ClayIcon className="input-icon" spritemap={props.spritemap} symbol={props.inputIcon} />
+					)} */}
 					{!CustomView && (
 						<ClayAutocomplete.DropDown active={active && !loading}>
 							<div
@@ -275,6 +281,9 @@ Autocomplete.propTypes = {
 	initialValue: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
 		.isRequired,
 	inputClass: PropTypes.string,
+
+	// inputIcon: PropTypes.string,
+
 	inputId: PropTypes.string,
 	inputName: PropTypes.string.isRequired,
 	inputPlaceholder: PropTypes.string,
@@ -286,6 +295,8 @@ Autocomplete.propTypes = {
 	onItemsUpdated: PropTypes.func,
 	onValueUpdated: PropTypes.func,
 	required: PropTypes.bool,
+
+	// spritemap: PropTypes.string,
 };
 
 Autocomplete.defaultProps = {

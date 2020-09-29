@@ -12,14 +12,17 @@
  * details.
  */
 
-import launcher from '../../../src/main/resources/META-INF/resources/components/account_selector/entry';
+import AJAX from '../../../utilities/AJAX/index';
 
-import '../../../src/main/resources/META-INF/resources/styles/main.scss';
+const ACCOUNTS_PATH = '/orders';
 
-import '../../../../../frontend-taglib/frontend-taglib-clay/src/main/resources/META-INF/resources/data_set_display/styles/main.scss';
+const VERSION = 'v1.0';
 
-launcher('account_selector', 'account-selector', {
-	createNewOrderUrl: '/asdasdasd',
-	spritemap: './assets/icons.svg',
-	viewOrderUrl: '/test-url/{id}',
+function resolveCatalogPath(basePath = '') {
+	return `${basePath}${VERSION}${ACCOUNTS_PATH}`;
+}
+
+export default (basePath) => ({
+	getAccounts: () =>
+		AJAX.GET(resolveCatalogPath(basePath)),
 });
