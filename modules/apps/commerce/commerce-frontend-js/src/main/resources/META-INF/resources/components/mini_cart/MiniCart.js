@@ -20,7 +20,7 @@ import ServiceProvider from '../../ServiceProvider/index';
 import {
 	ADD_TO_ORDER,
 	ACCOUNT_CHANGED,
-	CHANGE_ORDER,
+	ORDER_SELECTED,
 } from '../../utilities/eventsDefinitions';
 import {showErrorNotification} from '../../utilities/notifications';
 import CartItemsList from './CartItemsList';
@@ -82,11 +82,11 @@ function MiniCart({
 
 	useEffect(() => {
 		Liferay.on(ADD_TO_ORDER, updateCartModel);
-		Liferay.on(CHANGE_ORDER, updateCartModel);
+		Liferay.on(ORDER_SELECTED, updateCartModel);
 
 		return () => {
 			Liferay.detach(ADD_TO_ORDER, updateCartModel);
-			Liferay.detach(CHANGE_ORDER, updateCartModel);
+			Liferay.detach(ORDER_SELECTED, updateCartModel);
 		};
 	}, [updateCartModel]);
 

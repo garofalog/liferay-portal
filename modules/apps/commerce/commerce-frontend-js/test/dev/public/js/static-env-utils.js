@@ -27,7 +27,7 @@ window.Liferay = {
 		getLanguageId: () => 'it_IT',
 		getPathThemeImages: () => '/assets',
 		getPortalURL: () => window.location.origin,
-		getScopeGroupId: () => 111111
+		getScopeGroupId: () => 111111,
 	},
 	component: () => {},
 	detach: (name, fn) => {

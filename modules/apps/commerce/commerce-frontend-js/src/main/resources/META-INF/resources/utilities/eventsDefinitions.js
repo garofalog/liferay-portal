@@ -15,9 +15,8 @@
 export const ADD_TO_ORDER = 'refreshCartUsingData';
 export const AUTOCOMPLETE_VALUE_UPDATED = 'autocomplete-updated';
 export const CART_PRODUCT_QUANTITY_CHANGED = 'quantity-changed-from-cart';
-export const  ACCOUNT_CHANGED = 'accountSelected';
-export const CHANGE_ORDER = 'orderSelected';
-export const ORDER_CHANGED = 'orderChanged';
+export const ACCOUNT_CHANGED = 'accountSelected';
+export const ORDER_SELECTED = 'orderSelected';
 export const CLOSE_MODAL = 'close-modal';
 export const CLOSE_SIDE_PANEL = 'close-side-panel';
 export const CP_INSTANCE_CHANGED = 'product-instance-changed';
@@ -39,7 +38,6 @@ export default {
 	ADD_TO_ORDER,
 	AUTOCOMPLETE_VALUE_UPDATED,
 	CART_PRODUCT_QUANTITY_CHANGED,
-	CHANGE_ORDER,
 	CLOSE_MODAL,
 	CLOSE_SIDE_PANEL,
 	CP_INSTANCE_CHANGED,
@@ -51,6 +49,7 @@ export default {
 	IS_LOADING_MODAL,
 	OPEN_MODAL,
 	OPEN_SIDE_PANEL,
+	ORDER_SELECTED,
 	PRODUCT_OPTIONS_CHANGED,
 	PRODUCT_REMOVED,
 	SIDE_PANEL_CLOSED,

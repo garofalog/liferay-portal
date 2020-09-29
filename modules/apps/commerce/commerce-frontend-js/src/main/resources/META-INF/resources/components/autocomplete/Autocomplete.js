@@ -24,7 +24,7 @@ import {getData, getValueFromItem} from '../../utilities/index';
 import {useLiferayModule} from '../../utilities/modules';
 import {showErrorNotification} from '../../utilities/notifications';
 
-function Autocomplete({onValueUpdated, ...props}) {
+function Autocomplete({onItemsUpdated, onValueUpdated, ...props}) {
 	const [query, setQuery] = useState(props.initialLabel || '');
 	const [initialised, setInitialised] = useState(props.alwaysActive);
 	const [debouncedGetItems, updateDebouncedGetItems] = useState(() =>
@@ -95,6 +95,21 @@ function Autocomplete({onValueUpdated, ...props}) {
 					else {
 						updateItems(jsonResponse.items);
 					}
+
+					updateItems((prevItems) => {
+						const items = jsonResponse.items;
+
+						if (
+							props.infinityScrollMode &&
+							prevItems?.length &&
+							page > 1
+						) {
+							items.push(...prevItems);
+						}
+
+						return items;
+					});
+
 					updateTotalCount(jsonResponse.totalCount);
 					updateLastPage(jsonResponse.lastPage);
 
@@ -126,6 +141,12 @@ function Autocomplete({onValueUpdated, ...props}) {
 		props.itemsLabel,
 		props.showErrorNotification,
 	]);
+
+	useEffect(() => {
+		if (onItemsUpdated) {
+			onItemsUpdated(items);
+		}
+	}, [items, onItemsUpdated]);
 
 	useEffect(() => {
 		function handleClick(e) {
@@ -160,9 +181,7 @@ function Autocomplete({onValueUpdated, ...props}) {
 	return (
 		<>
 			<FocusScope>
-				<ClayAutocomplete 						
-					className={props.inputClass}
-					ref={node}>
+				<ClayAutocomplete className={props.inputClass} ref={node}>
 					<input
 						id={props.inputId || props.inputName}
 						name={props.inputName}
@@ -180,12 +199,7 @@ function Autocomplete({onValueUpdated, ...props}) {
 							setInitialised(true);
 						}}
 						onKeyUp={(e) => {
-							if (e.keyCode === 27) {
-								setActive(false);
-							}
-							else {
-								setActive(true);
-							}
+							setActive(Boolean(e.keyCode !== 27));
 						}}
 						placeholder={props.inputPlaceholder}
 						ref={inputNode}
@@ -269,6 +283,7 @@ Autocomplete.propTypes = {
 		PropTypes.string,
 		PropTypes.arrayOf(PropTypes.string),
 	]).isRequired,
+	onItemsUpdated: PropTypes.func,
 	onValueUpdated: PropTypes.func,
 	required: PropTypes.bool,
 };

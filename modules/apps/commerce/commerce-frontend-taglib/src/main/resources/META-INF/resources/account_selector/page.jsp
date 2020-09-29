@@ -1,3 +1,4 @@
+<%--
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
@@ -11,15 +12,20 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
+--%>
 
-import launcher from '../../../src/main/resources/META-INF/resources/components/account_selector/entry';
+<%@ include file="/account_selector/init.jsp" %>
 
-import '../../../src/main/resources/META-INF/resources/styles/main.scss';
+<div class="account-selector-root" id="<%= accountSelectorId %>"></div>
 
-import '../../../../../frontend-taglib/frontend-taglib-clay/src/main/resources/META-INF/resources/data_set_display/styles/main.scss';
-
-launcher('account_selector', 'account-selector-id', {
-	createNewOrderUrl: '/asdasdasd',
-	spritemap: './assets/icons.svg',
-	viewOrderUrl: '/test-url/{id}',
-});
+<aui:script require="commerce-frontend-js/components/account_selector/entry as accountSelector">
+	accountSelector.default(
+		'<%= accountSelectorId %>',
+		'<%= accountSelectorId %>',
+		{
+			spritemap: '<%= spritemap %>',
+			createNewOrderUrl: '<%= createNewOrderUrl %>',
+			viewOrderUrl: '<%= viewOrderUrl %>',
+		}
+	);
+</aui:script>
