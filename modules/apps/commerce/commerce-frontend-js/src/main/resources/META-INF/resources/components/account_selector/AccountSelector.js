@@ -12,22 +12,22 @@
  * details.
  */
 
-import {ClayButtonWithIcon} from '@clayui/button';
+import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
 import ClayDropDown from '@clayui/drop-down';
 import {ClayIconSpriteContext} from '@clayui/icon';
 import ClaySticker from '@clayui/sticker';
 import ClayTable from '@clayui/table';
 import PropTypes from 'prop-types';
 import React, {useEffect, useState} from 'react';
-import {CSSTransition} from 'react-transition-group';
 
+import { formatActionUrl } from '../../utilities/index';
+import {
+	CURRENT_ACCOUNT_CHANGED,
+	CURRENT_ORDER_CHANGED,
+} from '../../utilities/eventsDefinitions';
+import {usePersistentState} from '../../utilities/hooks';
 import DateRenderer from '../data_renderers/DateRenderer';
 import StatusRenderer from '../data_renderers/StatusRenderer';
-import {
-	ACCOUNT_CHANGED,
-	ORDER_CHANGED,
-} from '../../utilities/eventsDefinitions';
-
 import Autocomplete from './../autocomplete/Autocomplete';
 
 function formatStickerName(name) {
@@ -40,17 +40,46 @@ function formatStickerName(name) {
 	return (words[0].charAt(0) + words[1].charAt(0)).toUpperCase();
 }
 
+function AccountSticker({name, thumbnail}) {
+	return (
+		<ClaySticker className="mr-3" shape="user-icon" size="xl">
+			{thumbnail ? (
+				<ClaySticker.Image
+					alt={name}
+					src={thumbnail}
+				/>
+			) : (
+				formatStickerName(name)
+			)}
+		</ClaySticker>
+	)
+}
+
 function AccountSelector(props) {
 	const [active, setActive] = useState(false);
-	const [selectedAccount, updateSelectedAccount] = useState(
-		props.selectedAccount
-	);
-	const [selectedOrder, updateSelectedOrder] = useState(props.selectedOrder);
+	const [currentAccount, updateCurrentAccount] = usePersistentState('currentAccount');
+	const [currentOrder, updateCurrentOrder] = usePersistentState('currentOrder');
 	const [currentView, setCurrentView] = useState('accounts');
 
 	useEffect(() => {
-		Liferay.fire(ORDER_CHANGED, {});
-	}, [selectedOrder]);
+		function handleOrderChanged({order}){
+			if(order && (order.id !== currentOrder?.id)) {
+				updateCurrentOrder(order)
+			}
+		}
+
+		Liferay.on(CURRENT_ORDER_CHANGED, handleOrderChanged)
+
+		return () => Liferay.detach(CURRENT_ORDER_CHANGED, handleOrderChanged)
+	}, [currentOrder, updateCurrentOrder])
+
+	useEffect(() => {
+		Liferay.fire(CURRENT_ORDER_CHANGED, currentOrder);
+	}, [currentOrder]);
+
+	useEffect(() => {
+		Liferay.fire(CURRENT_ACCOUNT_CHANGED, currentAccount);
+	}, [currentAccount]);
 
 	return (
 		<ClayIconSpriteContext.Provider value={props.spritemap}>
@@ -59,36 +88,42 @@ function AccountSelector(props) {
 				className="dropdown-wide dropdown-wide-container"
 				onActiveChange={setActive}
 				trigger={
-					<button className="b-dropdown btn btn-secondary d-block d-flex">
-						{selectedAccount.thumbnail ? (
-							<ClaySticker shape="user-icon" size="xl">
-								<ClaySticker.Image
-									alt={selectedAccount.name}
-									src={selectedAccount.thumbnail}
-								/>
-							</ClaySticker>
-						) : (
-							<ClaySticker shape="user-icon" size="xl">
-								{formatStickerName(selectedAccount.name)}
-							</ClaySticker>
+					<ClayButton className="d-flex" displayType="secondary">
+						{currentAccount && (
+							<AccountSticker {...currentAccount} />
 						)}
-						<div className="account-selector-info ml-3">
-							<h6>
-								{selectedAccount?.name ||
-									Liferay.Language.get(
+						<div className="account-selector-info">
+							{currentAccount ? (
+								<>
+									<h4 className="text-left">
+										{currentAccount.name}
+									</h4>
+									<small className="order-details">
+										{currentOrder ? (
+											<>
+												<span className="order-id">
+													{currentOrder?.id}
+												</span>
+												<span className="order-label">
+													{currentOrder?.orderStatusInfo.label_i18n}
+												</span>
+											</>
+										) : (
+											Liferay.Language.get(
+												'no-orders-available'
+											)
+										)}
+									</small>
+								</>
+							) : (
+								<h4>
+									{Liferay.Language.get(
 										'select-account-and-order'
 									)}
-							</h6>
-							<div className="account-selector-info-details d-flex">
-								<span className="info-order-id">
-									{selectedOrder?.id}
-								</span>
-								<span className="info-order-status-label">
-									{selectedOrder?.orderStatusInfo.label_i18n}
-								</span>
-							</div>
+								</h4>
+							)}
 						</div>
-					</button>
+					</ClayButton>
 				}
 			>
 				{/* <CSSTransition
@@ -102,24 +137,27 @@ function AccountSelector(props) {
 						alwaysActive={true}
 						apiUrl="/o/headless-commerce-admin-account/v1.0/accounts/"
 						autofill={true}
-						customView={(props) => {
+						customView={({items}) => {
 							return (
-								props.items && (
+								items && (
 									<ClayDropDown.ItemList>
 										<ClayDropDown.Group
 											header={Liferay.Language.get(
 												'select-accounts'
 											)}
 										>
-											{props.items.map((item) => (
+											{items.map((item) => (
 												<ClayDropDown.Item
 													key={item.id}
 													onClick={(_) => {
 														setCurrentView(
 															'orders'
 														);
-														updateSelectedAccount(
+														updateCurrentAccount(
 															item
+														);
+														updateCurrentOrder(
+															null
 														);
 													}}
 												>
@@ -160,16 +198,16 @@ function AccountSelector(props) {
 								symbol="angle-left-small"
 							/>
 							<h3 className="m-auto pl-4">
-								{selectedAccount?.name}
+								{currentAccount?.name}
 							</h3>
 						</div>
 
 						<Autocomplete
 							alwaysActive={true}
-							apiUrl={`/o/headless-commerce-admin-order/v1.0/orders?sort=modifiedDate:desc&filter=(accountId/any(x:(x eq ${selectedAccount.id})))`}
+							apiUrl={`/o/headless-commerce-admin-order/v1.0/orders?sort=modifiedDate:desc&filter=(accountId/any(x:(x eq ${currentAccount.id})))`}
 							autofill={true}
-							customView={(props) => {
-								return props.items ? (
+							customView={({items}) => {
+								return items ? (
 									<ClayDropDown.ItemList>
 										<ClayDropDown.Group>
 											<ClayTable borderless hover>
@@ -199,14 +237,14 @@ function AccountSelector(props) {
 													</ClayTable.Row>
 												</ClayTable.Head>
 												<ClayTable.Body>
-													{props.items.map((item) => (
+													{items.map((item) => (
 														<ClayTable.Row
 															key={item.id}
 														>
 															<ClayTable.Cell
 																headingTitle
 															>
-																<a href={'#'}>
+																<a href={formatActionUrl(props.viewOrderUrl, item)}>
 																	{item.id}
 																</a>
 															</ClayTable.Cell>
@@ -244,11 +282,13 @@ function AccountSelector(props) {
 							)}
 							itemsKey="id"
 							itemsLabel="name"
-							onItemsUpdated={(items) =>
-								updateSelectedOrder(
-									items?.length ? items[0] : null
-								)
-							}
+							onItemsUpdated={(items) => {
+								if(!currentOrder && items?.length) {
+									updateCurrentOrder(
+										items[0]
+									)
+								}
+							}}
 						/>
 					</>
 				)}

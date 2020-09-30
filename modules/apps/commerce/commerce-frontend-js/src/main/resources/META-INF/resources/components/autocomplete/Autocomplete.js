@@ -21,7 +21,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {debouncePromise} from '../../utilities/debounce';
 import {AUTOCOMPLETE_VALUE_UPDATED} from '../../utilities/eventsDefinitions';
 import {getData, getValueFromItem} from '../../utilities/index';
-import {useLiferayModule} from '../../utilities/modules';
+import {useLiferayModule} from '../../utilities/hooks';
 import {showErrorNotification} from '../../utilities/notifications';
 
 function Autocomplete({onItemsUpdated, onValueUpdated, ...props}) {

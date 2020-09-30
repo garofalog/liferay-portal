@@ -64,22 +64,3 @@ export function getComponentByModuleUrl(url) {
 			.catch(reject);
 	});
 }
-
-export function useLiferayModule(
-	moduleUrl,
-	LoadingComponent = ClayLoadingIndicator
-) {
-	const [Component, updateComponent] = useState(
-		moduleUrl ? LoadingComponent : null
-	);
-
-	useEffect(() => {
-		if (moduleUrl) {
-			getComponentByModuleUrl(moduleUrl).then((module) => {
-				updateComponent(() => module);
-			});
-		}
-	}, [moduleUrl]);
-
-	return Component;
-}
