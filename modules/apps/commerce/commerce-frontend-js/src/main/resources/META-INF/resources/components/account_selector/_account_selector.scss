@@ -1,24 +1,11 @@
 
 .account-selector {
 	.dropdown {
-		.fixed-area {
-			position: absolute;
-			.cta {
-				width: 95%;
-				margin: 10px;
-			}
-		}
 		
-		&:after {
-			
-		}
-		&-initials {
-			
-		}
 	}
 	&-info {
 
-		&-details {
+		.order-details {
 			font-style: normal;
 			font-weight: normal;
 			font-size: 12px;
