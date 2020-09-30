@@ -37,7 +37,7 @@ import ClayTable from '@clayui/table';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 
-// import CSSTransition from 'react-transition-group'
+// import {CSSTransition} from 'react-transition-group';
 
 import {
 	CURRENT_ACCOUNT_CHANGED,
@@ -231,7 +231,6 @@ function AccountSelector(props) {
 								/>
 								<h4 className="dropdown-section m-auto pl-4 text-center" href="#">{currentAccount?.name}</h4>
 							</div>
-
 							<Autocomplete
 								alwaysActive={true}
 								apiUrl={`/o/headless-commerce-admin-order/v1.0/orders?sort=modifiedDate:desc&filter=(accountId/any(x:(x eq ${currentAccount.id})))`}
@@ -310,23 +309,18 @@ function AccountSelector(props) {
 												</div>
 											</>
 										)
-									}
-
-									if (items && !items.length) {
+									} else if (items && !items.length) {
 										return (
 											<ClayDropDown.Caption>
 												{Liferay.Language.get('orders-not-found')}
 											</ClayDropDown.Caption>
 										)
+									} else {
+										return ( 
+											<ClayLoadingIndicator className="mt-3"/>
+										)
 									}
 
-									// return items && items.length !== 0 ? (
-
-									// )
-
-									return (
-										<ClayLoadingIndicator className="mt-3" />
-									)
 								}}
 								infinityScrollMode={true}
 								inputClass="dropdown-section"
