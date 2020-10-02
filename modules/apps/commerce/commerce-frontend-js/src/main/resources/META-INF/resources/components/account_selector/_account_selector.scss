@@ -1,25 +1,19 @@
 
-.account-selector {
-	.dropdown {
-		
-	}
-	&-info {
+.account-selector-info {
+	.order-details {
+		font-style: normal;
+		font-weight: normal;
+		font-size: 12px;
+		line-height: 150%;
+		display: flex;
+		align-items: center;
+		margin-top: 10px;
+		color: #2C3A4B;
 
-		.order-details {
-			font-style: normal;
-			font-weight: normal;
-			font-size: 12px;
-			line-height: 150%;
-			display: flex;
-			align-items: center;
-			margin-top: 10px;
-			color: #2C3A4B;
-
-			span:nth-child(2) {
-				padding-left: 10px;
-				border-left: 1px solid #000;
-				margin-left:10px;
-			}
+		span:nth-child(2) {
+			padding-left: 10px;
+			border-left: 1px solid #000;
+			margin-left:10px;
 		}
 	}
 }
@@ -38,12 +32,3 @@
 		
 	}
 }
-
-
-// .input-icon {
-// 	position:absolute;
-// 	bottom:20px;
-// 	right:20px;
-// 	width:16px;
-// 	height:16px;
-// }
