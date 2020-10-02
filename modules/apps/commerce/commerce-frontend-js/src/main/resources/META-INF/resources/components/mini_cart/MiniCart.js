@@ -18,9 +18,8 @@ import React, {useCallback, useEffect, useState} from 'react';
 
 import ServiceProvider from '../../ServiceProvider/index';
 import {
-	ADD_TO_ORDER,
-	CURRENT_ACCOUNT_CHANGED,
-	CURRENT_ORDER_CHANGED,
+	CURRENT_ACCOUNT_UPDATED,
+	CURRENT_ORDER_UPDATED,
 } from '../../utilities/eventsDefinitions';
 import {showErrorNotification} from '../../utilities/notifications';
 import CartItemsList from './CartItemsList';
@@ -29,6 +28,7 @@ import Opener from './Opener';
 import Wrapper from './Wrapper';
 import {regenerateOrderDetailURL, resolveView} from './util/index';
 
+const AJAX = ServiceProvider.DeliveryCartAPI('v1');
 function MiniCart({
 	cartActionURLs,
 	cartItemsListView,
@@ -37,8 +37,6 @@ function MiniCart({
 	orderId,
 	spritemap,
 }) {
-	const AJAX = ServiceProvider.DeliveryCartAPI('v1');
-
 	const [isOpen, setIsOpen] = useState(false),
 		[isUpdating, setIsUpdating] = useState(false),
 		[cartState, updateCartState] = useState({}),
@@ -46,33 +44,28 @@ function MiniCart({
 		[CartView, setCartView] = useState(null);
 
 	const closeCart = () => setIsOpen(false),
-		openCart = () => setIsOpen(true),
-		resetCartState = useCallback(() => updateCartState({}), [
-			updateCartState,
-		]);
+		openCart = () => setIsOpen(true);
 
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	const updateCartModel = ({orderId: cartId}) =>
-		AJAX.getCartByIdWithItems(cartId)
+	const updateCartModel = useCallback((orderId) => {
+		AJAX.getCartByIdWithItems(orderId)
 			.then((model) => {
-				if (model.id !== cartId) {
-					const {orderUUID} = model,
-						{checkoutURL, orderDetailURL} = actionURLs;
-
-					setActionURLs({
-						checkoutURL,
-						orderDetailURL: regenerateOrderDetailURL(
-							orderDetailURL,
-							orderUUID
-						),
+				if (model.id !== orderId) {
+					setActionURLs((prevActions) => {
+						return {
+							...prevActions,
+							orderDetailURL: regenerateOrderDetailURL(
+								prevActions.orderDetailURL,
+								model.orderUUID
+							),
+						};
 					});
 				}
-
-				updateCartState({...cartState, ...model});
+				updateCartState((prevState) => ({...prevState, ...model}));
 			})
 			.catch((error) => {
 				showErrorNotification(error);
 			});
+	}, []);
 
 	useEffect(() => {
 		if (!CartView) {
@@ -81,29 +74,30 @@ function MiniCart({
 	}, [CartView, cartView]);
 
 	useEffect(() => {
-		Liferay.on(ADD_TO_ORDER, updateCartModel);
-		Liferay.on(CURRENT_ORDER_CHANGED, updateCartModel);
+		function handleOrderUpdated({id}) {
+			updateCartModel(id);
+		}
 
-		return () => {
-			Liferay.detach(ADD_TO_ORDER, updateCartModel);
-			Liferay.detach(CURRENT_ORDER_CHANGED, updateCartModel);
-		};
+		Liferay.on(CURRENT_ORDER_UPDATED, handleOrderUpdated);
+
+		return () => Liferay.detach(CURRENT_ORDER_UPDATED, handleOrderUpdated);
 	}, [updateCartModel]);
 
 	useEffect(() => {
 		if (orderId && orderId !== 0) {
-			updateCartModel({orderId});
+			updateCartModel(orderId);
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [orderId]);
+	}, [orderId, updateCartModel]);
 
 	useEffect(() => {
-		Liferay.on(CURRENT_ACCOUNT_CHANGED, resetCartState);
+		const resetCartState = () => updateCartState({});
+
+		Liferay.on(CURRENT_ACCOUNT_UPDATED, resetCartState);
 
 		return () => {
-			Liferay.detach(CURRENT_ACCOUNT_CHANGED, resetCartState);
+			Liferay.detach(CURRENT_ACCOUNT_UPDATED, resetCartState);
 		};
-	}, [resetCartState]);
+	}, []);
 
 	return (
 		<MiniCartContext.Provider
@@ -124,7 +118,7 @@ function MiniCart({
 			{!!CartView && (
 				<div className={classnames('mini-cart', isOpen && 'is-open')}>
 					<div
-						className={'mini-cart-overlay'}
+						className="mini-cart-overlay"
 						onClick={() => setIsOpen(false)}
 					/>
 
