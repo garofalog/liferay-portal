@@ -52,7 +52,7 @@ function MiniCart({
 		]);
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	const updateCartModel = ({orderId: cartId}) =>
+	const updateCartModel = ({id: cartId}) =>
 		AJAX.getCartByIdWithItems(cartId)
 			.then((model) => {
 				if (model.id !== cartId) {

@@ -12,23 +12,8 @@
  * details.
  */
 
-/**
-* Copyright (c) 2000-present Liferay, Inc. All rights reserved.
-*
-* This library is free software; you can redistribute it and/or modify it under
-* the terms of the GNU Lesser General Public License as published by the Free
-* Software Foundation; either version 2.1 of the License, or (at your option)
-* any later version.
-*
-* This library is distributed in the hope that it will be useful, but WITHOUT
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-* FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
-* details.
-*/
-
 import ClayButton, { ClayButtonWithIcon } from '@clayui/button';
 import ClayDropDown from '@clayui/drop-down';
-import ClayIcon from '@clayui/icon';
 import { ClayIconSpriteContext } from '@clayui/icon';
 import ClayLink from '@clayui/link';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
@@ -36,15 +21,12 @@ import ClaySticker from '@clayui/sticker';
 import ClayTable from '@clayui/table';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-
-// import {CSSTransition} from 'react-transition-group';
-
+import {fetch} from 'frontend-js-web';
 import {
 	CURRENT_ACCOUNT_CHANGED,
 	CURRENT_ORDER_CHANGED,
 } from '../../utilities/eventsDefinitions';
-import { usePersistentState } from '../../utilities/hooks';
-import { formatActionUrl } from '../../utilities/index';
+import { fetchParams, formatActionUrl } from '../../utilities/index';
 import DateRenderer from '../data_renderers/DateRenderer';
 import StatusRenderer from '../data_renderers/StatusRenderer';
 import Autocomplete from './../autocomplete/Autocomplete';
@@ -74,31 +56,47 @@ function AccountSticker({ name, thumbnail }) {
 	)
 }
 
+function updateRemoteCurrentAccount(id, url) {
+	const formData = new FormData();
+	formData.append('accountId', id);
+
+	return fetch(
+		url,
+		{
+			...fetchParams,
+			body: formData,
+			method: 'POST'
+		}
+	)
+	.then(() => {
+		Liferay.fire(CURRENT_ACCOUNT_CHANGED, {id})
+	})
+}
+
 function AccountSelector(props) {
 	const [active, setActive] = useState(false);
-	const [currentAccount, updateCurrentAccount] = usePersistentState('currentAccount');
-	const [currentOrder, updateCurrentOrder] = usePersistentState('currentOrder');
+	const [currentAccount, updateCurrentAccount] = useState(props.currentAccount);
+	const [currentOrder, updateCurrentOrder] = useState(props.currentOrder);
 	const [currentView, setCurrentView] = useState('accounts');
 
 	useEffect(() => {
-		function handleOrderChanged({ order }) {
-			if (order && (order.id !== currentOrder?.id)) {
-				updateCurrentOrder(order)
-			}
+		function handleOrderChanged({ id, orderStatusInfo }) {
+			updateCurrentOrder((current) => {
+				if(
+					!currentOrder && id || 
+					currentAccount && !id ||
+					currentOrder.id !== id 
+				) {
+				id,
+				orderStatusInfo,
+				}
+			})
 		}
 
 		Liferay.on(CURRENT_ORDER_CHANGED, handleOrderChanged)
 
 		return () => Liferay.detach(CURRENT_ORDER_CHANGED, handleOrderChanged)
-	}, [currentOrder, updateCurrentOrder])
-
-	useEffect(() => {
-		Liferay.fire(CURRENT_ORDER_CHANGED, currentOrder);
-	}, [currentOrder]);
-
-	useEffect(() => {
-		Liferay.fire(CURRENT_ACCOUNT_CHANGED, currentAccount);
-	}, [currentAccount]);
+	}, [updateCurrentOrder])
 
 	return (
 		<>
@@ -125,7 +123,7 @@ function AccountSelector(props) {
 														{currentOrder?.id}
 													</span>
 													<span className="order-label">
-														{currentOrder?.orderStatusInfo.label_i18n}
+														{currentOrder?.status || currentOrder?.orderStatusInfo.label_i18n}
 													</span>
 												</>
 											) : (
@@ -136,22 +134,16 @@ function AccountSelector(props) {
 										</small>
 									</>
 								) : (
-										<h4>
-											{Liferay.Language.get(
-												'select-account-and-order'
-											)}
-										</h4>
-									)}
+									<h4>
+										{Liferay.Language.get(
+											'select-account-and-order'
+										)}
+									</h4>
+								)}
 							</div>
 						</ClayButton>
 					}
 				>
-					{/* <CSSTransition
-						className="menu-primary"
-						in={currentView === 'accounts'}
-						timeout={100}
-						unmountOnExit
-					> */}
 					{currentView === 'accounts' && (
 						<Autocomplete
 							alwaysActive={true}
@@ -159,7 +151,6 @@ function AccountSelector(props) {
 							autofill={true}
 							customView={({ items }) => {
 								if (items && items.length) {
-
 									return (
 										<ClayDropDown.ItemList className="dropdown-section">
 											<ClayDropDown.Group
@@ -171,15 +162,10 @@ function AccountSelector(props) {
 													<ClayDropDown.Item
 														key={item.id}
 														onClick={(_) => {
-															setCurrentView(
-																'orders'
-															);
-															updateCurrentAccount(
-																item
-															);
-															updateCurrentOrder(
-																null
-															);
+															updateRemoteCurrentAccount(item.id, props.setCurrentAccountURL);
+															updateCurrentAccount(item);
+															setCurrentView('orders');
+															updateCurrentOrder(null);
 														}}
 													>
 														{item.name}
@@ -198,8 +184,6 @@ function AccountSelector(props) {
 								}
 
 								return (<ClayLoadingIndicator className="mt-3" />)
-
-
 							}}
 							infinityScrollMode={true}
 							inputClass="p-2"
@@ -211,14 +195,6 @@ function AccountSelector(props) {
 							itemsLabel="name"
 						/>
 					)}
-					{/* </CSSTransition>
-
-					<CSSTransition
-						classNames="menu-secondary"
-						in={currentView === 'orders'}
-						timeout={100}
-						unmountOnExit
-					> */}
 					{currentView === 'orders' && (
 						<>
 							<div className="dropdown-section inline-item">
@@ -275,7 +251,7 @@ function AccountSelector(props) {
 																		<ClayTable.Cell
 																			headingTitle
 																		>
-																			<a href={formatActionUrl(props.viewOrderUrl, item)}>
+																			<a href={formatActionUrl(props.selectOrderURL, item)}>
 																				{item.id}
 																			</a>
 																		</ClayTable.Cell>
@@ -303,7 +279,7 @@ function AccountSelector(props) {
 													<ClayLink
 														className="btn btn-primary d-block"
 														displayType="unstyled"
-														href={props.createNewOrderUrl}>
+														href={props.createNewOrderURL}>
 														{Liferay.Language.get("create-new-order")}
 													</ClayLink>
 												</div>
@@ -339,10 +315,7 @@ function AccountSelector(props) {
 								}}
 							/>
 						</>
-
 					)}
-					{/* </CSSTransition> */}
-
 				</ClayDropDown>
 			</ClayIconSpriteContext.Provider>
 
@@ -351,9 +324,21 @@ function AccountSelector(props) {
 }
 
 AccountSelector.propTypes = {
-	createNewOrderUrl: PropTypes.string,
-	spritemap: PropTypes.string,
-	viewOrderUrl: PropTypes.string,
+	createNewOrderURL: PropTypes.string.isRequired,
+	currentAccount: PropTypes.shape({
+		id: PropTypes.string,
+		name: PropTypes.string,
+		thumbnail: PropTypes.string
+	}),
+	currentOrder: PropTypes.shape({
+		id: PropTypes.string,
+		orderStatusInfo: PropTypes.shape({
+			label_i18n: PropTypes.string,
+		}),
+	}),
+	selectOrderURL: PropTypes.string.isRequired,
+	setCurrentAccountURL: PropTypes.string.isRequired,
+	spritemap: PropTypes.string.isRequired,
 };
 
 export default AccountSelector;

@@ -90,7 +90,7 @@ function doSubmit() {
 
 				if (this.orderId !== jsonresponse.orderId) {
 					Liferay.fire('currentOrderChanged', {
-						id: jsonresponse.orderId
+						id: jsonresponse.orderId,
 					});
 					this.orderId = jsonresponse.orderId;
 				}
@@ -149,15 +149,18 @@ class AddToCartButton extends Component {
 	}
 
 	attached() {
-		window.Liferay.on('currentAccountChanged', this._handleAccountChange, this);
+		window.Liferay.on(
+			'currentAccountChanged',
+			this._handleAccountChange,
+			this
+		);
+		window.Liferay.on('currentOrderChanged', this._handleOrderChange, this);
 
 		window.Liferay.on(
 			'productRemovedFromCart',
 			this._handleCartProductRemoval,
 			this
 		);
-
-		// TODO: event definition to be imported as a constant
 
 		window.Liferay.on(
 			'current-product-status-changed',
@@ -172,13 +175,18 @@ class AddToCartButton extends Component {
 			this._handleAccountChange,
 			this
 		);
+
+		window.Liferay.detach(
+			'currentOrderChanged',
+			this._handleOrderChange,
+			this
+		);
+
 		window.Liferay.detach(
 			'productRemovedFromCart',
 			this._handleCartProductRemoval,
 			this
 		);
-
-		// TODO: event definition to be imported as a constant
 
 		window.Liferay.detach(
 			'current-product-status-changed',
@@ -214,14 +222,14 @@ class AddToCartButton extends Component {
 		}
 	}
 
-	_handleAccountChange({account}) {
-		this.accountId = account ? account.id : null;
-		this.orderId = null;
-
-		// TODO: quantity should be imported from the outside
-
+	_handleOrderChange({id}) {
+		this.orderId = id;
 		this.quantity = 0;
 		resetInputQuantity.call(this);
+	}
+
+	_handleAccountChange({id}) {
+		this.accountId = id;
 	}
 
 	_handleCartProductRemoval({skuId}) {
