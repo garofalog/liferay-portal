@@ -34,10 +34,9 @@ import ClayLink from '@clayui/link';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import ClaySticker from '@clayui/sticker';
 import ClayTable from '@clayui/table';
+import {fetch} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-
-// import {CSSTransition} from 'react-transition-group';
 
 import {
 	CURRENT_ACCOUNT_CHANGED,
@@ -81,24 +80,26 @@ function AccountSelector(props) {
 	const [currentView, setCurrentView] = useState('accounts');
 
 	useEffect(() => {
-		function handleOrderChanged({ order }) {
-			if (order && (order.id !== currentOrder?.id)) {
-				updateCurrentOrder(order)
+		function handleOrderChanged({ id, orderStatusInfo }) {
+			if (
+				!currentOrder && id ||
+				currentAccount && !id ||
+				currentOrder.id !== id
+			) {
+				updateCurrentOrder(id, orderStatusInfo)
+
+				return {
+					id,
+					orderStatusInfo
+				}
 			}
+			
 		}
 
 		Liferay.on(CURRENT_ORDER_CHANGED, handleOrderChanged)
 
 		return () => Liferay.detach(CURRENT_ORDER_CHANGED, handleOrderChanged)
-	}, [currentOrder, updateCurrentOrder])
-
-	useEffect(() => {
-		Liferay.fire(CURRENT_ORDER_CHANGED, currentOrder);
-	}, [currentOrder]);
-
-	useEffect(() => {
-		Liferay.fire(CURRENT_ACCOUNT_CHANGED, currentAccount);
-	}, [currentAccount]);
+	}, [currentAccount, currentOrder, updateCurrentOrder])
 
 	return (
 		<>
