@@ -10,14 +10,8 @@
 			<category name="Bug Prevention" />
 			<description name="Checks that `/src/*/java/` only contains `.java` files." />
 		</check>
-		<check name="NonbreakingSpaceCheck">
-			<category name="Styling" />
-			<description name="Finds `no break space` (`\u00a0`) characters." />
-		</check>
-		<check name="SlantedQuotesCheck">
-			<category name="Styling" />
-			<description name="Finds `slanted quote` (`\u201a`, `\u201b`, `\u201c`, `\u201d`, `\u201e`, `\u201f`, `\u2018` or `\u2019`) characters." />
-		</check>
+		<check name="NonbreakingSpaceCheck" />
+		<check name="SlantedQuotesCheck" />
 
 		<!-- Liferay Source Checks -->
 
@@ -542,10 +536,7 @@
 			<category name="Styling" />
 			<description name="Applies rules to enforce consisteny in code style." />
 		</check>
-		<check name="JavaSystemExceptionCheck">
-			<category name="Bug Prevention" />
-			<description name="Finds unnecessary SystemExceptions." />
-		</check>
+		<check name="JavaSystemExceptionCheck" />
 		<check name="JavaTermDividersCheck">
 			<category name="Styling" />
 			<description name="Finds missing or unnecessary empty lines between javaterms." />
@@ -558,26 +549,14 @@
 			<category name="Styling" />
 			<description name="Applies rules to enforce consisteny in code style." />
 		</check>
-		<check name="MethodCallsOrderCheck">
-			<category name="Styling" />
-			<description name="Sorts method calls for certain object (for example, `put` calls in `java.util.HashMap`)." />
-		</check>
-		<check name="PrimitiveWrapperInstantiationCheck">
-			<category name="Bug Prevention" />
-			<description name="Finds cases where `new Type` is used for primitive types (use `Type.valueOf` instead)." />
-		</check>
-		<check name="PrincipalExceptionCheck">
-			<category name="Bug Prevention" />
-			<description name="Finds calls to `PrincipalException.class.getName()` (use `PrincipalException.getNestedClasses()` instead)." />
-		</check>
+		<check name="MethodCallsOrderCheck" />
+		<check name="PrimitiveWrapperInstantiationCheck" />
+		<check name="PrincipalExceptionCheck" />
 		<check name="SessionKeysCheck">
 			<category name="Naming Conventions" />
 			<description name="Checks that messages send to `SessionsErrors` or `SessionMessages` follow naming conventions." />
 		</check>
-		<check name="UnparameterizedClassCheck">
-			<category name="Bug Prevention" />
-			<description name="Finds `Class` instantation without generic type." />
-		</check>
+		<check name="UnparameterizedClassCheck" />
 		<check name="ValidatorEqualsCheck">
 			<category name="Performance" />
 			<description name="Checks that there are no calls to `Validator.equals(Object, Object)`." />
@@ -707,10 +686,7 @@
 			<description name="Finds SourceFormatter checks that have no documentation." />
 			<property name="enabled" value="false" />
 		</check>
-		<check name="JavaStagedModelDataHandlerCheck">
-			<category name="Bug Prevention" />
-			<description name="Finds missing method `setMvccVersion` in class extending `BaseStagedModelDataHandler` in module that has `mvcc-enabled=true` in `service.xml`." />
-		</check>
+		<check name="JavaStagedModelDataHandlerCheck" />
 		<check name="JavaStringBundlerConcatCheck">
 			<category name="Performance" />
 			<description name="Finds calls to `StringBundler.concat` with less than 3 parameters." />
@@ -727,14 +703,8 @@
 			<category name="Styling" />
 			<description name="Checks that `if/else` statement is used instead of `switch` statement." />
 		</check>
-		<check name="JavaSystemEventAnnotationCheck">
-			<category name="Bug Prevention" />
-			<description name="Finds missing method `setDeletionSystemEventStagedModelTypes` in class with annotation @SystemEvent." />
-		</check>
-		<check name="JavaTaglibMethodCheck">
-			<category name="Bug Prevention" />
-			<description name="Checks that a `*Tag` class has a `set*` and `get*` or `is*` method for each attribute." />
-		</check>
+		<check name="JavaSystemEventAnnotationCheck" />
+		<check name="JavaTaglibMethodCheck" />
 		<check name="JavaTestMethodAnnotationsCheck">
 			<category name="Naming Conventions" />
 			<description name="Checks if methods with test annotations follow the naming conventions." />
@@ -769,10 +739,7 @@
 			<description name="Performs several checks on the modifiers on variables." />
 			<property name="immutableFieldTypes" value="boolean,byte,char,double,float,int,long,short,Boolean,Byte,Character,Class,Double,Float,Int,Long,Number,Short,String" />
 		</check>
-		<check name="JavaVerifyUpgradeConnectionCheck">
-			<category name="Bug Prevention" />
-			<description name="Finds cases where `DataAccess.getConnection` is used (instead of using the availabe global variable `connection`)." />
-		</check>
+		<check name="JavaVerifyUpgradeConnectionCheck" />
 		<check name="JavaXMLSecurityCheck">
 			<category name="Security" />
 			<description name="Finds possible XXE or Quadratic Blowup security vulnerabilities." />
@@ -781,10 +748,7 @@
 			<category name="Bug Prevention" />
 			<description name="Finds missing language keys in `Language.properties`." />
 		</check>
-		<check name="LocaleUtilCheck">
-			<category name="Bug Prevention" />
-			<description name="Finds cases where `com.liferay.portal.kernel.util.LocaleUtil` should be used (instead of `java.util.Locale`)." />
-		</check>
+		<check name="LocaleUtilCheck" />
 		<check name="ResourceBundleCheck">
 			<category name="Bug Prevention" />
 			<description name="Checks that there are no calls to `java.util.ResourceBundle.getBundle`." />
@@ -940,10 +904,6 @@
 			<category name="Styling" />
 			<description name="Finds incorrect indentation in `.jsp` files." />
 		</check>
-		<check name="JSPInlineVariableCheck">
-			<category name="Styling" />
-			<description name="Finds cases where variables can be inlined." />
-		</check>
 		<check name="JSPJavaParserCheck">
 			<category name="Styling" />
 			<description name="Performs JavaParser on `.java` files." />
@@ -1002,22 +962,10 @@
 			<category name="Security" />
 			<description name="Finds xss vulnerabilities." />
 		</check>
-		<check name="MethodCallsOrderCheck">
-			<category name="Styling" />
-			<description name="Sorts method calls for certain object (for example, `put` calls in `java.util.HashMap`)." />
-		</check>
-		<check name="PrimitiveWrapperInstantiationCheck">
-			<category name="Bug Prevention" />
-			<description name="Finds cases where `new Type` is used for primitive types (use `Type.valueOf` instead)." />
-		</check>
-		<check name="PrincipalExceptionCheck">
-			<category name="Bug Prevention" />
-			<description name="Finds calls to `PrincipalException.class.getName()` (use `PrincipalException.getNestedClasses()` instead)." />
-		</check>
-		<check name="UnparameterizedClassCheck">
-			<category name="Bug Prevention" />
-			<description name="Finds `Class` instantation without generic type." />
-		</check>
+		<check name="MethodCallsOrderCheck" />
+		<check name="PrimitiveWrapperInstantiationCheck" />
+		<check name="PrincipalExceptionCheck" />
+		<check name="UnparameterizedClassCheck" />
 		<check name="ValidatorEqualsCheck">
 			<category name="Performance" />
 			<description name="Checks that there are no calls to `Validator.equals(Object, Object)`." />
@@ -1049,14 +997,11 @@
 			<category name="Performance" />
 			<description name="Finds cases of inefficient String operations." />
 		</check>
-		<check name="JSPUnusedJSPFCheck">
+		<check name="JSPUnusedJSPF">
 			<category name="Performance" />
 			<description name="Finds `.jspf` files that are not used." />
 		</check>
-		<check name="LocaleUtilCheck">
-			<category name="Bug Prevention" />
-			<description name="Finds cases where `com.liferay.portal.kernel.util.LocaleUtil` should be used (instead of `java.util.Locale`)." />
-		</check>
+		<check name="LocaleUtilCheck" />
 		<check name="ResourceBundleCheck">
 			<category name="Bug Prevention" />
 			<description name="Checks that there are no calls to `java.util.ResourceBundle.getBundle`." />
@@ -1126,10 +1071,7 @@
 			<category name="Styling" />
 			<description name="Finds `markdown` files with `.md` extension (use `.markdown`)." />
 		</check>
-		<check name="MarkdownSourceFormatterDocumentationCheck">
-			<category name="Documentation" />
-			<description name="Validates the header of Source Formatter documentation files." />
-		</check>
+		<check name="MarkdownSourceFormatterDocumentationCheck" />
 		<check name="MarkdownSourceFormatterReadmeCheck">
 			<category name="Documentation" />
 			<description name="Generates Source Formatter documentation index files." />
@@ -1361,66 +1303,24 @@
 			<category name="Styling" />
 			<description name="Applies rules to enforce consisteny in code style for `.xml` files in directory `custom-sql`." />
 		</check>
-		<check name="XMLDDLStructuresFileCheck">
-			<category name="Styling" />
-			<description name="Checks the order of attributes in `-structures.xml` file." />
-		</check>
-		<check name="XMLFriendlyURLRoutesFileCheck">
-			<category name="Styling" />
-			<description name="Performs several checks on `*-routes.xml` file." />
-		</check>
-		<check name="XMLFSBExcludeFileCheck">
-			<category name="Styling" />
-			<description name="Checks the order of attributes in `fsb-exclude.xml` file." />
-		</check>
-		<check name="XMLHBMFileCheck">
-			<category name="Styling" />
-			<description name="Checks the order of imports in `*-hbm.xml` file." />
-		</check>
+		<check name="XMLDDLStructuresFileCheck" />
+		<check name="XMLFriendlyURLRoutesFileCheck" />
+		<check name="XMLFSBExcludeFileCheck" />
+		<check name="XMLHBMFileCheck" />
 		<check name="XMLIndentationCheck">
 			<category name="Styling" />
 			<description name="Finds incorrect indentation in `.xml` files." />
 		</check>
-		<check name="XMLLog4jFileCheck">
-			<category name="Styling" />
-			<description name="Checks the order of categories in `*-log4j.xml` file." />
-		</check>
-		<check name="XMLLookAndFeelCompatibilityVersionCheck">
-			<category name="Bug Prevention" />
-			<description name="Finds missing attribute `version` in `compatibility` element in `*--look-and-feel.xml` file." />
-		</check>
-		<check name="XMLLookAndFeelFileCheck">
-			<category name="Styling" />
-			<description name="Checks the order of attributes in `*--look-and-feel.xml` file." />
-		</check>
-		<check name="XMLModelHintsFileCheck">
-			<category name="Styling" />
-			<description name="Checks the order of attributes in `*-model-hints.xml` file." />
-		</check>
-		<check name="XMLPomFileCheck">
-			<category name="Styling" />
-			<description name="Checks the order of dependencies in `pom.xml` file." />
-		</check>
-		<check name="XMLPortletFileCheck">
-			<category name="Bug Prevention" />
-			<description name="Performs several checks on `portlet.xml` file." />
-		</check>
-		<check name="XMLPortletPreferencesFileCheck">
-			<category name="Styling" />
-			<description name="Checks the order of elements in files in directory `resource-actions`." />
-		</check>
-		<check name="XMLPoshiFileCheck">
-			<category name="Bug Prevention" />
-			<description name="Performs several checks on poshi files." />
-		</check>
-		<check name="XMLProjectElementCheck">
-			<category name="Bug Prevention" />
-			<description name="Checks the project name in `.pom` file." />
-		</check>
-		<check name="XMLResourceActionsFileCheck">
-			<category name="Styling" />
-			<description name="Checks the order of elements in files in directory `resource-actions`." />
-		</check>
+		<check name="XMLLog4jFileCheck" />
+		<check name="XMLLookAndFeelCompatibilityVersionCheck" />
+		<check name="XMLLookAndFeelFileCheck" />
+		<check name="XMLModelHintsFileCheck" />
+		<check name="XMLPomFileCheck" />
+		<check name="XMLPortletFileCheck" />
+		<check name="XMLPortletPreferencesFileCheck" />
+		<check name="XMLPoshiFileCheck" />
+		<check name="XMLProjectElementCheck" />
+		<check name="XMLResourceActionsFileCheck" />
 		<check name="XMLServiceEntityNameCheck">
 			<category name="Bug Prevention" />
 			<description name="Checks that the `entity name` in `service.xml` does not equal the `package name`." />
