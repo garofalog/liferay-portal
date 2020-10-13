@@ -1,4 +1,8 @@
 .quantity-selector {
+	margin: .5rem;
+	.quantitySelect {
+		width: 7rem;
+	}
 	.simple {
 		&.input-group {
 			flex-wrap: nowrap;
