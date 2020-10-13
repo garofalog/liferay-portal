@@ -14,9 +14,9 @@
 
 module.exports = [
 	{
-		entry: 'DatasetDisplay',
-		name: 'Dataset display',
-		page: 'dataset-display.html',
+		entry: 'AddToCart',
+		name: 'Add To Cart',
+		page: 'add-to-cart.html',
 	},
 	{
 		entry: 'Autocomplete',
@@ -24,14 +24,9 @@ module.exports = [
 		page: 'autocomplete.html',
 	},
 	{
-		entry: 'ItemFinder',
-		name: 'Item finder',
-		page: 'item-finder.html',
-	},
-	{
-		entry: 'Summary',
-		name: 'Summary',
-		page: 'summary.html',
+		entry: 'DatasetDisplay',
+		name: 'Dataset display',
+		page: 'dataset-display.html',
 	},
 	{
 		entry: 'Dropdown',
@@ -42,6 +37,11 @@ module.exports = [
 		entry: 'Gallery',
 		name: 'Gallery',
 		page: 'gallery.html',
+	},
+	{
+		entry: 'ItemFinder',
+		name: 'Item finder',
+		page: 'item-finder.html',
 	},
 	{
 		entry: 'Modal',
@@ -62,5 +62,10 @@ module.exports = [
 		entry: 'StepTracker',
 		name: 'Step tracker',
 		page: 'step-tracker.html',
+	},
+	{
+		entry: 'Summary',
+		name: 'Summary',
+		page: 'summary.html',
 	},
 ];
