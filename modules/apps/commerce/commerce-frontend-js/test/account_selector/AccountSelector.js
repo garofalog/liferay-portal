@@ -70,179 +70,24 @@ describe('AccountSelector', () => {
 			cleanup();
 		});
 
-		it('must display the accounts search autocomplete component"', () => {
+		it('if allowedQuantity is different from default [-1] multipleQuantity shuould be set to 1"', () => {
 			expect(
-				renderedComponent.getByPlaceholderText(/search-account/)
+				
 			).toBeInTheDocument();
 		});
 
-		it('must display a placeholder if no account is selected"', () => {
+		it('the user can inset only digits in the input', () => {
 			expect(
 				renderedComponent.getByText('select-account-and-order')
 			).toBeInTheDocument();
 		});
 
-		it('displays an account list', async () => {
-			fireEvent.click(
-				renderedComponent.baseElement.querySelector(
-					'.btn-account-selector'
-				)
-			);
-
-			await waitForElementToBeRemoved(() =>
-				renderedComponent.queryByText(/loading/i)
-			);
-
-			const accountsList = renderedComponent.baseElement.querySelectorAll(
-				'.accounts-list li'
-			);
-			const accountsListItem = accountsList[0];
-
-			expect(accountsList.length).toBe(10);
-
-			expect(accountsListItem.querySelector('img').src).toContain(
-				'/test-logo-folder/test.jpg'
-			);
-		});
-
-		it('must update the remote selected account when an account item is clicked', async () => {
-			fireEvent.click(
-				renderedComponent.baseElement.querySelector(
-					'.btn-account-selector'
-				)
-			);
-
-			await waitForElementToBeRemoved(() =>
-				renderedComponent.queryByText(/loading/i)
-			);
-
-			const accountsListItem = renderedComponent.baseElement.querySelectorAll(
-				'.accounts-list li'
-			)[0];
-
-			fetchMock.post(
-				new RegExp('account-selector/setCurrentAccounts'),
-				(url, params) => {
-					expect(params.body.get('accountId')).toEqual(
-						accountTemplate.id.toString()
-					);
-					expect(url.searchParams.get('groupId')).toBeTruthy();
-
-					return 200;
-				}
-			);
-
-			fireEvent.click(accountsListItem.querySelector('button'));
-		});
-	});
-
-	describe('When account is selected', () => {
-		let renderedComponent;
-
-		beforeEach(() => {
-			renderedComponent = render(
-				<AccountSelector
-					createNewOrderURL="/order-link"
-					currentAccount={{
-						id: 42332,
-						name: 'My Account Name',
-					}}
-					selectOrderURL="/test-url/{id}"
-					setCurrentAccountURL="/account-selector/setCurrentAccounts"
-					spritemap="./assets/icons.svg"
-				/>
-			);
-		});
-
-		afterEach(() => {
-			cleanup();
-		});
-
-		it('must display the orders search autocomplete component"', () => {
+		it('if addToCartButton is disabled (unrendered) quantitySelector should send th right quantity after onChange event', () => {
 			expect(
-				renderedComponent.getByPlaceholderText(/search-order/)
+				renderedComponent.getByText('select-account-and-order')
 			).toBeInTheDocument();
 		});
 
-		it('must display the account name', () => {
-			const currentAccountName = renderedComponent.container.querySelector(
-				'.btn-account-selector .account-name'
-			).innerHTML;
-			expect(currentAccountName).toBe('My Account Name');
-		});
-
-		it('must display an order placeholder"', () => {
-			const orderPlaceholder = renderedComponent.getByText(
-				/no-order-selected/i
-			);
-			expect(orderPlaceholder).toBeInTheDocument();
-		});
-
-		it('displays an order list', async () => {
-			fireEvent.click(
-				renderedComponent.baseElement.querySelector(
-					'.btn-account-selector'
-				)
-			);
-
-			await waitForElementToBeRemoved(() =>
-				renderedComponent.queryByText(/loading/i)
-			);
-
-			const orders = renderedComponent.baseElement.querySelectorAll(
-				'.orders-list tbody tr'
-			);
-			const orderItem = renderedComponent.baseElement.querySelector(
-				'.orders-list tbody tr'
-			);
-
-			expect(orders.length).toBe(10);
-
-			expect(orderItem.querySelector('a').href).toContain('/test-url/');
-		});
 	});
 
-	describe('When account and order are selected', () => {
-		let renderedComponent;
-
-		beforeEach(() => {
-			renderedComponent = render(
-				<AccountSelector
-					createNewOrderURL="/order-link"
-					currentAccount={{
-						id: 42332,
-						name: 'My Account Name',
-					}}
-					currentOrder={{
-						id: 34234,
-						orderStatusInfo: {
-							label_i18n: 'Completed',
-						},
-					}}
-					selectOrderURL="/test-url/{id}"
-					setCurrentAccountURL="/account-selector/setCurrentAccounts"
-					spritemap="./assets/icons.svg"
-				/>
-			);
-		});
-
-		afterEach(() => {
-			cleanup();
-		});
-
-		it('must displays the current account name, order ID and order status localized label', () => {
-			const button = renderedComponent.container.querySelector(
-				'.btn-account-selector'
-			);
-			const currentAccountName = button.querySelector('.account-name')
-				.innerHTML;
-			const currentOrderId = button.querySelector('.order-id').innerHTML;
-			const currentOrderLabel = button.querySelector('.order-label')
-				.innerHTML;
-
-			expect(currentAccountName).toBe('My Account Name');
-			expect(currentOrderId).toBe('34234');
-			expect(currentOrderLabel).toBe('Completed');
-		});
-	});
 });
