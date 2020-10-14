@@ -17,9 +17,10 @@ import launcher from '../../../src/main/resources/META-INF/resources/components/
 import '../../../src/main/resources/META-INF/resources/styles/main.scss';
 
 launcher('add_to_cart', 'add-to-cart', {
-	accountId: 48323, // falzo
-
-	orderId: 43939,
+	accountId: 43936,//48323, // falzo
+	channelId: 41005, //43940,
+	currencyCode: 'USD',
+	orderId: 0,// 43939,
 
 	// disabled: true,
 
@@ -28,7 +29,7 @@ launcher('add_to_cart', 'add-to-cart', {
 	orderQuantity: 1,
 
 	productId: 43939, //43657, // "Mount"   no"43630",
-	skuId: 43657,
+	skuId: 43712, //43657,
 
 	spritemap: './assets/icons.svg',
 

@@ -13,14 +13,14 @@
  */
 
 import ClayButton, {ClayButtonWithIcon} from '@clayui/button'
+
 import ClayIcon, { ClayIconSpriteContext } from '@clayui/icon';
 import classNames from 'classnames';
-
-// import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 
 import ServiceProvider from '../../ServiceProvider/index';
+import showNotification from '../../utilities/notifications';
 const CartResource = ServiceProvider.DeliveryCartAPI('v1');
 
 
@@ -28,11 +28,13 @@ function AddToCart(props) {
 	const [updatingTransition, setUpdatingTransition] = useState('')
 	const [quantity, setQuantity] = useState(props.orderQuantity)
 	const [orderId, setOrderId] = useState(props.orderId)
+	const [skuId, setSkuId] = useState(props.skuId)
+
 
 
 
 	useEffect(() => {
-		console.log(quantity)
+		console.log(orderId)
 	},[quantity, orderId])
 
 
@@ -45,6 +47,35 @@ function AddToCart(props) {
 	}
 	if (updatingTransition === 'incrementing') {
 		markerStatus = 'incrementing'
+	}
+
+	const createOrAddtoCart = id => {
+		if (!id || id === 0 ) {	
+			CartResource.createCartByChannelId(props.channelId, {
+				accountId: props.accountId,
+				cartItems: [{
+					quantity,
+					skuId
+				}],
+				currencyCode: props.currencyCode
+			}).then((data) => {
+				console.log(data)
+				if (id !== data.id) {
+					setOrderId(data.id)
+				}
+			}).catch(err => {
+				showNotification(err, 'danger', true, 500);
+			})
+
+			// setSkuId()			
+
+		} else {
+			CartResource.createItemByCartId(id, {
+				productId: props.productId,
+				quantity,
+				skuId,
+			})
+		}
 	}
 	
 
@@ -62,13 +93,7 @@ function AddToCart(props) {
 				// className="b-0 d-flex flex-row-reverse justify-content-center px-3 py-2"
 
 				disabled={!props.accountId}
-				onClick={() => {
-					CartResource.createItemByCartId(props.orderId, {
-						productId: props.productId,
-						quantity,
-						skuId: props.skuId,
-					})
-				}}
+				onClick={() => createOrAddtoCart(orderId)}
 			>
 				{/* missing no-product > icona spenta */}
 				{/* <span className="ml-2"> */}
@@ -81,7 +106,10 @@ function AddToCart(props) {
 					<span className="add-to-cart-icon">
 						<ClayIcon spritemap={props.spritemap} symbol="shopping-cart" />
 					</span>
+
+					{/* { props.productId && () */} {/* visible if product is cart yet */}
 					<span className={classNames("add-to-cart-quantity-marker", markerStatus)} ></span>
+					{/* )} */}
 				</span>
 
 				
@@ -121,6 +149,7 @@ AddToCart.propTypes = {
 
 	// displayStyle: PropTypes.oneOf(['block', 'inline']),
 
+	currencyCode: PropTypes.string,
 	iconOnly: PropTypes.bool,
 	isBlock: PropTypes.bool,
 	orderId: PropTypes.number,
@@ -132,6 +161,7 @@ AddToCart.propTypes = {
 		minQuantity: PropTypes.number,
 		multipleQuantity: PropTypes.number
 	}),
+	skuId: PropTypes.number,
 	spritemap: PropTypes.string.isRequired,
 
 	// textContent: PropTypes.string,
