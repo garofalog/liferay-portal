@@ -13,6 +13,6 @@
  */
 
 import launcher from '../../utilities/launcher';
-import AddToCart from './AddToCart';
+import AddToCartWrapper from './AddToCartWrapper';
 
-export default (...data) => launcher(AddToCart, ...data);
+export default (...data) => launcher(AddToCartWrapper, ...data);

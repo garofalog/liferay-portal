@@ -20,15 +20,16 @@ launcher('add_to_cart', 'add-to-cart', {
 	accountId: 43936,//48323, // falzo
 	channelId: 41005, //43940,
 	currencyCode: 'USD',
-	orderId: 0,// 43939,
-
-	// disabled: true,
+	disableAddToCartButton: false,
+	disableQuantitySelector: false,
+	orderId: 43939,
 
 	// groupId: "40995", forse non serve
 
 	orderQuantity: 1,
 
 	productId: 43939, //43657, // "Mount"   no"43630",
+	// productInCart: false,
 	skuId: 43712, //43657,
 
 	spritemap: './assets/icons.svg',

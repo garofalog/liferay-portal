@@ -24,18 +24,22 @@ import showNotification from '../../utilities/notifications';
 const CartResource = ServiceProvider.DeliveryCartAPI('v1');
 
 
-function AddToCart(props) {
+const AddToCartButton = (props) => {
+	const [buttonText, setButtonText] = useState('')
 	const [updatingTransition, setUpdatingTransition] = useState('')
-	const [quantity, setQuantity] = useState(props.orderQuantity)
+	const [quantity, setQuantity] = useState(1)
 	const [orderId, setOrderId] = useState(props.orderId)
 	const [skuId, setSkuId] = useState(props.skuId)
 
-
-
+	useEffect(() => {
+		setQuantity(props.orderQuantity)
+	},[props.orderQuantity, orderId])
 
 	useEffect(() => {
-		console.log(orderId)
-	},[quantity, orderId])
+		if (props.buttonTextContent) {
+			setButtonText(props.buttonTextContent.replace(/ /,"-"))
+		}
+	}, [props.buttonTextContent])
 
 
 	let markerStatus = ''
@@ -59,15 +63,14 @@ function AddToCart(props) {
 				}],
 				currencyCode: props.currencyCode
 			}).then((data) => {
-				console.log(data)
+				// console.log(data)
+
 				if (id !== data.id) {
 					setOrderId(data.id)
 				}
 			}).catch(err => {
 				showNotification(err, 'danger', true, 500);
 			})
-
-			// setSkuId()			
 
 		} else {
 			CartResource.createItemByCartId(id, {
@@ -77,6 +80,11 @@ function AddToCart(props) {
 			})
 		}
 	}
+
+	if (buttonText === '') {
+		setButtonText('add-to-cart')
+	}
+
 	
 
 	return (
@@ -89,72 +97,55 @@ function AddToCart(props) {
 			<ClayButton
 				block={props.block}
 				className="btn-add-to-cart btn-lg"
-
-				// className="b-0 d-flex flex-row-reverse justify-content-center px-3 py-2"
-
 				disabled={!props.accountId}
 				onClick={() => createOrAddtoCart(orderId)}
 			>
-				{/* missing no-product > icona spenta */}
-				{/* <span className="ml-2"> */}
-				{Liferay.Language.get(
-					'add-to-cart'
-				)}
-
+				
+				{/* { buttonText !== '' ? (
+					{Liferay.Language.get(buttonText)})
+				: (
+					{Liferay.Language.get('add-to-cart')})
+				}} */}
+				{Liferay.Language.get(buttonText)}
 
 				<span className={classNames("add-to-cart-icon-container inline-item inline-item-after", quantity && 'active')}>
 					<span className="add-to-cart-icon">
 						<ClayIcon spritemap={props.spritemap} symbol="shopping-cart" />
 					</span>
 
-					{/* { props.productId && () */} {/* visible if product is cart yet */}
+					{props.productInCart && ( 
 					<span className={classNames("add-to-cart-quantity-marker", markerStatus)} ></span>
-					{/* )} */}
+					)}
 				</span>
-
-				
-
-					{/* <div>
-						<ClayIcon spritemap={props.spritemap} symbol="shopping-cart" />
-						
-						<svg className="cart-circle-container" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-							<circle className="cart-circle" cx="50" cy="50" r="50" />
-						</svg>
-						
-					</div>
-				{/* </span> */}
-
-				
+		
 			</ClayButton>
 		</div>
 	)
 }
 
-AddToCart.defaultProps = {
+AddToCartButton.defaultProps = {
 	block: false,
 
+	// buttonTextContent: 'Add to Cart',
+
 	disabled: false,
-
-	// displayStyle: "block",
-
 	iconOnly: false,
 	options: [],
+	productInCart: true, // its fake
 	settings: {}
 }
 
-AddToCart.propTypes = {
+AddToCartButton.propTypes = {
 	accountId: PropTypes.number,
-
 	block: PropTypes.bool,
-
-	// displayStyle: PropTypes.oneOf(['block', 'inline']),
-
+	buttonTextContent: PropTypes.string,
 	currencyCode: PropTypes.string,
 	iconOnly: PropTypes.bool,
 	isBlock: PropTypes.bool,
 	orderId: PropTypes.number,
 	orderQuantity: PropTypes.number,
 	productId: PropTypes.number.isRequired,
+	productInCart: PropTypes.bool,
 	settings: PropTypes.shape({
 		allowedQuantity: PropTypes.arrayOf(PropTypes.number),
 		maxQuantity: PropTypes.number,
@@ -163,9 +154,6 @@ AddToCart.propTypes = {
 	}),
 	skuId: PropTypes.number,
 	spritemap: PropTypes.string.isRequired,
-
-	// textContent: PropTypes.string,
-	// updatingTransition: PropTypes.oneOf(['adding', 'incrementing']),
 };
 
-export default AddToCart;
+export default AddToCartButton;

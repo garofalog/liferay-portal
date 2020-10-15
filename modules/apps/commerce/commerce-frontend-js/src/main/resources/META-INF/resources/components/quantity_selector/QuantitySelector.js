@@ -23,22 +23,23 @@ const THROTTLE_TIMEOUT = 1000;
 
 function QuantitySelector(props) {
 	const [currentQuantity, setCurrentQuantity] = useState(
-		!!props.minQuantity && props.minQuantity > props.quantity
-			? props.minQuantity
-			: props.quantity
+		!!props.settings.minQuantity && props.settings.minQuantity > props.orderQuantity
+			? props.settings.minQuantity
+			: props.orderQuantity
 	);
 	const [nextAvailable, setNextAvailable] = useState(
-		currentQuantity + props.multipleQuantity <= props.maxQuantity
+		currentQuantity + props.settings.multipleQuantity <= props.settings.maxQuantity
 	);
 	const [prevAvailable, setPrevAvailable] = useState(
-		currentQuantity - props.multipleQuantity >= props.minQuantity
+		currentQuantity - props.settings.multipleQuantity >= props.settings.minQuantity
 	);
 	const [isThrottling, setIsThrottling] = useState(false);
 
 	const inputRef = createRef();
 
 	useEffect(() => {
-		setCurrentQuantity(props.quantity);
+		setCurrentQuantity(props.orderQuantity);
+		props.setQuantity(currentQuantity);
 	}, [props.quantity, setCurrentQuantity]);
 
 	useEffect(() => {
@@ -55,37 +56,39 @@ function QuantitySelector(props) {
 
 	useEffect(() => {
 		setNextAvailable(
-			currentQuantity + props.multipleQuantity <= props.maxQuantity
+			currentQuantity + props.settings.multipleQuantity <= props.settings.maxQuantity
 		);
 		setPrevAvailable(
-			currentQuantity - props.multipleQuantity >= props.minQuantity
+			currentQuantity - props.settings.multipleQuantity >= props.settings.minQuantity
 		);
 	}, [
 		currentQuantity,
-		props.maxQuantity,
-		props.minQuantity,
-		props.multipleQuantity,
+		props.settings.maxQuantity,
+		props.settings.minQuantity,
+		props.settings.multipleQuantity,
 	]);
 
 	function updateCurrentQuantity(newQuantity) {
 		if (
-			newQuantity >= props.minQuantity &&
-			newQuantity <= props.maxQuantity &&
-			newQuantity % props.multipleQuantity === 0
+			newQuantity >= props.settings.minQuantity &&
+			newQuantity <= props.settings.maxQuantity &&
+			newQuantity % props.settings.multipleQuantity === 0
 		) {
 			setCurrentQuantity(newQuantity);
+			props.setQuantity(newQuantity)
 		}
 	}
 
+
 	function _increaseQuantity() {
 		if (nextAvailable) {
-			updateCurrentQuantity(currentQuantity + props.multipleQuantity);
+			updateCurrentQuantity(currentQuantity + props.settings.multipleQuantity);
 		}
 	}
 
 	function _decreaseQuantity() {
 		if (prevAvailable) {
-			updateCurrentQuantity(currentQuantity - props.multipleQuantity);
+			updateCurrentQuantity(currentQuantity - props.settings.multipleQuantity);
 		}
 	}
 
@@ -132,8 +135,8 @@ function QuantitySelector(props) {
 	}
 
 	const content = (
-		<div className="quantity-selector">
-			{props.allowedQuantities ? (
+			<div className="quantity-selector">
+			{props.settings.allowedQuantity ? (
 				<>
 					<select
 						className={classnames(
@@ -145,7 +148,7 @@ function QuantitySelector(props) {
 						ref={inputRef}
 						value={currentQuantity}
 					>
-						{props.allowedQuantities.map((val) => (
+						{props.settings.allowedQuantity.map((val) => (
 							<option key={val} value={val}>
 								{val}
 							</option>
@@ -178,12 +181,12 @@ function QuantitySelector(props) {
 								formControlSizeClass
 							)}
 							disabled={props.disabled}
-							max={props.maxQuantity}
-							min={props.minQuantity}
+							max={props.settings.maxQuantity}
+							min={props.settings.minQuantity}
 							name={props.inputName}
 							onChange={handleInputChange}
 							ref={inputRef}
-							step={props.multipleQuantity}
+							step={props.settings.multipleQuantity}
 							type="number"
 							value={currentQuantity}
 						/>
@@ -225,13 +228,13 @@ function QuantitySelector(props) {
 								formControlSizeClass
 							)}
 							disabled={props.disabled}
-							max={props.maxQuantity}
-							min={props.minQuantity}
+							max={props.settings.maxQuantity}
+							min={props.settings.minQuantity}
 							name={props.inputName}
 							onChange={handleInputChange}
 							onKeyUp={handleInputKeyUp}
 							ref={inputRef}
-							step={props.multipleQuantity}
+							step={props.settings.multipleQuantity}
 							type="text"
 							value={currentQuantity}
 						/>
@@ -257,33 +260,39 @@ function QuantitySelector(props) {
 		</div>
 	);
 
-	return props.spritemap ? (
-		<ClayIconSpriteContext.Provider value={props.spritemap}>
-			{content}
-		</ClayIconSpriteContext.Provider>
-	) : (
-		content
-	);
+	return !props.disableQuantitySelector && (
+		props.spritemap ? (
+			<ClayIconSpriteContext.Provider value={props.spritemap}>
+				{content}
+			</ClayIconSpriteContext.Provider>
+		) : (
+			content
+		)
+	)
 }
 
 QuantitySelector.propTypes = {
-	allowedQuantities: PropTypes.arrayOf(PropTypes.number),
 	appendedIcon: PropTypes.string,
 	appendedText: PropTypes.string,
+	disableQuantitySelector: PropTypes.bool,
 	disabled: PropTypes.bool,
 	inputName: PropTypes.string,
-	maxQuantity: PropTypes.number,
-	minQuantity: PropTypes.number,
-	multipleQuantity: PropTypes.number,
 
 	/**
 	 * if 'throttleOnUpdate' is true,
 	 * 'onUpdate' must return a <Promise>.
 	 */
 	onUpdate: PropTypes.func,
+	orderQuantity: PropTypes.number,
 	prependedIcon: PropTypes.string,
 	prependedText: PropTypes.string,
-	quantity: PropTypes.number,
+	setQuantity: PropTypes.func,
+	settings: PropTypes.shape({
+		allowedQuantity: PropTypes.arrayOf(PropTypes.number),
+		maxQuantity: PropTypes.number,
+		minQuantity: PropTypes.number,
+		multipleQuantity: PropTypes.number
+	}),
 	size: PropTypes.oneOf(['large', 'medium', 'small']),
 	spritemap: PropTypes.string,
 	style: PropTypes.oneOf(['default', 'simple']),
@@ -292,10 +301,13 @@ QuantitySelector.propTypes = {
 
 QuantitySelector.defaultProps = {
 	disabled: false,
-	maxQuantity: 99999999,
-	minQuantity: 1,
-	multipleQuantity: 1,
 	onUpdate: () => {},
+	orderQuantity: 1,
+	settings: {
+		maxQuantity: 99999999,
+		minQuantity: 1,
+		multipleQuantity: 1,
+	},
 	style: 'default',
 	throttleOnUpdate: false,
 };

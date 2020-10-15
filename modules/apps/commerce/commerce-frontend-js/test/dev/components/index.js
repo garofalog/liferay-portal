@@ -14,7 +14,7 @@
 
 module.exports = [
 	{
-		entry: 'AddToCart',
+		entry: 'AddToCartWrapper',
 		name: 'Add To Cart',
 		page: 'add-to-cart.html',
 	},
