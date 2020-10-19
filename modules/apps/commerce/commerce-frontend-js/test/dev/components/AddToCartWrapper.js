@@ -18,15 +18,17 @@ import '../../../src/main/resources/META-INF/resources/styles/main.scss';
 
 launcher('add_to_cart', 'add-to-cart', {
 	accountId: 43936,//48323, // falzo
+	cartSymbol: 'shopping-cart',
 	channelId: 41005, //43940,
 	currencyCode: 'USD',
-	disableAddToCartButton: false,
+	disableAddToCartButton: true,
 	disableQuantitySelector: false,
+	disabledProp: false,
 	orderId: 43939,
 
 	// groupId: "40995", forse non serve
 
-	orderQuantity: 1,
+	// orderQuantity: 1,
 
 	productId: 43939, //43657, // "Mount"   no"43630",
 	// productInCart: false,
