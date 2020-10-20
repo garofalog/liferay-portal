@@ -35,7 +35,8 @@ const AddToCartButton = (props) => {
 	const [skuId, setSkuId] = useState(props.skuId)
 
 	useEffect(() => {
-		console.log("props.orderQuantity", props.orderQuantity)
+		// console.log("props.orderQuantity", props.orderQuantity)
+
 		props.setQuantity(props.orderQuantity)
 	},[props.orderQuantity])
 
@@ -60,15 +61,20 @@ const AddToCartButton = (props) => {
 	if (buttonText === '') {
 		setButtonText('add-to-cart')
 	}
-
+	const sendCart = () => {
+		if (props.disableQuantitySelector) {
+			props.setSelectedQuantity([{ label: 1, value: 1 }])
+		}
+		props.handleAddToCartData(orderId, skuId)
+	}
 	
 	return (
 
 		<div className="add-to-cart add-to-cart-block">
 			{props.iconOnly ? (
 				<ClayButtonWithIcon 
-					disabled={!props.accountId || props.disabledProp}
-					onClick={() => props.handleAddToCartData(orderId, skuId)}
+					disabled={!props.accountId || props.disabled}
+					onClick={() => sendCart()}
 					spritemap={props.spritemap} 
 					symbol={props.cartSymbol}
 				/>
@@ -76,8 +82,8 @@ const AddToCartButton = (props) => {
 				<ClayButton
 					block={props.block}
 					className="btn-add-to-cart btn-lg"
-					disabled={!props.accountId || props.disabledProp}
-					onClick={() => props.handleAddToCartData(orderId, skuId)}
+					disabled={!props.accountId || props.disabled}
+						onClick={() => sendCart()}
 				>
 
 					{Liferay.Language.get(buttonText)}
@@ -101,43 +107,37 @@ const AddToCartButton = (props) => {
 	)
 }
 
-AddToCartButton.defaultProps = {
-	block: false,
-
-	// buttonTextContent: 'Add to Cart',
-
-	disabled: false,
-	iconOnly: false,
-	options: [],
-	orderQuantity: 1,
-	productInCart: true, // its fake
-	settings: {}
-}
-
 AddToCartButton.propTypes = {
 	accountId: PropTypes.number,
 	block: PropTypes.bool,
 	buttonTextContent: PropTypes.string,
 	cartSymbol: PropTypes.string,
 	currencyCode: PropTypes.string,
-	disabledProp: PropTypes.bool,
+	disabled: PropTypes.bool,
+	disableAddToCartButton: PropTypes.bool,
+	disableQuantitySelector: PropTypes.bool,
 	handleAddToCartData: PropTypes.func,
 	iconOnly: PropTypes.bool,
 	isBlock: PropTypes.bool,
 	orderId: PropTypes.number,
-	orderQuantity: PropTypes.number,
+	orderQuantity: PropTypes.arrayOf(PropTypes.shape({
+		label: PropTypes.number,
+		value: PropTypes.number
+	})),
 	productId: PropTypes.number.isRequired,
 	productInCart: PropTypes.bool,
 	setQuantity: PropTypes.func,
+	setSelectedQuantity: PropTypes.func,
 	settings: PropTypes.shape({
-		allowedQuantity: PropTypes.arrayOf(PropTypes.number),
+		allowedQuantity: PropTypes.arrayOf(PropTypes.shape({
+			label: PropTypes.number,
+			value: PropTypes.number
+		})),
 		maxQuantity: PropTypes.number,
 		minQuantity: PropTypes.number,
 		multipleQuantity: PropTypes.number
 	}),
-
-	// skuId: PropTypes.number,
-
+	skuId: PropTypes.number,
 	spritemap: PropTypes.string.isRequired,
 };
 

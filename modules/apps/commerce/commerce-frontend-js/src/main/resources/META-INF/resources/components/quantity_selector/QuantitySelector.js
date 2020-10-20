@@ -20,101 +20,55 @@ import React, {createRef, useEffect, useState} from 'react';
 
 import throttle from '../../utilities/throttle';
 
-const THROTTLE_TIMEOUT = 1000;
+// const THROTTLE_TIMEOUT = 1000;
 
 function QuantitySelector(props) {
-	// const [currentQuantity, setCurrentQuantity] = useState(props.orderQuantity);
-
-	const defaultQuantity = [
-		{
-			label: 1,
-			value: 1
-		},
-		{
-			label: 2,
-			value: 2
-		},
-		{
-			label: 3,
-			value: 3
-		},
-		{
-			label: 4,
-			value: 4
-		},
-		{
-			label: 5,
-			value: 5
-		},
-		{
-			label: 6,
-			value: 6
-		},
-		{
-			label: 7,
-			value: 7
-		},
-		{
-			label: 8,
-			value: 8
-		},
-		{
-			label: 9,
-			value: 9
-		},
-	]
-	const [quantitySelector, setQuantitySelector] = useState(defaultQuantity)
-
-	// useEffect(() => {
-		
-	// }, [quantitySelector])
-
-	setTimeout(() => {
-		console.log("partito")
-		insertAllQuantity(1)
-	},2000)
-
-	const insertAllQuantity = async (n) => {
-		const completeArray = []
-		for (n; n < 99; n++) {
-			completeArray.push({ 
-				label: n,
-				value: n 
-			})
-		}
-		setQuantitySelector(completeArray)
-	}
-
-
-
-
-
-	
 
 	useEffect(() => {
-		if (props.throttleOnUpdate) {
-			setIsThrottling(true);
+		console.log("orderQ", props.orderQuantity)
+	})
 
-			props.onUpdate(props.orderQuantity).then(() => setIsThrottling(false));
-		}
-		else {
-			props.onUpdate(props.orderQuantity);
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [props.orderQuantity]);
+	// setTimeout(() => {
+	// 	insertAllQuantity(1)
+	// },2000)
 
+	// const insertAllQuantity = async (n) => {
+	// 	const completeArray = []
+	// 	for (n; n < 99; n++) {
+	// 		completeArray.push({ 
+	// 			label: n,
+	// 			value: n 
+	// 		})
+	// 	}
+	// 	props.setQuantity(completeArray)
+	// }
 
 	const content = (
 		<div className="quantity-selector">
-
-			{props.settings.multipleQuantity > 1 ? <span className="Bundled quantity">{props.settings.multipleQuantity}</span> : null}
 			
-			<ClaySelect aria-label="Select Label" id="mySelectId">
-				{quantitySelector.map(item => (
+			<ClaySelect 
+				aria-label="Select Label"
+				className="quantitySelect"
+				id="mySelectId"
+				onChange={ e => {
+					props.setSelectedQuantity([{
+						label: parseInt(e.target.value, 10),
+						value: parseInt(e.target.value, 10),
+					}])
+					if (props.disableAddToCartButton){
+						props.handleAddToCartData(props.orderId, props.skuId)
+					}
+				}}
+
+				// dblclick={()=> {
+
+				// }}
+
+			>	
+				{props.orderQuantity.map(item => (
 					<ClaySelect.Option
 						key={item.value}
 						label={item.label}
-						onClick={() => props.setQuantity(item.value)}
 						value={item.value}
 					/>
 				))}
@@ -136,18 +90,24 @@ function QuantitySelector(props) {
 QuantitySelector.propTypes = {
 	appendedIcon: PropTypes.string,
 	appendedText: PropTypes.string,
-	disableAddButton: PropTypes.bool,
+	disableAddToCartButton: PropTypes.bool,
 	disableQuantitySelector: PropTypes.bool,
 	disabled: PropTypes.bool,
 	handleAddToCartData: PropTypes.func,
 	inputName: PropTypes.string,
-	onUpdate: PropTypes.func,
-	orderQuantity: PropTypes.number,
+	orderQuantity: PropTypes.arrayOf(PropTypes.shape({
+		label: PropTypes.number,
+		value: PropTypes.number
+	})),
 	prependedIcon: PropTypes.string,
 	prependedText: PropTypes.string,
 	setQuantity: PropTypes.func,
+	setSelectedQuantity: PropTypes.func,
 	settings: PropTypes.shape({
-		allowedQuantity: PropTypes.arrayOf(PropTypes.number),
+		allowedQuantity: PropTypes.arrayOf(PropTypes.shape({
+			label: PropTypes.number,
+			value: PropTypes.number
+		})),
 		maxQuantity: PropTypes.number,
 		minQuantity: PropTypes.number,
 		multipleQuantity: PropTypes.number
@@ -156,21 +116,6 @@ QuantitySelector.propTypes = {
 	skuId: PropTypes.number,
 	spritemap: PropTypes.string,
 	style: PropTypes.oneOf(['default', 'simple']),
-	throttleOnUpdate: PropTypes.bool,
-};
-
-QuantitySelector.defaultProps = {
-	disabled: false,
-	onUpdate: () => {},
-	orderQuantity: 1,
-	settings: {
-		allowedQuantity: [-1],
-		maxQuantity: 999,
-		minQuantity: 1,
-		multipleQuantity: 4,
-	},
-	style: 'default',
-	throttleOnUpdate: false,
 };
 
 export default QuantitySelector;
