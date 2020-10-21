@@ -113,12 +113,11 @@ AddToCartButton.propTypes = {
 	buttonTextContent: PropTypes.string,
 	cartSymbol: PropTypes.string,
 	currencyCode: PropTypes.string,
-	disabled: PropTypes.bool,
 	disableAddToCartButton: PropTypes.bool,
 	disableQuantitySelector: PropTypes.bool,
+	disabled: PropTypes.bool,
 	handleAddToCartData: PropTypes.func,
 	iconOnly: PropTypes.bool,
-	isBlock: PropTypes.bool,
 	orderId: PropTypes.number,
 	orderQuantity: PropTypes.arrayOf(PropTypes.shape({
 		label: PropTypes.number,

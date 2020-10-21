@@ -49,7 +49,8 @@ function QuantitySelector(props) {
 			<ClaySelect 
 				aria-label="Select Label"
 				className="quantitySelect"
-				id="mySelectId"
+				disabled={props.disabled}
+				id="quantitySelect"
 				onChange={ e => {
 					props.setSelectedQuantity([{
 						label: parseInt(e.target.value, 10),
@@ -112,7 +113,9 @@ QuantitySelector.propTypes = {
 		minQuantity: PropTypes.number,
 		multipleQuantity: PropTypes.number
 	}),
-	size: PropTypes.oneOf(['large', 'medium', 'small']),
+
+	// size: PropTypes.oneOf(['large', 'medium', 'small']),
+
 	skuId: PropTypes.number,
 	spritemap: PropTypes.string,
 	style: PropTypes.oneOf(['default', 'simple']),

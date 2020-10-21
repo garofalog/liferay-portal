@@ -115,7 +115,7 @@ const AddToCartWrapper = (props) => {
 
 AddToCartWrapper.defaultProps = {
     addToCartButton: {
-        block: false,
+        block: true,
 
         // buttonTextContent: 'Add to Cart'
 
@@ -124,108 +124,14 @@ AddToCartWrapper.defaultProps = {
         options: [],
         productInCart: true, // its fake
     },
-    disableAddToCartButton: true,
+    disableAddToCartButton: false,
     disableQuantitySelector: false,
-    orderQuantity:
-
-    // DEFAULT QUANTITY
-
-    [
-        {
-            label: 1,
-            value: 1
-        },
-        {
-            label: 2,
-            value: 2
-        },
-        {
-            label: 3,
-            value: 3
-        },
-        {
-            label: 4,
-            value: 4
-        },
-        {
-            label: 5,
-            value: 5
-        },
-        {
-            label: 6,
-            value: 6
-        },
-        {
-            label: 7,
-            value: 7
-        },
-        {
-            label: 8,
-            value: 8
-        },
-        {
-            label: 9,
-            value: 9
-        },
-    ],
-
-    // NO ALLOWED QUANTITY SET
-    // [
-    //     {
-    //         label: 1,
-    //         value: 1
-    //     }
-    // ],
-
     quantitySelector: {
         disabled: false,
 
         // style: 'default',
     },
     settings: {
-        // NO ALLOWED QUANTITY SET
-
-        allowedQuantity: [{
-            label: 1,
-            value: -1
-        }],
-        
-        // ALLOWED QUANTITY SET
-        // allowedQuantity: [
-        //     {
-        //         label: 1,
-        //         value: 1
-        //     },
-        //     {
-        //         label: 1,
-        //         value: 1
-        //     },
-        //     {
-        //         label: 2,
-        //         value: 2
-        //     },
-        //     {
-        //         label: 3,
-        //         value: 3
-        //     },
-        //     {
-        //         label: 5,
-        //         value: 5
-        //     },
-        //     {
-        //         label: 8,
-        //         value: 8
-        //     },
-        //     {
-        //         label: 13,
-        //         value: 13
-        //     },
-        //     {
-        //         label: 21,
-        //         value: 21
-        //     }
-        // ],
-
         maxQuantity: 999,
         minQuantity: 1,
         multipleQuantity: 3,
@@ -243,7 +149,6 @@ AddToCartWrapper.propTypes = {
         disabledProp: PropTypes.bool,
         handleAddToCartData: PropTypes.func,
         iconOnly: PropTypes.bool,
-        isBlock: PropTypes.bool,
         orderId: PropTypes.number,
         productId: PropTypes.number.isRequired,
         productInCart: PropTypes.bool,
