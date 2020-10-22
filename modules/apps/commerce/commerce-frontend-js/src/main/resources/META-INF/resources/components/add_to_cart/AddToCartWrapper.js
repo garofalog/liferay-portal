@@ -33,7 +33,6 @@ const AddToCartWrapper = (props) => {
 
     useEffect(() => {
         setMultipleQuantity(props.settings.multipleQuantity)
-
         if (props.settings.allowedQuantity[0].value !== -1) {
             setQuantity(props.settings.allowedQuantity)
             setMultipleQuantity(1) 
@@ -42,10 +41,6 @@ const AddToCartWrapper = (props) => {
             setMultipleQuantity(1) 
         }
     }, [props.settings])
-
-    useEffect(() => {
-        console.log(selectedQuantity)
-    }, [selectedQuantity])
 
     const handleAddToCartData = (id, sku) => {
         const qty = multipleQuantity === 1 ? selectedQuantity[0].value : multipleQuantity * selectedQuantity[0].value
@@ -64,7 +59,6 @@ const AddToCartWrapper = (props) => {
             }).catch(err => {
                 showNotification(err, 'danger', true, 500);
             })
-
         } else {
             CartResource.createItemByCartId(id, {
                 productId: props.addToCartButton.productId,

@@ -35,8 +35,6 @@ const AddToCartButton = (props) => {
 	const [skuId, setSkuId] = useState(props.skuId)
 
 	useEffect(() => {
-		// console.log("props.orderQuantity", props.orderQuantity)
-
 		props.setQuantity(props.orderQuantity)
 	},[props.orderQuantity])
 

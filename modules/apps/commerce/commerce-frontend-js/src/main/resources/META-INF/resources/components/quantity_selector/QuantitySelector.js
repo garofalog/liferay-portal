@@ -24,25 +24,6 @@ import throttle from '../../utilities/throttle';
 
 function QuantitySelector(props) {
 
-	useEffect(() => {
-		console.log("orderQ", props.orderQuantity)
-	})
-
-	// setTimeout(() => {
-	// 	insertAllQuantity(1)
-	// },2000)
-
-	// const insertAllQuantity = async (n) => {
-	// 	const completeArray = []
-	// 	for (n; n < 99; n++) {
-	// 		completeArray.push({ 
-	// 			label: n,
-	// 			value: n 
-	// 		})
-	// 	}
-	// 	props.setQuantity(completeArray)
-	// }
-
 	const content = (
 		<div className="quantity-selector">
 

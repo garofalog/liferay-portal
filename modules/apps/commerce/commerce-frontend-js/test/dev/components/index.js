@@ -68,4 +68,9 @@ module.exports = [
 		name: 'Summary',
 		page: 'summary.html',
 	},
+	{
+		entry: 'AccountSelector',
+		name: 'Account Selector',
+		page: 'account-selector.html',
+	},
 ];

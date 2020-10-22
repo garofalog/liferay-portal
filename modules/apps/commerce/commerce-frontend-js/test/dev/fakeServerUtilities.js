@@ -13,6 +13,10 @@
  */
 
 function defineServerResponses(app) {
+	app.post('/account-selector/setCurrentAccounts', (_, res) => {
+		res.json({});
+	});
+
 	app.get('/dataset-display-nested-items', (_, res) => {
 		res.json({
 			items: [

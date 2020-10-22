@@ -236,6 +236,9 @@ public class ContentPageEditorDisplayContext {
 		return HashMapBuilder.<String, Object>put(
 			"config",
 			HashMapBuilder.<String, Object>put(
+				"adaptiveMediaEnabled",
+				_ffLayoutContentPageEditorConfiguration.adaptiveMediaEnabled()
+			).put(
 				"addFragmentCompositionURL",
 				getFragmentEntryActionURL(
 					"/content_layout/add_fragment_composition")
@@ -362,6 +365,10 @@ public class ContentPageEditorDisplayContext {
 						frontendTokenDefinition, themeDisplay.getLocale(),
 						_getDefaultStyleBookEntry());
 				}
+			).put(
+				"getAvailableImageConfigurationsURL",
+				getResourceURL(
+					"/content_layout/get_available_image_configurations")
 			).put(
 				"getAvailableListItemRenderersURL",
 				getResourceURL(
@@ -1434,7 +1441,7 @@ public class ContentPageEditorDisplayContext {
 					).put(
 						"editableTypes",
 						EditableFragmentEntryProcessorUtil.getEditableTypes(
-							fragmentEntryLink.getHtml())
+							content)
 					).put(
 						"editableValues",
 						JSONFactoryUtil.createJSONObject(

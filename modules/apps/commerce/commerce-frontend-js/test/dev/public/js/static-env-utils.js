@@ -12,20 +12,17 @@
  * details.
  */
 
-window.Liferay = {
+const Liferay = {
 	Language: {
-		get(v) {
-			const charZero = v.charAt(0).toUpperCase(),
-				rest = v.substring(1, v.length).split('-').join(' ');
-
-			return `${charZero}${rest}`;
-		},
+		get: (v) => v,
 	},
 	ThemeDisplay: {
 		getCanonicalURL: () => '/',
 		getDefaultLanguageId: () => 'en_US',
 		getLanguageId: () => 'it_IT',
 		getPathThemeImages: () => '/assets',
+		getPortalURL: () => window.location.origin,
+		getScopeGroupId: () => 111111,
 	},
 	component: () => {},
 	detach: (name, fn) => {
@@ -50,3 +47,6 @@ window.Liferay = {
 		'Content-Type': 'application/json',
 	}),
 };
+
+window.Liferay = Liferay;
+window.themeDisplay = Liferay.ThemeDisplay;

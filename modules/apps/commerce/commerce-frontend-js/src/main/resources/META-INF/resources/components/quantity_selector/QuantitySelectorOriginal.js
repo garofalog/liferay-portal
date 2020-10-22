@@ -77,7 +77,6 @@ function QuantitySelector(props) {
 	]);
 
 	function updateCurrentQuantity(newQuantity) {
-		console.log('updateCurrentQuantity')
 		if (
 			newQuantity >= props.settings.minQuantity &&
 			newQuantity <= props.settings.maxQuantity

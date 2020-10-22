@@ -84,6 +84,8 @@ const ItemSelectorPreview = ({
 	}, [container]);
 
 	const handleClickBack = () => {
+		close();
+
 		if (reloadOnHide) {
 			const frame = window.frameElement;
 
@@ -91,13 +93,15 @@ const ItemSelectorPreview = ({
 				frame.contentWindow.location.reload();
 			}
 		}
-
-		close();
 	};
 
 	const handleClickDone = () => {
-		handleSelectedItem(currentItem);
+
+		// LPS-120692
+
 		close();
+
+		handleSelectedItem(currentItem);
 	};
 
 	const handleClickEdit = () => {
