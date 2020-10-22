@@ -28,7 +28,7 @@ const CartResource = ServiceProvider.DeliveryCartAPI('v1');
 const AddToCartWrapper = (props) => {
     const [quantity, setQuantity] = useState(props.orderQuantity)
     const [orderId, setOrderId] = useState(props.addToCartButton.orderId)
-    const [multipleQuantity, setMultipleQuantity] = useState()
+    const [multipleQuantity, setMultipleQuantity] = useState(props.settings.multipleQuantity)
     const [selectedQuantity, setSelectedQuantity] = useState()
 
     useEffect(() => {
@@ -38,7 +38,14 @@ const AddToCartWrapper = (props) => {
             setQuantity(props.settings.allowedQuantity)
             setMultipleQuantity(1) 
         }
+        if (props.multipleQuantity === undefined) {
+            setMultipleQuantity(1) 
+        }
     }, [props.settings])
+
+    useEffect(() => {
+        console.log(selectedQuantity)
+    }, [selectedQuantity])
 
     const handleAddToCartData = (id, sku) => {
         const qty = multipleQuantity === 1 ? selectedQuantity[0].value : multipleQuantity * selectedQuantity[0].value
@@ -134,7 +141,7 @@ AddToCartWrapper.defaultProps = {
     settings: {
         maxQuantity: 999,
         minQuantity: 1,
-        multipleQuantity: 3,
+        multipleQuantity: 1,
     }
     
 }

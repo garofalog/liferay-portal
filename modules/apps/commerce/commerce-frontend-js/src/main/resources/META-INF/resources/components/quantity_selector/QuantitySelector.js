@@ -12,7 +12,7 @@
  * details.
  */
 
-import { ClaySelect } from '@clayui/form';
+import { ClayInput, ClaySelect } from '@clayui/form';
 import ClayIcon, {ClayIconSpriteContext} from '@clayui/icon';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
@@ -45,8 +45,37 @@ function QuantitySelector(props) {
 
 	const content = (
 		<div className="quantity-selector">
+
+			<ClayInput
+				aria-label="Select Label"
+				className="quantitySelect"
+				disabled={props.disabled}
+				id="quantitySelect"
+				list="quantity-selector-list"
+				onChange={ e => {
+					if (e.target.value !== '') {
+						{props.setSelectedQuantity([{
+							label: parseInt(e.target.value, 10),
+							value: parseInt(e.target.value, 10),
+						}])}
+					}
+					if (props.disableAddToCartButton) {
+						props.handleAddToCartData(props.orderId, props.skuId)
+					}
+				}} 
+			>
+			</ClayInput>
+			<datalist id="quantity-selector-list">
+				{props.orderQuantity.map(item => (
+					<option 
+						key={item.value}
+						label={item.label}
+						value={item.value} />
+					
+				))}
+			</datalist>
 			
-			<ClaySelect 
+			{/* <ClaySelect 
 				aria-label="Select Label"
 				className="quantitySelect"
 				disabled={props.disabled}
@@ -60,11 +89,6 @@ function QuantitySelector(props) {
 						props.handleAddToCartData(props.orderId, props.skuId)
 					}
 				}}
-
-				// dblclick={()=> {
-
-				// }}
-
 			>	
 				{props.orderQuantity.map(item => (
 					<ClaySelect.Option
@@ -73,7 +97,8 @@ function QuantitySelector(props) {
 						value={item.value}
 					/>
 				))}
-			</ClaySelect>
+			</ClaySelect> */}
+
 		</div>
 	);
 
