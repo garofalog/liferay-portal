@@ -39,11 +39,12 @@ const AddToCartButton = (props) => {
 	},[props.orderQuantity])
 
 	useEffect(() => {
-		if (props.buttonTextContent) {
-			setButtonText(props.buttonTextContent.replace(/ /,"-"))
+		if (props.buttonTextContent && props.buttonTextContent !== '') {
+			setButtonText(props.buttonTextContent.lowercase.replace(/ /,"-"))
+		} else {
+			setButtonText('add-to-cart')
 		}
 	}, [props.buttonTextContent])
-
 
 	let markerStatus = ''
 	if (props.orderQuantity) {
@@ -56,9 +57,6 @@ const AddToCartButton = (props) => {
 		markerStatus = 'incrementing'
 	}
 
-	if (buttonText === '') {
-		setButtonText('add-to-cart')
-	}
 	const sendCart = () => {
 		if (props.disableQuantitySelector) {
 			props.setSelectedQuantity([{ label: 1, value: 1 }])

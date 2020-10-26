@@ -22,7 +22,7 @@ import throttle from '../../utilities/throttle';
 
 // const THROTTLE_TIMEOUT = 1000;
 
-function QuantitySelector(props) {
+function OptionsSelector(props) {
 
 	const content = (
 		<div className="quantity-selector">
@@ -99,7 +99,7 @@ function QuantitySelector(props) {
 	)
 }
 
-QuantitySelector.propTypes = {
+OptionsSelector.propTypes = {
 	// appendedIcon: PropTypes.string,
 	// appendedText: PropTypes.string,
 
@@ -137,4 +137,4 @@ QuantitySelector.propTypes = {
 	// style: PropTypes.oneOf(['default', 'simple']),
 };
 
-export default QuantitySelector;
+export default OptionsSelector;

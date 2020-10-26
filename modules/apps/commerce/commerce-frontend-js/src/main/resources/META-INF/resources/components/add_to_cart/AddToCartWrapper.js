@@ -18,7 +18,11 @@ import React, { useEffect, useState } from 'react';
 
 import ServiceProvider from '../../ServiceProvider/index';
 import showNotification from '../../utilities/notifications';
+import OptionsSelector from '../quantity_selector/OptionsSelector'
+
 import QuantitySelector from '../quantity_selector/QuantitySelector'
+
+import CustomSelect from '../quantity_selector/customSelect'
 
 import AddToCartButton from './AddToCartButton';
 
@@ -79,36 +83,72 @@ const AddToCartWrapper = (props) => {
                 {multipleQuantity > 1 && (<span className="">Multiple quantity per order: {props.settings.multipleQuantity}</span>)}
             </div>
 
-            {!props.disableQuantitySelector && (<QuantitySelector
-                disableAddToCartButton={props.disableAddToCartButton}
-                disableQuantitySelector={props.disableQuantitySelector}
-                handleAddToCartData={handleAddToCartData}
-                orderQuantity={quantity}
-                setQuantity={setQuantity}
-                setSelectedQuantity={setSelectedQuantity}
-                size="small"
-                skuId={props.skuId}
-            />)}
+            {/****************************************************/}
 
-            {!props.disableAddToCartButton && (<AddToCartButton 
-                accountId={props.addToCartButton.accountId}
-                cartSymbol={props.addToCartButton.cartSymbol}
-                channelId={props.addToCartButton.channelId}
-                componentId={props.componentId} // ????
-                currencyCode={props.addToCartButton.currencyCode}
-                disableAddToCartButton={props.disableAddToCartButton}
-                disableQuantitySelector={props.disableQuantitySelector}
-                disabled={props.addToCartButton.disabled}
-                handleAddToCartData={handleAddToCartData}
-                iconOnly={props.iconOnly}
-                orderId={orderId}
-                orderQuantity={quantity}
-                productId={props.addToCartButton.productId}
-                setQuantity={setQuantity}
-                setSelectedQuantity={setSelectedQuantity}
-                skuId={props.skuId}
-                spritemap={props.addToCartButton.spritemap}
-            />)}
+            {!props.disableQuantitySelector && !props.customQuantitySelector && (
+                <QuantitySelector
+                    disableAddToCartButton={props.disableAddToCartButton}
+                    disableQuantitySelector={props.disableQuantitySelector}
+                    handleAddToCartData={handleAddToCartData}
+                    orderQuantity={quantity}
+                    selectOrDatalist={props.quantitySelector.selectOrDatalist}
+                    setQuantity={setQuantity}
+                    setSelectedQuantity={setSelectedQuantity}
+
+                    // size="small"
+
+                    skuId={props.skuId}
+                />
+            )}
+
+                {props.customQuantitySelector && (
+                    props.customQuantitySelector()
+            )}
+
+            {/****************************************************/}
+
+            {!props.disableOptionsSelector && !props.customOptionsSelector && (
+                <OptionsSelector
+                    options={props.options}
+                />
+            )}
+
+            {props.customOptionsSelector && (
+                props.customOptionsSelector()
+            )}
+
+            {/****************************************************/}
+
+            {!props.disableAddToCartButton && !props.customAddToCartButton && (
+                <AddToCartButton 
+                    accountId={props.addToCartButton.accountId}
+                    cartSymbol={props.addToCartButton.cartSymbol}
+                    channelId={props.addToCartButton.channelId}
+
+                    // componentId={props.componentId} // ????
+
+                    currencyCode={props.addToCartButton.currencyCode}
+                    disableAddToCartButton={props.disableAddToCartButton}
+                    disableQuantitySelector={props.disableQuantitySelector}
+                    disabled={props.addToCartButton.disabled}
+                    handleAddToCartData={handleAddToCartData}
+                    iconOnly={props.iconOnly}
+                    orderId={orderId}
+                    orderQuantity={quantity}
+                    productId={props.addToCartButton.productId}
+                    setQuantity={setQuantity}
+                    setSelectedQuantity={setSelectedQuantity}
+                    skuId={props.skuId}
+                    spritemap={props.addToCartButton.spritemap}
+                />
+            )}
+
+            {props.customAddToCartButton && (
+                props.customAddToCartButton()
+            )}
+
+            {/****************************************************/}
+
         </>
         )
     )
@@ -118,16 +158,90 @@ AddToCartWrapper.defaultProps = {
     addToCartButton: {
         block: true,
 
-        // buttonTextContent: 'Add to Cart'
+        buttonTextContent: 'Add to Cart',
 
         disabledProp: false,
         iconOnly: false,
         productInCart: true, // its fake
     },
+
+    // customAddToCartButton: (props) => <CustomSelect {...props} />,
+    // customOptionsSelector: (props) => <CustomSelect {...props} />,
+    // customQuantitySelector: (props) => <CustomSelect {...props} />,
+
     disableAddToCartButton: false,
+    disableOptionsSelector: false,
     disableQuantitySelector: false,
+    optionsSelector: [
+        {
+            name: 'size',
+            options: [
+                {
+                    label: 'Small',
+                    value: 'S'
+                },
+                {
+                    label: 'Medium',
+                    value: 'M'
+                },
+                {
+                    label: 'Big',
+                    value: 'XL'
+                },
+            ],
+            selectOrDatalist: 'select',
+            type: 'string',
+        },
+        {
+            name: 'color',
+            options: [
+                {
+                    label: 'Red',
+                    value: 'f00'
+                },
+                {
+                    label: 'Grey',
+                    value: '333'
+                },
+                {
+                    label: 'Violet',
+                    value: 'ee82ee'
+                },
+                {
+                    label: 'Porphyry Red',
+                    value: '984149'
+                },
+                {
+                    label: 'Mouse Grey',
+                    value: '6c6e6b'
+                },
+            ],
+            selectOrDatalist: 'datalist',
+            type: 'string'
+        },
+        {
+            name: 'availability',
+            options: [
+                {
+                    label: 'Available',
+                    value: 'available'
+                },
+                {
+                    label: 'In store only',
+                    value: 'store'
+                },
+                {
+                    label: 'Online',
+                    value: 'online'
+                },
+            ],
+            selectOrDatalist: 'select',
+            type: 'string'
+        }
+    ],
     quantitySelector: {
         disabled: false,
+        selectOrDatalist: 'datalist',
 
         // style: 'default',
     },
@@ -136,7 +250,6 @@ AddToCartWrapper.defaultProps = {
         minQuantity: 1,
         multipleQuantity: 1,
     }
-    
 }
 
 AddToCartWrapper.propTypes = {
@@ -145,7 +258,7 @@ AddToCartWrapper.propTypes = {
         block: PropTypes.bool,
         buttonTextContent: PropTypes.string,
         cartSymbol: PropTypes.string,
-        channelId: PropTypes.string.isRequired,
+        channelId: PropTypes.number.isRequired,
         currencyCode: PropTypes.string,
         disabledProp: PropTypes.bool,
         handleAddToCartData: PropTypes.func,
@@ -155,7 +268,11 @@ AddToCartWrapper.propTypes = {
         productInCart: PropTypes.bool,
         spritemap: PropTypes.string.isRequired,
     }),
+    customAddToCartButton: PropTypes.func,
+    customOptionsSelector: PropTypes.func,
+    customQuantitySelector: PropTypes.func,
     disableAddToCartButton: PropTypes.bool,
+    disableOptionsSelector: PropTypes.bool,
     disableQuantitySelector: PropTypes.bool,
     orderQuantity: PropTypes.arrayOf(PropTypes.shape({
         label: PropTypes.number,
@@ -170,9 +287,13 @@ AddToCartWrapper.propTypes = {
         onUpdate: PropTypes.func,
         prependedIcon: PropTypes.string,
         prependedText: PropTypes.string,
-        size: PropTypes.oneOf(['large', 'medium', 'small']),
+        selectOrDatalist: PropTypes.oneOf(['select', 'datalist']),
+
+        // size: PropTypes.oneOf(['large', 'medium', 'small']),
+
         spritemap: PropTypes.string,
-        style: PropTypes.oneOf(['default', 'simple']),
+
+        // style: PropTypes.oneOf(['default', 'simple']),
     }),
     setQuantity: PropTypes.func,
     settings: PropTypes.shape({
