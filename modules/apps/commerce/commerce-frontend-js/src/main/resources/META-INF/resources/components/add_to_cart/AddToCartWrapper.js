@@ -120,9 +120,8 @@ AddToCartWrapper.defaultProps = {
 
         // buttonTextContent: 'Add to Cart'
 
-        disabled: false,
+        disabledProp: false,
         iconOnly: false,
-        options: [],
         productInCart: true, // its fake
     },
     disableAddToCartButton: false,
@@ -146,11 +145,12 @@ AddToCartWrapper.propTypes = {
         block: PropTypes.bool,
         buttonTextContent: PropTypes.string,
         cartSymbol: PropTypes.string,
+        channelId: PropTypes.string.isRequired,
         currencyCode: PropTypes.string,
         disabledProp: PropTypes.bool,
         handleAddToCartData: PropTypes.func,
         iconOnly: PropTypes.bool,
-        orderId: PropTypes.number,
+        orderId: PropTypes.number.isRequired,
         productId: PropTypes.number.isRequired,
         productInCart: PropTypes.bool,
         spritemap: PropTypes.string.isRequired,
@@ -173,7 +173,6 @@ AddToCartWrapper.propTypes = {
         size: PropTypes.oneOf(['large', 'medium', 'small']),
         spritemap: PropTypes.string,
         style: PropTypes.oneOf(['default', 'simple']),
-        throttleOnUpdate: PropTypes.bool,
     }),
     setQuantity: PropTypes.func,
     settings: PropTypes.shape({
@@ -185,7 +184,7 @@ AddToCartWrapper.propTypes = {
         minQuantity: PropTypes.number,
         multipleQuantity: PropTypes.number
     }),
-    skuId: PropTypes.number,
+    skuId: PropTypes.number.isRequired,
 }
 
 export default AddToCartWrapper;
