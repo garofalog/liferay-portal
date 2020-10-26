@@ -32,7 +32,7 @@ function QuantitySelector(props) {
 					<ClayInput
 						aria-label="Select Label"
 						className="quantitySelect"
-						disabled={props.disabled} 
+						disabled={props.disabled}
 						id="quantitySelect"
 						list="quantity-selector-list"
 						onChange={ e => {
@@ -46,6 +46,7 @@ function QuantitySelector(props) {
 								props.handleAddToCartData(props.orderId, props.skuId)
 							}
 						}}
+						pattern="[0-9]+" 
 						type="number"
 					>
 					</ClayInput>

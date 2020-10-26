@@ -109,7 +109,7 @@ const AddToCartWrapper = (props) => {
 
             {!props.disableOptionsSelector && !props.customOptionsSelector && (
                 <OptionsSelector
-                    options={props.options}
+                        options={props.optionsSelector}
                 />
             )}
 
@@ -274,6 +274,15 @@ AddToCartWrapper.propTypes = {
     disableAddToCartButton: PropTypes.bool,
     disableOptionsSelector: PropTypes.bool,
     disableQuantitySelector: PropTypes.bool,
+    optionsSelector: PropTypes.arrayOf(PropTypes.shape({
+        name: PropTypes.string,
+        options: PropTypes.arrayOf(PropTypes.shape({
+            label: PropTypes.string,
+            value: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+        })),
+        selectOrDatalist: PropTypes.oneOf(['select', 'datalist']),
+        type: PropTypes.string
+    })),
     orderQuantity: PropTypes.arrayOf(PropTypes.shape({
         label: PropTypes.number,
         value: PropTypes.number

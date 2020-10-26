@@ -13,128 +13,106 @@
  */
 
 import { ClayInput, ClaySelect } from '@clayui/form';
-import ClayIcon, {ClayIconSpriteContext} from '@clayui/icon';
-import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import React, {createRef, useEffect, useState} from 'react';
 
-import throttle from '../../utilities/throttle';
 
 // const THROTTLE_TIMEOUT = 1000;
 
-function OptionsSelector(props) {
+const OptionsSelector = (props) => {
 
 	const content = (
-		<div className="quantity-selector">
+		<div className="options-selector">
 
-			{props.selectOrDatalist === 'datalist' && (
-				<>
-					<ClayInput
-						aria-label="Select Label"
-						className="quantitySelect"
-						disabled={props.disabled} 
-						id="quantitySelect"
-						list="quantity-selector-list"
-						onChange={ e => {
-							if (e.target.value !== '') {
-								{props.setSelectedQuantity([{
-									label: parseInt(e.target.value, 10),
-									value: parseInt(e.target.value, 10),
-								}])}
-							}
-							if (props.disableAddToCartButton) {
-								props.handleAddToCartData(props.orderId, props.skuId)
-							}
-						}}
-						type="number"
-					>
-					</ClayInput>
-					<datalist id="quantity-selector-list">
-						{props.orderQuantity.map(item => (
-							<option 
-								key={item.value}
-								label={item.label}
-								value={item.value} />
-							
-						))}
-					</datalist>
-				</>
-			)}
+
+			{props.options && props.options.map( (op,i) => {
+				
+				return op.selectOrDatalist === 'datalist' ? (
+						<>
+							<ClayInput
+								aria-label={op.name + `-label`}
+								className="options-selector-item"
+								id={`order-select-` + i}
+								list={`order-select-` + i + `-list`}
+								onChange={e => {
+									// if (e.target.value !== '') {
+									// 	{
+									// 		props.setSelectedQuantity([{
+									// 			label: parseInt(e.target.value, 10),
+									// 			value: parseInt(e.target.value, 10),
+									// 		}])
+									// 	}
+									// }
+									// if (props.disableAddToCartButton) {
+									// 	props.setOption('??')
+									// }
+								}}
+								type={op.type}
+							>
+							</ClayInput>
+								<datalist id={`order-select-` + i + `-list`}>
+								{op.options.map(it => (
+									<option
+										key={it.label.replace(/ /,'-')}
+										label={it.label}
+										value={it.value} />
+								))}
+							</datalist>
+						</>
+					) : (
+						<ClaySelect
+							aria-label={op.name + `-label`}
+							className="options-selector-item"
+							id={`order-select-` + i}
+							onChange={e => {
+								// props.setSelectedQuantity([{
+								// 	label: parseInt(e.target.value, 10),
+								// 	value: parseInt(e.target.value, 10),
+								// }])
+								// if (props.disableAddToCartButton) {
+								// 	props.handleAddToCartData(props.orderId, props.skuId)
+								// }
+							}}
+						>
+							{op.options.map(item => (
+								<ClaySelect.Option
+									key={item.value.replace(/ /,'')}
+									label={item.label}
+									value={item.value}
+								/>
+							))}
+						</ClaySelect>
+					)
+				
+
+				
+			})}
+				
+				
+					
+					
+				
 			
-			{props.selectOrDatalist === 'select' && (
-				<ClaySelect 
-					aria-label="Select Label"
-					className="quantitySelect"
-					disabled={props.disabled}
-					id="quantitySelect"
-					onChange={ e => {
-						props.setSelectedQuantity([{
-							label: parseInt(e.target.value, 10),
-							value: parseInt(e.target.value, 10),
-						}])
-						if (props.disableAddToCartButton){
-							props.handleAddToCartData(props.orderId, props.skuId)
-						}
-					}}
-				>	
-					{props.orderQuantity.map(item => (
-						<ClaySelect.Option
-							key={item.value}
-							label={item.label}
-							value={item.value}
-						/>
-					))}
-				</ClaySelect>
-			)}
+				 
 
-		</div>
+		</div>		
+
+		
 	);
 
-	return props.spritemap ? (
-		<ClayIconSpriteContext.Provider value={props.spritemap}>
-			{content}
-		</ClayIconSpriteContext.Provider>
-		) : (
-		content
-	)
-}
+	return content
+};
 
 OptionsSelector.propTypes = {
-	// appendedIcon: PropTypes.string,
-	// appendedText: PropTypes.string,
-
-	disableAddToCartButton: PropTypes.bool,
-	disableQuantitySelector: PropTypes.bool,
-	disabled: PropTypes.bool,
-	handleAddToCartData: PropTypes.func,
-	inputName: PropTypes.string,
-	orderQuantity: PropTypes.arrayOf(PropTypes.shape({
-		label: PropTypes.number,
-		value: PropTypes.number
-	})),
-
-	// prependedIcon: PropTypes.string,
-	// prependedText: PropTypes.string,
-
-	selectOrDatalist: PropTypes.oneOf(['select', 'datalist']),
-	setQuantity: PropTypes.func,
-	setSelectedQuantity: PropTypes.func,
-	settings: PropTypes.shape({
-		allowedQuantity: PropTypes.arrayOf(PropTypes.shape({
-			label: PropTypes.number,
-			value: PropTypes.number
+	options: PropTypes.arrayOf(PropTypes.shape({
+		name: PropTypes.string,
+		options: PropTypes.arrayOf(PropTypes.shape({
+			label: PropTypes.string,
+			value: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 		})),
-		maxQuantity: PropTypes.number,
-		minQuantity: PropTypes.number,
-		multipleQuantity: PropTypes.number
-	}),
-
-	// size: PropTypes.oneOf(['large', 'medium', 'small']),
-
-	skuId: PropTypes.number,
-	spritemap: PropTypes.string,
-
-	// style: PropTypes.oneOf(['default', 'simple']),
+		selectOrDatalist: PropTypes.oneOf(['select', 'datalist']),
+		type: PropTypes.string
+	})),
 };
 
 export default OptionsSelector;
