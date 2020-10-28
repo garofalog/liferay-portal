@@ -60,7 +60,7 @@ const OptionsSelector = (props) => {
                             id={`order-select-` + i}
                             onChange={e => {
                                 props.handleOptions([{
-                                    label: e.target.label,
+                                    label: e.target.value,
                                     optionName: op.name,
                                     value: e.target.value,
                                 }])
