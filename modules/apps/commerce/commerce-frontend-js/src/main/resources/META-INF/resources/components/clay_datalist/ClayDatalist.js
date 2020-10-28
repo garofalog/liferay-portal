@@ -40,12 +40,9 @@ const ClayDatalist = (props) => {
                 list={`order-select-` + gHash(op.name) + `-list`}
                 onChange={e => {
                     if (e.target.value !== '') {
-                        props.setOptions([{
-                            label: e.target.label,
-                            value: e.target.value,
-                        }])
                         props.handleOptions([{
-                            label: e.target.label,
+                            label: e.target.value,
+                            optionName: op.name,
                             value: e.target.value,
                         }])
                     }

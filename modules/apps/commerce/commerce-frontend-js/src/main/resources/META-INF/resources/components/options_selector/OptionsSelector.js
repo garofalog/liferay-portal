@@ -48,9 +48,9 @@ const OptionsSelector = (props) => {
                 if (op.selectOrDatalist === 'datalist'){           
                     return (
                     <ClayDatalist
-                        options={op}
-                        setOptions={props.setOptions} />
-                    )
+                        handleOptions={props.handleOptions}
+                        options={op} />
+                    ) 
                 }
                 if (op.selectOrDatalist === 'select') {
                     return (
@@ -59,8 +59,9 @@ const OptionsSelector = (props) => {
                             className="options-selector-item"
                             id={`order-select-` + i}
                             onChange={e => {
-                                props.setOptions([{
+                                props.handleOptions([{
                                     label: e.target.label,
+                                    optionName: op.name,
                                     value: e.target.value,
                                 }])
                             }}
@@ -98,10 +99,8 @@ OptionsSelector.propTypes = {
             value: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
         })),
         selectOrDatalist: PropTypes.oneOf(['select', 'datalist']),
-        setOptions: PropTypes.func,
         type: PropTypes.string
     })),
-    setOptions: PropTypes.func,
     size: PropTypes.string
 };
 

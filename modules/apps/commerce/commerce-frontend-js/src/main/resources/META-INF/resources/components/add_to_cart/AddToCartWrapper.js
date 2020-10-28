@@ -31,7 +31,7 @@ const CartResource = ServiceProvider.DeliveryCartAPI('v1');
 
 const AddToCartWrapper = (props) => {
     const [quantity, setQuantity] = useState(props.orderQuantity)
-    const [options, setOptions] = useState()
+    const [options, setOptions] = useState([])
     const [orderId, setOrderId] = useState(props.addToCartButton.orderId)
     const [multipleQuantity, setMultipleQuantity] = useState(props.settings.multipleQuantity)
     const [selectedQuantity, setSelectedQuantity] = useState()
@@ -53,12 +53,24 @@ const AddToCartWrapper = (props) => {
     }, [options])
 
     const handleOptions = (array) => {
-        console.log("a")
-        const currentOptions = [...options, array[0]]
+        const a = options
+        console.log('option', a === [])
+        let updatedA = []
+        
+        
+        if (a.length < 1){
+            updatedA.push(array[0])
+        } else {
 
-        // currentOptions.push(array)
+            const cu = a.filter(o => o.optionName !== array[0].optionName)
+        
+            console.log("filter",cu)
+            cu.push(array[0])
+            updatedA = cu
 
-        setOptions(currentOptions)
+        }
+
+        setOptions(updatedA)
     }
 
     const handleAddToCartData = (id, sku) => {
@@ -128,7 +140,6 @@ const AddToCartWrapper = (props) => {
                 <OptionsSelector
                     handleOptions={handleOptions}
                     options={props.optionsSelector.options}
-                    setOptions={setOptions}
                     size={props.optionsSelector.size}
                 />
             )}
@@ -301,6 +312,7 @@ AddToCartWrapper.propTypes = {
     disableOptionsSelector: PropTypes.bool,
     disableQuantitySelector: PropTypes.bool,
     optionsSelector: PropTypes.shape({
+        handleOptions: PropTypes.func,
         options: PropTypes.arrayOf(PropTypes.shape({
             name: PropTypes.string,
             options: PropTypes.arrayOf(PropTypes.shape({
