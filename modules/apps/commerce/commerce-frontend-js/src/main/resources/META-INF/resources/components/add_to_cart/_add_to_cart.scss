@@ -91,6 +91,12 @@
 	&-inline {
 		margin-left: $spacer;
 	}
+	&.rtl {
+		direction: rtl;
+	}
+	&.trl {
+		direction: rtl;
+	}
 }
 
 @keyframes addToCartBounceIn {

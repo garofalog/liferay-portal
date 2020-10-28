@@ -19,12 +19,15 @@ import '../../../src/main/resources/META-INF/resources/styles/main.scss';
 launcher('add_to_cart', 'add-to-cart', {
 	addToCartButton: {
 		accountId: 43936,//48323, // falzo
+		// block: true,
+
 		cartSymbol: 'shopping-cart',
 		channelId: 41005, //43940,
 		currencyCode: 'USD',
 		disabledProp: false,
 		orderId: 43939,
 		productId: 43939, //43657, // "Mount"   no"43630",
+		rtl: true,
 		spritemap: './assets/icons.svg',
 
 	},

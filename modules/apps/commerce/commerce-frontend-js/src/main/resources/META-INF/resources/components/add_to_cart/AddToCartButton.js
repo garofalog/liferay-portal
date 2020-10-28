@@ -69,6 +69,7 @@ const AddToCartButton = (props) => {
 		<div className="add-to-cart add-to-cart-block">
 			{props.iconOnly ? (
 				<ClayButtonWithIcon 
+					block={props.block}
 					disabled={!props.accountId || props.disabled}
 					onClick={() => sendCart()}
 					spritemap={props.spritemap} 
@@ -77,14 +78,14 @@ const AddToCartButton = (props) => {
 			) : (
 				<ClayButton
 					block={props.block}
-					className="btn-add-to-cart btn-lg"
+						className={classNames('btn-add-to-cart btn-lg', props.rtl ? 'rtl' : 'trl')}
 					disabled={!props.accountId || props.disabled}
-						onClick={() => sendCart()}
+					onClick={() => sendCart()}
 				>
 
 					{Liferay.Language.get(buttonText)}
 
-					<span className={classNames("add-to-cart-icon-container inline-item inline-item-after", props.orderQuantity && 'active')}>
+					<span className={classNames("add-to-cart-icon-container inline-item", props.orderQuantity && 'active', props.rtl ? 'mr-2' : 'ml-2')}>
 						<span className="add-to-cart-icon">
 								<ClayIcon 
 									spritemap={props.spritemap}
@@ -95,7 +96,7 @@ const AddToCartButton = (props) => {
 							<span className={classNames("add-to-cart-quantity-marker", markerStatus)} ></span>
 						)}
 					</span>
-
+						{props.rtl}
 				</ClayButton>
 			)}
 			
@@ -121,6 +122,7 @@ AddToCartButton.propTypes = {
 	})),
 	productId: PropTypes.number.isRequired,
 	productInCart: PropTypes.bool,
+	rtl: PropTypes.bool,
 	setQuantity: PropTypes.func,
 	setSelectedQuantity: PropTypes.func,
 	settings: PropTypes.shape({

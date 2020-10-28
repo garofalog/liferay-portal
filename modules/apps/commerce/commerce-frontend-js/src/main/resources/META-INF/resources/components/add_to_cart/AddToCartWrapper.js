@@ -18,7 +18,7 @@ import React, { useEffect, useState } from 'react';
 
 import ServiceProvider from '../../ServiceProvider/index';
 import showNotification from '../../utilities/notifications';
-import OptionsSelector from '../quantity_selector/OptionsSelector'
+import OptionsSelector from '../options_selector/OptionsSelector'
 
 import QuantitySelector from '../quantity_selector/QuantitySelector'
 
@@ -31,6 +31,7 @@ const CartResource = ServiceProvider.DeliveryCartAPI('v1');
 
 const AddToCartWrapper = (props) => {
     const [quantity, setQuantity] = useState(props.orderQuantity)
+    const [options, setOptions] = useState()
     const [orderId, setOrderId] = useState(props.addToCartButton.orderId)
     const [multipleQuantity, setMultipleQuantity] = useState(props.settings.multipleQuantity)
     const [selectedQuantity, setSelectedQuantity] = useState()
@@ -46,12 +47,27 @@ const AddToCartWrapper = (props) => {
         }
     }, [props.settings])
 
+    useEffect(() => {
+
+        console.log(options)
+    }, [options])
+
+    const handleOptions = (array) => {
+        console.log("a")
+        const currentOptions = [...options, array[0]]
+
+        // currentOptions.push(array)
+
+        setOptions(currentOptions)
+    }
+
     const handleAddToCartData = (id, sku) => {
         const qty = multipleQuantity === 1 ? selectedQuantity[0].value : multipleQuantity * selectedQuantity[0].value
         if (!id || id === 0) {
             CartResource.createCartByChannelId(props.addToCartButton.channelId, {
                 accountId: props.addToCartButton.accountId,
                 cartItems: [{
+                    options,
                     quantity: qty,
                     sku
                 }],
@@ -65,6 +81,7 @@ const AddToCartWrapper = (props) => {
             })
         } else {
             CartResource.createItemByCartId(id, {
+                options,
                 productId: props.addToCartButton.productId,
                 quantity: qty,
                 sku,
@@ -109,7 +126,10 @@ const AddToCartWrapper = (props) => {
 
             {!props.disableOptionsSelector && !props.customOptionsSelector && (
                 <OptionsSelector
-                        options={props.optionsSelector}
+                    handleOptions={handleOptions}
+                    options={props.optionsSelector.options}
+                    setOptions={setOptions}
+                    size={props.optionsSelector.size}
                 />
             )}
 
@@ -122,6 +142,7 @@ const AddToCartWrapper = (props) => {
             {!props.disableAddToCartButton && !props.customAddToCartButton && (
                 <AddToCartButton 
                     accountId={props.addToCartButton.accountId}
+                    block={props.addToCartButton.block}
                     cartSymbol={props.addToCartButton.cartSymbol}
                     channelId={props.addToCartButton.channelId}
 
@@ -136,6 +157,7 @@ const AddToCartWrapper = (props) => {
                     orderId={orderId}
                     orderQuantity={quantity}
                     productId={props.addToCartButton.productId}
+                    rtl={props.addToCartButton.rtl}
                     setQuantity={setQuantity}
                     setSelectedQuantity={setSelectedQuantity}
                     skuId={props.skuId}
@@ -156,13 +178,12 @@ const AddToCartWrapper = (props) => {
 
 AddToCartWrapper.defaultProps = {
     addToCartButton: {
-        block: true,
-
+        block: false,
         buttonTextContent: 'Add to Cart',
-
         disabledProp: false,
         iconOnly: false,
         productInCart: true, // its fake
+        rtl: false
     },
 
     // customAddToCartButton: (props) => <CustomSelect {...props} />,
@@ -172,73 +193,76 @@ AddToCartWrapper.defaultProps = {
     disableAddToCartButton: false,
     disableOptionsSelector: false,
     disableQuantitySelector: false,
-    optionsSelector: [
-        {
-            name: 'size',
-            options: [
-                {
-                    label: 'Small',
-                    value: 'S'
-                },
-                {
-                    label: 'Medium',
-                    value: 'M'
-                },
-                {
-                    label: 'Big',
-                    value: 'XL'
-                },
-            ],
-            selectOrDatalist: 'select',
-            type: 'string',
-        },
-        {
-            name: 'color',
-            options: [
-                {
-                    label: 'Red',
-                    value: 'f00'
-                },
-                {
-                    label: 'Grey',
-                    value: '333'
-                },
-                {
-                    label: 'Violet',
-                    value: 'ee82ee'
-                },
-                {
-                    label: 'Porphyry Red',
-                    value: '984149'
-                },
-                {
-                    label: 'Mouse Grey',
-                    value: '6c6e6b'
-                },
-            ],
-            selectOrDatalist: 'datalist',
-            type: 'string'
-        },
-        {
-            name: 'availability',
-            options: [
-                {
-                    label: 'Available',
-                    value: 'available'
-                },
-                {
-                    label: 'In store only',
-                    value: 'store'
-                },
-                {
-                    label: 'Online',
-                    value: 'online'
-                },
-            ],
-            selectOrDatalist: 'select',
-            type: 'string'
-        }
-    ],
+    optionsSelector: {
+        options: [
+            {
+                name: 'size',
+                options: [
+                    {
+                        label: 'Small',
+                        value: 'S'
+                    },
+                    {
+                        label: 'Medium',
+                        value: 'M'
+                    },
+                    {
+                        label: 'Big',
+                        value: 'XL'
+                    },
+                ],
+                selectOrDatalist: 'select',
+                type: 'string',
+            },
+            {
+                name: 'color',
+                options: [
+                    {
+                        label: 'Red',
+                        value: 'f00'
+                    },
+                    {
+                        label: 'Grey',
+                        value: '333'
+                    },
+                    {
+                        label: 'Violet',
+                        value: 'ee82ee'
+                    },
+                    {
+                        label: 'Porphyry Red',
+                        value: '984149'
+                    },
+                    {
+                        label: 'Mouse Grey',
+                        value: '6c6e6b'
+                    },
+                ],
+                selectOrDatalist: 'datalist',
+                type: 'string'
+            },
+            {
+                name: 'availability',
+                options: [
+                    {
+                        label: 'Available',
+                        value: 'available'
+                    },
+                    {
+                        label: 'In store only',
+                        value: 'store'
+                    },
+                    {
+                        label: 'Online',
+                        value: 'online'
+                    },
+                ],
+                selectOrDatalist: 'select',
+                type: 'string'
+            }
+        ],
+        size: '400'
+    },
     quantitySelector: {
         disabled: false,
         selectOrDatalist: 'datalist',
@@ -266,6 +290,8 @@ AddToCartWrapper.propTypes = {
         orderId: PropTypes.number.isRequired,
         productId: PropTypes.number.isRequired,
         productInCart: PropTypes.bool,
+        rtl: PropTypes.bool,
+        size: PropTypes.oneOf(['large', 'medium', 'small']),
         spritemap: PropTypes.string.isRequired,
     }),
     customAddToCartButton: PropTypes.func,
@@ -274,15 +300,18 @@ AddToCartWrapper.propTypes = {
     disableAddToCartButton: PropTypes.bool,
     disableOptionsSelector: PropTypes.bool,
     disableQuantitySelector: PropTypes.bool,
-    optionsSelector: PropTypes.arrayOf(PropTypes.shape({
-        name: PropTypes.string,
+    optionsSelector: PropTypes.shape({
         options: PropTypes.arrayOf(PropTypes.shape({
-            label: PropTypes.string,
-            value: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+            name: PropTypes.string,
+            options: PropTypes.arrayOf(PropTypes.shape({
+                label: PropTypes.string,
+                value: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+            })),
+            selectOrDatalist: PropTypes.oneOf(['select', 'datalist']),
+            type: PropTypes.string
         })),
-        selectOrDatalist: PropTypes.oneOf(['select', 'datalist']),
-        type: PropTypes.string
-    })),
+        size: PropTypes.string,
+    }),
     orderQuantity: PropTypes.arrayOf(PropTypes.shape({
         label: PropTypes.number,
         value: PropTypes.number
@@ -297,12 +326,7 @@ AddToCartWrapper.propTypes = {
         prependedIcon: PropTypes.string,
         prependedText: PropTypes.string,
         selectOrDatalist: PropTypes.oneOf(['select', 'datalist']),
-
-        // size: PropTypes.oneOf(['large', 'medium', 'small']),
-
         spritemap: PropTypes.string,
-
-        // style: PropTypes.oneOf(['default', 'simple']),
     }),
     setQuantity: PropTypes.func,
     settings: PropTypes.shape({

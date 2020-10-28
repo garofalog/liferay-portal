@@ -101,8 +101,6 @@ function QuantitySelector(props) {
 }
 
 QuantitySelector.propTypes = {
-	// appendedIcon: PropTypes.string,
-	// appendedText: PropTypes.string,
 
 	disableAddToCartButton: PropTypes.bool,
 	disableQuantitySelector: PropTypes.bool,
@@ -113,10 +111,7 @@ QuantitySelector.propTypes = {
 		label: PropTypes.number,
 		value: PropTypes.number
 	})),
-
-	// prependedIcon: PropTypes.string,
-	// prependedText: PropTypes.string,
-
+	rtl: PropTypes.bool,
 	selectOrDatalist: PropTypes.oneOf(['select', 'datalist']),
 	setQuantity: PropTypes.func,
 	setSelectedQuantity: PropTypes.func,
@@ -133,9 +128,8 @@ QuantitySelector.propTypes = {
 	// size: PropTypes.oneOf(['large', 'medium', 'small']),
 
 	skuId: PropTypes.number,
-	spritemap: PropTypes.string,
+	spritemap: PropTypes.string
 
-	// style: PropTypes.oneOf(['default', 'simple']),
 };
 
 export default QuantitySelector;
