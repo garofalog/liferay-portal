@@ -47,35 +47,32 @@ const AddToCartWrapper = (props) => {
         }
     }, [props.settings])
 
-    useEffect(() => {
-
-        console.log(options)
-    }, [options])
+    // useEffect(() => {
+    //     console.log(options)
+    // }, [options])
 
     const handleOptions = (array) => {
         const a = options
-        console.log('option', a === [])
         let updatedA = []
-        
-        
         if (a.length < 1){
             updatedA.push(array[0])
         } else {
-
             const cu = a.filter(o => o.optionName !== array[0].optionName)
-        
-            console.log("filter",cu)
             cu.push(array[0])
             updatedA = cu
-
         }
-
-        setOptions(updatedA)
+        setOptions(JSON.stringify(updatedA))
     }
 
     const handleAddToCartData = (id, sku) => {
-        const qty = multipleQuantity === 1 ? selectedQuantity[0].value : multipleQuantity * selectedQuantity[0].value
-        if (!id || id === 0) {
+        let qty
+        try {
+            qty = multipleQuantity === 1 ? selectedQuantity[0].value : multipleQuantity * selectedQuantity[0].value
+        } catch (error) {
+            showNotification('Insert Quantity', 'danger', true, 500);
+            qty = 0
+        }
+        if (!id || id === 0 && qty !== 0) {
             CartResource.createCartByChannelId(props.addToCartButton.channelId, {
                 accountId: props.addToCartButton.accountId,
                 cartItems: [{
@@ -130,8 +127,8 @@ const AddToCartWrapper = (props) => {
                 />
             )}
 
-                {props.customQuantitySelector && (
-                    props.customQuantitySelector()
+            {props.customQuantitySelector && (
+                props.customQuantitySelector()
             )}
 
             {/****************************************************/}

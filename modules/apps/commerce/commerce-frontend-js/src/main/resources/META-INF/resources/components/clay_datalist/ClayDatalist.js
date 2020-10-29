@@ -73,7 +73,6 @@ ClayDatalist.propTypes = {
         selectOrDatalist: PropTypes.oneOf(['select', 'datalist']),
         type: PropTypes.string
     })),
-    setOptions: PropTypes.func
 };
 
 export default ClayDatalist;
