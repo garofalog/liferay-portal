@@ -31,7 +31,7 @@ const CartResource = ServiceProvider.DeliveryCartAPI('v1');
 
 const AddToCartWrapper = (props) => {
     const [accountId, setAccountId] = useState(props.accountId)
-    const [quantity, setQuantity] = useState(props.orderQuantity)
+    const [orderQuantity, setOrderQuantity] = useState(props.orderQuantity)
 
     // const [options, setOptions] = useState([])
 
@@ -42,19 +42,25 @@ const AddToCartWrapper = (props) => {
 
     useEffect(() => {
         setMultipleQuantity(props.settings.multipleQuantity)
-        if (props.settings.allowedQuantity[0].value !== -1) {
-            setQuantity(props.settings.allowedQuantity)
+        if (!arrayEquals(props.settings.allowedQuantity, [-1]) && props.settings.allowedQuantity !== undefined) {
+            const formatAllowed = []
+            props.settings.allowedQuantity.map(p => formatAllowed.push({label: p, value: p}))
+            setOrderQuantity(formatAllowed)
             setMultipleQuantity(1) 
+        } else {
+            setOrderQuantity(props.orderQuantity)
         }
         if (props.settings.multipleQuantity === undefined) {
             setMultipleQuantity(1) 
         }
-    }, [props.settings])
+    }, [props.settings, props.orderQuantity])
 
-    useEffect(() => {
-        setQuantity(quantity)
-    }, [props.orderQuantity])
-        
+    const arrayEquals = (a, b) => {
+        return Array.isArray(a) &&
+            Array.isArray(b) &&
+            a.length === b.length &&
+            a.every((val, index) => val === b[index]);
+    }
 
     useEffect(() => {
         if (props.skuId !== skuId) {
@@ -132,7 +138,7 @@ const AddToCartWrapper = (props) => {
         props.disableAddToCartButton && props.disableQuantitySelector ? "all Add To Cart components disabled" : (
         <>
             <div>
-                {props.settings.allowedQuantity[0].value !== -1 && (
+                {!arrayEquals(props.settings.allowedQuantity,[-1]) && (
                     <span className="">{Liferay.Language.get('select-the-product-quantity-allowedper-order')}</span>
                 )}
                 {props.settings.minQuantity > 1 && (
@@ -148,17 +154,14 @@ const AddToCartWrapper = (props) => {
 
             {!props.disableQuantitySelector && !props.customQuantitySelector && (
                 <QuantitySelector
-                    disableAddToCartButton={props.disableAddToCartButton}
-                    disableQuantitySelector={props.disableQuantitySelector}
-                    orderQuantity={quantity}
-                    setQuantity={setQuantity}
+                    orderQuantity={orderQuantity}
+                    setOrderQuantity={setOrderQuantity}
                     setSelectedQuantity={setSelectedQuantity}
 
                     // size="small"
 
                     skuId={props.skuId}
                     updatedQuantity={updatedQuantity}
-
                 />
             )}
 
@@ -173,17 +176,13 @@ const AddToCartWrapper = (props) => {
                     cartSymbol={props.addToCartButton.cartSymbol}
                     channelId={props.addToCartButton.channelId}
                     currencyCode={props.addToCartButton.currencyCode}
-                    disableAddToCartButton={props.disableAddToCartButton}
-                    disableQuantitySelector={props.disableQuantitySelector}
                     disabled={props.addToCartButton.disabledProp}
-                    handleAddToCartData={handleAddToCartData}
                     iconOnly={props.iconOnly}
                     orderId={orderId}
-                    orderQuantity={quantity}
+                    orderQuantity={orderQuantity}
                     productId={props.addToCartButton.productId}
                     rtl={props.addToCartButton.rtl}
-                    setQuantity={setQuantity}
-                    setSelectedQuantity={setSelectedQuantity}
+                    setOrderQuantity={setOrderQuantity}
                     skuId={props.skuId}
                     spritemap={props.addToCartButton.spritemap}
                     updatedQuantity={updatedQuantity}
@@ -223,7 +222,6 @@ AddToCartWrapper.propTypes = {
         channelId: PropTypes.number.isRequired,
         currencyCode: PropTypes.string,
         disabledProp: PropTypes.bool,
-        handleAddToCartData: PropTypes.func,
         iconOnly: PropTypes.bool,
         orderId: PropTypes.number.isRequired,
         productId: PropTypes.number.isRequired,
@@ -236,21 +234,7 @@ AddToCartWrapper.propTypes = {
     customOptionsSelector: PropTypes.func,
     customQuantitySelector: PropTypes.func,
     disableAddToCartButton: PropTypes.bool,
-    disableOptionsSelector: PropTypes.bool,
     disableQuantitySelector: PropTypes.bool,
-    optionsSelector: PropTypes.shape({
-        handleOptions: PropTypes.func,
-        options: PropTypes.arrayOf(PropTypes.shape({
-            name: PropTypes.string,
-            options: PropTypes.arrayOf(PropTypes.shape({
-                label: PropTypes.string,
-                value: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-            })),
-            selectOrDatalist: PropTypes.oneOf(['select', 'datalist']),
-            type: PropTypes.string
-        })),
-        size: PropTypes.string,
-    }),
     orderQuantity: PropTypes.arrayOf(PropTypes.shape({
         label: PropTypes.number,
         value: PropTypes.number
@@ -259,20 +243,20 @@ AddToCartWrapper.propTypes = {
         appendedIcon: PropTypes.string,
         appendedText: PropTypes.string,
         disabledProp: PropTypes.bool,
-        handleAddToCartData: PropTypes.func,
         inputName: PropTypes.string,
         onUpdate: PropTypes.func,
+        orderQuantity: PropTypes.arrayOf(PropTypes.shape({
+            label: PropTypes.number,
+            value: PropTypes.number
+        })),
         prependedIcon: PropTypes.string,
         prependedText: PropTypes.string,
         selectOrDatalist: PropTypes.oneOf(['select', 'datalist']),
         spritemap: PropTypes.string,
     }),
-    setQuantity: PropTypes.func,
+    setOrderQuantity: PropTypes.func,
     settings: PropTypes.shape({
-        allowedQuantity: PropTypes.arrayOf(PropTypes.shape({
-            label: PropTypes.number,
-            value: PropTypes.number
-        })),
+        allowedQuantity: PropTypes.arrayOf(PropTypes.number),
         maxQuantity: PropTypes.number,
         minQuantity: PropTypes.number,
         multipleQuantity: PropTypes.number

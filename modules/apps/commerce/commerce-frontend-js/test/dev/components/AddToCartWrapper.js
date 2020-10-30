@@ -86,47 +86,11 @@ launcher('add_to_cart', 'add-to-cart', {
 	settings: {
 		// NO ALLOWED QUANTITY SET
 
-		allowedQuantity: [{
-			label: 1,
-			value: -1
-		}],
-		multipleQuantity: 2,
+		// allowedQuantity: [-1],
 
-        // ALLOWED QUANTITY SET
-        // allowedQuantity: [
-        //     {
-        //         label: 1,
-        //         value: 1
-        //     },
-        //     {
-        //         label: 1,
-        //         value: 1
-        //     },
-        //     {
-        //         label: 2,
-        //         value: 2
-        //     },
-        //     {
-        //         label: 3,
-        //         value: 3
-        //     },
-        //     {
-        //         label: 5,
-        //         value: 5
-        //     },
-        //     {
-        //         label: 8,
-        //         value: 8
-        //     },
-        //     {
-        //         label: 13,
-        //         value: 13
-        //     },
-        //     {
-        //         label: 21,
-        //         value: 21
-        //     }
-        // ],
+		// allowedQuantity: [2,4,6667,2,44,1],
+
+		// multipleQuantity: 2
 	},
 	skuId: 43712, //43657,
 	// groupId: "40995", forse non serve

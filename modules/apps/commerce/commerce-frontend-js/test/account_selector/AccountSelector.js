@@ -69,7 +69,7 @@ describe('AccountSelector', () => {
 			cleanup();
 		});
 
-		it('if allowedQuantity is different from default {label:-1,value,-1} multipleQuantity shuould be set to 1"', () => {
+		it('if allowedQuantity is different from default [-1] multipleQuantity shuould be set to 1"', () => {
 			expect(
 				
 			).toBeInTheDocument();

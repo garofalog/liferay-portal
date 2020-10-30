@@ -12,6 +12,8 @@
  * details.
  */
 
+import {ClaySelect} from '@clayui/form'
+
 import ClayIcon, {ClayIconSpriteContext} from '@clayui/icon';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
@@ -37,7 +39,7 @@ function QuantitySelector(props) {
 	useEffect(() => {
 		
 			// if (props.settings.minQuantity <= props.orderQuantity && props.settings.maxQuantity >= props.orderQuantity) {
-			// 	props.setQuantity(props.orderQuantity)
+			// 	props.setOrderQuantity(props.orderQuantity)
 			// } else {
 			// 	props.setQuantity(props.settings.minQuantity)
 			// }	 

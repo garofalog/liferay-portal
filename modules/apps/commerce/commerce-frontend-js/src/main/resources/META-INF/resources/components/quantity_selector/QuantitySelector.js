@@ -100,13 +100,8 @@ QuantitySelector.propTypes = {
 	})),
 	rtl: PropTypes.bool,
 	selectOrDatalist: PropTypes.oneOf(['select', 'datalist']),
-	setQuantity: PropTypes.func,
-	setSelectedQuantity: PropTypes.func,
 	settings: PropTypes.shape({
-		allowedQuantity: PropTypes.arrayOf(PropTypes.shape({
-			label: PropTypes.number,
-			value: PropTypes.number
-		})),
+		allowedQuantity: PropTypes.arrayOf(PropTypes.number),
 		maxQuantity: PropTypes.number,
 		minQuantity: PropTypes.number,
 		multipleQuantity: PropTypes.number
@@ -117,7 +112,6 @@ QuantitySelector.propTypes = {
 	skuId: PropTypes.number,
 	spritemap: PropTypes.string,
 	updatedQuantity: PropTypes.func
-
 };
 
 export default QuantitySelector;

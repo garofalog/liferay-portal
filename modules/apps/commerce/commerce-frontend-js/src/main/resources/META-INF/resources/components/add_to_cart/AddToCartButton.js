@@ -91,7 +91,6 @@ AddToCartButton.propTypes = {
 	disableAddToCartButton: PropTypes.bool,
 	disableQuantitySelector: PropTypes.bool,
 	disabledProp: PropTypes.bool,
-	handleAddToCartData: PropTypes.func,
 	iconOnly: PropTypes.bool,
 	orderId: PropTypes.number,
 	orderQuantity: PropTypes.arrayOf(PropTypes.shape({
@@ -101,11 +100,9 @@ AddToCartButton.propTypes = {
 	productId: PropTypes.number.isRequired,
 	productInCart: PropTypes.bool,
 	rtl: PropTypes.bool,
-	setQuantity: PropTypes.func,
 	skuId: PropTypes.number,
 	spritemap: PropTypes.string.isRequired,
 	updatedQuantity: PropTypes.func
-
 };
 
 export default AddToCartButton;
