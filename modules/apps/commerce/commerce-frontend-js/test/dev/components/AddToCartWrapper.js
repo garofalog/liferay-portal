@@ -32,7 +32,6 @@ launcher('add_to_cart', 'add-to-cart', {
 
 	},
 
-
 	orderQuantity: [
 		{
 			label: 1,
@@ -71,6 +70,8 @@ launcher('add_to_cart', 'add-to-cart', {
 			value: 9
 		},
 	],
+	
+	
 
     // NO ALLOWED QUANTITY SET
     // [
@@ -89,6 +90,7 @@ launcher('add_to_cart', 'add-to-cart', {
 			label: 1,
 			value: -1
 		}],
+		multipleQuantity: 2,
 
         // ALLOWED QUANTITY SET
         // allowedQuantity: [

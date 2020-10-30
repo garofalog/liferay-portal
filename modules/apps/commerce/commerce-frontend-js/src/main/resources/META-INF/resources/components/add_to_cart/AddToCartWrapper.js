@@ -12,29 +12,33 @@
  * details.
  */
 
-import classNames from 'classnames';
+// import classNames from 'classnames';
+
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 
 import ServiceProvider from '../../ServiceProvider/index';
 import showNotification from '../../utilities/notifications';
-import OptionsSelector from '../options_selector/OptionsSelector'
-
 import QuantitySelector from '../quantity_selector/QuantitySelector'
 
-import CustomSelect from '../quantity_selector/customSelect'
+// import CustomSelect from '../quantity_selector/customSelect'
 
 import AddToCartButton from './AddToCartButton';
+
 
 
 const CartResource = ServiceProvider.DeliveryCartAPI('v1');
 
 const AddToCartWrapper = (props) => {
+    const [accountId, setAccountId] = useState(props.accountId)
     const [quantity, setQuantity] = useState(props.orderQuantity)
-    const [options, setOptions] = useState([])
+
+    // const [options, setOptions] = useState([])
+
     const [orderId, setOrderId] = useState(props.addToCartButton.orderId)
     const [multipleQuantity, setMultipleQuantity] = useState(props.settings.multipleQuantity)
     const [selectedQuantity, setSelectedQuantity] = useState()
+    const [skuId, setSkuId] = useState(props.skuId)
 
     useEffect(() => {
         setMultipleQuantity(props.settings.multipleQuantity)
@@ -42,32 +46,56 @@ const AddToCartWrapper = (props) => {
             setQuantity(props.settings.allowedQuantity)
             setMultipleQuantity(1) 
         }
-        if (props.multipleQuantity === undefined) {
+        if (props.settings.multipleQuantity === undefined) {
             setMultipleQuantity(1) 
         }
     }, [props.settings])
 
-    // useEffect(() => {
-    //     console.log(options)
-    // }, [options])
+    useEffect(() => {
+        setQuantity(quantity)
+    }, [props.orderQuantity])
+        
 
-    const handleOptions = (array) => {
-        const a = options
-        let updatedA = []
-        if (a.length < 1){
-            updatedA.push(array[0])
-        } else {
-            const cu = a.filter(o => o.optionName !== array[0].optionName)
-            cu.push(array[0])
-            updatedA = cu
+    useEffect(() => {
+        if (props.skuId !== skuId) {
+            setSkuId(props.skuId)
         }
-        setOptions(JSON.stringify(updatedA))
+        if (props.accountId !== accountId) {
+            setAccountId(props.accountId)
+        }
+        
+    }, [accountId, props.accountId, props.skuId, skuId])
+
+    // useEffect(() => {
+    //     function handleOrderUpdated(data) {
+    //         setOrderId(data.id)
+    //     }
+    //     Liferay.on(CURRENT_ORDER_UPDATED, handleOrderUpdated)
+
+    //     return () => Liferay.detach(CURRENT_ORDER_UPDATED, handleOrderUpdated);
+    // }, [])
+
+    const updatedQuantity = (who, value) => {
+        if (who === 'button') {
+            handleAddToCartData(orderId, skuId)
+        } else if (who === 'selector' && props.disableAddToCartButton) {
+            handleAddToCartData(orderId, skuId)
+        } else if (who === 'selector' && !props.disableAddToCartButton) {
+            setSelectedQuantity(value)
+        }
     }
+    
+    useEffect(() => {
+        if (props.disableAddToCartButton) {
+            props.handleAddToCartData(props.orderId, props.skuId)
+        }
+        console.log("trigg setSelectedQuantity")
+    }, [props.setSelectedQuantity])
 
     const handleAddToCartData = (id, sku) => {
         let qty
         try {
-            qty = multipleQuantity === 1 ? selectedQuantity[0].value : multipleQuantity * selectedQuantity[0].value
+            qty = multipleQuantity === 1 ? selectedQuantity : multipleQuantity * selectedQuantity
         } catch (error) {
             showNotification('Insert Quantity', 'danger', true, 500);
             qty = 0
@@ -76,7 +104,8 @@ const AddToCartWrapper = (props) => {
             CartResource.createCartByChannelId(props.addToCartButton.channelId, {
                 accountId: props.addToCartButton.accountId,
                 cartItems: [{
-                    options,
+                    // options: JSON.stringify(options),
+
                     quantity: qty,
                     sku
                 }],
@@ -90,7 +119,8 @@ const AddToCartWrapper = (props) => {
             })
         } else {
             CartResource.createItemByCartId(id, {
-                options,
+                // options: JSON.stringify(options),
+
                 productId: props.addToCartButton.productId,
                 quantity: qty,
                 sku,
@@ -101,29 +131,34 @@ const AddToCartWrapper = (props) => {
     return (
         props.disableAddToCartButton && props.disableQuantitySelector ? "all Add To Cart components disabled" : (
         <>
-            {/* move all the props HERE - outside child components */}
             <div>
-                {props.settings.allowedQuantity[0].value !== -1 && (<span className="">Select the product quantity allowed per order</span>)}
-                {props.settings.minQuantity > 1 && (<span className="">Minimum quantity per order: {props.settings.minQuantity}</span>)}
-                {props.settings.maxQuantity < 999 && (<span className="">Maximum quantity per order: {props.settings.maxQuantity}</span>)}
-                {multipleQuantity > 1 && (<span className="">Multiple quantity per order: {props.settings.multipleQuantity}</span>)}
+                {props.settings.allowedQuantity[0].value !== -1 && (
+                    <span className="">{Liferay.Language.get('select-the-product-quantity-allowedper-order')}</span>
+                )}
+                {props.settings.minQuantity > 1 && (
+                    <span className="">{Liferay.Language.get('select-the-product-quantity-allowedper-order')}:&nbsp;{props.settings.minQuantity}</span>
+                    )}
+                {props.settings.maxQuantity < 999 && (
+                    <span className="">{Liferay.Language.get('maximum-quantity-per-order')}:&nbsp;{props.settings.maxQuantity}</span>
+                )}
+                {multipleQuantity > 1 && (
+                    <span className="">{Liferay.Language.get('multiple-quantity-per-order')}:&nbsp;{props.settings.multipleQuantity}</span>
+                )}
             </div>
-
-            {/****************************************************/}
 
             {!props.disableQuantitySelector && !props.customQuantitySelector && (
                 <QuantitySelector
                     disableAddToCartButton={props.disableAddToCartButton}
                     disableQuantitySelector={props.disableQuantitySelector}
-                    handleAddToCartData={handleAddToCartData}
                     orderQuantity={quantity}
-                    selectOrDatalist={props.quantitySelector.selectOrDatalist}
                     setQuantity={setQuantity}
                     setSelectedQuantity={setSelectedQuantity}
 
                     // size="small"
 
                     skuId={props.skuId}
+                    updatedQuantity={updatedQuantity}
+
                 />
             )}
 
@@ -131,35 +166,16 @@ const AddToCartWrapper = (props) => {
                 props.customQuantitySelector()
             )}
 
-            {/****************************************************/}
-
-            {!props.disableOptionsSelector && !props.customOptionsSelector && (
-                <OptionsSelector
-                    handleOptions={handleOptions}
-                    options={props.optionsSelector.options}
-                    size={props.optionsSelector.size}
-                />
-            )}
-
-            {props.customOptionsSelector && (
-                props.customOptionsSelector()
-            )}
-
-            {/****************************************************/}
-
             {!props.disableAddToCartButton && !props.customAddToCartButton && (
                 <AddToCartButton 
                     accountId={props.addToCartButton.accountId}
                     block={props.addToCartButton.block}
                     cartSymbol={props.addToCartButton.cartSymbol}
                     channelId={props.addToCartButton.channelId}
-
-                    // componentId={props.componentId} // ????
-
                     currencyCode={props.addToCartButton.currencyCode}
                     disableAddToCartButton={props.disableAddToCartButton}
                     disableQuantitySelector={props.disableQuantitySelector}
-                    disabled={props.addToCartButton.disabled}
+                    disabled={props.addToCartButton.disabledProp}
                     handleAddToCartData={handleAddToCartData}
                     iconOnly={props.iconOnly}
                     orderId={orderId}
@@ -170,6 +186,7 @@ const AddToCartWrapper = (props) => {
                     setSelectedQuantity={setSelectedQuantity}
                     skuId={props.skuId}
                     spritemap={props.addToCartButton.spritemap}
+                    updatedQuantity={updatedQuantity}
                 />
             )}
 
@@ -177,23 +194,12 @@ const AddToCartWrapper = (props) => {
                 props.customAddToCartButton()
             )}
 
-            {/****************************************************/}
-
         </>
         )
     )
 }
 
 AddToCartWrapper.defaultProps = {
-    addToCartButton: {
-        block: false,
-        buttonTextContent: 'Add to Cart',
-        disabledProp: false,
-        iconOnly: false,
-        productInCart: true, // its fake
-        rtl: false
-    },
-
     // customAddToCartButton: (props) => <CustomSelect {...props} />,
     // customOptionsSelector: (props) => <CustomSelect {...props} />,
     // customQuantitySelector: (props) => <CustomSelect {...props} />,
@@ -201,82 +207,6 @@ AddToCartWrapper.defaultProps = {
     disableAddToCartButton: false,
     disableOptionsSelector: false,
     disableQuantitySelector: false,
-    optionsSelector: {
-        options: [
-            {
-                name: 'size',
-                options: [
-                    {
-                        label: 'Small',
-                        value: 'S'
-                    },
-                    {
-                        label: 'Medium',
-                        value: 'M'
-                    },
-                    {
-                        label: 'Big',
-                        value: 'XL'
-                    },
-                ],
-                selectOrDatalist: 'select',
-                type: 'string',
-            },
-            {
-                name: 'color',
-                options: [
-                    {
-                        label: 'Red',
-                        value: 'f00'
-                    },
-                    {
-                        label: 'Grey',
-                        value: '333'
-                    },
-                    {
-                        label: 'Violet',
-                        value: 'ee82ee'
-                    },
-                    {
-                        label: 'Porphyry Red',
-                        value: '984149'
-                    },
-                    {
-                        label: 'Mouse Grey',
-                        value: '6c6e6b'
-                    },
-                ],
-                selectOrDatalist: 'datalist',
-                type: 'string'
-            },
-            {
-                name: 'availability',
-                options: [
-                    {
-                        label: 'Available',
-                        value: 'available'
-                    },
-                    {
-                        label: 'In store only',
-                        value: 'store'
-                    },
-                    {
-                        label: 'Online',
-                        value: 'online'
-                    },
-                ],
-                selectOrDatalist: 'select',
-                type: 'string'
-            }
-        ],
-        size: '400'
-    },
-    quantitySelector: {
-        disabled: false,
-        selectOrDatalist: 'datalist',
-
-        // style: 'default',
-    },
     settings: {
         maxQuantity: 999,
         minQuantity: 1,
@@ -328,7 +258,7 @@ AddToCartWrapper.propTypes = {
     quantitySelector: PropTypes.shape({
         appendedIcon: PropTypes.string,
         appendedText: PropTypes.string,
-        disabled: PropTypes.bool,
+        disabledProp: PropTypes.bool,
         handleAddToCartData: PropTypes.func,
         inputName: PropTypes.string,
         onUpdate: PropTypes.func,

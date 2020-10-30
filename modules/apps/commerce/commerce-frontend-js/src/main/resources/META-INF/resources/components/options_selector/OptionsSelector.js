@@ -87,7 +87,84 @@ const OptionsSelector = (props) => {
 };
 
 OptionsSelector.defaultProps = {
-    size: 'limited'
+    options: {
+        options: [
+            {
+                name: 'size',
+                options: [
+                    {
+                        label: 'Select a size',
+                        value: ''
+                    },
+                    {
+                        label: 'Small',
+                        value: 'S'
+                    },
+                    {
+                        label: 'Medium',
+                        value: 'M'
+                    },
+                    {
+                        label: 'Big',
+                        value: 'XL'
+                    },
+                ],
+                selectOrDatalist: 'select',
+                type: 'string',
+            },
+            {
+                name: 'color',
+                options: [
+                    {
+                        label: 'Red',
+                        value: 'f00'
+                    },
+                    {
+                        label: 'Grey',
+                        value: '333'
+                    },
+                    {
+                        label: 'Violet',
+                        value: 'ee82ee'
+                    },
+                    {
+                        label: 'Porphyry Red',
+                        value: '984149'
+                    },
+                    {
+                        label: 'Mouse Grey',
+                        value: '6c6e6b'
+                    },
+                ],
+                selectOrDatalist: 'datalist',
+                type: 'string'
+            },
+            {
+                name: 'availability',
+                options: [
+                    {
+                        label: 'Select Availability',
+                        value: ''
+                    },
+                    {
+                        label: 'Available',
+                        value: 'available'
+                    },
+                    {
+                        label: 'In store only',
+                        value: 'store'
+                    },
+                    {
+                        label: 'Online',
+                        value: 'online'
+                    },
+                ],
+                selectOrDatalist: 'select',
+                type: 'string'
+            }
+        ],
+        size: 'limited',
+    },
 }
 
 OptionsSelector.propTypes = {

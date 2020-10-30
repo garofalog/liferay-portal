@@ -19,32 +19,10 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 
-// import ServiceProvider from '../../ServiceProvider/index';
-// import showNotification from '../../utilities/notifications';
-// const CartResource = ServiceProvider.DeliveryCartAPI('v1');
-
+import { CURRENT_ORDER_UPDATED } from '../../utilities/eventsDefinitions'
 
 const AddToCartButton = (props) => {
-	const [buttonText, setButtonText] = useState('')
-	const [updatingTransition, setUpdatingTransition] = useState('')
-
-	// const [quantity, setQuantity] = useState(1)
-
-	const [orderId, setOrderId] = useState(props.orderId)
-
-	const [skuId, setSkuId] = useState(props.skuId)
-
-	useEffect(() => {
-		props.setQuantity(props.orderQuantity)
-	},[props.orderQuantity])
-
-	useEffect(() => {
-		if (props.buttonTextContent && props.buttonTextContent !== '') {
-			setButtonText(props.buttonTextContent.lowercase.replace(/ /,"-"))
-		} else {
-			setButtonText('add-to-cart')
-		}
-	}, [props.buttonTextContent])
+	const [updatingTransition, setUpdatingTransition] = useState('') // <--
 
 	let markerStatus = ''
 	if (props.orderQuantity) {
@@ -56,13 +34,6 @@ const AddToCartButton = (props) => {
 	if (updatingTransition === 'incrementing') {
 		markerStatus = 'incrementing'
 	}
-
-	const sendCart = () => {
-		if (props.disableQuantitySelector) {
-			props.setSelectedQuantity([{ label: 1, value: 1 }])
-		}
-		props.handleAddToCartData(orderId, skuId)
-	}
 	
 	return (
 
@@ -70,8 +41,8 @@ const AddToCartButton = (props) => {
 			{props.iconOnly ? (
 				<ClayButtonWithIcon 
 					block={props.block}
-					disabled={!props.accountId || props.disabled}
-					onClick={() => sendCart()}
+					disabled={props.disabledProp}
+					onClick={() => props.updatedQuantity('button', 1)}
 					spritemap={props.spritemap} 
 					symbol={props.cartSymbol}
 				/>
@@ -80,13 +51,13 @@ const AddToCartButton = (props) => {
 					block={props.block}
 						className={classNames('btn-add-to-cart btn-lg', props.rtl ? 'rtl' : 'trl')}
 					disabled={!props.accountId || props.disabled}
-					onClick={() => sendCart()}
+					onClick={() => props.updatedQuantity('button', 1)}
 				>
 
-					{Liferay.Language.get(buttonText)}
+					{props.buttonTextContent || Liferay.Language.get('add-to-cart')}
 
 					<span className={classNames("add-to-cart-icon-container inline-item", props.orderQuantity && 'active', props.rtl ? 'mr-2' : 'ml-2')}>
-						<span className="add-to-cart-icon">
+						<span className="add-to-cart-ƒicon">
 								<ClayIcon 
 									spritemap={props.spritemap}
 									symbol={props.cartSymbol} 
@@ -96,7 +67,6 @@ const AddToCartButton = (props) => {
 							<span className={classNames("add-to-cart-quantity-marker", markerStatus)} ></span>
 						)}
 					</span>
-						{props.rtl}
 				</ClayButton>
 			)}
 			
@@ -104,15 +74,23 @@ const AddToCartButton = (props) => {
 	)
 }
 
+AddToCartButton.defaultProps = {
+	block: false,
+	buttonTextContent: 'Add to Cart',
+	disabledProp: false,
+	iconOnly: false,
+	productInCart: true, // its fake
+	rtl: false
+}
+
 AddToCartButton.propTypes = {
 	accountId: PropTypes.number,
 	block: PropTypes.bool,
 	buttonTextContent: PropTypes.string,
 	cartSymbol: PropTypes.string,
-	currencyCode: PropTypes.string,
 	disableAddToCartButton: PropTypes.bool,
 	disableQuantitySelector: PropTypes.bool,
-	disabled: PropTypes.bool,
+	disabledProp: PropTypes.bool,
 	handleAddToCartData: PropTypes.func,
 	iconOnly: PropTypes.bool,
 	orderId: PropTypes.number,
@@ -124,18 +102,10 @@ AddToCartButton.propTypes = {
 	productInCart: PropTypes.bool,
 	rtl: PropTypes.bool,
 	setQuantity: PropTypes.func,
-	setSelectedQuantity: PropTypes.func,
-	settings: PropTypes.shape({
-		allowedQuantity: PropTypes.arrayOf(PropTypes.shape({
-			label: PropTypes.number,
-			value: PropTypes.number
-		})),
-		maxQuantity: PropTypes.number,
-		minQuantity: PropTypes.number,
-		multipleQuantity: PropTypes.number
-	}),
 	skuId: PropTypes.number,
 	spritemap: PropTypes.string.isRequired,
+	updatedQuantity: PropTypes.func
+
 };
 
 export default AddToCartButton;

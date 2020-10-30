@@ -18,10 +18,6 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import React, {createRef, useEffect, useState} from 'react';
 
-import throttle from '../../utilities/throttle';
-
-// const THROTTLE_TIMEOUT = 1000;
-
 function QuantitySelector(props) {
 
 	const content = (
@@ -32,18 +28,12 @@ function QuantitySelector(props) {
 					<ClayInput
 						aria-label="Select Label"
 						className="quantitySelect"
-						disabled={props.disabled}
+						disabled={props.disabledProp}
 						id="quantitySelect"
 						list="quantity-selector-list"
 						onChange={ e => {
 							if (e.target.value !== '') {
-								{props.setSelectedQuantity([{
-									label: parseInt(e.target.value, 10),
-									value: parseInt(e.target.value, 10),
-								}])}
-							}
-							if (props.disableAddToCartButton) {
-								props.handleAddToCartData(props.orderId, props.skuId)
+								props.updatedQuantity('selector', parseInt(e.target.value, 10))
 							}
 						}}
 						pattern="[0-9]+" 
@@ -69,13 +59,7 @@ function QuantitySelector(props) {
 					disabled={props.disabled}
 					id="quantitySelect"
 					onChange={ e => {
-						props.setSelectedQuantity([{
-							label: parseInt(e.target.value, 10),
-							value: parseInt(e.target.value, 10),
-						}])
-						if (props.disableAddToCartButton){
-							props.handleAddToCartData(props.orderId, props.skuId)
-						}
+						props.updatedQuantity('selector', parseInt(e.target.value,10))	
 					}}
 				>	
 					{props.orderQuantity.map(item => (
@@ -100,12 +84,15 @@ function QuantitySelector(props) {
 	)
 }
 
-QuantitySelector.propTypes = {
+QuantitySelector.defaultProps = {
+	disabledProp: false,
+	selectOrDatalist: 'datalist',
+}
 
+QuantitySelector.propTypes = {
 	disableAddToCartButton: PropTypes.bool,
 	disableQuantitySelector: PropTypes.bool,
-	disabled: PropTypes.bool,
-	handleAddToCartData: PropTypes.func,
+	disabledProp: PropTypes.bool,
 	inputName: PropTypes.string,
 	orderQuantity: PropTypes.arrayOf(PropTypes.shape({
 		label: PropTypes.number,
@@ -128,7 +115,8 @@ QuantitySelector.propTypes = {
 	// size: PropTypes.oneOf(['large', 'medium', 'small']),
 
 	skuId: PropTypes.number,
-	spritemap: PropTypes.string
+	spritemap: PropTypes.string,
+	updatedQuantity: PropTypes.func
 
 };
 

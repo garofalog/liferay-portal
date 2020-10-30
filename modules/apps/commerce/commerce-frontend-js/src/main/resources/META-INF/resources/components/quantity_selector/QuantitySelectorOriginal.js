@@ -297,7 +297,7 @@ QuantitySelector.propTypes = {
 	 */
 	onUpdate: PropTypes.func,
 	orderQuantity: PropTypes.number,
-	prependedIcon: PropTypes.string,
+	prependedIcon: PropTypes.string, // 
 	prependedText: PropTypes.string,
 	setQuantity: PropTypes.func,
 	settings: PropTypes.shape({
