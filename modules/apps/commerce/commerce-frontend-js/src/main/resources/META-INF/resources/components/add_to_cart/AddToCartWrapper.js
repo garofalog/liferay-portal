@@ -72,15 +72,6 @@ const AddToCartWrapper = (props) => {
         
     }, [accountId, props.accountId, props.skuId, skuId])
 
-    // useEffect(() => {
-    //     function handleOrderUpdated(data) {
-    //         setOrderId(data.id)
-    //     }
-    //     Liferay.on(CURRENT_ORDER_UPDATED, handleOrderUpdated)
-
-    //     return () => Liferay.detach(CURRENT_ORDER_UPDATED, handleOrderUpdated);
-    // }, [])
-
     const updatedQuantity = (who, value) => {
         if (who === 'button') {
             handleAddToCartData(orderId, skuId)

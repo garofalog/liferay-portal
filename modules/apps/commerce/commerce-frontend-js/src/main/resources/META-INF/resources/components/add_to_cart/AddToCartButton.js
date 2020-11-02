@@ -15,7 +15,7 @@
 import ClayButton, {ClayButtonWithIcon} from '@clayui/button'
 
 import ClayIcon, { ClayIconSpriteContext } from '@clayui/icon';
-import classNames from 'classnames';
+import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 
@@ -49,14 +49,31 @@ const AddToCartButton = (props) => {
 			) : (
 				<ClayButton
 					block={props.block}
-						className={classNames('btn-add-to-cart btn-lg', props.rtl ? 'rtl' : 'trl')}
+					className={
+						classnames(
+							'btn-add-to-cart btn-lg',
+							'btn btn-monospaced btn-secondary',
+							props.rtl ? 'rtl' : 'trl',
+							props.size === 'small'
+							? 'btn-sm'
+							: props.size === 'large'
+							? 'btn-lg'
+							: null 
+						)
+					}
 					disabled={!props.accountId || props.disabled}
 					onClick={() => props.updatedQuantity('button', 1)}
 				>
 
 					{props.buttonTextContent || Liferay.Language.get('add-to-cart')}
 
-					<span className={classNames("add-to-cart-icon-container inline-item", props.orderQuantity && 'active', props.rtl ? 'mr-2' : 'ml-2')}>
+					<span className={
+						classnames(
+							"add-to-cart-icon-container inline-item", 
+							props.orderQuantity && 'active', 
+							props.rtl ? 'mr-2' : 'ml-2'
+						)
+					}>
 						<span className="add-to-cart-ƒicon">
 								<ClayIcon 
 									spritemap={props.spritemap}
@@ -64,7 +81,7 @@ const AddToCartButton = (props) => {
 								/>
 						</span>
 						{props.productInCart && (
-							<span className={classNames("add-to-cart-quantity-marker", markerStatus)} ></span>
+							<span className={classnames("add-to-cart-quantity-marker", markerStatus)} ></span>
 						)}
 					</span>
 				</ClayButton>

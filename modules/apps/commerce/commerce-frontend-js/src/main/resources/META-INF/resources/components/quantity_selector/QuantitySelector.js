@@ -27,7 +27,15 @@ function QuantitySelector(props) {
 				<>
 					<ClayInput
 						aria-label="Select Label"
-						className="quantitySelect"
+						classnames={
+							"quantitySelect",
+							"text-center",
+							props.size === 'small'
+							? 'form-control-sm'
+							: props.size === 'large'
+							? 'form-control-lg'
+							: null 
+						}
 						disabled={props.disabledProp}
 						id="quantitySelect"
 						list="quantity-selector-list"
@@ -55,7 +63,14 @@ function QuantitySelector(props) {
 			{props.selectOrDatalist === 'select' && (
 				<ClaySelect 
 					aria-label="Select Label"
-					className="quantitySelect"
+					classnames={classnames(
+						'quantitySelect',
+						props.size === 'small' 
+						? 'form-control-sm' 
+						: props.size === 'large' 
+						? 'form-control-lg' 
+						: null 
+					)}
 					disabled={props.disabled}
 					id="quantitySelect"
 					onChange={ e => {
@@ -107,7 +122,7 @@ QuantitySelector.propTypes = {
 		multipleQuantity: PropTypes.number
 	}),
 
-	// size: PropTypes.oneOf(['large', 'medium', 'small']),
+	size: PropTypes.oneOf(['large', 'medium', 'small']),
 
 	skuId: PropTypes.number,
 	spritemap: PropTypes.string,
