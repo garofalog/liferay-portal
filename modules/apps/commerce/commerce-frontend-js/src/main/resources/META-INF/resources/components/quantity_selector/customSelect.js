@@ -24,7 +24,7 @@ const CustomSelect = (props) => <ClaySelect {...props}/>
 //     const content = (
 //         <div className="quantity-selector">
 
-//             {props.selectOrDatalist === 'datalist' && (
+//             {props.style === 'datalist' && (
 //                 <>
 //                     <ClayInput
 //                         aria-label="Select Label"

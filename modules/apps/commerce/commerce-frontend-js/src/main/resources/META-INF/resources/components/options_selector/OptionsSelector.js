@@ -45,14 +45,14 @@ const OptionsSelector = (props) => {
         <div className='options-selector' style={optionStyle}>
 
             {props.options && props.options.map((op, i) => {
-                if (op.selectOrDatalist === 'datalist'){           
+                if (op.style === 'datalist'){           
                     return (
                     <ClayDatalist
                         handleOptions={props.handleOptions}
                         options={op} />
                     ) 
                 }
-                if (op.selectOrDatalist === 'select') {
+                if (op.style === 'select') {
                     return (
                         <ClaySelect
                             aria-label={op.name + `-label`}
@@ -109,7 +109,7 @@ OptionsSelector.defaultProps = {
                         value: 'XL'
                     },
                 ],
-                selectOrDatalist: 'select',
+                style: 'select',
                 type: 'string',
             },
             {
@@ -136,7 +136,7 @@ OptionsSelector.defaultProps = {
                         value: '6c6e6b'
                     },
                 ],
-                selectOrDatalist: 'datalist',
+                style: 'datalist',
                 type: 'string'
             },
             {
@@ -159,7 +159,7 @@ OptionsSelector.defaultProps = {
                         value: 'online'
                     },
                 ],
-                selectOrDatalist: 'select',
+                style: 'select',
                 type: 'string'
             }
         ],
@@ -175,7 +175,7 @@ OptionsSelector.propTypes = {
             label: PropTypes.string,
             value: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
         })),
-        selectOrDatalist: PropTypes.oneOf(['select', 'datalist']),
+        style: PropTypes.oneOf(['select', 'datalist']),
         type: PropTypes.string
     })),
     size: PropTypes.string

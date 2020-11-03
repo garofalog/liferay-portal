@@ -28,7 +28,6 @@ launcher('add_to_cart', 'add-to-cart', {
 		orderId: 43939,
 		productId: 43939, //43657, // "Mount"   no"43630",
 		rtl: true,
-		spritemap: './assets/icons.svg',
 
 	},
 
@@ -96,4 +95,7 @@ launcher('add_to_cart', 'add-to-cart', {
 	// groupId: "40995", forse non serve
 	// orderQuantity: 1,
 	// productInCart: false,
+
+	spritemap: './assets/icons.svg',
+
 });

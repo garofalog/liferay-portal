@@ -18,73 +18,83 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import React, {createRef, useEffect, useState} from 'react';
 
+import ClayDatalist from '../clay_datalist/ClayDatalist'
+
 function QuantitySelector(props) {
 
 	const content = (
-		<div className="quantity-selector">
+		<div className="input-group input-group-sm quantity-selector simple">
+			{(props.prependedIcon || props.prependedText) && (
+				<div className="input-group-item input-group-item-shrink input-group-prepend">
+					<span className="input-group-text">
+						{props.prependedIcon ? (
+							<ClayIcon 
+								spritemap={props.spritemap}
+								symbol={props.prependedIcon} />
+						) : (
+							props.prependedText
+						)}
+					</span>
+				</div>
+			)}
+			<div
+				className={classnames(
+					'input-group-item input-group-item-shrink',
+					(props.appendedIcon || props.appendedText) &&
+					'input-group-prepend'
+				)}
+			>
 
-			{props.selectOrDatalist === 'datalist' && (
-				<>
-					<ClayInput
-						aria-label="Select Label"
-						classnames={
-							"quantitySelect",
-							"text-center",
-							props.size === 'small'
-							? 'form-control-sm'
-							: props.size === 'large'
-							? 'form-control-lg'
-							: null 
-						}
-						disabled={props.disabledProp}
-						id="quantitySelect"
-						list="quantity-selector-list"
-						onChange={ e => {
-							if (e.target.value !== '') {
-								props.updatedQuantity('selector', parseInt(e.target.value, 10))
-							}
-						}}
-						pattern="[0-9]+" 
-						type="number"
-					>
-					</ClayInput>
-					<datalist id="quantity-selector-list">
-						{props.orderQuantity.map(item => (
-							<option 
-								key={item.value}
-								label={item.label}
-								value={item.value} />
-							
-						))}
-					</datalist>
-				</>
+			{props.style === 'datalist' && (
+				<ClayDatalist
+					disabledProp={props.disabledProp}
+					options={props.orderQuantity}
+					size={props.size}
+					updatedQuantity={props.updatedQuantity}
+				/>
 			)}
 			
-			{props.selectOrDatalist === 'select' && (
-				<ClaySelect 
-					aria-label="Select Label"
-					classnames={classnames(
-						'quantitySelect',
-						props.size === 'small' 
-						? 'form-control-sm' 
-						: props.size === 'large' 
-						? 'form-control-lg' 
-						: null 
-					)}
-					disabled={props.disabled}
-					id="quantitySelect"
-					onChange={ e => {
-						props.updatedQuantity('selector', parseInt(e.target.value,10))	
-					}}
-				>	
-					{props.orderQuantity.map(item => (
-						<ClaySelect.Option
-							key={item.value}
-							label={item.label}
-							value={item.value}
-						/>
-					))}
-				</ClaySelect>
+			{props.style === 'select' && (
+					<ClaySelect 
+						aria-label="Select Label"
+						classnames={classnames(
+							'quantitySelect',
+							props.size === 'small' 
+							? 'form-control-sm' 
+							: props.size === 'large' 
+							? 'form-control-lg' 
+							: null 
+						)}
+						disabled={props.disabledProp}
+						id="quantitySelect"
+						onChange={ e => {
+							props.updatedQuantity('selector', parseInt(e.target.value,10))	
+						}}
+					>	
+						{props.orderQuantity.map(item => (
+							<ClaySelect.Option
+								key={item.value}
+								label={item.label}
+								value={item.value}
+							/>
+						))}
+					</ClaySelect>
+			)}
+			
+			</div>
+			
+			{(props.appendedIcon || props.appendedText) && (
+				<div className="input-group-append input-group-item input-group-item-shrink">
+					<span className="input-group-text">
+						{props.appendedIcon ? (
+							<ClayIcon
+								spritemap={props.spritemap} 
+								symbol={props.appendedIcon} />
+						) : (
+								props.appendedText
+							)}
+					</span>
+				</div>
 			)}
 
 		</div>
@@ -101,10 +111,13 @@ function QuantitySelector(props) {
 
 QuantitySelector.defaultProps = {
 	disabledProp: false,
-	selectOrDatalist: 'datalist',
+	style: 'datalist',
+
 }
 
 QuantitySelector.propTypes = {
+	appendedIcon: PropTypes.string,
+	appendedText: PropTypes.string,
 	disableAddToCartButton: PropTypes.bool,
 	disableQuantitySelector: PropTypes.bool,
 	disabledProp: PropTypes.bool,
@@ -113,8 +126,9 @@ QuantitySelector.propTypes = {
 		label: PropTypes.number,
 		value: PropTypes.number
 	})),
+	prependedIcon: PropTypes.string,
+	prependedText: PropTypes.string,
 	rtl: PropTypes.bool,
-	selectOrDatalist: PropTypes.oneOf(['select', 'datalist']),
 	settings: PropTypes.shape({
 		allowedQuantity: PropTypes.arrayOf(PropTypes.number),
 		maxQuantity: PropTypes.number,
@@ -125,7 +139,10 @@ QuantitySelector.propTypes = {
 	size: PropTypes.oneOf(['large', 'medium', 'small']),
 
 	skuId: PropTypes.number,
-	spritemap: PropTypes.string,
+	
+	spritemap: PropTypes.string.isRequired,
+	style: PropTypes.oneOf(['select', 'datalist']),
+
 	updatedQuantity: PropTypes.func
 };
 

@@ -148,10 +148,8 @@ const AddToCartWrapper = (props) => {
                     orderQuantity={orderQuantity}
                     setOrderQuantity={setOrderQuantity}
                     setSelectedQuantity={setSelectedQuantity}
-
-                    // size="small"
-
                     skuId={props.skuId}
+                    spritemap={props.spritemap}
                     updatedQuantity={updatedQuantity}
                 />
             )}
@@ -175,7 +173,7 @@ const AddToCartWrapper = (props) => {
                     rtl={props.addToCartButton.rtl}
                     setOrderQuantity={setOrderQuantity}
                     skuId={props.skuId}
-                    spritemap={props.addToCartButton.spritemap}
+                    spritemap={props.spritemap}
                     updatedQuantity={updatedQuantity}
                 />
             )}
@@ -219,7 +217,6 @@ AddToCartWrapper.propTypes = {
         productInCart: PropTypes.bool,
         rtl: PropTypes.bool,
         size: PropTypes.oneOf(['large', 'medium', 'small']),
-        spritemap: PropTypes.string.isRequired,
     }),
     customAddToCartButton: PropTypes.func,
     customOptionsSelector: PropTypes.func,
@@ -242,8 +239,8 @@ AddToCartWrapper.propTypes = {
         })),
         prependedIcon: PropTypes.string,
         prependedText: PropTypes.string,
-        selectOrDatalist: PropTypes.oneOf(['select', 'datalist']),
         spritemap: PropTypes.string,
+        style: PropTypes.oneOf(['select', 'datalist']),
     }),
     setOrderQuantity: PropTypes.func,
     settings: PropTypes.shape({
@@ -253,6 +250,7 @@ AddToCartWrapper.propTypes = {
         multipleQuantity: PropTypes.number
     }),
     skuId: PropTypes.number.isRequired,
+    spritemap: PropTypes.string.isRequired,
 }
 
 export default AddToCartWrapper;

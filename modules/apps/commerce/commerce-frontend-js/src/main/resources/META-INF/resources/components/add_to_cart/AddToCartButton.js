@@ -51,8 +51,8 @@ const AddToCartButton = (props) => {
 					block={props.block}
 					className={
 						classnames(
-							'btn-add-to-cart btn-lg',
-							'btn btn-monospaced btn-secondary',
+							'btn-add-to-cart',
+							'btn-secondary',
 							props.rtl ? 'rtl' : 'trl',
 							props.size === 'small'
 							? 'btn-sm'
@@ -74,7 +74,7 @@ const AddToCartButton = (props) => {
 							props.rtl ? 'mr-2' : 'ml-2'
 						)
 					}>
-						<span className="add-to-cart-ƒicon">
+						<span className="add-to-cart-icon">
 								<ClayIcon 
 									spritemap={props.spritemap}
 									symbol={props.cartSymbol} 

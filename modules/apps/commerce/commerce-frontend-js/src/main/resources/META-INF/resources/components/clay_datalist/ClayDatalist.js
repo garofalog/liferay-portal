@@ -13,17 +13,18 @@
  */
 
 import { ClayInput } from '@clayui/form';
+import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 const ClayDatalist = (props) => {
-    const op = props.options
-    const gHash = string => {
+    const name = props.options.name || 'qty-datalist'
+    const gHash = s => {
         const h = 0;
-        if (string.length == 0)
+        if (s.length == 0)
             {return h}
-        Array.from(string.length).forEach((h,i) => {
-            var charCode = string.charCodeAt(i);
+        Array.from(s.length).forEach((h,i) => {
+            var charCode = s.charCodeAt(i);
             h = ((h << 7) - h) + charCode;
             h = h & h;
         });
@@ -34,32 +35,43 @@ const ClayDatalist = (props) => {
     return (
         <>
             <ClayInput
-                aria-label={op.name + `-`+ gHash(op.name) + `-label`}
-                className="options-selector-item"
-                id={`order-select-`}
-                list={`order-select-` + gHash(op.name) + `-list`}
+                aria-label={name + `-` + gHash(name) + `-label`}
+                className={classnames(
+                    "quantitySelect",
+                    "text-center",
+                    props.size === 'small'
+                        ? 'form-control-sm'
+                        : props.size === 'large'
+                            ? 'form-control-lg'
+                            : null
+                )}
+                disabled={props.disabledProp}
+                id={`cs-`}
+                list={`cs-` + gHash(name) + `-list`}
                 onChange={e => {
-                    if (e.target.value !== '') {
-                        props.handleOptions([{
-                            label: e.target.value,
-                            optionName: op.name,
-                            value: e.target.value,
-                        }])
-                    }
+                    // eslint-disable-next-line no-unused-expressions
+                    name === 'qty-datalist' && e.target.value !== ''
+                    ? props.updatedQuantity('selector', parseInt(e.target.value, 10)) 
+                    : props.updateOption()
                 }}
-                type={op.type}
+                pattern={props.pattern}
+                type={props.type}
             >
             </ClayInput>
-            <datalist id={`order-select-` + gHash(op.name) + `-list`}>
-                {op.options.map((it, i) => (
+            <datalist id={`cs-` + gHash(name) + `-list`}>
+                {props.options.map((it) => (
                     <option
-                        key={it.label.replace(/ /, '-') + i}
+                        key={isNaN(it.label) ? it.label.replace(/ /, '-') : it.label }
                         label={it.value}
                         value={it.label} />
                 ))}
             </datalist>
         </>
     )
+}
+
+ClayDatalist.defaultProps = {
+    type: 'number'
 }
 
 ClayDatalist.propTypes = {
@@ -70,9 +82,14 @@ ClayDatalist.propTypes = {
             label: PropTypes.string,
             value: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
         })),
-        selectOrDatalist: PropTypes.oneOf(['select', 'datalist']),
+        pattern: PropTypes.string,
+        style: PropTypes.oneOf(['select', 'datalist']),
         type: PropTypes.string
     })),
+    size: PropTypes.string,
+    type: PropTypes.string,
+    updateOption: PropTypes.func,
+    updatedQuantity: PropTypes.func,
 };
 
 export default ClayDatalist;
