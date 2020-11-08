@@ -32,6 +32,7 @@ const CartResource = ServiceProvider.DeliveryCartAPI('v1');
 const AddToCartWrapper = (props) => {
     const [accountId, setAccountId] = useState(props.accountId)
     const [orderQuantity, setOrderQuantity] = useState(props.orderQuantity)
+    const [disabled, setDisabled] = useState(undefined)
 
     // const [options, setOptions] = useState([])
 
@@ -43,9 +44,7 @@ const AddToCartWrapper = (props) => {
     useEffect(() => {
         setMultipleQuantity(props.settings.multipleQuantity)
         if (!arrayEquals(props.settings.allowedQuantity, [-1]) && props.settings.allowedQuantity !== undefined) {
-            const formatAllowed = []
-            props.settings.allowedQuantity.map(p => formatAllowed.push({label: p, value: p}))
-            setOrderQuantity(formatAllowed)
+            setOrderQuantity(props.settings.allowedQuantity)
             setMultipleQuantity(1) 
         } else {
             setOrderQuantity(props.orderQuantity)
@@ -53,7 +52,11 @@ const AddToCartWrapper = (props) => {
         if (props.settings.multipleQuantity === undefined) {
             setMultipleQuantity(1) 
         }
+
     }, [props.settings, props.orderQuantity])
+
+        
+    
 
     const arrayEquals = (a, b) => {
         return Array.isArray(a) &&
@@ -69,15 +72,31 @@ const AddToCartWrapper = (props) => {
         if (props.accountId !== accountId) {
             setAccountId(props.accountId)
         }
+
+        if (accountId === undefined || skuId === undefined) {
+            setDisabled(true)
+        } else {
+            setDisabled(false)
+        }
         
     }, [accountId, props.accountId, props.skuId, skuId])
 
-    const updatedQuantity = (who, value) => {
+    useEffect(() => {
+        if (orderId !== props.orderId) {
+            setOrderId(props.orderId)
+            setSelectedQuantity(0)
+
+            // resetinputquantity
+        }
+
+    }, [orderId])
+
+    const updateQuantity = (who, value) => {
         if (who === 'button') {
             handleAddToCartData(orderId, skuId)
-        } else if (who === 'selector' && props.disableAddToCartButton) {
+        } else if (who === 'select' && props.disableAddToCartButton) {
             handleAddToCartData(orderId, skuId)
-        } else if (who === 'selector' && !props.disableAddToCartButton) {
+        } else if (who === 'select' && !props.disableAddToCartButton) {
             setSelectedQuantity(value)
         }
     }
@@ -86,7 +105,6 @@ const AddToCartWrapper = (props) => {
         if (props.disableAddToCartButton) {
             props.handleAddToCartData(props.orderId, props.skuId)
         }
-        console.log("trigg setSelectedQuantity")
     }, [props.setSelectedQuantity])
 
     const handleAddToCartData = (id, sku) => {
@@ -125,6 +143,63 @@ const AddToCartWrapper = (props) => {
         }
     }
 
+    // useEffect(() => {
+    //     if (disabled) {
+    //         showNotification('no-account-selected', 'danger',true, 500);
+    //     }
+    // }, [disabled])
+
+    useEffect(() => {
+
+    },[props.productId])
+
+
+    // credo la logica sia cambiata
+    // function _handleCartProductRemoval({ skuId }) {
+    //     if (skuId === parseInt(this.productId, 10) || skuId === 'all') {
+    //         quantity = 0;
+    //         _resetInputQuantity();
+    //     }
+    // }
+
+    // function _doSubmit() {
+
+    //     // return fetch(this.cartAPI, {
+    //     //     body: formData,
+    //     //     method: 'POST',
+    //     // }).then((response) => response.json()).then((jsonResponse) => {
+
+    //         if (jsonResponse.success) {
+
+    //             Liferay.fire(CURRENT_ORDER_UPDATED, {
+    //                 id: jsonResponse.orderId,
+    //                 orderStatusInfo: jsonResponse.orderStatusInfo,
+    //             });
+
+    //             this._animateMarker(this.quantity);
+    //             this.quantity = this.inputQuantity;
+    //             this._resetInputQuantity(this);
+    //         }
+    //         else if (jsonResponse.errorMessages) {
+    //             showNotification(jsonResponse.errorMessages[0], 'danger');
+    //         }
+    //         else {
+    //             const validatorErrors = jsonResponse.validatorErrors;
+
+    //             if (validatorErrors) {
+    //                 validatorErrors.forEach((validatorError) => {
+    //                     showNotification(validatorError.message, 'danger');
+    //                 });
+    //             }
+    //             else {
+    //                 showNotification(jsonResponse.error, 'danger');
+    //             }
+    //         }
+
+    //     // })
+    //     //     .catch(console.error);
+    // }
+
     return (
         props.disableAddToCartButton && props.disableQuantitySelector ? "all Add To Cart components disabled" : (
         <>
@@ -150,7 +225,7 @@ const AddToCartWrapper = (props) => {
                     setSelectedQuantity={setSelectedQuantity}
                     skuId={props.skuId}
                     spritemap={props.spritemap}
-                    updatedQuantity={updatedQuantity}
+                    updateQuantity={updateQuantity}
                 />
             )}
 
@@ -165,7 +240,7 @@ const AddToCartWrapper = (props) => {
                     cartSymbol={props.addToCartButton.cartSymbol}
                     channelId={props.addToCartButton.channelId}
                     currencyCode={props.addToCartButton.currencyCode}
-                    disabled={props.addToCartButton.disabledProp}
+                    disabled={props.addToCartButton.disabled}
                     iconOnly={props.iconOnly}
                     orderId={orderId}
                     orderQuantity={orderQuantity}
@@ -174,7 +249,7 @@ const AddToCartWrapper = (props) => {
                     setOrderQuantity={setOrderQuantity}
                     skuId={props.skuId}
                     spritemap={props.spritemap}
-                    updatedQuantity={updatedQuantity}
+                    updateQuantity={updateQuantity}
                 />
             )}
 
@@ -196,7 +271,7 @@ AddToCartWrapper.defaultProps = {
     disableOptionsSelector: false,
     disableQuantitySelector: false,
     settings: {
-        maxQuantity: 999,
+        maxQuantity: 100,
         minQuantity: 1,
         multipleQuantity: 1,
     }
@@ -204,17 +279,11 @@ AddToCartWrapper.defaultProps = {
 
 AddToCartWrapper.propTypes = {
     addToCartButton: PropTypes.shape({
-        accountId: PropTypes.number,
         block: PropTypes.bool,
         buttonTextContent: PropTypes.string,
         cartSymbol: PropTypes.string,
-        channelId: PropTypes.number.isRequired,
-        currencyCode: PropTypes.string,
-        disabledProp: PropTypes.bool,
+        disabled: PropTypes.bool,
         iconOnly: PropTypes.bool,
-        orderId: PropTypes.number.isRequired,
-        productId: PropTypes.number.isRequired,
-        productInCart: PropTypes.bool,
         rtl: PropTypes.bool,
         size: PropTypes.oneOf(['large', 'medium', 'small']),
     }),
@@ -223,20 +292,14 @@ AddToCartWrapper.propTypes = {
     customQuantitySelector: PropTypes.func,
     disableAddToCartButton: PropTypes.bool,
     disableQuantitySelector: PropTypes.bool,
-    orderQuantity: PropTypes.arrayOf(PropTypes.shape({
-        label: PropTypes.number,
-        value: PropTypes.number
-    })),
+    orderQuantity: PropTypes.arrayOf(PropTypes.number),
     quantitySelector: PropTypes.shape({
         appendedIcon: PropTypes.string,
         appendedText: PropTypes.string,
-        disabledProp: PropTypes.bool,
+        disabled: PropTypes.bool,
         inputName: PropTypes.string,
         onUpdate: PropTypes.func,
-        orderQuantity: PropTypes.arrayOf(PropTypes.shape({
-            label: PropTypes.number,
-            value: PropTypes.number
-        })),
+        orderQuantity: PropTypes.arrayOf(PropTypes.number),
         prependedIcon: PropTypes.string,
         prependedText: PropTypes.string,
         spritemap: PropTypes.string,

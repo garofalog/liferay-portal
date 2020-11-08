@@ -18,7 +18,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 const ClayDatalist = (props) => {
-    const name = props.options.name || 'qty-datalist'
+    const name = props.options?.name || 'qty-datalist'
     const gHash = s => {
         const h = 0;
         if (s.length == 0)
@@ -51,7 +51,7 @@ const ClayDatalist = (props) => {
                 onChange={e => {
                     // eslint-disable-next-line no-unused-expressions
                     name === 'qty-datalist' && e.target.value !== ''
-                    ? props.updatedQuantity('selector', parseInt(e.target.value, 10)) 
+                    ? props.updateQuantity('select', parseInt(e.target.value, 10)) 
                     : props.updateOption()
                 }}
                 pattern={props.pattern}
@@ -59,11 +59,11 @@ const ClayDatalist = (props) => {
             >
             </ClayInput>
             <datalist id={`cs-` + gHash(name) + `-list`}>
-                {props.options.map((it) => (
+                {props.options.map( it => (
                     <option
-                        key={isNaN(it.label) ? it.label.replace(/ /, '-') : it.label }
-                        label={it.value}
-                        value={it.label} />
+                        key={it + gHash(name)}
+                        label={it}
+                        value={it} />
                 ))}
             </datalist>
         </>
@@ -76,12 +76,9 @@ ClayDatalist.defaultProps = {
 
 ClayDatalist.propTypes = {
     handleOptions: PropTypes.func,
-    options: PropTypes.arrayOf(PropTypes.shape({
+    items: PropTypes.arrayOf(PropTypes.shape({
         name: PropTypes.string,
-        options: PropTypes.arrayOf(PropTypes.shape({
-            label: PropTypes.string,
-            value: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-        })),
+        options: PropTypes.arrayOf(PropTypes.number),
         pattern: PropTypes.string,
         style: PropTypes.oneOf(['select', 'datalist']),
         type: PropTypes.string
@@ -89,7 +86,7 @@ ClayDatalist.propTypes = {
     size: PropTypes.string,
     type: PropTypes.string,
     updateOption: PropTypes.func,
-    updatedQuantity: PropTypes.func,
+    updateQuantity: PropTypes.func,
 };
 
 export default ClayDatalist;

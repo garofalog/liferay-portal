@@ -17,23 +17,49 @@ import ClayButton, {ClayButtonWithIcon} from '@clayui/button'
 import ClayIcon, { ClayIconSpriteContext } from '@clayui/icon';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { CURRENT_ORDER_UPDATED } from '../../utilities/eventsDefinitions'
 
-const AddToCartButton = (props) => {
-	const [updatingTransition, setUpdatingTransition] = useState('') // <--
+import showNotification from '../../utilities/notifications';
 
-	let markerStatus = ''
-	if (props.orderQuantity) {
-		markerStatus = 'active'
-	}
-	if (updatingTransition === 'adding')  {
-		markerStatus = 'adding'
-	}
-	if (updatingTransition === 'incrementing') {
-		markerStatus = 'incrementing'
-	}
+const AddToCartButton = (props) => {
+	const quantityMarkerRef = useRef(null)
+	const [markerStatus, setMarkerStatus] = useState('')
+
+	useEffect(() => {
+
+		function _handleMarkerAnimation() {
+			setMarkerStatus(null)
+			quantityMarkerRef.current?.removeEventListener(
+				'animationend',
+				_handleMarkerAnimation
+			);
+		}
+
+		if (props.quantity !== 0) {
+			setMarkerStatus('adding')
+		} 
+
+		// else {
+		// 	setmarkerStatus('incrementing')
+		// }
+
+		quantityMarkerRef.current?.addEventListener(
+			'animationend',
+			_handleMarkerAnimation
+		);		
+		
+	}, [props.quantity])
+
+	let markerStatusClass = ''
+	if (markerStatus === 'adding')  {
+		markerStatusClass = 'adding'
+	} else if (markerStatus === 'incrementing') {
+		markerStatusClass = 'incrementing'
+	} else if (props.orderQuantity && props.orderQuantity > 0) {
+		markerStatusClass = 'active'
+	} 
 	
 	return (
 
@@ -41,8 +67,8 @@ const AddToCartButton = (props) => {
 			{props.iconOnly ? (
 				<ClayButtonWithIcon 
 					block={props.block}
-					disabled={props.disabledProp}
-					onClick={() => props.updatedQuantity('button', 1)}
+					disabled={props.disabled}
+					onClick={() => props.updateQuantity('button', 1)}
 					spritemap={props.spritemap} 
 					symbol={props.cartSymbol}
 				/>
@@ -52,7 +78,6 @@ const AddToCartButton = (props) => {
 					className={
 						classnames(
 							'btn-add-to-cart',
-							'btn-secondary',
 							props.rtl ? 'rtl' : 'trl',
 							props.size === 'small'
 							? 'btn-sm'
@@ -61,11 +86,11 @@ const AddToCartButton = (props) => {
 							: null 
 						)
 					}
-					disabled={!props.accountId || props.disabled}
-					onClick={() => props.updatedQuantity('button', 1)}
+					disabled={props.disabledProp}
+					onClick={() => props.updateQuantity('button', 1)}
 				>
 
-					{props.buttonTextContent || Liferay.Language.get('add-to-cart')}
+					{props.buttonTextContent  }
 
 					<span className={
 						classnames(
@@ -80,9 +105,7 @@ const AddToCartButton = (props) => {
 									symbol={props.cartSymbol} 
 								/>
 						</span>
-						{props.productInCart && (
-							<span className={classnames("add-to-cart-quantity-marker", markerStatus)} ></span>
-						)}
+						<span className={classnames("add-to-cart-quantity-marker", markerStatusClass)} ref={quantityMarkerRef} ></span>
 					</span>
 				</ClayButton>
 			)}
@@ -93,33 +116,24 @@ const AddToCartButton = (props) => {
 
 AddToCartButton.defaultProps = {
 	block: false,
-	buttonTextContent: 'Add to Cart',
-	disabledProp: false,
+	buttonTextContent: Liferay.Language.get('add-to-cart'),
+	cartSymbol: 'shopping-cart',
+	disabled: false,
 	iconOnly: false,
-	productInCart: true, // its fake
 	rtl: false
 }
 
 AddToCartButton.propTypes = {
-	accountId: PropTypes.number,
 	block: PropTypes.bool,
 	buttonTextContent: PropTypes.string,
 	cartSymbol: PropTypes.string,
-	disableAddToCartButton: PropTypes.bool,
-	disableQuantitySelector: PropTypes.bool,
-	disabledProp: PropTypes.bool,
+	disabled: PropTypes.bool,
 	iconOnly: PropTypes.bool,
-	orderId: PropTypes.number,
-	orderQuantity: PropTypes.arrayOf(PropTypes.shape({
-		label: PropTypes.number,
-		value: PropTypes.number
-	})),
-	productId: PropTypes.number.isRequired,
-	productInCart: PropTypes.bool,
+	orderQuantity: PropTypes.arrayOf(PropTypes.number),
+	quantity: PropTypes.number,
 	rtl: PropTypes.bool,
-	skuId: PropTypes.number,
 	spritemap: PropTypes.string.isRequired,
-	updatedQuantity: PropTypes.func
+	updateQuantity: PropTypes.func
 };
 
 export default AddToCartButton;

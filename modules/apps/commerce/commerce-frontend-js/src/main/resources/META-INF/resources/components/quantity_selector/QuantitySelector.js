@@ -47,10 +47,10 @@ function QuantitySelector(props) {
 
 			{props.style === 'datalist' && (
 				<ClayDatalist
-					disabledProp={props.disabledProp}
+					disabled={props.disabled}
 					options={props.orderQuantity}
 					size={props.size}
-					updatedQuantity={props.updatedQuantity}
+					updateQuantity={props.updateQuantity}
 				/>
 			)}
 			
@@ -65,17 +65,17 @@ function QuantitySelector(props) {
 							? 'form-control-lg' 
 							: null 
 						)}
-						disabled={props.disabledProp}
+						disabled={props.disabled}
 						id="quantitySelect"
 						onChange={ e => {
-							props.updatedQuantity('selector', parseInt(e.target.value,10))	
+							props.updateQuantity('select', parseInt(e.target.value,10))	
 						}}
 					>	
 						{props.orderQuantity.map(item => (
 							<ClaySelect.Option
-								key={item.value}
-								label={item.label}
-								value={item.value}
+								key={item}
+								label={item}
+								value={item}
 							/>
 						))}
 					</ClaySelect>
@@ -110,7 +110,7 @@ function QuantitySelector(props) {
 }
 
 QuantitySelector.defaultProps = {
-	disabledProp: false,
+	disabled: false,
 	style: 'datalist',
 
 }
@@ -120,12 +120,9 @@ QuantitySelector.propTypes = {
 	appendedText: PropTypes.string,
 	disableAddToCartButton: PropTypes.bool,
 	disableQuantitySelector: PropTypes.bool,
-	disabledProp: PropTypes.bool,
+	disabled: PropTypes.bool,
 	inputName: PropTypes.string,
-	orderQuantity: PropTypes.arrayOf(PropTypes.shape({
-		label: PropTypes.number,
-		value: PropTypes.number
-	})),
+	orderQuantity: PropTypes.arrayOf(PropTypes.number),
 	prependedIcon: PropTypes.string,
 	prependedText: PropTypes.string,
 	rtl: PropTypes.bool,
@@ -135,15 +132,11 @@ QuantitySelector.propTypes = {
 		minQuantity: PropTypes.number,
 		multipleQuantity: PropTypes.number
 	}),
-
 	size: PropTypes.oneOf(['large', 'medium', 'small']),
-
 	skuId: PropTypes.number,
-	
 	spritemap: PropTypes.string.isRequired,
 	style: PropTypes.oneOf(['select', 'datalist']),
-
-	updatedQuantity: PropTypes.func
+	updateQuantity: PropTypes.func
 };
 
 export default QuantitySelector;

@@ -21,7 +21,6 @@ launcher('add_to_cart', 'add-to-cart', {
 		accountId: 43936,//48323, // falzo
 		// block: true,
 
-		cartSymbol: 'shopping-cart',
 		channelId: 41005, //43940,
 		currencyCode: 'USD',
 		disabledProp: false,
@@ -30,47 +29,7 @@ launcher('add_to_cart', 'add-to-cart', {
 		rtl: true,
 
 	},
-
-	orderQuantity: [
-		{
-			label: 1,
-			value: 1
-		},
-		{
-			label: 2,
-			value: 2
-		},
-		{
-			label: 3,
-			value: 3
-		},
-		{
-			label: 4,
-			value: 4
-		},
-		{
-			label: 5,
-			value: 5
-		},
-		{
-			label: 6,
-			value: 6
-		},
-		{
-			label: 7,
-			value: 7
-		},
-		{
-			label: 8,
-			value: 8
-		},
-		{
-			label: 9,
-			value: 9
-		},
-	],
-	
-	
+	orderQuantity: Array.from({ length: 99 }, (_, i) => i + 1),
 
     // NO ALLOWED QUANTITY SET
     // [
@@ -83,11 +42,15 @@ launcher('add_to_cart', 'add-to-cart', {
 	// disableQuantitySelector: false,
 	
 	settings: {
+		allowedQuantity: [2, 4, 6667, 3, 44, 1],
+
+		maxQuantity: 100,
+		minQuantity: 1,
+
 		// NO ALLOWED QUANTITY SET
 
 		// allowedQuantity: [-1],
 
-		// allowedQuantity: [2,4,6667,2,44,1],
 
 		// multipleQuantity: 2
 	},
