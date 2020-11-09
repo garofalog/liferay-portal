@@ -1,5 +1,5 @@
 .add-to-cart {
-	margin: .5rem;
+	margin: 0.5rem;
 	&-block {
 		input {
 			width: 60px;
@@ -60,7 +60,7 @@
 		transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 	width: 6px;
 	z-index: 1;
-	opacity: .5;
+	opacity: 0.5;
 	transform: scale(1);
 
 	&.active {
@@ -129,7 +129,6 @@
 		transform: scale(1.7);
 	}
 }
-
 
 // #add-to-cart {
 // 	.cart-circle-container {
