@@ -17,45 +17,45 @@ import launcher from '../../../src/main/resources/META-INF/resources/components/
 import '../../../src/main/resources/META-INF/resources/styles/main.scss';
 
 launcher('add_to_cart', 'add-to-cart', {
-	accountId: 43936,//48323, // falzo
+	accountId: 43936, //48323,
 
 	addToCartButton: {
+
 		// block: true,
 
-		
 		disabled: false,
 		rtl: true,
-
 	},
 	channelId: 41005, //43940,
 	currencyCode: 'USD',
 	orderId: 43939,
 
-	orderQuantity: Array.from({ length: 99 }, (_, i) => i + 1),
+	orderQuantity: Array.from({length: 99}, (_, i) => i + 1),
 
-    // NO ALLOWED QUANTITY SET
-    // [
-    //     {
-    //         label: 1,
-    //         value: 1
-    //     }
-    // ],
+	// NO ALLOWED QUANTITY SET
+	// [
+	//     {
+	//         label: 1,
+	//         value: 1
+	//     }
+	// ],
 	// disableAddToCartButton: false,
 	// disableQuantitySelector: false,
 	productId: 43939, //43657, // "Mount"   no"43630",
 
 	settings: {
-		// allowedQuantity: [2, 4, 6667, 3, 44, 1],
+
+		// allowedQuantities: [2, 4, 6667, 3, 44, 1],
 
 		maxQuantity: 81,
 		minQuantity: 1,
 
 		// NO ALLOWED QUANTITY SET
 
-		// allowedQuantity: [-1],
+		// allowedQuantities: [-1],
 
+		// multipleQuantities: 2
 
-		// multipleQuantity: 2
 	},
 	skuId: 43712, //43657,
 	// groupId: "40995", forse non serve
@@ -63,5 +63,4 @@ launcher('add_to_cart', 'add-to-cart', {
 	// productInCart: false,
 
 	spritemap: './assets/icons.svg',
-
 });
