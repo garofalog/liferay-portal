@@ -302,7 +302,7 @@ function defineServerResponses(app) {
 						inputName: 'sdf-quantity',
 						maxQuantity: 1000,
 						minQuantity: 2,
-						multipleQuantity: 2,
+						multipleQuantities: 2,
 						quantity: 6,
 					},
 					type: {

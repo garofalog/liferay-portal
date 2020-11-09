@@ -24,7 +24,7 @@ launcher('quantity-selector', 'quantity-selector-root-id', {
 	inputName: 'test-name',
 	maxQuantity: 10000,
 	minQuantity: 2,
-	multipleQuantity: 2,
+	multipleQuantities: 2,
 	quantity: 10,
 	size: 'large',
 	spritemap: './assets/icons.svg',

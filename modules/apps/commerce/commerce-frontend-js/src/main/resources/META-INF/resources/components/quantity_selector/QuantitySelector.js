@@ -12,15 +12,33 @@
  * details.
  */
 
-import { ClayInput, ClaySelect } from '@clayui/form';
+import {ClayInput, ClaySelect} from '@clayui/form';
 import ClayIcon, {ClayIconSpriteContext} from '@clayui/icon';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import React, {createRef, useEffect, useState} from 'react';
 
-import ClayDatalist from '../clay_datalist/ClayDatalist'
+import Datalist from '../datalist/Datalist';
+
+function generateOptions(min, max, multiple = 1, allowedQuantities) {
+	if(allowedQuantities !== [-1]) {
+		return Array.from({length: allowedQuantities.length}).map((_, i) => <option key={i} value={allowedQuantities[i]}>{allowedQuantities[i]}</option>)
+	}
+	const optionsList = []
+	for (let i = min; i <= max; i + multiple) {
+		optionsList.push(<option key={i} value={i}>{i}</option>)
+	}
+
+	return optionsList;
+}
 
 function QuantitySelector(props) {
+	const options = generateOptions(
+		props.settings.min,
+		props.settings.max,
+		props.settings.multiple,
+		props.settings.allowedQuantities
+	)
 
 	const content = (
 		<div className="input-group input-group-sm quantity-selector simple">
@@ -28,9 +46,10 @@ function QuantitySelector(props) {
 				<div className="input-group-item input-group-item-shrink input-group-prepend">
 					<span className="input-group-text">
 						{props.prependedIcon ? (
-							<ClayIcon 
+							<ClayIcon
 								spritemap={props.spritemap}
-								symbol={props.prependedIcon} />
+								symbol={props.prependedIcon}
+							/>
 						) : (
 							props.prependedText
 						)}
@@ -41,62 +60,50 @@ function QuantitySelector(props) {
 				className={classnames(
 					'input-group-item input-group-item-shrink',
 					(props.appendedIcon || props.appendedText) &&
-					'input-group-prepend'
+						'input-group-prepend'
 				)}
 			>
+				{props.style === 'datalist' && (
+					<Datalist
+						disabled={props.disabled}
+						size={props.size}
+						updateQuantity={(e) => props.updateQuantity(e.target.value)}
+					>
+						{options}
+					</Datalist>
+				)}
 
-			{props.style === 'datalist' && (
-				<ClayDatalist
-					disabled={props.disabled}
-					options={props.orderQuantity}
-					size={props.size}
-					updateQuantity={props.updateQuantity}
-				/>
-			)}
-			
-			{props.style === 'select' && (
-					<ClaySelect 
+				{props.style === 'select' && (
+					<ClaySelect
 						aria-label="Select Label"
 						classnames={classnames(
 							'quantitySelect',
-							props.size === 'small' 
-							? 'form-control-sm' 
-							: props.size === 'large' 
-							? 'form-control-lg' 
-							: null 
+							props.size === 'small' && 'form-control-sm',
+							props.size === 'large' && 'form-control-lg'
 						)}
 						disabled={props.disabled}
 						id="quantitySelect"
-						onChange={ e => {
-							props.updateQuantity('select', parseInt(e.target.value,10))	
-						}}
-					>	
-						{props.orderQuantity.map(item => (
-							<ClaySelect.Option
-								key={item}
-								label={item}
-								value={item}
-							/>
-						))}
+						onChange={(e) => props.updateQuantity('select', e.target.value)}
+					>
+						{options}
 					</ClaySelect>
-			)}
-			
+				)}
 			</div>
-			
+
 			{(props.appendedIcon || props.appendedText) && (
 				<div className="input-group-append input-group-item input-group-item-shrink">
 					<span className="input-group-text">
 						{props.appendedIcon ? (
 							<ClayIcon
-								spritemap={props.spritemap} 
-								symbol={props.appendedIcon} />
+								spritemap={props.spritemap}
+								symbol={props.appendedIcon}
+							/>
 						) : (
-								props.appendedText
-							)}
+							props.appendedText
+						)}
 					</span>
 				</div>
 			)}
-
 		</div>
 	);
 
@@ -104,16 +111,15 @@ function QuantitySelector(props) {
 		<ClayIconSpriteContext.Provider value={props.spritemap}>
 			{content}
 		</ClayIconSpriteContext.Provider>
-		) : (
+	) : (
 		content
-	)
+	);
 }
 
 QuantitySelector.defaultProps = {
 	disabled: false,
 	style: 'datalist',
-
-}
+};
 
 QuantitySelector.propTypes = {
 	appendedIcon: PropTypes.string,
@@ -127,16 +133,15 @@ QuantitySelector.propTypes = {
 	prependedText: PropTypes.string,
 	rtl: PropTypes.bool,
 	settings: PropTypes.shape({
-		allowedQuantity: PropTypes.arrayOf(PropTypes.number),
+		allowedQuantities: PropTypes.arrayOf(PropTypes.number),
 		maxQuantity: PropTypes.number,
 		minQuantity: PropTypes.number,
-		multipleQuantity: PropTypes.number
+		multipleQuantities: PropTypes.number,
 	}),
 	size: PropTypes.oneOf(['large', 'medium', 'small']),
-	skuId: PropTypes.number,
 	spritemap: PropTypes.string.isRequired,
 	style: PropTypes.oneOf(['select', 'datalist']),
-	updateQuantity: PropTypes.func
+	updateQuantity: PropTypes.func,
 };
 
 export default QuantitySelector;
