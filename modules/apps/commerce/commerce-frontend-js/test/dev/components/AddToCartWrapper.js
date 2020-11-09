@@ -17,18 +17,20 @@ import launcher from '../../../src/main/resources/META-INF/resources/components/
 import '../../../src/main/resources/META-INF/resources/styles/main.scss';
 
 launcher('add_to_cart', 'add-to-cart', {
+	accountId: 43936,//48323, // falzo
+
 	addToCartButton: {
-		accountId: 43936,//48323, // falzo
 		// block: true,
 
-		channelId: 41005, //43940,
-		currencyCode: 'USD',
-		disabledProp: false,
-		orderId: 43939,
-		productId: 43939, //43657, // "Mount"   no"43630",
+		
+		disabled: false,
 		rtl: true,
 
 	},
+	channelId: 41005, //43940,
+	currencyCode: 'USD',
+	orderId: 43939,
+
 	orderQuantity: Array.from({ length: 99 }, (_, i) => i + 1),
 
     // NO ALLOWED QUANTITY SET
@@ -40,11 +42,12 @@ launcher('add_to_cart', 'add-to-cart', {
     // ],
 	// disableAddToCartButton: false,
 	// disableQuantitySelector: false,
-	
-	settings: {
-		allowedQuantity: [2, 4, 6667, 3, 44, 1],
+	productId: 43939, //43657, // "Mount"   no"43630",
 
-		maxQuantity: 100,
+	settings: {
+		// allowedQuantity: [2, 4, 6667, 3, 44, 1],
+
+		maxQuantity: 81,
 		minQuantity: 1,
 
 		// NO ALLOWED QUANTITY SET

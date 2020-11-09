@@ -36,7 +36,7 @@ const AddToCartWrapper = (props) => {
 
     // const [options, setOptions] = useState([])
 
-    const [orderId, setOrderId] = useState(props.addToCartButton.orderId)
+    const [orderId, setOrderId] = useState(props.orderId)
     const [multipleQuantity, setMultipleQuantity] = useState(props.settings.multipleQuantity)
     const [selectedQuantity, setSelectedQuantity] = useState()
     const [skuId, setSkuId] = useState(props.skuId)
@@ -47,7 +47,8 @@ const AddToCartWrapper = (props) => {
             setOrderQuantity(props.settings.allowedQuantity)
             setMultipleQuantity(1) 
         } else {
-            setOrderQuantity(props.orderQuantity)
+            const quantities = Array.from({ length: props.settings.maxQuantity }, (_, i) => i + 1)
+            setOrderQuantity(quantities)
         }
         if (props.settings.multipleQuantity === undefined) {
             setMultipleQuantity(1) 
@@ -88,8 +89,9 @@ const AddToCartWrapper = (props) => {
 
             // resetinputquantity
         }
+        console.log("c")
 
-    }, [orderId])
+    }, [orderId, props.orderId])
 
     const updateQuantity = (who, value) => {
         if (who === 'button') {
@@ -116,15 +118,15 @@ const AddToCartWrapper = (props) => {
             qty = 0
         }
         if (!id || id === 0 && qty !== 0) {
-            CartResource.createCartByChannelId(props.addToCartButton.channelId, {
-                accountId: props.addToCartButton.accountId,
+            CartResource.createCartByChannelId(props.channelId, {
+                accountId: props.accountId,
                 cartItems: [{
                     // options: JSON.stringify(options),
 
                     quantity: qty,
                     sku
                 }],
-                currencyCode: props.addToCartButton.currencyCode
+                currencyCode: props.currencyCode
             }).then((data) => {
                 if (id !== data.id) {
                     setOrderId(data.id)
@@ -136,7 +138,7 @@ const AddToCartWrapper = (props) => {
             CartResource.createItemByCartId(id, {
                 // options: JSON.stringify(options),
 
-                productId: props.addToCartButton.productId,
+                productId: props.productId,
                 quantity: qty,
                 sku,
             })
@@ -223,7 +225,6 @@ const AddToCartWrapper = (props) => {
                     orderQuantity={orderQuantity}
                     setOrderQuantity={setOrderQuantity}
                     setSelectedQuantity={setSelectedQuantity}
-                    skuId={props.skuId}
                     spritemap={props.spritemap}
                     updateQuantity={updateQuantity}
                 />
@@ -235,19 +236,13 @@ const AddToCartWrapper = (props) => {
 
             {!props.disableAddToCartButton && !props.customAddToCartButton && (
                 <AddToCartButton 
-                    accountId={props.addToCartButton.accountId}
                     block={props.addToCartButton.block}
                     cartSymbol={props.addToCartButton.cartSymbol}
-                    channelId={props.addToCartButton.channelId}
-                    currencyCode={props.addToCartButton.currencyCode}
                     disabled={props.addToCartButton.disabled}
                     iconOnly={props.iconOnly}
-                    orderId={orderId}
                     orderQuantity={orderQuantity}
-                    productId={props.addToCartButton.productId}
                     rtl={props.addToCartButton.rtl}
                     setOrderQuantity={setOrderQuantity}
-                    skuId={props.skuId}
                     spritemap={props.spritemap}
                     updateQuantity={updateQuantity}
                 />
@@ -278,6 +273,7 @@ AddToCartWrapper.defaultProps = {
 }
 
 AddToCartWrapper.propTypes = {
+    accountId: PropTypes.number.isRequired,
     addToCartButton: PropTypes.shape({
         block: PropTypes.bool,
         buttonTextContent: PropTypes.string,
@@ -287,12 +283,16 @@ AddToCartWrapper.propTypes = {
         rtl: PropTypes.bool,
         size: PropTypes.oneOf(['large', 'medium', 'small']),
     }),
+    channelId: PropTypes.string.isRequired,
+    currencyCode: PropTypes.string,
     customAddToCartButton: PropTypes.func,
     customOptionsSelector: PropTypes.func,
     customQuantitySelector: PropTypes.func,
     disableAddToCartButton: PropTypes.bool,
     disableQuantitySelector: PropTypes.bool,
+    orderId: PropTypes.number,
     orderQuantity: PropTypes.arrayOf(PropTypes.number),
+    productId: PropTypes.string,
     quantitySelector: PropTypes.shape({
         appendedIcon: PropTypes.string,
         appendedText: PropTypes.string,
