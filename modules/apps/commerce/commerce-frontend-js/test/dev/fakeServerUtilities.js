@@ -74,7 +74,7 @@ function defineServerResponses(app) {
 						label: 'Test 1',
 					},
 					testQuantity: {
-						allowedQuantities: [3, 6, 7, 100],
+						allowedQuantity: [3, 6, 7, 100],
 						disabled: false,
 						inputName: 'asd-quantity',
 						quantity: 6,
@@ -302,7 +302,7 @@ function defineServerResponses(app) {
 						inputName: 'sdf-quantity',
 						maxQuantity: 1000,
 						minQuantity: 2,
-						multipleQuantities: 2,
+						multipleQuantity: 2,
 						quantity: 6,
 					},
 					type: {

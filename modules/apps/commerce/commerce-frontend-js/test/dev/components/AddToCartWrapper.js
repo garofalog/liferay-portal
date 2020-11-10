@@ -45,16 +45,16 @@ launcher('add_to_cart', 'add-to-cart', {
 
 	settings: {
 
-		// allowedQuantities: [2, 4, 6667, 3, 44, 1],
+		// allowedQuantity: [2, 4, 6667, 3, 44, 1],
 
 		maxQuantity: 81,
 		minQuantity: 1,
 
 		// NO ALLOWED QUANTITY SET
 
-		// allowedQuantities: [-1],
+		// allowedQuantity: [-1],
 
-		// multipleQuantities: 2
+		// multipleQuantity: 2
 
 	},
 	skuId: 43712, //43657,

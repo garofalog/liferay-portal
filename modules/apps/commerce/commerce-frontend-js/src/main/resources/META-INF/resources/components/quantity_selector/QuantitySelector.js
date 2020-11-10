@@ -20,9 +20,9 @@ import React, {createRef, useEffect, useState} from 'react';
 
 import Datalist from '../datalist/Datalist';
 
-function generateOptions(min, max, multiple = 1, allowedQuantities) {
-	if(allowedQuantities !== [-1]) {
-		return Array.from({length: allowedQuantities.length}).map((_, i) => <option key={i} value={allowedQuantities[i]}>{allowedQuantities[i]}</option>)
+function generateOptions(min, max, multiple = 1, allowedQuantity) {
+	if(allowedQuantity !== [-1]) {
+		return Array.from({length: allowedQuantity.length}).map((_, i) => <option key={i} value={allowedQuantity[i]}>{allowedQuantity[i]}</option>)
 	}
 	const optionsList = []
 	for (let i = min; i <= max; i + multiple) {
@@ -37,7 +37,7 @@ function QuantitySelector(props) {
 		props.settings.min,
 		props.settings.max,
 		props.settings.multiple,
-		props.settings.allowedQuantities
+		props.settings.allowedQuantity
 	)
 
 	const content = (
@@ -133,10 +133,10 @@ QuantitySelector.propTypes = {
 	prependedText: PropTypes.string,
 	rtl: PropTypes.bool,
 	settings: PropTypes.shape({
-		allowedQuantities: PropTypes.arrayOf(PropTypes.number),
+		allowedQuantity: PropTypes.arrayOf(PropTypes.number),
 		maxQuantity: PropTypes.number,
 		minQuantity: PropTypes.number,
-		multipleQuantities: PropTypes.number,
+		multipleQuantity: PropTypes.number,
 	}),
 	size: PropTypes.oneOf(['large', 'medium', 'small']),
 	spritemap: PropTypes.string.isRequired,

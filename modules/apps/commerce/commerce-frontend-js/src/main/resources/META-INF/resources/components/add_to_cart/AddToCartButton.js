@@ -60,7 +60,7 @@ const AddToCartButton = (props) => {
 				<ClayButtonWithIcon
 					block={props.block}
 					disabled={props.disabled}
-					onClick={props.updateQuantity}
+					onClick={props.updateQuantity('button', 1)}
 					symbol={props.cartSymbol}
 				/>
 			) : (
@@ -73,7 +73,7 @@ const AddToCartButton = (props) => {
 						props.size === 'large' && 'btn-lg'
 					)}
 					disabled={props.disabledProp}
-					onClick={props.updateQuantity}
+					onClick={props.updateQuantity('button', 1)}
 				>
 					{props.buttonTextContent}
 
