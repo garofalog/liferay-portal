@@ -87,9 +87,7 @@ const AddToCartWrapper = (props) => {
             setOrderId(props.orderId)
             setSelectedQuantity(0)
 
-            // resetinputquantity
         }
-        console.log("c")
 
     }, [orderId, props.orderId])
 
@@ -283,7 +281,7 @@ AddToCartWrapper.propTypes = {
         rtl: PropTypes.bool,
         size: PropTypes.oneOf(['large', 'medium', 'small']),
     }),
-    channelId: PropTypes.string.isRequired,
+    channelId: PropTypes.number.isRequired,
     currencyCode: PropTypes.string,
     customAddToCartButton: PropTypes.func,
     customOptionsSelector: PropTypes.func,
@@ -292,7 +290,7 @@ AddToCartWrapper.propTypes = {
     disableQuantitySelector: PropTypes.bool,
     orderId: PropTypes.number,
     orderQuantity: PropTypes.arrayOf(PropTypes.number),
-    productId: PropTypes.string,
+    productId: PropTypes.number,
     quantitySelector: PropTypes.shape({
         appendedIcon: PropTypes.string,
         appendedText: PropTypes.string,
