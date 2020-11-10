@@ -14,11 +14,6 @@
 
 module.exports = [
 	{
-		entry: 'AccountSelector',
-		name: 'Account Selector',
-		page: 'account-selector.html',
-	},
-	{
 		entry: 'AddToCart',
 		name: 'Add To Cart',
 		page: 'add-to-cart.html',
