@@ -93,8 +93,9 @@ const AddToCartWrapper = (props) => {
 		} else {
 			setDisabled(false)
 		}
-		props.addToCartButton.disabled = disabled
-		props.quantitySelector.disabled = disabled
+
+		// props.addToCartButton.disabled = disabled
+		// props.quantitySelector.disabled = disabled
 	}, [accountId, props.skuId, orderId])
 
 
@@ -180,6 +181,7 @@ const AddToCartWrapper = (props) => {
 
 			{!props.disableQuantitySelector && !props.customQuantitySelector && (
 				<QuantitySelector
+					disabled={disabled}
 					orderQuantity={orderQuantity}
 					settings={props.settings}
 					spritemap={props.spritemap}
@@ -194,7 +196,9 @@ const AddToCartWrapper = (props) => {
 					block={props.addToCartButton.block}
 					cartSymbol={props.addToCartButton.cartSymbol}
 					disabled={disabled}
+
 					iconOnly={props.iconOnly}
+					orderQuantity={orderQuantity}
 					rtl={props.addToCartButton.rtl}
                     updateQuantity={updateQuantity}
                 />
@@ -232,7 +236,7 @@ AddToCartWrapper.propTypes = {
 		rtl: PropTypes.bool,
 		size: PropTypes.oneOf(['large', 'medium', 'small']),
 	}),
-	channelId: PropTypes.string.isRequired,
+	channelId: PropTypes.number.isRequired,
 	currencyCode: PropTypes.string,
 	customAddToCartButton: PropTypes.func,
 	customOptionsSelector: PropTypes.func,
@@ -241,7 +245,7 @@ AddToCartWrapper.propTypes = {
 	disableQuantitySelector: PropTypes.bool,
 	orderId: PropTypes.number.isRequired,
 	orderQuantity: PropTypes.arrayOf(PropTypes.number),
-	productId: PropTypes.string.isRequired,
+	productId: PropTypes.number.isRequired,
 	quantitySelector: PropTypes.shape({
 		appendedIcon: PropTypes.string,
 		appendedText: PropTypes.string,

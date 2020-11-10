@@ -21,7 +21,7 @@ import React, {createRef, useEffect, useState} from 'react';
 import Datalist from '../datalist/Datalist';
 
 function generateOptions(min, max, multiple = 1, allowedQuantity) {
-	if(allowedQuantity !== [-1]) {
+	if(allowedQuantity !== [-1] && allowedQuantity !== undefined) {
 		return Array.from({length: allowedQuantity.length}).map((_, i) => <option key={i} value={allowedQuantity[i]}>{allowedQuantity[i]}</option>)
 	}
 	const optionsList = []
