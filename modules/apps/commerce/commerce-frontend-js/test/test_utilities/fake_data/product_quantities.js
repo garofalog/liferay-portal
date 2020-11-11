@@ -12,20 +12,29 @@
  * details.
  */
 
-<<<<<<< HEAD:modules/apps/data-engine/data-engine-rest-impl/src/main/resources/META-INF/resources/index.es.js
-export default {};
-=======
-export const DEFAULT = 'default';
-export const BLOCK = 'block';
+export const testAllowedQuantities = [
+	2,
+	4,
+	65,
+	33,
+	913,
+	267,
+	323,
+	122,
+	90,
+	113,
+];
 
-export const INPUT_STYLE = {
-	[BLOCK]: {
-		display: BLOCK,
-		width: '100%',
-	},
-	[DEFAULT]: {
-		display: BLOCK,
-		width: '176px',
-	},
+export const settingsAllowedQuantities = {
+	allowedQuantity: testAllowedQuantities,
+	maxQuantity: 99,
+	minQuantity: 1,
+	multipleQuantity: 5,
 };
->>>>>>> COMMERCE-5173 new QuantitySelector component:modules/apps/commerce/commerce-frontend-js/src/main/resources/META-INF/resources/components/quantity_selector/utils/constants.js
+
+export const settingsMultipleQuantity = {
+	allowedQuantity: [-1],
+	maxQuantity: 99,
+	minQuantity: 1,
+	multipleQuantity: 5,
+};
