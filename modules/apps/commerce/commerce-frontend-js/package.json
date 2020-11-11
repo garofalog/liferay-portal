@@ -32,7 +32,8 @@
 	},
 	"jest": {
 		"testPathIgnorePatterns": [
-			"<rootDir>/test/dev/"
+			"<rootDir>/test/dev/",
+			"<rootDir>/test/utilities"
 		]
 	},
 	"name": "commerce-frontend-js",

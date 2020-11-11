@@ -201,11 +201,10 @@ function CartItem({item: cartItem}) {
 
 			<div className={'mini-cart-item-quantity'}>
 				<QuantitySelector
-					onUpdate={updateItemQuantity}
 					quantity={quantity}
 					size={'small'}
 					spritemap={spritemap}
-					throttleOnUpdate={true}
+					updateQuantity={updateItemQuantity}
 					{...settings}
 				/>
 			</div>

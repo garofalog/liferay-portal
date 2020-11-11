@@ -12,246 +12,126 @@
  * details.
  */
 
+import {ClaySelect} from '@clayui/form';
 import ClayIcon, {ClayIconSpriteContext} from '@clayui/icon';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
-import React, {createRef, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 
-import throttle from '../../utilities/throttle';
-
-const THROTTLE_TIMEOUT = 1000;
+import Datalist from '../datalist/Datalist';
+import {generateOptions, getInputStyle} from './utils/index';
 
 function QuantitySelector(props) {
-	const [currentQuantity, setCurrentQuantity] = useState(
-		!!props.minQuantity && props.minQuantity > props.quantity
-			? props.minQuantity
-			: props.quantity
-	);
-	const [nextAvailable, setNextAvailable] = useState(
-		currentQuantity + props.multipleQuantity <= props.maxQuantity
-	);
-	const [prevAvailable, setPrevAvailable] = useState(
-		currentQuantity - props.multipleQuantity >= props.minQuantity
-	);
-	const [isThrottling, setIsThrottling] = useState(false);
+	const [selectedQuantity, setSelectedQuantity] = useState(props.quantity);
 
-	const inputRef = createRef();
+	const quantitiesList = generateOptions(props.settings);
+
+	const updateQuantity = useCallback(
+		(q) => {
+			if (q !== null) {
+				setSelectedQuantity(q);
+				try {
+					props.updateQuantity(q);
+				}
+				catch (event) {
+					// eslint-disable-next-line no-console
+					console.log('stand alone component');
+				}
+			}
+		},
+		[props]
+	);
+
+	const inputStyle = getInputStyle(props.inputSize);
 
 	useEffect(() => {
-		setCurrentQuantity(props.quantity);
-	}, [props.quantity, setCurrentQuantity]);
-
-	useEffect(() => {
-		if (props.throttleOnUpdate) {
-			setIsThrottling(true);
-
-			props.onUpdate(currentQuantity).then(() => setIsThrottling(false));
+		if (props.quantity) {
+			updateQuantity(props.quantity);
 		}
 		else {
-			props.onUpdate(currentQuantity);
+			updateQuantity(selectedQuantity);
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [currentQuantity]);
-
-	useEffect(() => {
-		setNextAvailable(
-			currentQuantity + props.multipleQuantity <= props.maxQuantity
-		);
-		setPrevAvailable(
-			currentQuantity - props.multipleQuantity >= props.minQuantity
-		);
-	}, [
-		currentQuantity,
-		props.maxQuantity,
-		props.minQuantity,
-		props.multipleQuantity,
-	]);
-
-	function updateCurrentQuantity(newQuantity) {
-		if (
-			newQuantity >= props.minQuantity &&
-			newQuantity <= props.maxQuantity &&
-			newQuantity % props.multipleQuantity === 0
-		) {
-			setCurrentQuantity(newQuantity);
-		}
-	}
-
-	function _increaseQuantity() {
-		if (nextAvailable) {
-			updateCurrentQuantity(currentQuantity + props.multipleQuantity);
-		}
-	}
-
-	function _decreaseQuantity() {
-		if (prevAvailable) {
-			updateCurrentQuantity(currentQuantity - props.multipleQuantity);
-		}
-	}
-
-	function handleInputChange() {
-		const {value} = inputRef.current;
-
-		return updateCurrentQuantity(parseInt(value, 10));
-	}
-
-	const decreaseQuantity = throttle(_decreaseQuantity, THROTTLE_TIMEOUT),
-		increaseQuantity = throttle(_increaseQuantity, THROTTLE_TIMEOUT);
-
-	function handleInputKeyUp(e) {
-		switch (e.key) {
-			case 'ArrowUp':
-				increaseQuantity();
-				break;
-			case 'ArrowDown':
-				decreaseQuantity();
-				break;
-			case 'Enter':
-			default:
-				break;
-		}
-	}
-
-	function handleSelectChange() {
-		const {value} = inputRef.current;
-
-		setCurrentQuantity(value);
-	}
-
-	let btnSizeClass;
-	let formControlSizeClass;
-
-	if (props.size === 'large') {
-		btnSizeClass = 'btn-lg';
-		formControlSizeClass = 'form-control-lg';
-	}
-
-	if (props.size === 'small') {
-		btnSizeClass = 'btn-sm';
-		formControlSizeClass = 'form-control-sm';
-	}
+	}, [selectedQuantity, props.quantity, updateQuantity]);
 
 	const content = (
-		<div className="quantity-selector">
-			{props.allowedQuantities ? (
-				<>
-					<select
-						className={classnames(
-							'form-control',
-							formControlSizeClass
+		<div
+			className="input-group input-group-sm quantity-selector simple"
+			data-testid="quantity-selector"
+			style={inputStyle}
+		>
+			{(props.prependedIcon || props.prependedText) && (
+				<div className="input-group-item input-group-item-shrink input-group-prepend">
+					<span className="input-group-text">
+						{props.prependedIcon ? (
+							<ClayIcon
+								spritemap={props.spritemap}
+								symbol={props.prependedIcon}
+							/>
+						) : (
+							props.prependedText
 						)}
-						name={props.inputName}
-						onChange={handleSelectChange}
-						ref={inputRef}
-						value={currentQuantity}
-					>
-						{props.allowedQuantities.map((val) => (
-							<option key={val} value={val}>
-								{val}
-							</option>
-						))}
-					</select>
-				</>
-			) : props.style === 'simple' ? (
-				<div className="input-group input-group-sm simple">
-					{(props.prependedIcon || props.prependedText) && (
-						<div className="input-group-item input-group-item-shrink input-group-prepend">
-							<span className="input-group-text">
-								{props.prependedIcon ? (
-									<ClayIcon symbol={props.prependedIcon} />
-								) : (
-									props.prependedText
-								)}
-							</span>
-						</div>
-					)}
-					<div
-						className={classnames(
-							'input-group-item input-group-item-shrink',
-							(props.appendedIcon || props.appendedText) &&
-								'input-group-prepend'
-						)}
-					>
-						<input
-							className={classnames(
-								'form-control text-center',
-								formControlSizeClass
-							)}
-							disabled={props.disabled}
-							max={props.maxQuantity}
-							min={props.minQuantity}
-							name={props.inputName}
-							onChange={handleInputChange}
-							ref={inputRef}
-							step={props.multipleQuantity}
-							type="number"
-							value={currentQuantity}
-						/>
-					</div>
-					{(props.appendedIcon || props.appendedText) && (
-						<div className="input-group-append input-group-item input-group-item-shrink">
-							<span className="input-group-text">
-								{props.appendedIcon ? (
-									<ClayIcon symbol={props.appendedIcon} />
-								) : (
-									props.appendedText
-								)}
-							</span>
-						</div>
-					)}
+					</span>
 				</div>
-			) : (
-				<div className="input-group justify-content-center">
-					<div className="input-group-item input-group-item-shrink input-group-prepend">
-						<button
-							className={classnames(
-								'btn btn-monospaced btn-secondary',
-								btnSizeClass
-							)}
-							disabled={
-								isThrottling || props.disabled || !prevAvailable
-							}
-							onClick={decreaseQuantity}
-							type={'button'}
-						>
-							<ClayIcon symbol="hr" />
-						</button>
-					</div>
+			)}
+			<div
+				className={classnames(
+					'input-group-item input-group-item-shrink',
+					(props.appendedIcon || props.appendedText) &&
+						'input-group-prepend'
+				)}
+			>
+				{props.style === 'datalist' && (
+					<Datalist
+						className="quantity-selector-input"
+						disabled={props.disabled}
+						id="quantitySelect"
+						size={props.size}
+						updateQuantity={updateQuantity}
+					>
+						{quantitiesList.map((item) => (
+							<option key={item} label={item} value={item} />
+						))}
+					</Datalist>
+				)}
 
-					<div className="input-group-item input-group-prepend">
-						<input
-							className={classnames(
-								'form-control text-center',
-								formControlSizeClass
-							)}
-							disabled={props.disabled}
-							max={props.maxQuantity}
-							min={props.minQuantity}
-							name={props.inputName}
-							onChange={handleInputChange}
-							onKeyUp={handleInputKeyUp}
-							ref={inputRef}
-							step={props.multipleQuantity}
-							type="text"
-							value={currentQuantity}
-						/>
-					</div>
+				{props.style === 'select' && (
+					<ClaySelect
+						aria-label="Select Label"
+						classnames={classnames(
+							'quantity-selector-input',
+							props.size === 'small' && 'form-control-sm',
+							props.size === 'large' && 'form-control-lg'
+						)}
+						data-testid="select"
+						disabled={props.disabled}
+						id="quantitySelect"
+						onChange={(event) => {
+							updateQuantity(event.target.value);
+						}}
+					>
+						{quantitiesList.map((item) => (
+							<ClaySelect.Option
+								key={item}
+								label={item}
+								value={item}
+							/>
+						))}
+					</ClaySelect>
+				)}
+			</div>
 
-					<div className="input-group-append input-group-item input-group-item-shrink">
-						<button
-							className={classnames(
-								'btn btn-monospaced btn-secondary',
-								btnSizeClass
-							)}
-							disabled={
-								isThrottling || props.disabled || !nextAvailable
-							}
-							onClick={increaseQuantity}
-							type={'button'}
-						>
-							<ClayIcon symbol="plus" />
-						</button>
-					</div>
+			{(props.appendedIcon || props.appendedText) && (
+				<div className="input-group-append input-group-item input-group-item-shrink">
+					<span className="input-group-text">
+						{props.appendedIcon ? (
+							<ClayIcon
+								spritemap={props.spritemap}
+								symbol={props.appendedIcon}
+							/>
+						) : (
+							props.appendedText
+						)}
+					</span>
 				</div>
 			)}
 		</div>
@@ -266,38 +146,41 @@ function QuantitySelector(props) {
 	);
 }
 
+QuantitySelector.defaultProps = {
+	disabled: false,
+	inputSize: '1555',
+	quantity: 1,
+	settings: {
+		allowedQuantity: [],
+		maxQuantity: 99,
+		minQuantity: 1,
+		multipleQuantity: 1,
+	},
+	style: 'select',
+};
+
 QuantitySelector.propTypes = {
-	allowedQuantities: PropTypes.arrayOf(PropTypes.number),
 	appendedIcon: PropTypes.string,
 	appendedText: PropTypes.string,
+	disableAddToCartButton: PropTypes.bool,
+	disableQuantitySelector: PropTypes.bool,
 	disabled: PropTypes.bool,
 	inputName: PropTypes.string,
-	maxQuantity: PropTypes.number,
-	minQuantity: PropTypes.number,
-	multipleQuantity: PropTypes.number,
-
-	/**
-	 * if 'throttleOnUpdate' is true,
-	 * 'onUpdate' must return a <Promise>.
-	 */
-	onUpdate: PropTypes.func,
+	inputSize: PropTypes.string,
 	prependedIcon: PropTypes.string,
 	prependedText: PropTypes.string,
 	quantity: PropTypes.number,
+	rtl: PropTypes.bool,
+	settings: PropTypes.shape({
+		allowedQuantity: PropTypes.arrayOf(PropTypes.number),
+		maxQuantity: PropTypes.number,
+		minQuantity: PropTypes.number,
+		multipleQuantity: PropTypes.number,
+	}).isRequired,
 	size: PropTypes.oneOf(['large', 'medium', 'small']),
-	spritemap: PropTypes.string,
-	style: PropTypes.oneOf(['default', 'simple']),
-	throttleOnUpdate: PropTypes.bool,
-};
-
-QuantitySelector.defaultProps = {
-	disabled: false,
-	maxQuantity: 99999999,
-	minQuantity: 1,
-	multipleQuantity: 1,
-	onUpdate: () => {},
-	style: 'default',
-	throttleOnUpdate: false,
+	spritemap: PropTypes.string.isRequired,
+	style: PropTypes.oneOf(['select', 'datalist']),
+	updateQuantity: PropTypes.func,
 };
 
 export default QuantitySelector;

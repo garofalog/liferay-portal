@@ -12,8 +12,29 @@
  * details.
  */
 
-describe('test', () => {
-	it('must be true', () => {
-		expect(true).toBe(true);
-	});
-});
+export const testAllowedQuantities = [
+	2,
+	4,
+	65,
+	33,
+	913,
+	267,
+	323,
+	122,
+	90,
+	113,
+];
+
+export const settingsAllowedQuantities = {
+	allowedQuantity: testAllowedQuantities,
+	maxQuantity: 99,
+	minQuantity: 1,
+	multipleQuantity: 5,
+};
+
+export const settingsMultipleQuantity = {
+	allowedQuantity: [-1],
+	maxQuantity: 99,
+	minQuantity: 1,
+	multipleQuantity: 5,
+};

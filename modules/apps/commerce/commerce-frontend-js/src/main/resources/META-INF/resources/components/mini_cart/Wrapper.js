@@ -21,7 +21,7 @@ import OrderButton from './OrderButton';
 
 function Wrapper({cartItemsListView}) {
 	const {cartState, isOpen, spritemap} = useContext(MiniCartContext),
-		{cartItems} = cartState;
+		{cartItems = []} = cartState;
 
 	return (
 		<div className={'mini-cart-wrapper'}>

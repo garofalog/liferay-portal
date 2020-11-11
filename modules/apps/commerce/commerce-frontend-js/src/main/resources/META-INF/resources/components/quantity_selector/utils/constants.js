@@ -12,17 +12,16 @@
  * details.
  */
 
-import launcher from '../../../src/main/resources/META-INF/resources/components/quantity_selector/entry';
+export const DEFAULT = 'default';
+export const BLOCK = 'block';
 
-import '../../../src/main/resources/META-INF/resources/styles/main.scss';
-
-launcher('quantity-selector', 'quantity-selector', {
-	inputName: 'test-name',
-	orderQuantity: 1,
-	settings: {
-		maxQuantity: 29,
-		minQuantity: 1,
+export const INPUT_STYLE = {
+	[BLOCK]: {
+		display: BLOCK,
+		width: '100%',
 	},
-	size: 'large',
-	spritemap: './assets/icons.svg',
-});
+	[DEFAULT]: {
+		display: BLOCK,
+		width: '176px',
+	},
+};
