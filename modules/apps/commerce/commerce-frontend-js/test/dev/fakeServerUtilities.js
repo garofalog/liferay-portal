@@ -17,7 +17,7 @@ function defineServerResponses(app) {
 		res.json({
 			items: [
 				{
-					actionItems: [
+					actionDropdownItems: [
 						{
 							href: '/view/url',
 							icon: 'view',
@@ -223,7 +223,7 @@ function defineServerResponses(app) {
 					],
 				},
 				{
-					actionItems: [
+					actionDropdownItems: [
 						{
 							href: '/view/url',
 							icon: 'view',
@@ -307,7 +307,10 @@ function defineServerResponses(app) {
 					},
 				},
 			],
-			totalItems: 50,
+			lastPage: 6,
+			page: 1,
+			pageSize: 10,
+			totalCount: 52,
 		});
 	});
 

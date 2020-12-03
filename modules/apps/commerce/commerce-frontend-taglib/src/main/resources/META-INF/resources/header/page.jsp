@@ -77,10 +77,11 @@ String myWorkflowTasksPortletNamespace = PortalUtil.getPortletNamespace(PortletK
 											<%= beanId %>
 										</strong>
 
-										<span class="lfr-portal-tooltip ml-1 text-secondary" title="<%= LanguageUtil.get(request, "identification-number") %>">
-											<clay:icon
-												symbol="question-circle"
-											/>
+										<span
+											class="lfr-portal-tooltip text-secondary ml-1"
+											title="<%= LanguageUtil.get(request, "identification-number") %>"
+										>
+											<clay:icon symbol="question-circle" />
 										</span>
 									</small>
 								</c:if>
@@ -95,16 +96,19 @@ String myWorkflowTasksPortletNamespace = PortalUtil.getPortletNamespace(PortletK
 											<%= externalReferenceCode %>
 										</strong>
 
-										<span class="lfr-portal-tooltip ml-1 text-secondary" title="<%= LanguageUtil.get(request, "external-reference-code") %>">
-											<clay:icon
-												symbol="question-circle"
-											/>
+										<span
+											class="lfr-portal-tooltip text-secondary ml-1"
+											title="<%= LanguageUtil.get(request, "external-reference-code") %>"
+										>
+											<clay:icon symbol="question-circle" />
 										</span>
+
 
 										<c:if test="<%= Validator.isNotNull(externalReferenceCodeEditUrl) %>">
 											<clay:button
-												cssClass="h-auto ml-1 p-0 text-secondary w-auto"
+												cssClass="text-secondary p-0 mr-1 h-auto w-auto"
 												displayType="link"
+												monospaced="false"
 												icon="pencil"
 												id="erc-edit-modal-opener"
 												small="<%= true %>"

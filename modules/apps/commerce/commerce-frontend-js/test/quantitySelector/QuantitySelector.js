@@ -37,7 +37,7 @@ describe('when QuantitySelector is loaded', () => {
 		const ALLOWED_QUANTITIES = [2, 4, 65, 33, 913, 267, 323, 122, 90, 113];
 		Utils.generateOptions.mockReturnValue(ALLOWED_QUANTITIES);
 		const {getByText} = render(
-			<QuantitySelector spritemap="./assets/icons.svg" />
+			<QuantitySelector spritemap="./assets/clay/icons.svg" />
 		);
 		expect(Utils.generateOptions).toHaveBeenCalled();
 		ALLOWED_QUANTITIES.forEach((o) => {
@@ -50,7 +50,7 @@ describe('when QuantitySelector is loaded', () => {
 	it('display the correct options from minQuantity to maxQuantity if allowedQuantity is a empty array', () => {
 		Utils.generateOptions.mockReturnValue([1, 2, 3, 4]);
 		const {getByText} = render(
-			<QuantitySelector spritemap="./assets/icons.svg" />
+			<QuantitySelector spritemap="./assets/clay/icons.svg" />
 		);
 		const oo = getByText('1');
 		expect(oo).toBeInTheDocument();
@@ -62,7 +62,7 @@ describe('when QuantitySelector is loaded', () => {
 			<QuantitySelector
 				disabled={true}
 				inputSize={'2000'}
-				spritemap="./assets/icons.svg"
+				spritemap="./assets/clay/icons.svg"
 				style="select"
 			/>
 		);
@@ -74,7 +74,7 @@ describe('when QuantitySelector is loaded', () => {
 		const {getByTestId} = render(
 			<QuantitySelector
 				disabled={true}
-				spritemap="./assets/icons.svg"
+				spritemap="./assets/clay/icons.svg"
 				style="datalist"
 			/>
 		);

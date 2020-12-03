@@ -14,12 +14,16 @@
 
 import React from 'react';
 
-import datasetDisplayLauncher from '../../../src/main/resources/META-INF/resources/components/dataset_display/entry';
+import datasetDisplayLauncher from '../../../../../frontend-taglib/frontend-taglib-clay/src/main/resources/META-INF/resources/data_set_display/entry';
 import sidePanelLauncher from '../../../src/main/resources/META-INF/resources/components/side_panel/entry';
 
+import '../../../src/main/resources/META-INF/resources/styles/main.scss';
+import '../../../../../frontend-taglib/frontend-taglib-clay/src/main/resources/META-INF/resources/data_set_display/styles/main.scss';
+
 const fluidDataSetDisplayProps = {
-	activeView: 2,
-	apiUrl: '/dataset-display-nested-items',
+	activeViewSettings: {},
+	apiURL: '/dataset-display-nested-items',
+	appURL: '/o/frontend-taglib-clay/app',
 	bulkActions: [
 		{
 			href: '/side-panel/edit.html',
@@ -34,13 +38,15 @@ const fluidDataSetDisplayProps = {
 			method: 'delete',
 		},
 	],
-	creationMenuItems: [
-		{
-			href: 'modal/url',
-			label: 'Add',
-			target: 'modal',
-		},
-	],
+	creationMenu: {
+		primaryItems: [
+			{
+				href: 'modal/url',
+				label: 'Add',
+				target: 'modal',
+			},
+		],
+	},
 	filters: [
 		{
 			id: 'number-test',
@@ -50,7 +56,7 @@ const fluidDataSetDisplayProps = {
 			min: 20,
 			operator: 'eq',
 			type: 'number',
-			value: 123,
+			// value: 123,
 		},
 		{
 			id: 'order-date',
@@ -67,18 +73,18 @@ const fluidDataSetDisplayProps = {
 			},
 			placeholder: 'dd/mm/yyyy',
 			type: 'dateRange',
-			value: {
-				from: {
-					day: 18,
-					month: 7,
-					year: 2020,
-				},
-				to: {
-					day: 18,
-					month: 7,
-					year: 2025,
-				},
-			},
+			// value: {
+			// 	from: {
+			// 		day: 18,
+			// 		month: 7,
+			// 		year: 2020,
+			// 	},
+			// 	to: {
+			// 		day: 18,
+			// 		month: 7,
+			// 		year: 2025,
+			// 	},
+			// },
 		},
 	],
 	id: 'tableTest',
@@ -114,9 +120,59 @@ const fluidDataSetDisplayProps = {
 	},
 	showPagination: true,
 	sidePanelId: 'sidePanelTestId',
-	spritemap: './assets/icons.svg',
+	spritemap: './assets/clay/icons.svg',
 	style: 'fluid',
 	views: [
+		{
+			contentRenderer: 'table',
+			icon: 'table',
+			label: 'Table',
+			schema: {
+				fields: [
+					{
+						contentRenderer: 'image',
+						fieldName: 'img',
+						label: '',
+					},
+					{
+						contentRenderer: 'actionLink',
+						fieldName: 'name',
+						label: 'Name',
+						sortable: true,
+					},
+					{
+						actionId: 'edit',
+						contentRenderer: 'actionLink',
+						label: '',
+					},
+					{
+						actionId: 'delete',
+						contentRenderer: 'actionLink',
+						label: '',
+					},
+					{
+						actionId: 'alert',
+						contentRenderer: 'actionLink',
+						label: '',
+					},
+					{
+						actionId: 'select',
+						contentRenderer: 'actionLink',
+						label: '',
+					},
+					{
+						contentRenderer: 'tooltipPrice',
+						fieldName: 'price',
+						label: 'Price',
+					},
+					{
+						contentRenderer: 'quantitySelector',
+						fieldName: 'testQuantity',
+						label: 'Qt. Selector',
+					},
+				],
+			},
+		},
 		{
 			contentRenderer: 'cards',
 			icon: 'documents-and-media',
@@ -154,57 +210,11 @@ const fluidDataSetDisplayProps = {
 			label: "Hey you don't know me",
 			schema: {},
 		},
-		{
-			contentRenderer: 'table',
-			icon: 'table',
-			label: 'Table',
-			schema: {
-				fields: [
-					{
-						contentRenderer: 'image',
-						fieldName: 'img',
-						label: '',
-					},
-					{
-						contentRenderer: 'actionLink',
-						fieldName: 'name',
-						label: 'Name',
-						sortable: true,
-					},
-					{
-						actionId: 'edit',
-						contentRenderer: 'actionLink',
-					},
-					{
-						actionId: 'delete',
-						contentRenderer: 'actionLink',
-					},
-					{
-						actionId: 'alert',
-						contentRenderer: 'actionLink',
-					},
-					{
-						actionId: 'select',
-						contentRenderer: 'actionLink',
-					},
-					{
-						contentRenderer: 'tooltipPrice',
-						fieldName: 'price',
-						label: 'Price',
-					},
-					{
-						contentRenderer: 'quantitySelector',
-						fieldName: 'testQuantity',
-						label: 'Qt. Selector',
-					},
-				],
-			},
-		},
 	],
 };
 
 const emailsDataSetDisplayProps = {
-	apiUrl: '/dataset-display-email-data',
+	apiURL: '/dataset-display-email-data',
 	creationMenuItems: [
 		{
 			href: '/standard/edit',
@@ -245,7 +255,7 @@ const emailsDataSetDisplayProps = {
 	},
 	showPagination: true,
 	sidePanelId: 'sidePanelTestId',
-	spritemap: './assets/icons.svg',
+	spritemap: './assets/clay/icons.svg',
 	style: 'stacked',
 	views: [
 		{
@@ -257,7 +267,7 @@ const emailsDataSetDisplayProps = {
 };
 
 const selectableTableProps = {
-	apiUrl: '/dataset-display-selectable-data',
+	apiURL: '/dataset-display-selectable-data',
 	formId: 'form-id',
 	id: 'tableTest',
 	pageSize: 5,
@@ -289,7 +299,7 @@ const selectableTableProps = {
 	selectedItemsKey: 'countryId',
 	showPagination: true,
 	sidePanelId: 'sidePanelTestId',
-	spritemap: './assets/icons.svg',
+	spritemap: './assets/clay/icons.svg',
 	views: [
 		{
 			contentRenderer: 'selectableTable',
@@ -306,9 +316,13 @@ const selectableTableProps = {
 const today = new Date();
 
 const ordersDataSetDisplayProps = {
-	apiUrl:
+	activeViewSettings: {
+		name: 'table',
+	},
+	apiURL:
 		'/o/headless-commerce-admin-order/v1.0/orders?nestedFields=account,channel',
-	batchTasksStatusApiUrl: '/o/fake-batch-engine/v1.0/import-task',
+	appURL: '/o/frontend-taglib-clay/app',
+	batchTasksStatusApiURL: '/o/fake-batch-engine/v1.0/import-task',
 	bulkActions: [
 		{
 			bodyKeys: ['id', 'productId'],
@@ -319,16 +333,18 @@ const ordersDataSetDisplayProps = {
 			target: 'async',
 		},
 	],
-	creationMenuItems: [
-		{
-			href: 'modal/url',
-			label: 'Add',
-			target: 'modal',
-		},
-	],
+	creationMenu: {
+		primaryItems: [
+			{
+				href: 'modal/url',
+				label: 'Add',
+				target: 'modal',
+			},
+		],
+	},
 	filters: [
 		{
-			apiUrl: '/o/headless-commerce-admin-account/v1.0/accounts',
+			apiURL: '/o/headless-commerce-admin-account/v1.0/accounts',
 			id: 'accountId',
 			inputPlaceholder: 'Search for account',
 			itemKey: 'id',
@@ -338,7 +354,7 @@ const ordersDataSetDisplayProps = {
 			type: 'autocomplete',
 		},
 		{
-			apiUrl: '/o/headless-commerce-admin-channel/v1.0/channels',
+			apiURL: '/o/headless-commerce-admin-channel/v1.0/channels',
 			id: 'channelId',
 			inputPlaceholder: 'Search for Channel',
 			itemKey: 'id',
@@ -397,6 +413,8 @@ const ordersDataSetDisplayProps = {
 			target: 'async',
 		},
 	],
+	namespace:
+		'_com_liferay_commerce_product_definitions_web_internal_portlet_CPDefinitionsPortlet_',
 	pageSize: 5,
 	pagination: {
 		deltas: [
@@ -432,12 +450,12 @@ const ordersDataSetDisplayProps = {
 			key: 'createDate',
 		},
 	],
-	spritemap: './assets/icons.svg',
+	spritemap: './assets/clay/icons.svg',
 	views: [
 		{
 			contentRenderer: 'table',
-			icon: 'table',
 			label: 'Table',
+			name: 'table',
 			schema: {
 				fields: [
 					{
@@ -482,12 +500,13 @@ const ordersDataSetDisplayProps = {
 					},
 				],
 			},
+			thumbnail: 'table',
 		},
 	],
 };
 
 const productsDataSetDisplayProps = {
-	apiUrl:
+	apiURL:
 		'/o/headless-commerce-admin-catalog/v1.0/products?nestedFields=skus,catalog&filter=(categoryIds/any(x:(x eq 41315)))',
 	bulkActions: [
 		{
@@ -527,7 +546,7 @@ const productsDataSetDisplayProps = {
 			type: 'dateRange',
 		},
 		{
-			apiUrl:
+			apiURL:
 				'/o/headless-admin-taxonomy/v1.0/taxonomy-categories/0/taxonomy-categories',
 			id: 'categoryIds',
 			inputPlaceholder: 'Search for Category',
@@ -537,7 +556,7 @@ const productsDataSetDisplayProps = {
 			type: 'autocomplete',
 		},
 		{
-			apiUrl: '/o/headless-commerce-admin-catalog/v1.0/catalogs',
+			apiURL: '/o/headless-commerce-admin-catalog/v1.0/catalogs',
 			id: 'catalogId',
 			inputPlaceholder: 'Search for Catalog',
 			itemKey: 'id',
@@ -618,7 +637,7 @@ const productsDataSetDisplayProps = {
 			key: 'modifiedDate',
 		},
 	],
-	spritemap: './assets/icons.svg',
+	spritemap: './assets/clay/icons.svg',
 	views: [
 		{
 			contentRenderer: 'table',
@@ -681,57 +700,55 @@ const productsDataSetDisplayProps = {
 	],
 };
 
-datasetDisplayLauncher(
-	'orders-dataset-display',
-	'orders-dataset-display-root',
-	ordersDataSetDisplayProps
-);
+// datasetDisplayLauncher(
+// 	ordersDataSetDisplayProps,
+// 	document.getElementById('orders-dataset-display-root'),
+// );
+
+// datasetDisplayLauncher(
+// 	'products-dataset-display',
+// 	document.getElementById('products-dataset-display-root'),
+// 	productsDataSetDisplayProps
+// );
 
 datasetDisplayLauncher(
-	'products-dataset-display',
-	'products-dataset-display-root',
-	productsDataSetDisplayProps
+	fluidDataSetDisplayProps,
+	document.getElementById('fluid-dataset-display-root')
 );
 
-datasetDisplayLauncher(
-	'fluid-dataset-display',
-	'fluid-dataset-display-root',
-	fluidDataSetDisplayProps
-);
+// datasetDisplayLauncher(
+// 	'selectable-dataset-display',
+// 	document.getElementById('selectable-dataset-display-root'),
+// 	selectableTableProps
+// );
 
-datasetDisplayLauncher(
-	'selectable-dataset-display',
-	'selectable-dataset-display-root',
-	selectableTableProps
-);
+// datasetDisplayLauncher(
+// 	'emails-dataset-display',
+// 	document.getElementById('emails-dataset-display-root'),
+// 	emailsDataSetDisplayProps
+// );
 
-datasetDisplayLauncher(
-	'emails-dataset-display',
-	'emails-dataset-display-root',
-	emailsDataSetDisplayProps
-);
-
-sidePanelLauncher('sidePanel', 'side-panel-root', {
-	containerSelector: '.container',
-	id: 'sidePanelTestId',
-	items: [
-		{
-			href: '/side-panel/comments.html',
-			icon: 'comments',
-			slug: 'comments',
-		},
-		{
-			href: '/side-panel/edit.html',
-			icon: 'pencil',
-			slug: 'edit',
-		},
-		{
-			href: '/side-panel/changelog.html',
-			icon: 'restore',
-			slug: 'changelog',
-		},
-	],
-	size: 'md',
-	spritemap: './assets/icons.svg',
-	topAnchorSelector: '.top-anchor',
-});
+// sidePanelLauncher('sidePanel', 'side-panel-root', {
+// 	containerSelector: '.container',
+// 	id: 'sidePanelTestId',
+// 	items: [
+// 		{
+// 			href: '/side-panel/comments.html',
+// 			icon: 'comments',
+// 			slug: 'comments',
+// 		},
+// 		{
+// 			href: '/side-panel/edit.html',
+// 			icon: 'pencil',
+// 			slug: 'edit',
+// 		},
+// 		{
+// 			href: '/side-panel/changelog.html',
+// 			icon: 'restore',
+// 			slug: 'changelog',
+// 		},
+// 	],
+// 	size: 'md',
+// 	spritemap: './assets/clay/icons.svg',
+// 	topAnchorSelector: '.top-anchor',
+// });

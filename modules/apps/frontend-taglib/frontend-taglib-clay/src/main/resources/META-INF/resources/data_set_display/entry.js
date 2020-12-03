@@ -19,7 +19,7 @@ import {AppContext} from './AppContext';
 import DataSetDisplay from './DataSetDisplay';
 import ViewsContext, {viewsReducer} from './views/ViewsContext';
 
-const App = ({apiURL, appURL, portletId, ...props}) => {
+const DataSetDisplayWrapper = ({apiURL, appURL, portletId, ...props}) => {
 	const {
 		activeViewSettings: {name: activeViewName, visibleFieldNames = {}},
 		views,
@@ -44,4 +44,4 @@ const App = ({apiURL, appURL, portletId, ...props}) => {
 	);
 };
 
-export default (...data) => render(App, ...data);
+export default (...data) => render(DataSetDisplayWrapper, ...data);

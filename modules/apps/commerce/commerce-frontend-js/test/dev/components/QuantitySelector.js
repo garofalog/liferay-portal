@@ -24,5 +24,5 @@ launcher('quantity-selector', 'quantity-selector', {
 		minQuantity: 1,
 	},
 	size: 'large',
-	spritemap: './assets/icons.svg',
+	spritemap: './assets/clay/icons.svg',
 });

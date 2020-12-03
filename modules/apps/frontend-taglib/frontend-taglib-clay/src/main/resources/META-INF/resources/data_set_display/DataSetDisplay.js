@@ -499,7 +499,7 @@ function DataSetDisplay({
 }
 
 DataSetDisplay.propTypes = {
-	apURL: PropTypes.string,
+	apiURL: PropTypes.string,
 	bulkActions: PropTypes.array,
 	creationMenu: PropTypes.shape({
 		primaryItems: PropTypes.array,
