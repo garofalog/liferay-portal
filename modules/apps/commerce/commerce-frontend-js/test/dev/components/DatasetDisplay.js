@@ -18,6 +18,7 @@ import datasetDisplayLauncher from '../../../../../frontend-taglib/frontend-tagl
 import sidePanelLauncher from '../../../src/main/resources/META-INF/resources/components/side_panel/entry';
 
 import '../../../src/main/resources/META-INF/resources/styles/main.scss';
+
 import '../../../../../frontend-taglib/frontend-taglib-clay/src/main/resources/META-INF/resources/data_set_display/styles/main.scss';
 
 const fluidDataSetDisplayProps = {
@@ -56,6 +57,7 @@ const fluidDataSetDisplayProps = {
 			min: 20,
 			operator: 'eq',
 			type: 'number',
+
 			// value: 123,
 		},
 		{
@@ -73,6 +75,7 @@ const fluidDataSetDisplayProps = {
 			},
 			placeholder: 'dd/mm/yyyy',
 			type: 'dateRange',
+
 			// value: {
 			// 	from: {
 			// 		day: 18,

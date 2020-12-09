@@ -13,6 +13,553 @@
  */
 
 function defineServerResponses(app) {
+	app.get('/headless-commerce-admin-web-api', (_, res) => {
+		res.json({
+			items: [
+				{
+					actionDropdownItems: [
+						{
+							href: '/view/url',
+							icon: 'view',
+							id: 'view',
+							label: 'View',
+						},
+						{
+							href: '/select/url',
+							icon: 'message-boards',
+							id: 'select',
+							label: 'Select',
+							target: 'modal',
+						},
+						{
+							href: '/delete/url',
+							icon: 'trash',
+							id: 'delete',
+							label: 'Delete',
+							method: 'delete',
+							target: 'async',
+						},
+						{
+							href: '/edit/url',
+							icon: 'pencil',
+							id: 'edit',
+							label: 'Edit',
+							target: 'sidePanel',
+						},
+						{
+							icon: 'warning-full',
+							id: 'alert',
+							label: 'Alert',
+							onClick: 'alert("asd")',
+						},
+					],
+					id: 'asd',
+					img: {
+						src: '//via.placeholder.com/250x250',
+					},
+					name: 'ABS Sensor',
+					price: {
+						final: {
+							value: '12 Gazillions',
+						},
+					},
+					productPage: '/test/link/1',
+					skuId: 7654,
+					testLink: {
+						href: '/test/link/1',
+						label: 'Test 1',
+					},
+					testQuantity: {
+						allowedQuantities: [3, 6, 7, 100],
+						disabled: false,
+						inputName: 'asd-quantity',
+						quantity: 6,
+					},
+					testSubItems: [
+						{
+							actionItems: [
+								{
+									href: '/view/url',
+									icon: 'view',
+									id: 'view',
+									label: 'View',
+								},
+								{
+									href: '/select/url',
+									icon: 'message-boards',
+									id: 'select',
+									label: 'Select',
+									target: 'modal',
+								},
+								{
+									href: '/delete/url',
+									icon: 'trash',
+									id: 'delete',
+									label: 'Delete',
+									method: 'delete',
+									target: 'async',
+								},
+								{
+									href: '/edit/url',
+									icon: 'pencil',
+									id: 'edit',
+									label: 'Edit',
+									target: 'sidePanel',
+								},
+								{
+									icon: 'warning-full',
+									id: 'alert',
+									label: 'Alert',
+									onClick: 'alert("asd")',
+								},
+							],
+							id: '111',
+							img: {
+								src: '//via.placeholder.com/250x250',
+							},
+							name: 'Sub item 1',
+							price: {
+								final: {
+									value: '12 Gazillions',
+								},
+							},
+							productPage: '/test/link/1',
+							skuId: 35663,
+							testLink: {
+								href: '/test/link/1',
+								label: 'Test 1',
+							},
+						},
+						{
+							actionItems: [
+								{
+									href: '/view/url',
+									icon: 'view',
+									id: 'view',
+									label: 'View',
+								},
+								{
+									href: '/select/url',
+									icon: 'message-boards',
+									id: 'select',
+									label: 'Select',
+									target: 'modal',
+								},
+								{
+									href: '/delete/url',
+									icon: 'trash',
+									id: 'delete',
+									label: 'Delete',
+									method: 'delete',
+									target: 'async',
+								},
+								{
+									href: '/edit/url',
+									icon: 'pencil',
+									id: 'edit',
+									label: 'Edit',
+									target: 'sidePanel',
+								},
+								{
+									icon: 'warning-full',
+									id: 'alert',
+									label: 'Alert',
+									onClick: 'alert("asd")',
+								},
+							],
+							id: '112',
+							img: {
+								src: '//via.placeholder.com/250x250',
+							},
+							name: 'Sub item 2',
+							price: {
+								details: [
+									{
+										label: 'Stocazzo price',
+										value: '$ 15',
+									},
+									{
+										label: 'Final price',
+										value: '$ 31.123',
+									},
+									{
+										label: 'Promo price',
+										value: '$ 15.600',
+									},
+									{
+										label: 'Discounts',
+										value: [40, 30, 20, 10],
+									},
+								],
+								final: {
+									label: 'stocazzo',
+
+									value: '12 Gazillions'
+								},
+							},
+							productPage: '/test/link/1',
+							skuId: 356637,
+							testLink: {
+								href: '/test/link/1',
+								label: 'Test 1',
+							},
+						},
+						{
+							id: '113',
+							img: {
+								src: '//via.placeholder.com/250x250',
+							},
+							name: 'Sub item 3',
+							price: {
+								final: {
+									value: '122 Gazillions',
+								},
+							},
+							productPage: '/test/link/1',
+							skuId: 356638,
+							testLink: {
+								href: '/test/link/1',
+								label: 'Test 1',
+							},
+						},
+						{
+							id: '114',
+							img: {
+								src: '//via.placeholder.com/250x250',
+							},
+							name: 'Sub item 4',
+							price: {
+								final: {
+									value: '12 Gazillions',
+								},
+							},
+							productPage: '/test/link/1',
+							skuId: 3566312,
+							testLink: {
+								href: '/test/link/1',
+								label: 'Test 1',
+							},
+						},
+					],
+				},
+				{
+					actionDropdownItems: [
+						{
+							href: '/view/url',
+							icon: 'view',
+							id: 'view',
+							label: 'View',
+						},
+						{
+							href: '/select/url',
+							icon: 'message-boards',
+							id: 'select',
+							label: 'Select',
+							target: 'modal',
+						},
+						{
+							href: '/delete/url',
+							icon: 'trash',
+							id: 'delete',
+							label: 'Delete',
+							method: 'delete',
+							target: 'async',
+						},
+						{
+							href: '/edit/url',
+							icon: 'pencil',
+							id: 'edit',
+							label: 'Edit',
+							target: 'sidePanel',
+						},
+						{
+							icon: 'warning-full',
+							id: 'alert',
+							label: 'Alert',
+							onClick: 'alert("asd")',
+						},
+					],
+					id: 'asd',
+					img: {
+						src: '//via.placeholder.com/250x250',
+					},
+					name: 'Giulio Sensor',
+					price: {
+						final: {
+							value: '12 euro',
+						},
+					},
+					productPage: '/test/link/1',
+					skuId: 7654,
+					testLink: {
+						href: '/test/link/1',
+						label: 'Test 1',
+					},
+					testQuantity: {
+						allowedQuantities: [3, 6, 7, 100],
+						disabled: false,
+						inputName: 'asd-quantity',
+						quantity: 6,
+					},
+					testSubItems: [
+						{
+							actionItems: [
+								{
+									href: '/view/url',
+									icon: 'view',
+									id: 'view',
+									label: 'View',
+								},
+								{
+									href: '/select/url',
+									icon: 'message-boards',
+									id: 'select',
+									label: 'Select',
+									target: 'modal',
+								},
+								{
+									href: '/delete/url',
+									icon: 'trash',
+									id: 'delete',
+									label: 'Delete',
+									method: 'delete',
+									target: 'async',
+								},
+								{
+									href: '/edit/url',
+									icon: 'pencil',
+									id: 'edit',
+									label: 'Edit',
+									target: 'sidePanel',
+								},
+								{
+									icon: 'warning-full',
+									id: 'alert',
+									label: 'Alert',
+									onClick: 'alert("asd")',
+								},
+							],
+							id: '111',
+							img: {
+								src: '//via.placeholder.com/250x250',
+							},
+							name: 'Sub item 1',
+							price: {
+								final: {
+									value: '120 dollar',
+								},
+							},
+							productPage: '/test/link/1',
+							skuId: 35663,
+							testLink: {
+								href: '/test/link/1',
+								label: 'Test 1',
+							},
+						},
+						{
+							actionItems: [
+								{
+									href: '/view/url',
+									icon: 'view',
+									id: 'view',
+									label: 'View',
+								},
+								{
+									href: '/select/url',
+									icon: 'message-boards',
+									id: 'select',
+									label: 'Select',
+									target: 'modal',
+								},
+								{
+									href: '/delete/url',
+									icon: 'trash',
+									id: 'delete',
+									label: 'Delete',
+									method: 'delete',
+									target: 'async',
+								},
+								{
+									href: '/edit/url',
+									icon: 'pencil',
+									id: 'edit',
+									label: 'Edit',
+									target: 'sidePanel',
+								},
+								{
+									icon: 'warning-full',
+									id: 'alert',
+									label: 'Alert',
+									onClick: 'alert("asd")',
+								},
+							],
+							id: '112',
+							img: {
+								src: '//via.placeholder.com/250x250',
+							},
+							name: 'Sub item 2',
+							price: {
+								details: [
+									{
+										label: 'Stocazzo price',
+										value: '$ 15',
+									},
+									{
+										label: 'Final price',
+										value: '$ 31.123',
+									},
+									{
+										label: 'Promo price',
+										value: '$ 15.600',
+									},
+									{
+										label: 'Discounts',
+										value: [40, 30, 20, 10],
+									},
+								],
+								final: {
+									label: 'stocazzo',
+
+									value: '12 Gazillions'
+								},
+							},
+							productPage: '/test/link/1',
+							skuId: 356637,
+							testLink: {
+								href: '/test/link/1',
+								label: 'Test 1',
+							},
+						},
+						{
+							id: '113',
+							img: {
+								src: '//via.placeholder.com/250x250',
+							},
+							name: 'Sub item 3',
+							price: {
+								final: {
+									value: '122 Gazillions',
+								},
+							},
+							productPage: '/test/link/1',
+							skuId: 356638,
+							testLink: {
+								href: '/test/link/1',
+								label: 'Test 1',
+							},
+						},
+						{
+							id: '114',
+							img: {
+								src: '//via.placeholder.com/250x250',
+							},
+							name: 'Sub item 4',
+							price: {
+								final: {
+									value: '12 Gazillions',
+								},
+							},
+							productPage: '/test/link/1',
+							skuId: 3566312,
+							testLink: {
+								href: '/test/link/1',
+								label: 'Test 1',
+							},
+						},
+					],
+				},
+				{
+					actionDropdownItems: [
+						{
+							href: '/view/url',
+							icon: 'view',
+							id: 'view',
+							label: 'View',
+						},
+						{
+							href: '/select/url',
+							icon: 'message-boards',
+							id: 'select',
+							label: 'Select',
+							target: 'modal',
+						},
+						{
+							href: '/delete/url',
+							icon: 'trash',
+							id: 'delete',
+							label: 'Delete',
+							method: 'delete',
+							target: 'async',
+						},
+						{
+							href: '/edit/url',
+							icon: 'pencil',
+							id: 'edit',
+							label: 'Edit',
+							target: 'sidePanel',
+						},
+						{
+							icon: 'warning-full',
+							id: 'alert',
+							label: 'Alert',
+							onClick: 'alert("asd")',
+						},
+					],
+					id: 'sdf',
+					img: {
+						src: '//via.placeholder.com/500x500',
+					},
+					name: 'SBA Sensor',
+					price: {
+						details: [
+							{
+								label: 'Catalog price',
+								value: '$ 15',
+							},
+							{
+								label: 'Final price',
+								value: '$ 31.123',
+							},
+							{
+								label: 'Promo price',
+								value: '$ 15.600',
+							},
+							{
+								label: 'Discounts',
+								value: [40, 30, 20, 10],
+							},
+						],
+						final: {
+							label: 'Final price',
+							value: '12.000 $',
+						},
+					},
+					productPage: '/test/link/1',
+					skuId: 345345,
+					testLink: {
+						href: '/test/link/1',
+						label: 'Test 1',
+					},
+					testQuantity: {
+						inputName: 'sdf-quantity',
+						maxQuantity: 1000,
+						minQuantity: 2,
+						multipleQuantity: 2,
+						quantity: 6,
+					},
+					type: {
+						content: 'DOC',
+						displayType: 'danger',
+					},
+				},
+			],
+			lastPage: 6,
+			page: 1,
+			pageSize: 10,
+			totalCount: 52,
+		});
+	});
+
 	app.get('/dataset-display-nested-items', (_, res) => {
 		res.json({
 			items: [
@@ -173,8 +720,28 @@ function defineServerResponses(app) {
 							},
 							name: 'Sub item 2',
 							price: {
+								details: [
+									{
+										label: 'Stocazzo price',
+										value: '$ 15',
+									},
+									{
+										label: 'Final price',
+										value: '$ 31.123',
+									},
+									{
+										label: 'Promo price',
+										value: '$ 15.600',
+									},
+									{
+										label: 'Discounts',
+										value: [40, 30, 20, 10],
+									},
+								],
 								final: {
-									value: '12 Gazillions',
+									label: 'stocazzo',
+
+									value: '12 Gazillions'
 								},
 							},
 							productPage: '/test/link/1',
@@ -192,7 +759,7 @@ function defineServerResponses(app) {
 							name: 'Sub item 3',
 							price: {
 								final: {
-									value: '12 Gazillions',
+									value: '122 Gazillions',
 								},
 							},
 							productPage: '/test/link/1',

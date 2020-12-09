@@ -64,6 +64,11 @@ module.exports = [
 		page: 'side-panel.html',
 	},
 	{
+		entry: 'ShopByDiagram',
+		name: 'Shop By Diagram',
+		page: 'shop-by-diagram.html',
+	},
+	{
 		entry: 'StepTracker',
 		name: 'Step tracker',
 		page: 'step-tracker.html',
