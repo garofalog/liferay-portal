@@ -12,8 +12,17 @@
  * details.
  */
 
-export {default as catalogAPI} from './Catalog';
-export {default as optionAPI} from './Option';
-export {default as optionValueAPI} from './OptionValue';
-export {default as productAPI} from './Product';
-export {default as productGroupsAPI} from './ProductGroups';
+package com.liferay.commerce.product.options.web.internal.frontend;
+
+/**
+ * @author Alessio Antonio Rendina
+ */
+public class CommerceOptionDataSetConstants {
+
+	public static final String COMMERCE_DATA_SET_KEY_OPTION_VALUES =
+		"commerceOptionValues";
+
+	public static final String COMMERCE_DATA_SET_KEY_OPTIONS =
+		"commerceOptions";
+
+}
