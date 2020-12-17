@@ -1,3 +1,5 @@
+<%@ page import="com.liferay.commerce.product.options.web.internal.frontend.CommerceOptionDataSetConstants" %>
+
 <%--
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
@@ -17,17 +19,12 @@
 <%@ include file="/init.jsp" %>
 
 <%
-NPMResolver npmResolver = (NPMResolver)request.getAttribute("NPMResolver");
+CPOptionDisplayContext cpOptionDisplayContext = (CPOptionDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
+
+PortletURL portletURL = renderResponse.createRenderURL();
 %>
 
-<%
-NavigationItem navigationItem = new NavigationItem();
-
-navigationItem.setActive(true);
-navigationItem.setHref(currentURL);
-navigationItem.setLabel(LanguageUtil.get(request, "option-templates"));
-%>
-
+<<<<<<< HEAD
 <clay:navigation-bar
 	inverted="<%= false %>"
 	navigationItems="<%= Collections.singletonList(navigationItem) %>"
@@ -67,3 +64,20 @@ navigationItem.setLabel(LanguageUtil.get(request, "option-templates"));
 		'#<portlet:namespace />CPOptionsEditor'
 	);
 </aui:script>
+=======
+<div class="pt-4" id="<portlet:namespace />optionsContainer">
+	<aui:form action="<%= portletURL.toString() %>" cssClass="container-fluid container-fluid-max-xl" method="post" name="fm">
+		<clay:headless-data-set-display
+			apiURL="/o/headless-commerce-admin-catalog/v1.0/options"
+			clayDataSetActionDropdownItems="<%= cpOptionDisplayContext.getOptionClayDataSetActionDropdownItems() %>"
+			creationMenu="<%= cpOptionDisplayContext.getCreationMenu() %>"
+			id="<%= CommerceOptionDataSetConstants.COMMERCE_DATA_SET_KEY_OPTIONS %>"
+			itemsPerPage="<%= 10 %>"
+			namespace="<%= liferayPortletResponse.getNamespace() %>"
+			pageNumber="<%= 1 %>"
+			portletURL="<%= portletURL %>"
+			style="stacked"
+		/>
+	</aui:form>
+</div>
+>>>>>>> COMMERCE-5362 commerce-product-options-web added and managed headless dataset to CPOption jsp files
