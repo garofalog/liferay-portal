@@ -49,7 +49,6 @@ CPOptionDisplayContext cpOptionDisplayContext = (CPOptionDisplayContext)request.
 
 
 	<liferay-frontend:component
-		componentId='<%= liferayPortletResponse.getNamespace() + "add_option" %>'
 		context='<%=
 			HashMapBuilder.<String, Object>put(
 				"defaultLanguageId", LanguageUtil.getLanguageId(locale)
