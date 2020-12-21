@@ -40,7 +40,7 @@ Map<String, String> contextParams = HashMapBuilder.<String, String>put(
 	<aui:model-context bean="<%= commerceChannel %>" model="<%= CommerceChannel.class %>" />
 
 	<div class="row">
-		<div class="col-4">
+		<div class="col-lg-4">
 			<commerce-ui:panel
 				bodyClasses="flex-fill"
 				title='<%= LanguageUtil.get(request, "details") %>'
@@ -78,7 +78,7 @@ Map<String, String> contextParams = HashMapBuilder.<String, String>put(
 			</commerce-ui:panel>
 		</div>
 
-		<div class="col-4">
+		<div class="col-lg-4">
 			<commerce-ui:panel
 				bodyClasses="flex-fill"
 				title='<%= LanguageUtil.get(request, "orders") %>'
@@ -111,7 +111,7 @@ Map<String, String> contextParams = HashMapBuilder.<String, String>put(
 			</commerce-ui:panel>
 		</div>
 
-		<div class="col-4">
+		<div class="col-lg-4">
 			<commerce-ui:panel
 				bodyClasses="flex-fill"
 				title='<%= LanguageUtil.get(request, "prices") %>'
@@ -141,7 +141,7 @@ Map<String, String> contextParams = HashMapBuilder.<String, String>put(
 
 <c:if test="<%= (commerceChannel.getSiteGroupId() > 0) && commerceChannelDisplayContext.hasUnsatisfiedCommerceHealthChecks() %>">
 	<div class="row">
-		<div class="col-12">
+		<div class="col">
 			<commerce-ui:panel
 				bodyClasses="p-0"
 				title='<%= LanguageUtil.get(request, "health-checks") %>'
@@ -162,7 +162,7 @@ Map<String, String> contextParams = HashMapBuilder.<String, String>put(
 </c:if>
 
 <div class="row">
-	<div class="col-12">
+	<div class="col">
 		<commerce-ui:panel
 			bodyClasses="p-0"
 			title='<%= LanguageUtil.get(request, "payment-methods") %>'
@@ -179,10 +179,8 @@ Map<String, String> contextParams = HashMapBuilder.<String, String>put(
 			/>
 		</commerce-ui:panel>
 	</div>
-</div>
 
-<div class="row">
-	<div class="col-12">
+	<div class="col">
 		<commerce-ui:panel
 			bodyClasses="p-0"
 			title='<%= LanguageUtil.get(request, "shipping-methods") %>'
@@ -199,10 +197,8 @@ Map<String, String> contextParams = HashMapBuilder.<String, String>put(
 			/>
 		</commerce-ui:panel>
 	</div>
-</div>
 
-<div class="row">
-	<div class="col-12">
+	<div class="col">
 		<commerce-ui:panel
 			bodyClasses="p-0"
 			title='<%= LanguageUtil.get(request, "tax-calculations") %>'
