@@ -12,8 +12,19 @@
  * details.
  */
 
-export {default as catalogAPI} from './Catalog';
-export {default as optionAPI} from './Option';
-export {default as optionValueAPI} from './OptionValue';
-export {default as productAPI} from './Product';
-export {default as productGroupsAPI} from './ProductGroups';
+import AJAX from '../../../utilities/AJAX/index';
+
+const OPTIONS_PATH = '/options';
+
+const OPTION_VALUES_PATH = '/optionValues';
+
+const VERSION = 'v1.0';
+
+function resolveOptionValuesPath(basePath = '', optionId = '') {
+	return `${basePath}${VERSION}${OPTIONS_PATH}/${optionId}${OPTION_VALUES_PATH}`;
+}
+
+export default (basePath) => ({
+	createOptionValue: (optionId, json) => AJAX.POST(resolveOptionValuesPath(basePath, optionId), json),
+
+});
