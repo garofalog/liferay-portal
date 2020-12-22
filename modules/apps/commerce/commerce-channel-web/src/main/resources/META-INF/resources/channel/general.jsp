@@ -141,7 +141,7 @@ Map<String, String> contextParams = HashMapBuilder.<String, String>put(
 
 <c:if test="<%= (commerceChannel.getSiteGroupId() > 0) && commerceChannelDisplayContext.hasUnsatisfiedCommerceHealthChecks() %>">
 	<div class="row">
-		<div class="col">
+		<div class="col-12">
 			<commerce-ui:panel
 				bodyClasses="p-0"
 				title='<%= LanguageUtil.get(request, "health-checks") %>'
