@@ -20,6 +20,7 @@ import React from 'react';
 
 import ServiceProvider from '../../ServiceProvider/index';
 import showNotification from '../../utilities/notifications';
+import Autocomplete from '../autocomplete/Autocomplete'
 
 
 const AdminoptionsSelector = (props) => {
@@ -36,16 +37,29 @@ const AdminoptionsSelector = (props) => {
 	// 	}
 	// });
 
-	return (
-		<ClaySelectWithOption
-			aria-label="Select Label"
-			id="admin-option"
-			options={props.options}
-		/>
-	);
+	if (props.type === 'select') {
+		return (
+			<ClaySelectWithOption
+				aria-label="Select Label"
+				id="admin-option"
+				options={props.options}
+			/>
+		);
+	}
+
+	if (props.type === 'autocomplete') {
+		return (
+			<Autocomplete
+				items={props.options}
+			/>
+		);
+	}
+	
 };
 
-
+AdminoptionsSelector.defaultProps = {
+	type: 'select'
+}
 
 AdminoptionsSelector.propTypes = {
 	options: PropTypes.arrayOf(
@@ -53,7 +67,8 @@ AdminoptionsSelector.propTypes = {
 			label: PropTypes.string,
 			value: PropTypes.string
 		})
-	)
+	),
+	type: PropTypes.oneOf(['select','autocomplete'])
 };
 
 export default AdminoptionsSelector;
