@@ -39,6 +39,10 @@
 		<portlet:param name="mvcRenderCommandName" value="editOptionValue" />
 	</portlet:renderURL>
 
+<%--	<liferay-frontend:component--%>
+<%--		componentId='<%= liferayPortletResponse.getNamespace() + "add_option_value" %>'--%>
+<%--		module="js/add_option_value"/>--%>
+
 	<aui:script require="commerce-frontend-js/utilities/eventsDefinitions as events, commerce-frontend-js/utilities/modals/index as ModalUtils, commerce-frontend-js/ServiceProvider/index as ServiceProvider">
 		var <portlet:namespace />defaultLanguageId = null;
 

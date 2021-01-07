@@ -136,29 +136,34 @@ PortletURL portletURL = renderResponse.createRenderURL();
 	</div>
 </aui:form>
 
-<aui:script require="commerce-frontend-js/utilities/debounce as debounce, commerce-frontend-js/utilities/slugify as slugify">
-	var form = document.getElementById('<portlet:namespace />fm');
 
-	var keyInput = form.querySelector('#<portlet:namespace />key');
-	var nameInput = form.querySelector('#<portlet:namespace />name');
+<liferay-frontend:component
+	componentId='<%= liferayPortletResponse.getNamespace() + "edit_option" %>'
+	module="js/edit_option"/>
 
-	var handleOnNameInput = function (event) {
-	keyInput.value = slugify.default(nameInput.value);
-	};
+<%--<aui:script require="commerce-frontend-js/utilities/debounce as debounce, commerce-frontend-js/utilities/slugify as slugify">--%>
+<%--	var form = document.getElementById('<portlet:namespace />fm');--%>
 
-	nameInput.addEventListener('input', debounce.default(handleOnNameInput, 200));
+<%--	var keyInput = form.querySelector('#<portlet:namespace />key');--%>
+<%--	var nameInput = form.querySelector('#<portlet:namespace />name');--%>
 
-	document
-	.getElementById('<portlet:namespace />publishButton')
-	.addEventListener('click', function (e) {
-	e.preventDefault();
+<%--	var handleOnNameInput = function (event) {--%>
+<%--	keyInput.value = slugify.default(nameInput.value);--%>
+<%--	};--%>
 
-	var form = document.getElementById('<portlet:namespace />fm');
+<%--	nameInput.addEventListener('input', debounce.default(handleOnNameInput, 200));--%>
 
-	if (!form) {
-	throw new Error('Form with id: <portlet:namespace />fm not found!');
-	}
+<%--	document--%>
+<%--	.getElementById('<portlet:namespace />publishButton')--%>
+<%--	.addEventListener('click', function (e) {--%>
+<%--	e.preventDefault();--%>
 
-	submitForm(form);
-	});
-</aui:script>
+<%--	var form = document.getElementById('<portlet:namespace />fm');--%>
+
+<%--	if (!form) {--%>
+<%--	throw new Error('Form with id: <portlet:namespace />fm not found!');--%>
+<%--	}--%>
+
+<%--	submitForm(form);--%>
+<%--	});--%>
+<%--</aui:script>--%>

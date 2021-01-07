@@ -47,10 +47,15 @@ CPOptionDisplayContext cpOptionDisplayContext = (CPOptionDisplayContext)request.
 		<portlet:param name="mvcRenderCommandName" value="editOption" />
 	</portlet:renderURL>
 
-	<aui:script require="commerce-frontend-js/utilities/eventsDefinitions as events, commerce-frontend-js/utilities/modals/index as ModalUtils, commerce-frontend-js/ServiceProvider/index as ServiceProvider">
+<%--	<liferay-frontend:component--%>
+<%--		componentId='<%= liferayPortletResponse.getNamespace() + "add_option" %>'--%>
+<%--		module="js/add_option"/>--%>
+
+	<aui:script require="commerce-frontend-js/utilities/eventsDefinitions as events, commerce-frontend-js/utilities/modals/index as ModalUtils, commerce-frontend-js/ServiceProvider/index as ServiceProvider
+">
 		var <portlet:namespace />defaultLanguageId = null;
 
-		var AdminCatalogResource = ServiceProvider.default.AdminCatalogAPI('v1');
+		var AdminCatalogResource = ServiceProvider.optionAPI.AdminCatalogAPI('v1');
 
 		Liferay.provide(
 			window,
