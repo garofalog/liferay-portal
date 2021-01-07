@@ -85,19 +85,23 @@ long cpOptionId = cpOptionDisplayContext.getCPOptionId();
 			</aui:fieldset>
 		</c:if>
 
-		<c:if test="<%= cpOption == null %>">
-			<aui:script require="commerce-frontend-js/utilities/debounce as debounce, commerce-frontend-js/utilities/slugify as slugify">
-				var form = document.getElementById('<portlet:namespace />fm');
+<%--		<c:if test="<%= cpOption == null %>">--%>
+			<liferay-frontend:component
+				componentId='<%= liferayPortletResponse.getNamespace() + "edit_option" %>'
+				module="js/edit_option"/>
 
-				var keyInput = form.querySelector('#<portlet:namespace />key');
-				var nameInput = form.querySelector('#<portlet:namespace />name');
+<%--			<aui:script require="commerce-frontend-js/utilities/debounce as debounce, commerce-frontend-js/utilities/slugify as slugify">--%>
+<%--				var form = document.getElementById('<portlet:namespace />fm');--%>
 
-				var handleOnNameInput = function (event) {
-					keyInput.value = slugify.default(nameInput.value);
-				};
+<%--				var keyInput = form.querySelector('#<portlet:namespace />key');--%>
+<%--				var nameInput = form.querySelector('#<portlet:namespace />name');--%>
 
-				nameInput.addEventListener('input', debounce.default(handleOnNameInput, 200));
-			</aui:script>
-		</c:if>
+<%--				var handleOnNameInput = function (event) {--%>
+<%--					keyInput.value = slugify.default(nameInput.value);--%>
+<%--				};--%>
+
+<%--				nameInput.addEventListener('input', debounce.default(handleOnNameInput, 200));--%>
+<%--			</aui:script>--%>
+<%--		</c:if>--%>
 	</div>
 </aui:form>
