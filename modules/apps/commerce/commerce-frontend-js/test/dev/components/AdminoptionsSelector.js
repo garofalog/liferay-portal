@@ -19,24 +19,70 @@ import '../../../src/main/resources/META-INF/resources/styles/main.scss';
 launcher('adminoptions-selector', 'adminoptions-selector', {
 	options: [
 		{
-			label: "Option 6",
-			value: "6"
+			name: 'size',
+			options: [
+				{
+					label: 'Small',
+					value: 'S'
+				},
+				{
+					label: 'Medium',
+					value: 'M'
+				},
+				{
+					label: 'Big',
+					value: 'XL'
+				},
+			],
+			selectOrDatalist: 'select',
+			type: 'string',
 		},
-		{
-			label: "Option 7",
-			value: "7"
-		},
-		{
-			label: "Option 22",
-			value: "22"
-		},
-		{
-			label: "Option 25",
-			value: "25"
-		},
-		{
-			label: "Option 53",
-			value: "53"
-		}
-	]
+
+		// {
+		// 	name: 'color',
+		// 	options: [
+		// 		{
+		// 			label: 'Red',
+		// 			value: 'f00'
+		// 		},
+		// 		{
+		// 			label: 'Grey',
+		// 			value: '333'
+		// 		},
+		// 		{
+		// 			label: 'Violet',
+		// 			value: 'ee82ee'
+		// 		},
+		// 		{
+		// 			label: 'Porphyry Red',
+		// 			value: '984149'
+		// 		},
+		// 		{
+		// 			label: 'Mouse Grey',
+		// 			value: '6c6e6b'
+		// 		},
+		// 	],
+		// 	selectOrDatalist: 'datalist',
+		// 	type: 'string'
+		// },
+		// {
+		// 	name: 'availability',
+		// 	options: [
+		// 		{
+		// 			label: 'Available',
+		// 			value: 'available'
+		// 		},
+		// 		{
+		// 			label: 'In store only',
+		// 			value: 'store'
+		// 		},
+		// 		{
+		// 			label: 'Online',
+		// 			value: 'online'
+		// 		},
+		// 	],
+		// 	selectOrDatalist: 'select',
+		// 	type: 'string'
+		// }
+	],
 });

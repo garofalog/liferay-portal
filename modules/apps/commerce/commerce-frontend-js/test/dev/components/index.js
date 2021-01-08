@@ -77,10 +77,5 @@ module.exports = [
 		entry: 'Summary',
 		name: 'Summary',
 		page: 'summary.html',
-	},
-	{
-		entry: 'QuantitySelector',
-		name: 'Quantity Selector',
-		page: 'quantity-selector.html',
-	},
+	}
 ];

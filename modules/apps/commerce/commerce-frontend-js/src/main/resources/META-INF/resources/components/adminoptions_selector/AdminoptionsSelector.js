@@ -22,6 +22,8 @@ import ServiceProvider from '../../ServiceProvider/index';
 import showNotification from '../../utilities/notifications';
 import Autocomplete from '../autocomplete/Autocomplete'
 
+import Datalist from '../datalist/Datalist';
+
 
 const AdminoptionsSelector = (props) => {
 
@@ -37,38 +39,83 @@ const AdminoptionsSelector = (props) => {
 	// 	}
 	// });
 
-	if (props.type === 'select') {
-		return (
-			<ClaySelectWithOption
-				aria-label="Select Label"
-				id="admin-option"
-				options={props.options}
-			/>
-		);
-	}
+	{
+		props.options.map((op1) => {
+		const oppp = op1
+			{
+				oppp.option.map((op2) => {
+			if (props.type === 'select') {
+				
+				return (
+					<ClaySelectWithOption
+						aria-label="Select Label"
+						id="admin-option"
+						options={op2}
+					/>
+				);
+			}
 
-	if (props.type === 'autocomplete') {
-		return (
-			<Autocomplete
-				items={props.options}
-			/>
-		);
-	}
+			if (props.type === 'datalist') {
+				return (
+					<Datalist
+						aria-label="Select Label"
+						item={op}
+						type="string"
+					/>
+				);
+			}
+
+			if (props.type === 'autocomplete') {
+				return (
+					<Autocomplete
+						items={props.options.options}
+					/>
+				);
+			}
+		})}
+		
+	})}
 	
 };
 
 AdminoptionsSelector.defaultProps = {
-	type: 'select'
+	options: [
+		{
+			name: 'size',
+			options: [
+				{
+					label: 'Small',
+					value: 'S'
+				},
+				{
+					label: 'Medium',
+					value: 'M'
+				},
+				{
+					label: 'Big',
+					value: 'XL'
+				},
+			],
+			selectOrDatalist: 'select',
+			type: 'string',
+		}
+	],
+	type: 'select',
+
 }
 
 AdminoptionsSelector.propTypes = {
-	options: PropTypes.arrayOf(
-		PropTypes.shape({
+	options: PropTypes.arrayOf(PropTypes.shape({
+		name: PropTypes.string,
+		options: PropTypes.arrayOf(PropTypes.shape({
 			label: PropTypes.string,
-			value: PropTypes.string
-		})
-	),
-	type: PropTypes.oneOf(['select','autocomplete'])
+			value: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+		})),
+		style: PropTypes.oneOf(['select', 'autocomplete', 'datalist']),
+		type: PropTypes.string
+	})),
+	style: PropTypes.oneOf(['select','autocomplete','datalist']),
+	updateOptions: PropTypes.func,
 };
 
 export default AdminoptionsSelector;
