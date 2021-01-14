@@ -90,7 +90,8 @@ public class CPOptionDisplayContext {
 
 		RenderURL renderURL = liferayPortletResponse.createRenderURL();
 
-		renderURL.setParameter("mvcRenderCommandName", "addCPOption");
+		renderURL.setParameter(
+			"mvcRenderCommandName", "/commerce_product_options/add_cp_option");
 		renderURL.setParameter("backURL", cpRequestHelper.getCurrentURL());
 		renderURL.setWindowState(LiferayWindowState.POP_UP);
 
@@ -149,9 +150,7 @@ public class CPOptionDisplayContext {
 			ddmFormFieldTypes, ddmFormFieldTypesAllowed);
 	}
 
-	public List<HeaderActionModel> getHeaderActionModels()
-		throws PortalException {
-
+	public List<HeaderActionModel> getHeaderActionModels() {
 		List<HeaderActionModel> headerActionModels = new ArrayList<>();
 
 		RenderResponse renderResponse = cpRequestHelper.getRenderResponse();
@@ -163,13 +162,9 @@ public class CPOptionDisplayContext {
 
 		headerActionModels.add(cancelHeaderActionModel);
 
-		String publishButtonLabel = "publish";
-
-		String additionalClasses = "btn-primary";
-
 		HeaderActionModel publishHeaderActionModel = new HeaderActionModel(
-			additionalClasses, renderResponse.getNamespace() + "fm", null, null,
-			publishButtonLabel);
+			"btn-primary", renderResponse.getNamespace() + "fm", null, null,
+			"publish");
 
 		headerActionModels.add(publishHeaderActionModel);
 
@@ -184,7 +179,8 @@ public class CPOptionDisplayContext {
 
 		RenderURL portletURL = renderResponse.createRenderURL();
 
-		portletURL.setParameter("mvcRenderCommandName", "editOption");
+		portletURL.setParameter(
+			"mvcRenderCommandName", "/commerce_product_options/edit_cp_option");
 		portletURL.setParameter("redirect", cpRequestHelper.getCurrentURL());
 		portletURL.setParameter("cpOptionId", "{id}");
 		portletURL.setParameter(
@@ -213,7 +209,9 @@ public class CPOptionDisplayContext {
 
 		RenderURL renderURL = liferayPortletResponse.createRenderURL();
 
-		renderURL.setParameter("mvcRenderCommandName", "addCPOptionValue");
+		renderURL.setParameter(
+			"mvcRenderCommandName",
+			"/commerce_product_options/add_cp_option_value");
 		renderURL.setParameter("backURL", cpRequestHelper.getCurrentURL());
 		renderURL.setParameter("cpOptionId", String.valueOf(cpOptionId));
 		renderURL.setWindowState(LiferayWindowState.POP_UP);

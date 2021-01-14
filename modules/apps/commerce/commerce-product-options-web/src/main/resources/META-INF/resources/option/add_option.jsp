@@ -44,7 +44,7 @@ CPOptionDisplayContext cpOptionDisplayContext = (CPOptionDisplayContext)request.
 	</aui:form>
 
 	<portlet:renderURL var="editOptionURL">
-		<portlet:param name="mvcRenderCommandName" value="editOption" />
+		<portlet:param name="mvcRenderCommandName" value="/commerce_product_options/edit_cp_option" />
 	</portlet:renderURL>
 
 	<liferay-frontend:component
