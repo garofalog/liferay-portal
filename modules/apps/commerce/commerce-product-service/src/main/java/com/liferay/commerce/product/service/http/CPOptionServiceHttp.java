@@ -97,6 +97,49 @@ public class CPOptionServiceHttp {
 		}
 	}
 
+	public static com.liferay.commerce.product.model.CPOption
+			updateCPOptionExternalReferenceCode(
+				HttpPrincipal httpPrincipal, long cpOptionId,
+				String externalReferenceCode)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				CPOptionServiceUtil.class,
+				"updateCPOptionExternalReferenceCode",
+				_updateCPOptionExternalReferenceCodeParameterTypes1);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, cpOptionId, externalReferenceCode);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return (com.liferay.commerce.product.model.CPOption)returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
 	public static void deleteCPOption(
 			HttpPrincipal httpPrincipal, long cpOptionId)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -104,7 +147,7 @@ public class CPOptionServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				CPOptionServiceUtil.class, "deleteCPOption",
-				_deleteCPOptionParameterTypes1);
+				_deleteCPOptionParameterTypes2);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, cpOptionId);
@@ -142,7 +185,7 @@ public class CPOptionServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				CPOptionServiceUtil.class, "fetchByExternalReferenceCode",
-				_fetchByExternalReferenceCodeParameterTypes2);
+				_fetchByExternalReferenceCodeParameterTypes3);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, companyId, externalReferenceCode);
@@ -182,7 +225,7 @@ public class CPOptionServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				CPOptionServiceUtil.class, "fetchCPOption",
-				_fetchCPOptionParameterTypes3);
+				_fetchCPOptionParameterTypes4);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, cpOptionId);
@@ -222,7 +265,7 @@ public class CPOptionServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				CPOptionServiceUtil.class, "fetchCPOption",
-				_fetchCPOptionParameterTypes4);
+				_fetchCPOptionParameterTypes5);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, companyId, key);
@@ -266,7 +309,7 @@ public class CPOptionServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				CPOptionServiceUtil.class, "findCPOptionByCompanyId",
-				_findCPOptionByCompanyIdParameterTypes5);
+				_findCPOptionByCompanyIdParameterTypes6);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, companyId, start, end, orderByComparator);
@@ -307,7 +350,7 @@ public class CPOptionServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				CPOptionServiceUtil.class, "getCPOption",
-				_getCPOptionParameterTypes6);
+				_getCPOptionParameterTypes7);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, cpOptionId);
@@ -349,7 +392,7 @@ public class CPOptionServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				CPOptionServiceUtil.class, "searchCPOptions",
-				_searchCPOptionsParameterTypes7);
+				_searchCPOptionsParameterTypes8);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, companyId, keywords, start, end, sort);
@@ -395,7 +438,7 @@ public class CPOptionServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				CPOptionServiceUtil.class, "updateCPOption",
-				_updateCPOptionParameterTypes8);
+				_updateCPOptionParameterTypes9);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, cpOptionId, nameMap, descriptionMap,
@@ -442,7 +485,7 @@ public class CPOptionServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				CPOptionServiceUtil.class, "upsertCPOption",
-				_upsertCPOptionParameterTypes9);
+				_upsertCPOptionParameterTypes10);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, nameMap, descriptionMap, ddmFormFieldTypeName,
@@ -484,36 +527,40 @@ public class CPOptionServiceHttp {
 		boolean.class, boolean.class, String.class,
 		com.liferay.portal.kernel.service.ServiceContext.class
 	};
-	private static final Class<?>[] _deleteCPOptionParameterTypes1 =
-		new Class[] {long.class};
 	private static final Class<?>[]
-		_fetchByExternalReferenceCodeParameterTypes2 = new Class[] {
+		_updateCPOptionExternalReferenceCodeParameterTypes1 = new Class[] {
 			long.class, String.class
 		};
-	private static final Class<?>[] _fetchCPOptionParameterTypes3 =
+	private static final Class<?>[] _deleteCPOptionParameterTypes2 =
 		new Class[] {long.class};
+	private static final Class<?>[]
+		_fetchByExternalReferenceCodeParameterTypes3 = new Class[] {
+			long.class, String.class
+		};
 	private static final Class<?>[] _fetchCPOptionParameterTypes4 =
+		new Class[] {long.class};
+	private static final Class<?>[] _fetchCPOptionParameterTypes5 =
 		new Class[] {long.class, String.class};
-	private static final Class<?>[] _findCPOptionByCompanyIdParameterTypes5 =
+	private static final Class<?>[] _findCPOptionByCompanyIdParameterTypes6 =
 		new Class[] {
 			long.class, int.class, int.class,
 			com.liferay.portal.kernel.util.OrderByComparator.class
 		};
-	private static final Class<?>[] _getCPOptionParameterTypes6 = new Class[] {
+	private static final Class<?>[] _getCPOptionParameterTypes7 = new Class[] {
 		long.class
 	};
-	private static final Class<?>[] _searchCPOptionsParameterTypes7 =
+	private static final Class<?>[] _searchCPOptionsParameterTypes8 =
 		new Class[] {
 			long.class, String.class, int.class, int.class,
 			com.liferay.portal.kernel.search.Sort.class
 		};
-	private static final Class<?>[] _updateCPOptionParameterTypes8 =
+	private static final Class<?>[] _updateCPOptionParameterTypes9 =
 		new Class[] {
 			long.class, java.util.Map.class, java.util.Map.class, String.class,
 			boolean.class, boolean.class, boolean.class, String.class,
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
-	private static final Class<?>[] _upsertCPOptionParameterTypes9 =
+	private static final Class<?>[] _upsertCPOptionParameterTypes10 =
 		new Class[] {
 			java.util.Map.class, java.util.Map.class, String.class,
 			boolean.class, boolean.class, boolean.class, String.class,
