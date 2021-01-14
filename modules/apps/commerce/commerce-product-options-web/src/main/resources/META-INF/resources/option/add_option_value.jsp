@@ -17,12 +17,8 @@
 <%@ include file="/init.jsp" %>
 
 <%
-	CPOptionDisplayContext cpOptionDisplayContext = (CPOptionDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
-
-	long cpOptionId = ParamUtil.getLong(request, "cpOptionId", 0L);
-
+long cpOptionId = ParamUtil.getLong(request, "cpOptionId");
 %>
-
 
 <commerce-ui:modal-content
 	title='<%= LanguageUtil.get(request, "create-new-option-value") %>'

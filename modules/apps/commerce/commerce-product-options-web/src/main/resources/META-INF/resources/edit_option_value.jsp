@@ -98,5 +98,4 @@ if (cpOptionValue != null) {
 		</div>
 	</div>
 
-
 </aui:form>

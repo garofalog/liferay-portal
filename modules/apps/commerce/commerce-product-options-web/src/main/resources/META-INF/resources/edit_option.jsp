@@ -1,5 +1,3 @@
-<%@ page import="com.liferay.commerce.product.options.web.internal.frontend.CommerceOptionDataSetConstants" %>
-
 <%--
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
@@ -24,8 +22,6 @@ CPOptionDisplayContext cpOptionDisplayContext = (CPOptionDisplayContext)request.
 CPOption cpOption = cpOptionDisplayContext.getCPOption();
 
 long cpOptionId = cpOptionDisplayContext.getCPOptionId();
-
-PortletURL portletURL = renderResponse.createRenderURL();
 %>
 
 <portlet:actionURL name="editOption" var="editOptionActionURL" />
@@ -55,7 +51,9 @@ PortletURL portletURL = renderResponse.createRenderURL();
 		<div class="row">
 			<div class="col-12">
 				<commerce-ui:panel
-					title='<%= LanguageUtil.get(request, "details") %>'>
+					title='<%= LanguageUtil.get(request, "details") %>'
+				>
+
 					<%
 					List<DDMFormFieldType> ddmFormFieldTypes = cpOptionDisplayContext.getDDMFormFieldTypes();
 					%>
@@ -108,6 +106,7 @@ PortletURL portletURL = renderResponse.createRenderURL();
 						</aui:fieldset>
 					</c:if>
 				</commerce-ui:panel>
+
 				<c:if test="<%= cpOptionDisplayContext.hasValues(cpOption) %>">
 					<commerce-ui:panel
 						bodyClasses="p-0"
@@ -120,7 +119,7 @@ PortletURL portletURL = renderResponse.createRenderURL();
 							itemsPerPage="<%= 10 %>"
 							namespace="<%= liferayPortletResponse.getNamespace() %>"
 							pageNumber="<%= 1 %>"
-							portletURL="<%= portletURL %>"
+							portletURL="<%= renderResponse.createRenderURL() %>"
 							style="stacked"
 						/>
 					</commerce-ui:panel>
@@ -132,4 +131,5 @@ PortletURL portletURL = renderResponse.createRenderURL();
 
 <liferay-frontend:component
 	componentId='<%= liferayPortletResponse.getNamespace() + "edit_option" %>'
-	module="js/edit_option"/>
+	module="js/edit_option"
+/>
