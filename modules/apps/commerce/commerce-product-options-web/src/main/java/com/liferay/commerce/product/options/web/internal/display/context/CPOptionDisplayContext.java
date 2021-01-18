@@ -87,7 +87,7 @@ public class CPOptionDisplayContext {
 		RenderURL renderURL = liferayPortletResponse.createRenderURL();
 
 		renderURL.setParameter(
-			"mvcRenderCommandName", "/commerce_product_options/add_cp_option");
+			"mvcRenderCommandName", "/cp_options/add_cp_option");
 		renderURL.setParameter("backURL", cpRequestHelper.getCurrentURL());
 		renderURL.setWindowState(LiferayWindowState.POP_UP);
 
@@ -175,7 +175,7 @@ public class CPOptionDisplayContext {
 		RenderURL portletURL = renderResponse.createRenderURL();
 
 		portletURL.setParameter(
-			"mvcRenderCommandName", "/commerce_product_options/edit_cp_option");
+			"mvcRenderCommandName", "/cp_options/edit_cp_option");
 		portletURL.setParameter("redirect", cpRequestHelper.getCurrentURL());
 		portletURL.setParameter("cpOptionId", "{id}");
 		portletURL.setParameter(
@@ -194,8 +194,7 @@ public class CPOptionDisplayContext {
 		RenderURL portletURL = renderResponse.createRenderURL();
 
 		portletURL.setParameter(
-			"mvcRenderCommandName",
-			"/commerce_product_options/edit_cp_option_value");
+			"mvcRenderCommandName", "/cp_options/edit_cp_option_value");
 		portletURL.setParameter("redirect", cpRequestHelper.getCurrentURL());
 		portletURL.setParameter("cpOptionValueId", "{id}");
 		portletURL.setParameter(
@@ -221,8 +220,7 @@ public class CPOptionDisplayContext {
 		RenderURL renderURL = liferayPortletResponse.createRenderURL();
 
 		renderURL.setParameter(
-			"mvcRenderCommandName",
-			"/commerce_product_options/add_cp_option_value");
+			"mvcRenderCommandName", "/cp_options/add_cp_option_value");
 		renderURL.setParameter("backURL", cpRequestHelper.getCurrentURL());
 		renderURL.setParameter("cpOptionId", String.valueOf(cpOptionId));
 		renderURL.setWindowState(LiferayWindowState.POP_UP);
@@ -280,9 +278,11 @@ public class CPOptionDisplayContext {
 	private boolean _hasDDMFormFieldTypeProperties(
 		String ddmFormFieldTypeName) {
 
-		if (_ddmFormFieldTypeServicesTracker.getDDMFormFieldTypeProperties(
-				ddmFormFieldTypeName) == null) {
+		Map<String, Object> ddmFormFieldTypeProperties =
+			_ddmFormFieldTypeServicesTracker.getDDMFormFieldTypeProperties(
+				ddmFormFieldTypeName);
 
+		if (ddmFormFieldTypeProperties == null) {
 			return false;
 		}
 
