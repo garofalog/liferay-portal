@@ -41,7 +41,7 @@ if (cpOptionValue != null) {
 <commerce-ui:side-panel-content
 	title='<%= LanguageUtil.format(request, "edit-x", cpOptionValue.getName(), false) %>'
 >
-	<aui:form action="<%= editProductOptionValueActionURL %>" method="post" name="optionValueFm">
+	<aui:form action="<%= editProductOptionValueActionURL %>" method="post" name="fm">
 		<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= (cpOptionValue == null) ? Constants.ADD : Constants.UPDATE %>" />
 		<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
 		<aui:input name="cpOptionId" type="hidden" value="<%= cpOptionId %>" />
@@ -62,11 +62,11 @@ if (cpOptionValue != null) {
 			<liferay-ui:error exception="<%= CPOptionValueKeyException.class %>" focusField="key" message="that-key-is-already-being-used" />
 
 			<aui:fieldset>
-				<aui:input id="optionValueName" name="name" wrapperCssClass="commerce-product-option-value-title" />
+				<aui:input id="name" name="name" wrapperCssClass="commerce-product-option-value-title" />
 
 				<aui:input name="priority" />
 
-				<aui:input helpMessage="key-help" name="key" />
+				<aui:input id="key" helpMessage="key-help" name="key" />
 			</aui:fieldset>
 
 			<c:if test="<%= CustomAttributesUtil.hasCustomAttributes(company.getCompanyId(), CPOptionValue.class.getName(), cpOptionValueId, null) %>">
@@ -80,20 +80,10 @@ if (cpOptionValue != null) {
 				</aui:fieldset>
 			</c:if>
 
-			<c:if test="<%= cpOptionValue == null %>">
-				<aui:script require="commerce-frontend-js/utilities/debounce as debounce, commerce-frontend-js/utilities/slugify as slugify">
-					var form = document.getElementById('<portlet:namespace />optionValueFm');
+			<liferay-frontend:component
+				module="js/edit_cp_option_and_value"
+			/>
 
-					var keyInput = form.querySelector('#<portlet:namespace />key');
-					var nameInput = form.querySelector('#<portlet:namespace />optionValueName');
-
-					var handleOnNameInput = function () {
-					keyInput.value = slugify.default(nameInput.value);
-					};
-
-					nameInput.addEventListener('input', debounce.default(handleOnNameInput, 200));
-				</aui:script>
-			</c:if>
 		</commerce-ui:panel>
 
 		<aui:button-row>

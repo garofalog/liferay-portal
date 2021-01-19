@@ -52,4 +52,5 @@ long cpOptionId = ParamUtil.getLong(request, "cpOptionId");
 		%>'
 		module="js/add_cp_option_value"
 	/>
+
 </commerce-ui:modal-content>

@@ -42,9 +42,7 @@ export default function ({namespace, editOptionURL, windowState, defaultLanguage
 				};
 
 			formattedData.fieldType = document.getElementById(namespace+'DDMFormFieldTypeName').value;
-
 			formattedData.key = keyInput.value;
-
 			formattedData.name[defaultLanguageId] = nameInput.value;
 
 			AdminCatalogResource.createOption(formattedData)
