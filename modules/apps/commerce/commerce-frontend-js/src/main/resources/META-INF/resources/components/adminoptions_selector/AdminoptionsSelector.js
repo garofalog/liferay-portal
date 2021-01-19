@@ -39,70 +39,87 @@ const AdminoptionsSelector = (props) => {
 	// 	}
 	// });
 
-	{
-		props.options.map((op1) => {
-		const oppp = op1
-			{
-				oppp.option.map((op2) => {
-			if (props.type === 'select') {
-				
-				return (
+	const optionss = []
+	let consta
+	props.options.map((op1) => {
+		
+		if (op1.type === 'select') {
+		
+			consta = (
+				<div>
+
 					<ClaySelectWithOption
 						aria-label="Select Label"
 						id="admin-option"
-						options={op2}
+						options={op1.options}
 					/>
-				);
+				</div>
+				
+		
+		)
 			}
 
-			if (props.type === 'datalist') {
-				return (
+		if (op1.type === 'datalist') {
+			consta = (
+				<div>
+					<p>{op1.name}</p>
 					<Datalist
 						aria-label="Select Label"
-						item={op}
-						type="string"
+						key={}
+						items={op1.options}
 					/>
-				);
-			}
+				</div>
+			);
+		}
 
-			if (props.type === 'autocomplete') {
-				return (
+		if (op1.type === 'autocomplete') {
+			consta = (
+				<div>
+					<p>{op1.name}</p>
+
 					<Autocomplete
-						items={props.options.options}
+						items={op1.options}
 					/>
-				);
-			}
-		})}
-		
-	})}
+				</div>
+			);
+		}
+		optionss.push(consta)
+	})
+
+	return (
+		<>
+			{optionss}
+		</>
+	)
 	
+
 };
 
-AdminoptionsSelector.defaultProps = {
-	options: [
-		{
-			name: 'size',
-			options: [
-				{
-					label: 'Small',
-					value: 'S'
-				},
-				{
-					label: 'Medium',
-					value: 'M'
-				},
-				{
-					label: 'Big',
-					value: 'XL'
-				},
-			],
-			selectOrDatalist: 'select',
-			type: 'string',
-		}
-	],
-	type: 'select',
+// AdminoptionsSelector.defaultProps = {
+// 	options: [
+// 		{
+// 			name: 'size',
+// 			options: [
+// 				{
+// 					label: 'Small',
+// 					value: 'S'
+// 				},
+// 				{
+// 					label: 'Medium',
+// 					value: 'M'
+// 				},
+// 				{
+// 					label: 'Big',
+// 					value: 'XL'
+// 				},
+// 			],
+// 			selectOrDatalist: 'select',
+// 			type: 'string',
+// 		}
+// 	],
+// 	type: 'select',
 
-}
+// }
 
 AdminoptionsSelector.propTypes = {
 	options: PropTypes.arrayOf(PropTypes.shape({
