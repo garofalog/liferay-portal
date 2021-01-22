@@ -119,6 +119,10 @@ if (cpAttachmentFileEntry != null) {
 			return;
 		}
 
+		if (!fieldValues.length) {
+			fieldValues = FormsHelper.getDefaultFieldsShape(ddmForm);
+		}
+
 		ddmForm.on('fieldEdited', function (field) {
 			fieldValues = FormsHelper.updateFields(fieldValues, field);
 
@@ -136,12 +140,10 @@ if (cpAttachmentFileEntry != null) {
 			var form = window.document['<portlet:namespace />fm'];
 
 			var ddmForm = Liferay.component(
-				'ProductOptions<%= cpDefinitionId %>DDMForm'
+				'ProductOptions<%= cpDefinitionId %>'
 			);
 
 			if (ddmForm) {
-				var fieldValues = FormsHelper.getDefaultFieldsShape(ddmForm);
-
 				form['<portlet:namespace />ddmFormValues'].value = JSON.stringify(
 					fieldValues
 				);
