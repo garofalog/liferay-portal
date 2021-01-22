@@ -139,9 +139,7 @@ if (cpAttachmentFileEntry != null) {
 		function () {
 			var form = window.document['<portlet:namespace />fm'];
 
-			var ddmForm = Liferay.component(
-				'ProductOptions<%= cpDefinitionId %>'
-			);
+			var ddmForm = Liferay.component('ProductOptions<%= cpDefinitionId %>');
 
 			if (ddmForm) {
 				form['<portlet:namespace />ddmFormValues'].value = JSON.stringify(
