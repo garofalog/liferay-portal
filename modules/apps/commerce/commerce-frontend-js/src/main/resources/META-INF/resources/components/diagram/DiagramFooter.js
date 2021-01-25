@@ -12,12 +12,63 @@
  * details.
  */
 
+import ClayButton, { ClayButtonWithIcon } from '@clayui/button';
+import { ClaySelect } from '@clayui/form';
+import ClayIcon from '@clayui/icon';
+import PropTypes from 'prop-types';
 import React from 'react';
 
-const DiagramFooter = () => {
+const DiagramFooter = (props) => {
+    const options = [
+        {
+            label: "100%",
+            value: "100"
+        },
+        {
+            label: "75%",
+            value: "75"
+        },
+        {
+            label: "50%",
+            value: "50"
+        }
+    ];
+    
     return (
-        <p>footer culo</p>
+        <div className="d-flex diagram-footer justify-content-end">
+
+            <ClayButton>
+                <span className="inline-item inline-item-before">
+                    <ClayIcon spritemap={props.spritemap} symbol="expand" />
+                </span>
+
+                {"Expand"}
+            </ClayButton>
+            
+            <div className="d-flex">
+                <ClayButton className="" displayType="secondary">{"-"}</ClayButton>
+                <ClaySelect aria-label="Select Label" id="mySelectId">
+                    {options.map(item => (
+                        <ClaySelect.Option
+                            key={item.value}
+                            label={item.label}
+                            value={item.value}
+                        />
+                    ))}
+                </ClaySelect>
+                <ClayButton className="" displayType="secondary">{"+"}</ClayButton>
+            </div>
+
+        </div>     
+        
     )
+}
+
+DiagramFooter.defaultProps = {
+
+}
+
+DiagramFooter.propTypes = {
 }
 
 export default DiagramFooter;

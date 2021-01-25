@@ -1,0 +1,16 @@
+
+.diagram {
+    &-header {
+        height: 58px;
+        .select-diameter {
+            margin-left: 15px;
+        }
+        .auto-mapping {
+            height: 40px;
+        }
+    }
+
+    &-footer {
+        margin-top: 15px;
+    }
+}

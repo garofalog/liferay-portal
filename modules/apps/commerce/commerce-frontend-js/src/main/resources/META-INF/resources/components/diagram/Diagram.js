@@ -17,28 +17,39 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import DiagramFooter from './DiagramFooter'
-
-import DiagramHeader from './DiagramHeader'
-
+import DiagramFooter from './DiagramFooter';
+import DiagramHeader from './DiagramHeader';
 
 const Diagram = (props) => {
-    
+
+    const style = {
+        backgroundImage: `url(${props.image})`,
+        backgroundPosition: `center center`,
+        backgroundSize: `contain`,
+        height: '500px',
+        maxheight: '500px',
+        maxwidth: '500px',
+        width: '100%'
+    }
 
     return (
-        <>
+        <div className="diagram mx-auto">
             <DiagramHeader/>
-            ciao amigos
-            <DiagramFooter/>
-        </>
+
+            <div style={style}></div>
+
+            <DiagramFooter spritemap={props.spritemap}/>
+        </div>
     );
 };
 
 Diagram.defaultProps = {
+    
 };
 
 Diagram.propTypes = {
-    
+    image: PropTypes.string,
+    spritemap: PropTypes.string,
 };
 
 export default Diagram;

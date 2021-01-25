@@ -12,146 +12,111 @@
  * details.
  */
 
-import {ClayButton} from '@clayui/button';
-import { ClayDropDownWithItems } from '@clayui/drop-down';
+import ClayButton from '@clayui/button';
+import ClayDropDown from '@clayui/drop-down';
 import { ClaySelect, ClaySelectWithOption} from '@clayui/form';
 import ClaySlider from '@clayui/slider';
 import PropTypes from 'prop-types';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
+
+
 
 const DiagramHeader = (props) => {
-    const [value, setValue] = useState();
+    const [active, setActive] = useState(false);
     const [range, setRange] = useState(10);
+    const [diameter, setDiameter] = useState(null)
 
-    const items = [
+    const diameters = [
+     
         {
-            label: "clickable",
-            onClick: () => {
-                alert("you clicked!");
-            }
+            label: "Small",
+            value: 10,
         },
         {
-            type: "divider"
+            label: "Medium",
+            value: 20,
         },
         {
-            items: [
-                {
-                    label: "one",
-                    type: "radio",
-                    value: "one"
-                },
-                {
-                    label: "two",
-                    type: "radio",
-                    value: "two"
-                }
-            ],
-            label: "radio",
-            name: "radio",
-            onChange: (value) => alert("New Radio checked", value),
-            type: "radiogroup"
-        },
-        {
-            items: [
-                {
-                    checked: true,
-                    label: "checkbox",
-                    onChange: () => alert("checkbox changed"),
-                    type: "checkbox"
-                },
-                {
-                    checked: true,
-                    label: "checkbox 1",
-                    onChange: () => alert("checkbox changed"),
-                    type: "checkbox"
-                }
-            ],
-            label: "checkbox",
-            type: "group"
-        },
-        {
-            href: "#",
-            label: "linkable"
+            label: "Large",
+            value: 30,
         }
-    ];
 
-    
-        
-    
+    ];
     
     return (
-        <>
-            <label>Circle Diagram:</label>
-            {/* <ClaySelectWithOption
-                aria-label="Select Label"
-                id="mySelectId"
-                options={props.options}
-            /> */}
-            
-            <ClayDropDownWithItems
-                caption="Showing 7 of 203 Structures"
-                footerContent={
-                    <>
+        <div className="d-flex diagram-footer diagram-header justify-content-between">
+            <div className="d-flex text-align-center">
+
+                <label className="align-middle my-auto">Circle Diagram:</label>
+
+                <ClayDropDown
+                    active={active}
+                    className="my-auto"
+                    onActiveChange={setActive}
+                    trigger={
+                       
+                        <ClayButton className="select-diameter" displayType="secondary">
+                            {diameter || 'Default-diameter'}
+			            </ClayButton>
+                    }
+                >
+                    <ClayDropDown.ItemList>
+                        <ClayDropDown.Group header="STANDARD">
+                            {diameters.map((item, i) => (
+                            
+                                <ClayDropDown.Item 
+                                    key={i} 
+                                    onChange={(event) => {
+                                        // console.log(item.value)
+
+                                        console.log(event)
+
+
+                                        // setDiameter(item.value)
+                                        }}>
+                                    {item.label}
+                                </ClayDropDown.Item>
+                            ))}
+                        </ClayDropDown.Group>
+                    </ClayDropDown.ItemList>
+                    <ClayDropDown.Divider></ClayDropDown.Divider>
+                    <ClayDropDown.Caption>
                         <div className="form-group">
-                            <label htmlFor="decadeSlider">{"Decades"}</label>
-
-                            <ClaySlider
-                                id="decadeSlider"
-                                max={2020}
-                                onValueChange={setRange}
-                                step={10}
-                                value={range}
-                            />
+                            <label htmlFor="slider">CUSTOM</label>
+                            <ClaySlider id="slider" onValueChange={setRange} value={range} />
                         </div>
-                        {/* <ClayButton displayType="secondary">{"Cancel"}</ClayButton>
-                        <ClayButton>{"Done"}</ClayButton> */}
-                    </>
-                }
-                helpText="You can customize this menu or see all you have by pressing 'more'."
-                items={items}
-                onSearchValueChange={setValue}
-                searchValue={value}
-                searchable={true}
-                spritemap={props.spritemap}
-                trigger={
-                    <ClaySelect aria-label="Select Label" id="mySelectId">
 
-                        <ClaySelect.Option
-                            key={1}
-                            label={1}
-                            value={'nuun'}
-                        />
+                    </ClayDropDown.Caption>
+                </ClayDropDown>
+            </div>
 
-                    </ClaySelect>
-                }
-            />
-            <ClayButton displayType="secondary">
-                Auto mapping
+            <ClayButton className="auto-mapping my-auto pull-right" displayType="secondary">
+                {'Auto-mapping'}
 			</ClayButton>
-        </>
+        </div>
     )
 }
 
 DiagramHeader.defaultProps = {
-    options: [
-        {
-            label: "Option 1",
-            value: "1"
-        },
-        {
-            label: "Option 2",
-            value: "2"
-        }
-  ]
+//     options: [
+//         {
+//             label: "Option 1",
+//             value: "1"
+//         },
+//         {
+//             label: "Option 2",
+//             value: "2"
+//         }
+//   ]
 }
 
 DiagramHeader.propTypes = {
-    options: PropTypes.arrayOf(
-        PropTypes.shape({
-            label: PropTypes.string,
-            value: PropTypes.number
-        })
-    )
+    // options: PropTypes.arrayOf(
+    //     PropTypes.shape({
+    //         label: PropTypes.string,
+    //         value: PropTypes.number
+    //     })
+    // )
 }
 
 export default DiagramHeader;
