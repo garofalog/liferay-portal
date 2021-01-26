@@ -18,8 +18,23 @@ import ClayIcon from '@clayui/icon';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import Datalist from '../datalist/Datalist'
+
+
 const DiagramFooter = (props) => {
     const options = [
+        {
+            label: "175%",
+            value: "175"
+        },
+        {
+            label: "150%",
+            value: "150"
+        },
+        {
+            label: "125%",
+            value: "125"
+        },
         {
             label: "100%",
             value: "100"
@@ -35,9 +50,9 @@ const DiagramFooter = (props) => {
     ];
     
     return (
-        <div className="d-flex diagram-footer justify-content-end">
+        <div className="d-flex diagram-footer justify-content-end mt-3">
 
-            <ClayButton>
+            <ClayButton className="mr-3">
                 <span className="inline-item inline-item-before">
                     <ClayIcon spritemap={props.spritemap} symbol="expand" />
                 </span>
@@ -47,7 +62,7 @@ const DiagramFooter = (props) => {
             
             <div className="d-flex">
                 <ClayButton className="" displayType="secondary">{"-"}</ClayButton>
-                <ClaySelect aria-label="Select Label" id="mySelectId">
+                <ClaySelect aria-label="Select Label" className="ml-3 mr-3" id="mySelectId">
                     {options.map(item => (
                         <ClaySelect.Option
                             key={item.value}
@@ -57,7 +72,13 @@ const DiagramFooter = (props) => {
                     ))}
                 </ClaySelect>
                 <ClayButton className="" displayType="secondary">{"+"}</ClayButton>
+
+                {/* <Datalist items={options} /> */}
+
+
             </div>
+            <ClayButton className="ml-3 reset-zoom" displayType="secondary">{"Reset Zoom"}</ClayButton>
+
 
         </div>     
         

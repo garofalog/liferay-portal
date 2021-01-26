@@ -23,11 +23,9 @@ import React, { useState } from 'react';
 
 const DiagramHeader = (props) => {
     const [active, setActive] = useState(false);
-    const [range, setRange] = useState(10);
-    const [diameter, setDiameter] = useState(null)
+    const [diameter, setDiameter] = useState(0)
 
     const diameters = [
-     
         {
             label: "Small",
             value: 10,
@@ -40,7 +38,6 @@ const DiagramHeader = (props) => {
             label: "Large",
             value: 30,
         }
-
     ];
     
     return (
@@ -54,8 +51,10 @@ const DiagramHeader = (props) => {
                     className="my-auto"
                     onActiveChange={setActive}
                     trigger={
-                       
-                        <ClayButton className="select-diameter" displayType="secondary">
+                        <ClayButton 
+                            alt={'Click-to-select-custom-diameter'} 
+                            className="ml-3 select-diameter"
+                            displayType="secondary">
                             {diameter || 'Default-diameter'}
 			            </ClayButton>
                     }
@@ -66,14 +65,13 @@ const DiagramHeader = (props) => {
                             
                                 <ClayDropDown.Item 
                                     key={i} 
-                                    onChange={(event) => {
+                                    onClick={(event) => {
                                         // console.log(item.value)
 
-                                        console.log(event)
+                                        console.log(item.value)
 
-
-                                        // setDiameter(item.value)
-                                        }}>
+                                        setDiameter(item.value)
+                                    }}>
                                     {item.label}
                                 </ClayDropDown.Item>
                             ))}
@@ -83,7 +81,7 @@ const DiagramHeader = (props) => {
                     <ClayDropDown.Caption>
                         <div className="form-group">
                             <label htmlFor="slider">CUSTOM</label>
-                            <ClaySlider id="slider" onValueChange={setRange} value={range} />
+                            <ClaySlider id="slider" onValueChange={setDiameter} value={diameter} />
                         </div>
 
                     </ClayDropDown.Caption>

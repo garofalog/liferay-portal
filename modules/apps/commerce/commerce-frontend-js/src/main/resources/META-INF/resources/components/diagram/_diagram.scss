@@ -3,7 +3,6 @@
     &-header {
         height: 58px;
         .select-diameter {
-            margin-left: 15px;
         }
         .auto-mapping {
             height: 40px;
@@ -11,6 +10,9 @@
     }
 
     &-footer {
-        margin-top: 15px;
+
     }
 }
+
+body { background:#eee; margin:1em; text-align:center; }
+		canvas { display:block; margin:1em auto; background:#fff; border:1px solid #ccc }

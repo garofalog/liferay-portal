@@ -13,32 +13,38 @@
  */
 
 import { ClayInput } from '@clayui/form';
-import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import DiagramFooter from './DiagramFooter';
 import DiagramHeader from './DiagramHeader';
+import ImageCanvas from './ImageCanvas'
 
 const Diagram = (props) => {
 
     const style = {
         backgroundImage: `url(${props.image})`,
         backgroundPosition: `center center`,
+        backgroundRepeat: 'no-repeat',
         backgroundSize: `contain`,
         height: '500px',
         maxheight: '500px',
         maxwidth: '500px',
-        width: '100%'
+        width: '100%',
     }
 
     return (
         <div className="diagram mx-auto">
+            
             <DiagramHeader/>
 
-            <div style={style}></div>
+            <div id="canvacontainer"></div>
+            {/* <canvas id="imagecanvas"></canvas> */}
+            <ImageCanvas image={props.image}/>
+            {/* <div style={style}></div> */}
 
             <DiagramFooter spritemap={props.spritemap}/>
+
         </div>
     );
 };

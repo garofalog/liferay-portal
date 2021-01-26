@@ -34,6 +34,8 @@ const Datalist = (props) => {
 	};
 	const listId = `cs-` + gHash(name) + `-list`;
 
+	const items = props.items
+
 	return (
 		<>
 			<ClayInput
@@ -50,13 +52,31 @@ const Datalist = (props) => {
 				list={listId}
 				onChange={(event) => {
 					if (name === 'quantity_datalist') {
-						props.updateQuantity(parseInt(event.target.value, 10));
+						props.updateQuantity(parseInt(event.target.value || event.target.value.substring(0, event.target.value.length - 1), 10));
 					}
 				}}
 				pattern={props.pattern}
 				type={props.type}
 			></ClayInput>
-			<datalist id={listId}>{props.children}</datalist>
+			<datalist 
+				id={listId} 
+				onClick={(event) => {
+					debugger;
+					console.log(event)
+				}}>
+				{
+					props.children || items.map(item => {
+
+						return (
+							<option
+								key={item.value} 
+								value={item.label}>
+							</option>
+						)
+					})
+
+				}
+			</datalist>
 		</>
 	);
 };
@@ -69,6 +89,10 @@ Datalist.propTypes = {
 	disabled: PropTypes.bool,
 	items: PropTypes.arrayOf(
 		PropTypes.shape({
+			items: PropTypes.arrayOf(PropTypes.shape({
+				label: PropTypes.string,
+				value: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+			})),
 			name: PropTypes.string,
 			options: PropTypes.arrayOf(PropTypes.number),
 			pattern: PropTypes.string,
@@ -79,6 +103,13 @@ Datalist.propTypes = {
 	size: PropTypes.string,
 	type: PropTypes.string,
 	updateQuantity: PropTypes.func,
+
+	// options: PropTypes.arrayOf(
+    //     PropTypes.shape({
+    //         label: PropTypes.string,
+    //         value: PropTypes.number
+    //     })
+    // )
 };
 
 export default Datalist;
