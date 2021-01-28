@@ -104,62 +104,14 @@ if (cpAttachmentFileEntry != null) {
 }
 %>
 
-<aui:script require="commerce-frontend-js/utilities/forms/formsHelper as FormsHelper">
-	var fieldValues = [];
-
-	try {
-		fieldValues = JSON.parse('<%= fieldValues %>');
-	}
-	catch (_ignore) {}
-
-	Liferay.componentReady('ProductOptions<%= cpDefinitionId %>').then(function (
-		ddmForm
-	) {
-		if (!ddmForm.on) {
-			return;
-		}
-
-		if (!fieldValues.length) {
-			fieldValues = FormsHelper.getDefaultFieldsShape(ddmForm);
-		}
-
-		ddmForm.on('fieldEdited', function (field) {
-			fieldValues = FormsHelper.updateFields(fieldValues, field);
-
-			var form = document['<portlet:namespace />fm'];
-			form['<portlet:namespace />ddmFormValues'].value = JSON.stringify(
-				fieldValues
-			);
-		});
-	});
-
-	Liferay.provide(
-		window,
-		'<portlet:namespace />saveAttachmentFileEntry',
-		function () {
-			var form = window.document['<portlet:namespace />fm'];
-
-			var ddmForm = Liferay.component('ProductOptions<%= cpDefinitionId %>');
-
-			if (ddmForm) {
-				form['<portlet:namespace />ddmFormValues'].value = JSON.stringify(
-					fieldValues
-				);
-			}
-
-			submitForm(form);
-		}
-	);
-</aui:script>
-
-<aui:script use="aui-base,event-input">
-	var publishButton = A.one('#<portlet:namespace />publishButton');
-
-	publishButton.on('click', function () {
-		var workflowActionInput = A.one('#<portlet:namespace />workflowAction');
-
-		if (workflowActionInput) {
-			workflowActionInput.val('<%= WorkflowConstants.ACTION_PUBLISH %>');
-		}
-	});
-</aui:script>
+<liferay-frontend:component
+	module="js/edit_cp_attachment_file_entry"
+	context='<%=
+			HashMapBuilder.<String, Object>put(
+				"fieldValues", fieldValues
+			).put(
+				"cpDefinitionId", cpDefinitionId
+			).put(
+				"actionPublish", WorkflowConstants.ACTION_PUBLISH
+			).build()
+		%>'/>
