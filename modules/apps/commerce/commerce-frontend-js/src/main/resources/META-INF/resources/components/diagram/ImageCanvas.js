@@ -15,11 +15,9 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react'
 
-import { handleScroll, redraw, trackTransforms, zoom} from './functions'
+import { handleScroll, redraw, start, trackTransforms, zoom} from './functions'
 
 const ImageCanvas = (props) => {
-    const [canvas, setCanvas] = useState(null);
-
     const gkhead = new Image;
 
 
@@ -28,102 +26,51 @@ const ImageCanvas = (props) => {
 
     const canvasRef = useRef(null)
 
-    // const container = document.getElementById('canvacontainer')
-
-    // const canvas //= canvasRef.current
-    // const  ctx = '' //= canvas.getContext('2d');
 
     
-    const canvasDim = {
-        height: 600,
-        width: 800,
-    }
-
-    const start = (ctx, lastX, lastY, dragStart, dragged, scaleFactor) => {
-        trackTransforms(ctx);
-
-        canvas.addEventListener('mousedown', (evt) => {
-            document.body.style.mozUserSelect = document.body.style.webkitUserSelect = document.body.style.userSelect = 'none';
-            lastX = evt.offsetX || (evt.pageX - canvas.offsetLeft);
-            lastY = evt.offsetY || (evt.pageY - canvas.offsetTop);
-            dragStart = ctx.transformedPoint(lastX, lastY);
-            dragged = false;
-        }, false);
-
-        canvas.addEventListener('mouseup', (evt) => {
-            dragStart = null;
-            if (!dragged) { zoom(ctx, evt.shiftKey ? -1 : 1, lastX, lastY, scaleFactor); }
-        }, false);
-
-        canvas.addEventListener('mousemove', (evt) => {
-            lastX = evt.offsetX || (evt.pageX - canvas.offsetLeft);
-            lastY = evt.offsetY || (evt.pageY - canvas.offsetTop);
-            dragged = true;
-            if (dragStart) {
-                var pt = ctx.transformedPoint(lastX, lastY);
-                ctx.translate(pt.x - dragStart.x, pt.y - dragStart.y);
-                redraw(ctx, canvasDim.width, canvasDim.height);
-            }
-        }, false);
-
-        canvas.addEventListener('DOMMouseScroll', handleScroll, false);
-        canvas.addEventListener('mousewheel', handleScroll, false);
-
-    }
 
     const renderImage = (ctx) => {
-        ctx.drawImage(gkhead, 0, 0);
         gkhead.src = props.image
+        ctx.drawImage(gkhead, 0, 0, props.imageSettings.width, props.imageSettings.height);
+
+        // ctx.drawImage(gkhead, 0, 0, 56 , 600);
 
 
     }
 
-
-    
-    let dragStart, dragged;
-
-
-    useEffect((dragStart, dragged) => {
+    useEffect(() => {
         // setCanvas(canvasRef.current)
-        // canvas.getContext('2d')
+        // canvas.getContext('2d')xr
 
-        const scaleFactor = 1.1;
-        const lastX = canvasDim.width / 2, lastY = canvasDim.height / 2;
+        let dragStart, dragged;
+
+        // const lastX = props.imageSettings.width / 2, lastY = canvasDim.height / 2;
 
         const canvas = canvasRef.current
+        props.setCanvas(canvas)
         const ctx = canvas.getContext('2d');
+        props.setctxStore(ctx)
 
-        gkhead.src = props.image
+        trackTransforms(ctx);
+        console.log(props.imageSettings)
 
+        // gkhead.src = props.image
+
+
+        redraw(ctx, props.imageSettings.width, props.imageSettings.height)
+
+
+
+        start(ctx, props.imageSettings.lastX, props.imageSettings.lastY, dragStart, dragged, props.imageSettings.scaleFactor, canvas)
         renderImage(ctx)
-
-
-        // redraw(ctx, canvasDim.width, canvasDim.height)
-
-        // start(ctx, lastX, lastY, dragStart, dragged, scaleFactor)
-
+ 
     }, []) //[canvas])
 
-    
-    // canvas.setAttribute('id', 'imagecanvas')
-
-    // container.appendChild(canvas)
-
-    // const canvas = document.getElementById('imagecanvas');
-
-  
-    
-    
-
-    
-
-
-
-    
+    // redraw(ctxStore, canvasDim.width, canvasDim.height)
 
 
     return (
-        <canvas height={canvasDim.height} id="imagecanvas" ref={canvasRef} width={canvasDim.width} ></canvas>
+        <canvas height={props.imageSettings.lastY*2} id="imagecanvas" ref={canvasRef} width={props.imageSettings.lastX*2} ></canvas>
     )
 
 }
@@ -132,4 +79,11 @@ export default ImageCanvas;
 
 ImageCanvas.propTypes = {
     image: PropTypes.string,
+    imageSettings: PropTypes.shape({
+        lastX: PropTypes.number,
+        lastY: PropTypes.number,
+        scaleFactor: PropTypes.double,
+    }),
+    setCanvas: PropTypes.func,
+    setctxStore: PropTypes.func,
 }

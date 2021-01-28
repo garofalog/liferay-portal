@@ -23,7 +23,7 @@ export const redraw = (ctx, width, height) => {
     ctx.clearRect(0, 0, width, height);
     ctx.restore();
 
-    ctx.drawImage(new Image, 0, 0);
+    // ctx.drawImage(new Image, 0, 0);
 
 }
 
@@ -114,3 +114,36 @@ export const handleScroll = (evt) => {
 
     return evt.preventDefault() && false;
 };
+
+export const start = (ctx, lastX, lastY, dragStart, dragged, scaleFactor, canvas) => {
+
+    trackTransforms(ctx);
+
+    canvas.addEventListener('mousedown', (evt) => {
+        document.body.style.mozUserSelect = document.body.style.webkitUserSelect = document.body.style.userSelect = 'none';
+        lastX = evt.offsetX || (evt.pageX - canvas.offsetLeft);
+        lastY = evt.offsetY || (evt.pageY - canvas.offsetTop);
+        dragStart = ctx.transformedPoint(lastX, lastY);
+        dragged = false;
+    }, false);
+
+    canvas.addEventListener('mouseup', (evt) => {
+        dragStart = null;
+        if (!dragged) { zoom(ctx, evt.shiftKey ? -1 : 1, lastX, lastY, scaleFactor); }
+    }, false);
+
+    canvas.addEventListener('mousemove', (evt) => {
+        lastX = evt.offsetX || (evt.pageX - canvas.offsetLeft);
+        lastY = evt.offsetY || (evt.pageY - canvas.offsetTop);
+        dragged = true;
+        if (dragStart) {
+            var pt = ctx.transformedPoint(lastX, lastY);
+            ctx.translate(pt.x - dragStart.x, pt.y - dragStart.y);
+            redraw(ctx, lastX*2, lastY*2 );
+        }
+    }, false);
+
+    canvas.addEventListener('DOMMouseScroll', handleScroll, false);
+    canvas.addEventListener('mousewheel', handleScroll, false);
+
+}

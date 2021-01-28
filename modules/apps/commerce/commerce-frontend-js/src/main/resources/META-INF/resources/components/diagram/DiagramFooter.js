@@ -20,6 +20,8 @@ import React from 'react';
 
 import Datalist from '../datalist/Datalist'
 
+import { handleScroll, redraw, start, trackTransforms, zoom } from './functions'
+
 
 const DiagramFooter = (props) => {
     const options = [
@@ -61,8 +63,21 @@ const DiagramFooter = (props) => {
             </ClayButton>
             
             <div className="d-flex">
-                <ClayButton className="" displayType="secondary">{"-"}</ClayButton>
-                <ClaySelect aria-label="Select Label" className="ml-3 mr-3" id="mySelectId">
+
+                <ClayButton 
+                    className="" 
+                    displayType="secondary" 
+
+                    // onclick={() => zoom()}
+
+                >
+                    {"-"}
+                </ClayButton>
+            
+                <ClaySelect 
+                    aria-label="Select Label" 
+                    className="ml-3 mr-3" 
+                    id="mySelectId">
                     {options.map(item => (
                         <ClaySelect.Option
                             key={item.value}
@@ -71,14 +86,21 @@ const DiagramFooter = (props) => {
                         />
                     ))}
                 </ClaySelect>
-                <ClayButton className="" displayType="secondary">{"+"}</ClayButton>
+
+                <ClayButton 
+                    className="" 
+                    displayType="secondary"
+                    onClick={() => zoom(props.infos.ctxStore, props.infos.canvas, 250+10, 350+10, 1)}
+                >
+                        {"+"}
+                </ClayButton>
 
                 {/* <Datalist items={options} /> */}
 
 
             </div>
-            <ClayButton className="ml-3 reset-zoom" displayType="secondary">{"Reset Zoom"}</ClayButton>
 
+            <ClayButton className="ml-3 reset-zoom" displayType="secondary">{"Reset Zoom"}</ClayButton>
 
         </div>     
         
@@ -90,6 +112,13 @@ DiagramFooter.defaultProps = {
 }
 
 DiagramFooter.propTypes = {
+    infos: PropTypes.shape({
+        canvas: PropTypes.any,
+        ctxStore: PropTypes.any
+    }),
+    imageSettings: PropTypes.shape({
+
+    })
 }
 
 export default DiagramFooter;

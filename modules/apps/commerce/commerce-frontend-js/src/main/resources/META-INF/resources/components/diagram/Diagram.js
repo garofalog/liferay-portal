@@ -14,47 +14,82 @@
 
 import { ClayInput } from '@clayui/form';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, {useState} from 'react';
 
 import DiagramFooter from './DiagramFooter';
 import DiagramHeader from './DiagramHeader';
 import ImageCanvas from './ImageCanvas'
 
 const Diagram = (props) => {
+    const [canvas, setCanvas] = useState(null);
+    const [ctxStore, setCtxStore] = useState(null)
 
-    const style = {
-        backgroundImage: `url(${props.image})`,
-        backgroundPosition: `center center`,
-        backgroundRepeat: 'no-repeat',
-        backgroundSize: `contain`,
-        height: '500px',
-        maxheight: '500px',
-        maxwidth: '500px',
-        width: '100%',
+    const completeimageSettings = {
+        width: props.imageSettings.width,
+        height: props.imageSettings.height,
+        lastX: props.imageSettings.width / 2,
+        lastY: props.imageSettings.height / 2,
+        scale: props.imageSettings.scaleFactor
+
     }
+
+    const forfooter = {
+        canvas,
+        ctxStore
+    }
+
+    // const settingsObj = {
+    //     ctx,
+    //     clicks,
+    //     lastX: props.imageSettings.width / 2,
+    //     lastY: props.imageSettings.height / 2,
+    //     scaleFactor: props.imageSettings.scaleFactor
+    // }
+
+    const settingsObj = {
+      
+        lastX: props.imageSettings.lastX,
+        lastY: props.imageSettings.lastY,
+        scaleFactor: props.imageSettings.scaleFactor
+    }
+
 
     return (
         <div className="diagram mx-auto">
             
-            <DiagramHeader/>
+            <DiagramHeader  />
 
             <div id="canvacontainer"></div>
             {/* <canvas id="imagecanvas"></canvas> */}
-            <ImageCanvas image={props.image}/>
+            <ImageCanvas image={props.image} imageSettings={completeimageSettings} setCanvas={setCanvas} setctxStore={setCtxStore}/>
             {/* <div style={style}></div> */}
 
-            <DiagramFooter spritemap={props.spritemap}/>
+            <DiagramFooter infos={forfooter} spritemap={props.spritemap}/>
 
         </div>
     );
 };
 
 Diagram.defaultProps = {
-    
+    // imageSettings: {
+
+    //     clicks: null, 
+    //     ctx: null,
+    //     imagePoints, 
+        
+    //     scaleFactor: 1,
+    // }
 };
 
 Diagram.propTypes = {
     image: PropTypes.string,
+    imageSettings: PropTypes.shape({
+        height: PropTypes.number,
+        scaleFactor: PropTypes.double,
+        width: PropTypes.number,
+    }),
+    setCanvas: PropTypes.func,
+    setCtxStore: PropTypes.func,
     spritemap: PropTypes.string,
 };
 
