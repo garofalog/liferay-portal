@@ -20,9 +20,6 @@ import React from 'react';
 
 import Datalist from '../datalist/Datalist'
 
-import { handleScroll, redraw, start, trackTransforms, zoom } from './functions'
-
-
 const DiagramFooter = (props) => {
     const options = [
         {
@@ -90,7 +87,8 @@ const DiagramFooter = (props) => {
                 <ClayButton 
                     className="" 
                     displayType="secondary"
-                    onClick={() => zoom(props.infos.ctxStore, props.infos.canvas, 250+10, 350+10, 1)}
+                    onClick={() => props.myzoom()// zoom(props.infos.ctxStore, props.infos.canvas, 250+10, 350+10, 1.2)
+                    }
                 >
                         {"+"}
                 </ClayButton>
@@ -118,7 +116,8 @@ DiagramFooter.propTypes = {
     }),
     imageSettings: PropTypes.shape({
 
-    })
+    }),
+    myzoom: PropTypes.func,
 }
 
 export default DiagramFooter;

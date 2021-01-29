@@ -20,17 +20,24 @@ import DiagramFooter from './DiagramFooter';
 import DiagramHeader from './DiagramHeader';
 import ImageCanvas from './ImageCanvas'
 
+import { handleScroll, redraw, start, trackTransforms, zoom } from './functions'
+
 const Diagram = (props) => {
     const [canvas, setCanvas] = useState(null);
     const [ctxStore, setCtxStore] = useState(null)
 
     const completeimageSettings = {
-        width: props.imageSettings.width,
         height: props.imageSettings.height,
         lastX: props.imageSettings.width / 2,
         lastY: props.imageSettings.height / 2,
-        scale: props.imageSettings.scaleFactor
+        scale: 1.1, //props.imageSettings.scaleFactor,
+        width: props.imageSettings.width,
 
+    }
+
+    const myzoom = () => {
+
+        zoom(ctxStore, clicks, completeimageSettings.lastX, completeimageSettings.lastY, completeimageSettings.scaleFactor)
     }
 
     const forfooter = {
@@ -46,12 +53,12 @@ const Diagram = (props) => {
     //     scaleFactor: props.imageSettings.scaleFactor
     // }
 
-    const settingsObj = {
+    // const settingsObj = {
       
-        lastX: props.imageSettings.lastX,
-        lastY: props.imageSettings.lastY,
-        scaleFactor: props.imageSettings.scaleFactor
-    }
+    //     lastX: props.imageSettings.lastX,
+    //     lastY: props.imageSettings.lastY,
+    //     scaleFactor: props.imageSettings.scaleFactor
+    // }
 
 
     return (
@@ -64,7 +71,7 @@ const Diagram = (props) => {
             <ImageCanvas image={props.image} imageSettings={completeimageSettings} setCanvas={setCanvas} setctxStore={setCtxStore}/>
             {/* <div style={style}></div> */}
 
-            <DiagramFooter infos={forfooter} spritemap={props.spritemap}/>
+            <DiagramFooter infos={forfooter} myzoom={myzoom} spritemap={props.spritemap}/>
 
         </div>
     );
@@ -88,6 +95,7 @@ Diagram.propTypes = {
         scaleFactor: PropTypes.double,
         width: PropTypes.number,
     }),
+    myzoom: PropTypes.func,
     setCanvas: PropTypes.func,
     setCtxStore: PropTypes.func,
     spritemap: PropTypes.string,
