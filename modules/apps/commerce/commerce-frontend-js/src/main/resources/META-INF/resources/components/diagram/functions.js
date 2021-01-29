@@ -14,7 +14,7 @@
 
 let gimg, gclicks
 
-export const redraw = (ctx, width, height, img, ball) => {
+export const redraw = (ctx, width, height, img) => {
     console.log('gimg> ', gimg)
     gimg = img
     
@@ -22,56 +22,54 @@ export const redraw = (ctx, width, height, img, ball) => {
     const p2 = ctx.transformedPoint(width, height);
     ctx.clearRect(p1.x, p1.y, p2.x - p1.x, p2.y - p1.y);
 
-    // Alternatively:
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, width, height);
+    ctx.restore();
+
+
+    ctx.drawImage(img, 0,0, width, height);
+
+
+    // ctx.beginPath();
+    // ctx.lineWidth = 6;
+    // ctx.moveTo(399, 250);
+    // ctx.lineTo(474, 256);
+    // ctx.stroke();
 
     // ctx.save();
-    // ctx.setTransform(1, 0, 0, 1, 0, 0);
-    // ctx.clearRect(0, 0, width, height);
+    // ctx.translate(4, 2);
+    // ctx.beginPath();
+    // ctx.lineWidth = 1;
+    // ctx.moveTo(436, 253);
+    // ctx.lineTo(437.5, 233);
+    // ctx.stroke();
+
+    // ctx.save();
+    // ctx.translate(438.5, 223);
+    // ctx.strokeStyle = '#06c';
+    // ctx.beginPath();
+    // ctx.lineWidth = 0.05;
+    // for (var i = 0; i < 60; ++i) {
+    //     ctx.rotate(6 * i * Math.PI / 180);
+    //     ctx.moveTo(9, 0);
+    //     ctx.lineTo(10, 0);
+    //     ctx.rotate(-6 * i * Math.PI / 180);
+    // }
+    // ctx.stroke();
     // ctx.restore();
 
+    // ctx.beginPath();
+    // ctx.lineWidth = 0.2;
+    // ctx.arc(438.5, 223, 10, 0, Math.PI * 2);
+    // ctx.stroke();
+    // ctx.restore();
 
-    ctx.drawImage(img, 0, 0, width, height);
-
-
-    ctx.beginPath();
-    ctx.lineWidth = 6;
-    ctx.moveTo(399, 250);
-    ctx.lineTo(474, 256);
-    ctx.stroke();
-
-    ctx.save();
-    ctx.translate(4, 2);
-    ctx.beginPath();
-    ctx.lineWidth = 1;
-    ctx.moveTo(436, 253);
-    ctx.lineTo(437.5, 233);
-    ctx.stroke();
-
-    ctx.save();
-    ctx.translate(438.5, 223);
-    ctx.strokeStyle = '#06c';
-    ctx.beginPath();
-    ctx.lineWidth = 0.05;
-    for (var i = 0; i < 60; ++i) {
-        ctx.rotate(6 * i * Math.PI / 180);
-        ctx.moveTo(9, 0);
-        ctx.lineTo(10, 0);
-        ctx.rotate(-6 * i * Math.PI / 180);
-    }
-    ctx.stroke();
-    ctx.restore();
-
-    ctx.beginPath();
-    ctx.lineWidth = 0.2;
-    ctx.arc(438.5, 223, 10, 0, Math.PI * 2);
-    ctx.stroke();
-    ctx.restore();
-
-    ctx.drawImage(ball, 379, 233, 40, 40);
-    ctx.drawImage(ball, 454, 239, 40, 40);
-    ctx.drawImage(ball, 310, 295, 20, 20);
-    ctx.drawImage(ball, 314.5, 296.5, 5, 5);
-    ctx.drawImage(ball, 319, 297.2, 5, 5);
+    // ctx.drawImage(ball, 379, 233, 40, 40);
+    // ctx.drawImage(ball, 454, 239, 40, 40);
+    // ctx.drawImage(ball, 310, 295, 20, 20);
+    // ctx.drawImage(ball, 314.5, 296.5, 5, 5);
+    // ctx.drawImage(ball, 319, 297.2, 5, 5);
 }
 
 export const zoom = (ctx, clicks, lastX, lastY, scaleFactor) => {
@@ -80,8 +78,12 @@ export const zoom = (ctx, clicks, lastX, lastY, scaleFactor) => {
     const factor = Math.pow(scaleFactor, clicks);
     ctx.scale(factor, factor);
     ctx.translate(-pt.x, -pt.y);
-    redraw(ctx, lastX * 2, lastY * 2, gimg);
+    
 }
+
+// export const resetZoom = () => {
+//     redraw(ctx, lastX * 2, lastY * 2, gimg);
+// }
 
 export const trackTransforms = (ctx) => {
     const svg = document.createElementNS("http://www.w3.org/2000/svg", 'svg');

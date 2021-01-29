@@ -98,7 +98,10 @@ const DiagramFooter = (props) => {
 
             </div>
 
-            <ClayButton className="ml-3 reset-zoom" displayType="secondary">{"Reset Zoom"}</ClayButton>
+            <ClayButton 
+                className="ml-3 reset-zoom" 
+                displayType="secondary"
+                onClick={() => resetZoom()}>{"Reset Zoom"}</ClayButton>
 
         </div>     
         
@@ -118,6 +121,7 @@ DiagramFooter.propTypes = {
 
     }),
     myzoom: PropTypes.func,
+    resetZoom: PropTypes.func
 }
 
 export default DiagramFooter;

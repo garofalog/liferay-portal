@@ -15,65 +15,16 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react'
 
-import { handleScroll, redraw, start, trackTransforms, zoom} from './functions'
+import { handleScroll, redraw, resetZoom, start, trackTransforms, zoom} from './functions'
 
 const ImageCanvas = (props) => {
-    const gkhead = new Image;
-    const ball = new Image;
-
-
-    const canvasRef = useRef(null)
-
-    // const renderImage = (ctx) => {
-    //     gkhead.src = props.image
-    //     ctx.drawImage(gkhead, 0, 0, props.imageSettings.width, props.imageSettings.height);
-    //     ctx.scale(.5,.5)
-    //     ctx.drawImage(gkhead, props.imageSettings.width / 2, props.imageSettings.height/2, props.imageSettings.width, props.imageSettings.height);
-
-    //     // ctx.drawImage(gkhead, 0, 0, 56 , 600);
-
-    //     ctx.drawImage(gimg, 0, 0, width, height);
-
-    // }
-
-    useEffect(() => {
-
-        let dragStart, dragged;
-
-        // const lastX = props.imageSettings.width / 2, lastY = canvasDim.height / 2;
-
-        const canvas = canvasRef.current
-        props.setCanvas(canvas)
-        const ctx = canvas.getContext('2d');
-        props.setctxStore(ctx)
-
-        trackTransforms(ctx);
-        
-        // console.log(props.imageSettings)
-        // gkhead.src = props.image
-
-        gkhead.src = props.image
-        ball.src = './assets/alphaball.png';
-
-        // ctx.drawImage(gkhead, 0, 0, props.imageSettings.width, props.imageSettings.height);
-        // ctx.scale(.5, .5)
-        // ctx.drawImage(gkhead, props.imageSettings.width / 2, props.imageSettings.height / 2, props.imageSettings.width, props.imageSettings.height);
-
-        redraw(ctx, props.imageSettings.width, props.imageSettings.height, gkhead,ball)
-
-
-
-        start(ctx, canvas, props.imageSettings.lastX, props.imageSettings.lastY, dragStart, dragged, props.imageSettings.scaleFactor)
-
-        // renderImage(ctx)
- 
-    }, []) //[canvas])
-
+    const [img, setImg] = useState(null)
+    
     // redraw(ctxStore, canvasDim.width, canvasDim.height)
 
 
     return (
-        <canvas height={props.imageSettings.lastY*2} id="imagecanvas" ref={canvasRef} width={props.imageSettings.lastX*2} ></canvas>
+        
     )
 
 }
