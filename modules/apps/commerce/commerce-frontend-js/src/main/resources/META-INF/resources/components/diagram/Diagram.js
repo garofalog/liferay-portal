@@ -117,12 +117,8 @@ const Diagram = (props) => {
         const factor = Math.pow(scaleFactor, clicks);
         ctx.scale(factor, factor);
         ctx.translate(-pt.x, -pt.y);
-        redraw(ctx, lastX * 2, lastY * 2, scaleFactor, img);
+        redraw(ctx, lastX * 2, lastY * 2, img);
     }
-
-    // export const resetZoom = () => {
-    //     redraw(ctx, lastX * 2, lastY * 2, gimg);
-    // }
 
     const trackTransforms = (ctx) => {
         const svg = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
