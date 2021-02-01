@@ -107,11 +107,11 @@ if (cpAttachmentFileEntry != null) {
 <liferay-frontend:component
 	module="js/edit_cp_attachment_file_entry"
 	context='<%=
-			HashMapBuilder.<String, Object>put(
-				"fieldValues", fieldValues
-			).put(
-				"cpDefinitionId", cpDefinitionId
-			).put(
-				"actionPublish", WorkflowConstants.ACTION_PUBLISH
-			).build()
-		%>'/>
+		HashMapBuilder.<String, Object>put(
+			"fieldValues", fieldValues
+		).put(
+			"cpDefinitionId", cpDefinitionId
+		).put(
+			"actionPublish", WorkflowConstants.ACTION_PUBLISH
+		).build()
+	%>'/>
