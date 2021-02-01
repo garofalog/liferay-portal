@@ -120,6 +120,10 @@ const Diagram = (props) => {
         redraw(ctx, lastX * 2, lastY * 2, img);
     }
 
+    const resetZoom = (ctx, width, height, img) => {
+        ctx.drawImage(img, 0, 0, width, height)
+    }
+
     const trackTransforms = (ctx) => {
         const svg = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
         let xform = svg.createSVGMatrix();
@@ -422,7 +426,7 @@ const Diagram = (props) => {
                     className="ml-3 reset-zoom"
                     displayType="secondary"
 
-                    // onClick={() => resetZoom()}
+                    onClick={() => resetZoom()}
 
                 >{"Reset Zoom"}</ClayButton>
 
