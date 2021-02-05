@@ -17,12 +17,11 @@ import { ClayInput } from '@clayui/form';
 import { ClaySelect } from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import PropTypes from 'prop-types';
-import React, {useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import DiagramFooter from './DiagramFooter';
 import DiagramHeader from './DiagramHeader';
-
-// import ImageCanvas from './ImageCanvas'
+import ImageCanvas from './ImageCanvas'
 
 // import { handleScroll, redraw, resetZoom, start, trackTransforms , zoom} from './functions'
 
@@ -31,36 +30,32 @@ let gimg, gclicks
 
 
 const Diagram = (props) => {
-    // const [canvas, setCanvas] = useState(null);
-    // const [ctxStore, setCtxStore] = useState(null)
+    const [canvas, setCanvas] = useState(null);
 
-    const [imga, setImga] = useState(null)
+    const [ctxStore, setCtxStore] = useState(null)
 
-    const gkhead = new Image;
-    const ball = new Image;
+    const [event, setEvent] = useState(null)
+    const [height, setHeight] = useState(props.imageSettings.height)
+    const [width, setWidth] = useState(props.imageSettings.width)
+    const [img, setImg] = useState(null)
+    const [lastCoordinates, setLastCoordinates] = useState([null, null])
 
+    const [dragStart, setDragStart] = useState(null)
+    const [dragged, setDragged] = useState(null)
 
-    const canvasRef = useRef(null)
+    // const gkhead = new Image;
 
-    // const renderImage = (ctx) => {
-    //     gkhead.src = props.image
-    //     ctx.drawImage(gkhead, 0, 0, props.imageSettings.width, props.imageSettings.height);
-    //     ctx.scale(.5,.5)
-    //     ctx.drawImage(gkhead, props.imageSettings.width / 2, props.imageSettings.height/2, props.imageSettings.width, props.imageSettings.height);
+    // const ball = new Image;
 
-    //     // ctx.drawImage(gkhead, 0, 0, 56 , 600);
+    // let dragStart, dragged;
 
-    //     ctx.drawImage(gimg, 0, 0, width, height);
-
-    // }
+    // const canvasRef = useRef(null)
 
     const redraw = (ctx, width, height, img) => {
-        // console.log('gimg> ', gimg)
-        // gimg = img
 
-        var p1 = ctx.transformedPoint(0, 0);
-        var p2 = ctx.transformedPoint(width, height);
-        ctx.clearRect(p1.x, p1.y, p2.x - p1.x, p2.y - p1.y);
+        // const p1 = ctx.transformedPoint(0, 0);
+        // const p2 = ctx.transformedPoint(width, height);
+        // ctx.clearRect(p1.x, p1.y, p2.x - p1.x, p2.y - p1.y);
 
         ctx.save();
         ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -121,7 +116,18 @@ const Diagram = (props) => {
     }
 
     const resetZoom = (ctx, width, height, img) => {
-        ctx.drawImage(img, 0, 0, width, height)
+        // var p1 = ctx.transformedPoint(0, 0);
+        // var p2 = ctx.transformedPoint(width, height);
+        // ctx.clearRect(p1.x, p1.y, p2.x - p1.x, p2.y - p1.y);
+
+        // ctx.save();
+        // ctx.setTransform(1, 0, 0, 1, 0, 0);
+        // ctx.clearRect(0, 0, width, height);
+        // ctx.restore();
+
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // redraw(ctx, width, height, img);
     }
 
     const trackTransforms = (ctx) => {
@@ -194,45 +200,65 @@ const Diagram = (props) => {
         }
     }
 
-    const handleScroll = (ctx, evt, lastX, lastY, img) => {
-        const delta = evt.wheelDelta ? evt.wheelDelta / 40 : evt.detail ? -evt.detail : 0;
+    const handleScroll = (ctx, event, lastX, lastY, img) => {
+        const delta = event.wheelDelta ? event.wheelDelta / 40 : event.detail ? -event.detail : 0;
         if (delta) {
+            console.log('delta', delta)
+            setEvent(event)
+            setLastCoordinates([lastX, lastY])
+
+            // setAssets({event, lastX, lastY});
+
             zoom(ctx, delta, lastX, lastY, 1.1, img)
         }
 
-        return evt.preventDefault() && false;
+        return event.preventDefault() && false;
     };
 
     const start = (ctx, canvas, lastX, lastY, dragStart, dragged, scaleFactor, img) => {
 
         // trackTransforms(ctx);
 
-        canvas.addEventListener('mousedown', (evt) => {
+        const context = ctx
+
+        canvas.addEventListener('mousedown', (event) => {
             document.body.style.mozUserSelect = document.body.style.webkitUserSelect = document.body.style.userSelect = 'none';
-            lastX = evt.offsetX || (evt.pageX - canvas.offsetLeft);
-            lastY = evt.offsetY || (evt.pageY - canvas.offsetTop);
-            dragStart = ctx.transformedPoint(lastX, lastY);
-            dragged = false;
+
+            setLastCoordinates([
+                event.offsetX || (event.pageX - canvas.offsetLeft),
+                event.offsetY || (event.pageY - canvas.offsetTop)
+            ])
+
+            //dragStart =
+
+            setDragStart( () => {
+                console.log(event.offsetX || (event.pageX - canvas.offsetLeft), event.offsetY || (event.pageY - canvas.offsetTop))
+ 
+                return context.transformedPoint(event.offsetX || (event.pageX - canvas.offsetLeft), event.offsetY || (event.pageY - canvas.offsetTop))
+            })
+
+            // setDragged(false)
+
+            setDragged(false)
         }, false);
 
-        canvas.addEventListener('mouseup', (evt) => {
-            dragStart = null;
-            const cli = evt.shiftKey ? -1 : 1
-
-            // console.log(cli)
-            // gclicks = cli
+        canvas.addEventListener('mouseup', (event) => {
+            dragStart = null
+            const cli = event.shiftKey ? -1 : 1
 
             if (!dragged) { zoom(ctx, cli, lastX, lastY, scaleFactor); }
         }, false);
 
-        canvas.addEventListener('click', (evt) => {
-            console.log('ciao')
-        })
+        canvas.addEventListener('mousemove', (event) => {
+            setLastCoordinates([
+                event.offsetX || (event.pageX - canvas.offsetLeft),
+                event.offsetY || (event.pageY - canvas.offsetTop)
+            ])
 
-        canvas.addEventListener('mousemove', (evt) => {
-            lastX = evt.offsetX || (evt.pageX - canvas.offsetLeft);
-            lastY = evt.offsetY || (evt.pageY - canvas.offsetTop);
-            dragged = true;
+            lastX = event.offsetX || (event.pageX - canvas.offsetLeft);
+            lastY = event.offsetY || (event.pageY - canvas.offsetTop);
+
+            dragged = true
             if (dragStart) {
                 const pt = ctx.transformedPoint(lastX, lastY);
                 ctx.translate(pt.x - dragStart.x, pt.y - dragStart.y);
@@ -240,54 +266,69 @@ const Diagram = (props) => {
             }
         }, false);
 
-        canvas.addEventListener('DOMMouseScroll', (evt) => handleScroll(ctx, evt, lastX, lastY, img), false);
-        canvas.addEventListener('mousewheel', (evt) => handleScroll(ctx, evt, lastX, lastY, img), false);
+        canvas.addEventListener('DOMMouseScroll', (event) => handleScroll(ctx, event, lastCoordinates[0], lastCoordinates[1], img), false);
+        canvas.addEventListener('mousewheel', (event) => handleScroll(ctx, event, lastX, lastY, img), false);
 
+        console.log('dragStart', dragStart)
+        console.log('dragged', dragged)
     }
 
-    useEffect(() => {
-
-        let dragStart, dragged;
-
-        // const lastX = props.imageSettings.width / 2, lastY = canvasDim.height / 2;
-
-        const canvas = canvasRef.current
-
-        // setCanvas(canvas)
-
-        const ctx = canvas.getContext('2d');
-
-        // setCtxStore(ctx)
-
-        // redraw(ctx, props.imageSettings.width, props.imageSettings.height, gkhead)
-
-        trackTransforms(ctx);
-
-        // console.log(props.imageSettings)
-        // gkhead.src = props.image
-
-        gkhead.src = props.image
-        setImga(gkhead)
-
-        // props.image = gkhead
-
-        ball.src = './assets/alphaball.png';
-
-        // ctx.drawImage(gkhead, 0, 0, props.imageSettings.width, props.imageSettings.height);
-        // ctx.scale(.5, .5)
-        // ctx.drawImage(gkhead, props.imageSettings.width / 2, props.imageSettings.height / 2, props.imageSettings.width, props.imageSettings.height);
-
-        redraw(ctx, props.imageSettings.width, props.imageSettings.height, gkhead)
-
-        // redraw(ctx, props.imageSettings.width, props.imageSettings.height, ball)
+    
 
 
 
-        start(ctx, canvas, props.imageSettings.lastX, props.imageSettings.lastY, dragStart, dragged, props.imageSettings.scaleFactor, gkhead)
+    // window.onload = () => {
 
-        // renderImage(ctx)
+    //     const canvasContainer = canvasRef.current
+    //     const gkhead = new Image();
+    //     gkhead.src = props.image
 
-    }, []) //[canvas])
+    //     const ctx = canvasContainer.getContext('2d');
+
+
+    //     console.log('stocazzo')
+    //     redraw(ctx, width, height, gkhead)
+
+    //     start(ctx, canvasContainer, lastCoordinates[0], lastCoordinates[1], dragStart, dragged, props.imageSettings.scaleFactor, gkhead)
+
+    // }
+    
+
+    // useEffect(() => {
+
+    //     setTimeout(() => {
+            
+
+            // setCanvas(canvas)
+
+
+            
+
+            // setCtxStore(ctx)
+
+            // trackTransforms(ctx);
+
+            
+            
+            // console.log(props.imageSettings)
+
+
+
+            // ball.src = './assets/alphaball.png';
+
+            // setCtx(ctx)
+
+            // setImg(gkhead)
+
+            // ctx.drawImage(gkhead, 0, 0, props.imageSettings.width, props.imageSettings.height);
+            // ctx.scale(.5, .5)
+            // ctx.drawImage(gkhead, props.imageSettings.width / 2, props.imageSettings.height / 2, props.imageSettings.width, props.imageSettings.height);
+
+
+            
+    //     },2000)
+        
+    // }, [])
 
     const completeimageSettings = {
         height: props.imageSettings.height,
@@ -298,34 +339,6 @@ const Diagram = (props) => {
 
     }
 
-    // const myzoom = () => {
-
-    //     zoom(ctxStore, .5, completeimageSettings.lastX, completeimageSettings.lastY, completeimageSettings.scaleFactor)
-    // }
-
-    // const forfooter = {
-    //     canvas,
-    //     ctxStore
-    // }
-
-    // const settingsObj = {
-    //     ctx,
-    //     clicks,
-    //     lastX: props.imageSettings.width / 2,
-    //     lastY: props.imageSettings.height / 2,
-    //     scaleFactor: props.imageSettings.scaleFactor
-    // }
-
-    // const settingsObj = {
-      
-    //     lastX: props.imageSettings.lastX,
-    //     lastY: props.imageSettings.lastY,
-    //     scaleFactor: props.imageSettings.scaleFactor
-    // }
-
-    // const resetZoom = () => {
-    //     ctxStore.drawImage(pr)
-    // }
 
     const options = [
         {
@@ -357,19 +370,21 @@ const Diagram = (props) => {
 
     return (
         <div className="diagram mx-auto">
-            
-            <DiagramHeader  />
+
+            <DiagramHeader />
 
             <div id="canvacontainer"></div>
             {/* <canvas id="imagecanvas"></canvas> */}
-            {/* <ImageCanvas image={props.image} imageSettings={completeimageSettings} setCanvas={setCanvas} setctxStore={setCtxStore}/> */}
-            <canvas
+
+            <ImageCanvas completeimageSettings={completeimageSettings} image={props.image} setCanvas={setCanvas} setctxStore={setCtxStore}/>
+            
+            {/* <canvas
                 height={completeimageSettings.lastY * 2}
                 id="imagecanvas"
                 ref={canvasRef}
                 width={completeimageSettings.lastX * 2}>
-            </canvas>
-            {/* <div style={style}></div> */}
+            </canvas> */}
+
 
             {/* <DiagramFooter infos={forfooter} myzoom={myzoom} spritemap={props.spritemap}/> */}
             <div className="d-flex diagram-footer justify-content-end mt-3">
@@ -411,7 +426,7 @@ const Diagram = (props) => {
                         className=""
                         displayType="secondary"
 
-                        // onClick={() => zoom(ctxStore, canvas, 250+10, 350+10, 1.1)}
+                    // onClick={() => zoom(ctxStore, canvas, 250+10, 350+10, 1.1)}
 
                     >
                         {"+"}
@@ -426,11 +441,11 @@ const Diagram = (props) => {
                     className="ml-3 reset-zoom"
                     displayType="secondary"
 
-                    onClick={() => resetZoom()}
+                    onClick={() => resetZoom(ctxStore, width, height, img)}
 
                 >{"Reset Zoom"}</ClayButton>
 
-            </div>     
+            </div>
 
         </div>
     );
@@ -442,20 +457,22 @@ Diagram.defaultProps = {
     //     clicks: null, 
     //     ctx: null,
     //     imagePoints, 
-        
+
     //     scaleFactor: 1,
     // }
 };
 
 Diagram.propTypes = {
     // image: PropTypes.string,
-    // imageSettings: PropTypes.shape({
-    //     height: PropTypes.number,
-    //     lastY: PropTypes.number,
-    //     lastX: PropTypes.number,
-    //     scaleFactor: PropTypes.double,
-    //     width: PropTypes.number,
-    // }),
+
+    completeimageSettings: PropTypes.shape({
+        height: PropTypes.number,
+        lastX: PropTypes.number,
+        lastY: PropTypes.number,
+        scaleFactor: PropTypes.double,
+        width: PropTypes.number,
+    }),
+
     // myzoom: PropTypes.func,
     // setCanvas: PropTypes.func,
     // setCtxStore: PropTypes.func,
