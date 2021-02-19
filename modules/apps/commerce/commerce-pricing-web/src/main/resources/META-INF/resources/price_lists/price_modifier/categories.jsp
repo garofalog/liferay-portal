@@ -28,67 +28,18 @@ long commercePriceModifierId = commercePriceListDisplayContext.getCommercePriceM
 		<div class="col-12">
 			<div id="item-finder-root"></div>
 
-			<aui:script require="commerce-frontend-js/components/item_finder/entry as itemFinder, commerce-frontend-js/utilities/slugify as slugify, commerce-frontend-js/utilities/eventsDefinitions as events, commerce-frontend-js/ServiceProvider/index as ServiceProvider">
-				var CommercePriceModifierCategoriesResource = ServiceProvider.default.AdminPricingAPI(
-					'v2'
-				);
-
-				var id = <%= commercePriceModifierId %>;
-				var priceModifierExternalReferenceCode =
-					'<%= commercePriceModifier.getExternalReferenceCode() %>';
-
-				function selectItem(category) {
-					var categoryData = {
-						categoryExternalReferenceCode: category.externalReferenceCode,
-						categoryId: category.id,
-						priceModifierExternalReferenceCode: priceModifierExternalReferenceCode,
-						priceModifierId: id,
-					};
-
-					return CommercePriceModifierCategoriesResource.addPriceModifierCategory(
-						id,
-						categoryData
-					)
-						.then(function () {
-							Liferay.fire(events.UPDATE_DATASET_DISPLAY, {
-								id:
-									'<%= CommercePricingDataSetConstants.COMMERCE_DATA_SET_KEY_PRICE_MODIFIER_CATEGORIES %>',
-							});
-						})
-						.catch(function (error) {
-							return Promise.reject(error);
-						});
-				}
-
-				function getSelectedItems() {
-					return Promise.resolve([]);
-				}
-
-				itemFinder.default('itemFinder', 'item-finder-root', {
-					apiUrl:
-						'/o/headless-admin-taxonomy/v1.0/taxonomy-categories/0/taxonomy-categories',
-					getSelectedItems: getSelectedItems,
-					inputPlaceholder: '<%= LanguageUtil.get(request, "find-a-category") %>',
-					itemSelectedMessage:
-						'<%= LanguageUtil.get(request, "category-selected") %>',
-					itemsKey: 'id',
-					itemCreation: false,
-					linkedDatasetsId: [
-						'<%= CommercePricingDataSetConstants.COMMERCE_DATA_SET_KEY_PRICE_MODIFIER_CATEGORIES %>',
-					],
-					onItemSelected: selectItem,
-					pageSize: 10,
-					panelHeaderLabel: '<%= LanguageUtil.get(request, "select-category") %>',
-					portletId: '<%= portletDisplay.getRootPortletId() %>',
-					schema: [
-						{
-							fieldName: ['name'],
-						},
-					],
-					spritemap: '<%= themeDisplay.getPathThemeImages() %>/lexicon/icons.svg',
-					titleLabel: '<%= LanguageUtil.get(request, "add-existing-category") %>',
-				});
-			</aui:script>
+			<liferay-frontend:component
+				module="js/price_lists/price_modifier/categories.js"
+<%--			context='<%=--%>
+				<%--				HashMapBuilder.<String, Object>put(--%>
+				<%--					"fieldValues", fieldValues--%>
+				<%--				).put(--%>
+				<%--					"cpDefinitionId", cpDefinitionId--%>
+				<%--				).put(--%>
+				<%--					"actionPublish", WorkflowConstants.ACTION_PUBLISH--%>
+				<%--				).build()--%>
+				<%--			%>'--%>
+			/>
 		</div>
 
 		<div class="col-12">

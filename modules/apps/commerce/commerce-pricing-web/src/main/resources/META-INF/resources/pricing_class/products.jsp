@@ -31,72 +31,20 @@ boolean hasPermission = commercePricingClassCPDefinitionDisplayContext.hasPermis
 		<div class="col-12 pt-4">
 			<div id="item-finder-root"></div>
 
-			<aui:script require="commerce-frontend-js/components/item_finder/entry as itemFinder, commerce-frontend-js/utilities/slugify as slugify, commerce-frontend-js/utilities/eventsDefinitions as events, commerce-frontend-js/ServiceProvider/index as ServiceProvider">
-				var CommerceProductGroupsResource = ServiceProvider.default.AdminCatalogAPI(
-					'v1'
-				);
 
-				var id = <%= commercePricingClass.getCommercePricingClassId() %>;
-				var pricingClassExternalReferenceCode =
-					'<%= commercePricingClass.getExternalReferenceCode() %>';
+			<liferay-frontend:component
+				module="js/pricing_class/products"
+<%--			context='<%=--%>
+				<%--				HashMapBuilder.<String, Object>put(--%>
+				<%--					"fieldValues", fieldValues--%>
+				<%--				).put(--%>
+				<%--					"cpDefinitionId", cpDefinitionId--%>
+				<%--				).put(--%>
+				<%--					"actionPublish", WorkflowConstants.ACTION_PUBLISH--%>
+				<%--				).build()--%>
+				<%--			%>'--%>
+			/>
 
-				function selectItem(product) {
-					var productData = {
-						productExternalReferenceCode: product.externalReferenceCode,
-						productId: product.id,
-						productGroupExternalReferenceCode: pricingClassExternalReferenceCode,
-						productGroupId: id,
-					};
-
-					return CommerceProductGroupsResource.addProductToProductGroup(
-						id,
-						productData
-					)
-						.then(function () {
-							Liferay.fire(events.UPDATE_DATASET_DISPLAY, {
-								id:
-									'<%= CommercePricingDataSetConstants.COMMERCE_DATA_SET_KEY_PRICING_CLASSES_PRODUCT_DEFINITIONS %>',
-							});
-						})
-						.catch(function (error) {
-							return Promise.reject(error);
-						});
-				}
-
-				function getSelectedItems() {
-					return Promise.resolve([]);
-				}
-
-				itemFinder.default('itemFinder', 'item-finder-root', {
-					apiUrl:
-						'/o/headless-commerce-admin-catalog/v1.0/products?nestedFields=catalog',
-					getSelectedItems: getSelectedItems,
-					inputPlaceholder: '<%= LanguageUtil.get(request, "find-a-product") %>',
-					itemSelectedMessage: '<%= LanguageUtil.get(request, "product-selected") %>',
-					linkedDatasetsId: [
-						'<%= CommercePricingDataSetConstants.COMMERCE_DATA_SET_KEY_PRICING_CLASSES_PRODUCT_DEFINITIONS %>',
-					],
-					itemCreation: false,
-					itemsKey: 'id',
-					onItemSelected: selectItem,
-					pageSize: 10,
-					panelHeaderLabel: '<%= LanguageUtil.get(request, "add-products") %>',
-					portletId: '<%= portletDisplay.getRootPortletId() %>',
-					schema: [
-						{
-							fieldName: ['name', 'LANG'],
-						},
-						{
-							fieldName: 'productId',
-						},
-						{
-							fieldName: ['catalog', 'name'],
-						},
-					],
-					spritemap: '<%= themeDisplay.getPathThemeImages() %>/lexicon/icons.svg',
-					titleLabel: '<%= LanguageUtil.get(request, "add-existing-product") %>',
-				});
-			</aui:script>
 		</div>
 
 		<div class="col-12">

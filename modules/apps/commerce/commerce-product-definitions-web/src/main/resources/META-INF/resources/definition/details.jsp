@@ -196,114 +196,19 @@ if ((cpDefinition != null) && (cpDefinition.getExpirationDate() != null)) {
 			<div class="col-12">
 				<div id="item-finder-root"></div>
 
-				<aui:script require="commerce-frontend-js/components/item_finder/entry as itemFinder, commerce-frontend-js/utilities/slugify as slugify, commerce-frontend-js/utilities/eventsDefinitions as events, commerce-frontend-js/utilities/index as utilities">
-					var headers = utilities.fetchParams.headers;
-					var id = <%= cpDefinitionsDisplayContext.getCPDefinitionId() %>;
-					var productId = <%= cpDefinition.getCProductId() %>;
+				<liferay-frontend:component
+					module="js/resources/definition/details"
+<%--			context='<%=--%>
+					<%--				HashMapBuilder.<String, Object>put(--%>
+					<%--					"fieldValues", fieldValues--%>
+					<%--				).put(--%>
+					<%--					"cpDefinitionId", cpDefinitionId--%>
+					<%--				).put(--%>
+					<%--					"actionPublish", WorkflowConstants.ACTION_PUBLISH--%>
+					<%--				).build()--%>
+					<%--			%>'--%>
+				/>
 
-					function selectItem(specification) {
-						return Liferay.Util.fetch(
-							'/o/headless-commerce-admin-catalog/v1.0/products/' +
-								id +
-								'/productSpecifications/',
-							{
-								body: JSON.stringify(
-									Object.assign(
-										{
-											productId: productId,
-											specificationId: specification.id,
-											specificationKey: specification.key,
-											value: {},
-										},
-										specification.optionCategory
-											? {
-													optionCategoryId:
-														specification.optionCategory.id,
-											  }
-											: {}
-									)
-								),
-								headers: headers,
-								method: 'POST',
-							}
-						).then(function () {
-							Liferay.fire(events.UPDATE_DATASET_DISPLAY, {
-								id:
-									'<%= CommerceProductDataSetConstants.COMMERCE_DATA_SET_KEY_PRODUCT_DEFINITION_SPECIFICATIONS %>',
-							});
-							return null;
-						});
-					}
-
-					function addNewItem(name) {
-						var nameDefinition = {};
-
-						nameDefinition[themeDisplay.getLanguageId()] = name;
-
-						if (themeDisplay.getLanguageId() !== themeDisplay.getDefaultLanguageId()) {
-							nameDefinition[themeDisplay.getDefaultLanguageId()] = name;
-						}
-
-						return Liferay.Util.fetch(
-							'/o/headless-commerce-admin-catalog/v1.0/specifications',
-							{
-								body: JSON.stringify({
-									key: slugify.default(name),
-									title: nameDefinition,
-								}),
-								headers: headers,
-								method: 'POST',
-							}
-						)
-							.then(function (response) {
-								if (response.ok) {
-									return response.json();
-								}
-
-								return response.json().then(function (data) {
-									return Promise.reject(data.errorDescription);
-								});
-							})
-							.then(selectItem);
-					}
-
-					function getSelectedItems() {
-						return Promise.resolve([]);
-					}
-
-					itemFinder.default('itemFinder', 'item-finder-root', {
-						apiUrl: '/o/headless-commerce-admin-catalog/v1.0/specifications',
-						createNewItemLabel:
-							'<%= LanguageUtil.get(request, "create-new-specification") %>',
-						getSelectedItems: getSelectedItems,
-						inputPlaceholder:
-							'<%= LanguageUtil.get(request, "find-or-create-a-specification") %>',
-						itemSelectedMessage:
-							'<%= LanguageUtil.get(request, "specification-selected") %>',
-						itemsKey: 'id',
-						linkedDatasetsId: [
-							'<%= CommerceProductDataSetConstants.COMMERCE_DATA_SET_KEY_PRODUCT_DEFINITION_SPECIFICATIONS %>',
-						],
-						multiSelectableEntries: true,
-						itemsKey: 'id',
-						onItemCreated: addNewItem,
-						onItemSelected: selectItem,
-						pageSize: 10,
-						panelHeaderLabel: '<%= LanguageUtil.get(request, "add-specifications") %>',
-						portletId: '<%= portletDisplay.getRootPortletId() %>',
-						schema: [
-							{
-								fieldName: ['title', 'LANG'],
-							},
-							{
-								fieldName: 'key',
-							},
-						],
-						spritemap: '<%= themeDisplay.getPathThemeImages() %>/lexicon/icons.svg',
-						titleLabel:
-							'<%= LanguageUtil.get(request, "add-existing-specification") %>',
-					});
-				</aui:script>
 			</div>
 
 			<div class="col-12">

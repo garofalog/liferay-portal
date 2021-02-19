@@ -28,69 +28,19 @@ long commercePriceModifierId = commercePriceListDisplayContext.getCommercePriceM
 		<div class="col-12">
 			<div id="item-finder-root"></div>
 
-			<aui:script require="commerce-frontend-js/components/item_finder/entry as itemFinder, commerce-frontend-js/utilities/slugify as slugify, commerce-frontend-js/utilities/eventsDefinitions as events, commerce-frontend-js/ServiceProvider/index as ServiceProvider">
-				var CommercePriceModifierProductGroupsResource = ServiceProvider.default.AdminPricingAPI(
-					'v2'
-				);
+			<liferay-frontend:component
+				module="js/price_lists/price_modifier/pricing_classes"
+<%--			context='<%=--%>
+				<%--				HashMapBuilder.<String, Object>put(--%>
+				<%--					"fieldValues", fieldValues--%>
+				<%--				).put(--%>
+				<%--					"cpDefinitionId", cpDefinitionId--%>
+				<%--				).put(--%>
+				<%--					"actionPublish", WorkflowConstants.ACTION_PUBLISH--%>
+				<%--				).build()--%>
+				<%--			%>'--%>
+			/>
 
-				var id = <%= commercePriceModifierId %>;
-				var priceModifierExternalReferenceCode =
-					'<%= commercePriceModifier.getExternalReferenceCode() %>';
-
-				function selectItem(productGroup) {
-					var productGroupData = {
-						productGroupExternalReferenceCode: productGroup.externalReferenceCode,
-						productGroupId: productGroup.id,
-						priceModifierExternalReferenceCode: priceModifierExternalReferenceCode,
-						priceModifierId: id,
-					};
-
-					return CommercePriceModifierProductGroupsResource.addPriceModifierProductGroup(
-						id,
-						productGroupData
-					)
-						.then(function () {
-							Liferay.fire(events.UPDATE_DATASET_DISPLAY, {
-								id:
-									'<%= CommercePricingDataSetConstants.COMMERCE_DATA_SET_KEY_PRICE_MODIFIER_PRICING_CLASSES %>',
-							});
-						})
-						.catch(function (error) {
-							return Promise.reject(error);
-						});
-				}
-
-				function getSelectedItems() {
-					return Promise.resolve([]);
-				}
-
-				itemFinder.default('itemFinder', 'item-finder-root', {
-					apiUrl: '/o/headless-commerce-admin-catalog/v1.0/product-groups',
-					getSelectedItems: getSelectedItems,
-					inputPlaceholder:
-						'<%= LanguageUtil.get(request, "find-a-product-group") %>',
-					itemSelectedMessage:
-						'<%= LanguageUtil.get(request, "product-group-selected") %>',
-					itemsKey: 'id',
-					itemCreation: false,
-					linkedDatasetsId: [
-						'<%= CommercePricingDataSetConstants.COMMERCE_DATA_SET_KEY_PRICE_MODIFIER_PRICING_CLASSES %>',
-					],
-					onItemSelected: selectItem,
-					pageSize: 10,
-					panelHeaderLabel:
-						'<%= LanguageUtil.get(request, "select-product-group") %>',
-					portletId: '<%= portletDisplay.getRootPortletId() %>',
-					schema: [
-						{
-							fieldName: ['title', 'LANG'],
-						},
-					],
-					spritemap: '<%= themeDisplay.getPathThemeImages() %>/lexicon/icons.svg',
-					titleLabel:
-						'<%= LanguageUtil.get(request, "add-existing-product-group") %>',
-				});
-			</aui:script>
 		</div>
 
 		<div class="col-12">

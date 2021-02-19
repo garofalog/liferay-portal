@@ -86,52 +86,16 @@ String type = BeanParamUtil.getString(commerceDiscountRule, request, "type");
 	</aui:form>
 </commerce-ui:side-panel-content>
 
-<aui:script require="commerce-frontend-js/utilities/notifications as NotificationUtils, commerce-frontend-js/utilities/slugify as slugify, commerce-frontend-js/utilities/eventsDefinitions as events, commerce-frontend-js/ServiceProvider/index as ServiceProvider">
-	var CommerceDiscountRuleResource = ServiceProvider.default.AdminPricingAPI(
-		'v2'
-	);
 
-	Liferay.provide(
-		window,
-		'<portlet:namespace />apiSubmit',
-		function () {
-			var form = document.getElementById('<portlet:namespace />fm');
-			var name = form.querySelector('#<portlet:namespace />name').value;
-
-			var typeSettings = form.querySelector(
-				'#<portlet:namespace />typeSettings'
-			).value;
-
-			var discountRuleData = {
-				name: name,
-				type: '<%= commerceDiscountRule.getType() %>',
-				typeSettings: typeSettings,
-			};
-
-			return CommerceDiscountRuleResource.updateDiscountRule(
-				'<%= commerceDiscountRule.getCommerceDiscountRuleId() %>',
-				discountRuleData
-			)
-				.then(function () {
-					NotificationUtils.showNotification(
-						'<liferay-ui:message key="your-request-completed-successfully" />'
-					);
-
-					window.parent.Liferay.fire(events.UPDATE_DATASET_DISPLAY, {
-						id:
-							'<%= CommercePricingDataSetConstants.COMMERCE_DATA_SET_KEY_DISCOUNT_RULES %>',
-					});
-
-					return;
-				})
-				.catch(function () {
-					alert(
-						'<liferay-ui:message key="your-request-failed-to-complete" />'
-					);
-
-					return;
-				});
-		},
-		['liferay-portlet-url']
-	);
-</aui:script>
+<liferay-frontend:component
+	module="js/edit_commerce_discount_rule"
+<%--			context='<%=--%>
+<%--				HashMapBuilder.<String, Object>put(--%>
+<%--					"fieldValues", fieldValues--%>
+<%--				).put(--%>
+<%--					"cpDefinitionId", cpDefinitionId--%>
+<%--				).put(--%>
+<%--					"actionPublish", WorkflowConstants.ACTION_PUBLISH--%>
+<%--				).build()--%>
+<%--			%>'--%>
+/>

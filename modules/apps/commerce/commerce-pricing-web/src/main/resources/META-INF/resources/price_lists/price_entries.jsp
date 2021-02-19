@@ -34,66 +34,18 @@ if (CommercePriceListConstants.TYPE_PROMOTION.equals(commercePriceEntryDisplayCo
 		<div class="col-12">
 			<div id="item-finder-root"></div>
 
-			<aui:script require="commerce-frontend-js/components/item_finder/entry as itemFinder, commerce-frontend-js/utilities/slugify as slugify, commerce-frontend-js/utilities/eventsDefinitions as events, commerce-frontend-js/ServiceProvider/index as ServiceProvider">
-				var CommercePriceEntriesResource = ServiceProvider.default.AdminPricingAPI(
-					'v2'
-				);
-
-				var id = <%= commercePriceListId %>;
-				var priceListExternalReferenceCode =
-					'<%= commercePriceList.getExternalReferenceCode() %>';
-
-				function selectItem(sku) {
-					var priceEntryData = {
-						price: '0.0',
-						priceListExternalReferenceCode: priceListExternalReferenceCode,
-						priceListId: id,
-						skuExternalReferenceCode: sku.externalReferenceCode,
-						skuId: sku.id,
-					};
-
-					return CommercePriceEntriesResource.addPriceEntry(id, priceEntryData)
-						.then(function () {
-							setTimeout(function () {
-								Liferay.fire(events.UPDATE_DATASET_DISPLAY, {
-									id: '<%= datasetId %>',
-								});
-							}, 500);
-						})
-						.catch(function (error) {
-							return Promise.reject(error);
-						});
-				}
-
-				function getSelectedItems() {
-					return Promise.resolve([]);
-				}
-
-				itemFinder.default('itemFinder', 'item-finder-root', {
-					apiUrl:
-						'/o/headless-commerce-admin-catalog/v1.0/skus?filter=catalogId eq <%= commercePriceEntryDisplayContext.getCommerceCatalogId() %>',
-					getSelectedItems: getSelectedItems,
-					inputPlaceholder: '<%= LanguageUtil.get(request, "find-a-sku") %>',
-					itemSelectedMessage: '<%= LanguageUtil.get(request, "sku-selected") %>',
-					linkedDatasetsId: ['<%= datasetId %>'],
-					itemCreation: false,
-					itemsKey: 'id',
-					onItemSelected: selectItem,
-					pageSize: 10,
-					panelHeaderLabel: '<%= LanguageUtil.get(request, "add-skus") %>',
-					portletId: '<%= portletDisplay.getRootPortletId() %>',
-					schema: [
-						{
-							fieldName: 'sku',
-						},
-						{
-							fieldName: ['productName', 'LANG'],
-						},
-					],
-					spritemap: '<%= themeDisplay.getPathThemeImages() %>/lexicon/icons.svg',
-					titleLabel: '<%= LanguageUtil.get(request, "add-existing-sku") %>',
-				});
-			</aui:script>
+			<liferay-frontend:component
+				module="js/price_entries"
+<%--			context='<%=--%>
+				<%--				HashMapBuilder.<String, Object>put(--%>
+				<%--					"fieldValues", fieldValues--%>
+				<%--				).put(--%>
+				<%--					"cpDefinitionId", cpDefinitionId--%>
+				<%--				).put(--%>
+				<%--					"actionPublish", WorkflowConstants.ACTION_PUBLISH--%>
+				<%--				).build()--%>
+				<%--			%>'--%>
+			/>
 		</div>
 
 		<div class="col-12">
