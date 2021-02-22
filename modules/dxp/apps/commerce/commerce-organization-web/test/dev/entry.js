@@ -9,18 +9,18 @@
  * distribution rights of the Software.
  */
 
-import React from 'react';
+import {render} from '@liferay/frontend-js-react-web';
 
-export default function Icon(props) {
-	return (
-		<svg
-			aria-hidden="true"
-			className="lexicon-icon"
-			role="presentation"
-			viewBox="0 0 24 24"
-		>
-			<title>{props.symbol}</title>
-			<use xlinkHref={`${props.spritemap}#${props.symbol}`} />
-		</svg>
-	);
-}
+import OrganizationChart from '../../src/main/resources/META-INF/resources/js/OrganizationChart';
+
+import '../../src/main/resources/META-INF/resources/style/main.scss';
+
+render(
+    OrganizationChart,
+    {
+        accountEndpointURL: '/get-account',
+        organizationEndpointURL: '/get-organization',
+        spritemap: './assets/clay/icons.svg'
+    },
+    document.getElementById('organizations-chart-root')
+);

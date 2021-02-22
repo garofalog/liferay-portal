@@ -9,7 +9,6 @@
  * distribution rights of the Software.
  */
 
-export const LIST_BY = {
-	ACCOUNTS: 'account',
-	USERS: 'user',
-};
+import {createContext} from 'react';
+
+export default createContext();
