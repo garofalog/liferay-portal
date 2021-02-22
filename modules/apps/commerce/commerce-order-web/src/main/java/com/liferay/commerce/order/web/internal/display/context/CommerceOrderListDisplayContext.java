@@ -14,10 +14,6 @@
 
 package com.liferay.commerce.order.web.internal.display.context;
 
-import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
-import com.liferay.portal.kernel.theme.PortletDisplay;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.Constants;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.order.web.internal.display.context.util.CommerceOrderRequestHelper;
 import com.liferay.commerce.order.web.internal.search.CommerceOrderDisplayTerms;
@@ -32,7 +28,11 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.PortletProvider;
 import com.liferay.portal.kernel.portlet.PortletProviderUtil;
+import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.theme.PortletDisplay;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -90,7 +90,7 @@ public class CommerceOrderListDisplayContext {
 	}
 
 	public List<ClayDataSetActionDropdownItem>
-	getClayDataSetActionDropdownItems()
+			getClayDataSetActionDropdownItems()
 		throws PortalException {
 
 		List<ClayDataSetActionDropdownItem> clayDataSetActionDropdownItems =
@@ -126,8 +126,8 @@ public class CommerceOrderListDisplayContext {
 		throws PortalException {
 
 		if (CommerceOrderPermission.contains(
-			_commerceOrderRequestHelper.getPermissionChecker(),
-			commerceOrder, ActionKeys.UPDATE_DISCUSSION)) {
+				_commerceOrderRequestHelper.getPermissionChecker(),
+				commerceOrder, ActionKeys.UPDATE_DISCUSSION)) {
 
 			return _commerceOrderNoteService.getCommerceOrderNotesCount(
 				commerceOrder.getCommerceOrderId());
