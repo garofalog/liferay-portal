@@ -25,6 +25,8 @@ function ManagementBar({
 	creationMenu,
 	filters: propFilters,
 	fluid,
+	formId,
+	namespace,
 	onFiltersChange,
 	selectAllItems,
 	selectedItemsKey,
@@ -79,6 +81,8 @@ function ManagementBar({
 				<BulkActions
 					bulkActions={bulkActions}
 					fluid={fluid}
+					formId={formId}
+					namespace={namespace}
 					selectAllItems={selectAllItems}
 					selectedItemsKey={selectedItemsKey}
 					selectedItemsValue={selectedItemsValue}
@@ -109,6 +113,8 @@ ManagementBar.propTypes = {
 	}),
 	filters: PropTypes.array,
 	fluid: PropTypes.bool,
+	formId: PropTypes.string,
+	namespace: PropTypes.string,
 	onFiltersChange: PropTypes.func.isRequired,
 	selectedItemsKey: PropTypes.string,
 	selectedItemsValue: PropTypes.array,

@@ -327,6 +327,8 @@ function DataSetDisplay({
 				creationMenu={creationMenu}
 				filters={filters}
 				fluid={style === 'fluid'}
+				formId={namespace + formId}
+				namespace={namespace}
 				onFiltersChange={updateFilters}
 				selectAllItems={() =>
 					selectItems(items.map((item) => item[selectedItemsKey]))

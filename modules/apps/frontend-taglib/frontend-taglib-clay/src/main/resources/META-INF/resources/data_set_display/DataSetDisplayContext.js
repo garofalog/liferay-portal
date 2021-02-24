@@ -16,6 +16,7 @@ import React from 'react';
 
 const DataSetDisplayContext = React.createContext({
 	actionParameterName: null,
+	executeAsyncBulkAction: null,
 	formId: null,
 	formRef: null,
 	id: null,

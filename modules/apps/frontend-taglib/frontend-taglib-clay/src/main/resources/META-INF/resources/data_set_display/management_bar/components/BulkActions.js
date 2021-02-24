@@ -24,6 +24,11 @@ import {logError} from '../../utils/logError';
 import {getOpenedSidePanel} from '../../utils/sidePanels';
 
 function submit({action, data, formId, formRef}) {
+	// console.log('action', action);
+	// console.log('data', data);
+	// console.log('formId', formId);
+	// console.log('formRef', formRef);
+
 	let form = formRef.current;
 
 	if (!form && formId) {
@@ -54,16 +59,27 @@ function getRichPayload(payload, key, values = []) {
 function BulkActions({
 	bulkActions,
 	fluid,
+	namespace,
 	selectAllItems,
 	selectedItemsKey,
 	selectedItemsValue,
 	total,
 }) {
-	const {actionParameterName} = useContext(DataSetDisplayContext);
+	const {actionParameterName, executeAsyncBulkAction} = useContext(
+		DataSetDisplayContext
+	);
 	const [
 		currentSidePanelActionPayload,
 		setCurrentSidePanelActionPayload,
 	] = useState(null);
+
+	function handleAsyncAction(actionDefinition) {
+		executeAsyncBulkAction(
+			actionDefinition.href,
+			actionDefinition.method,
+			actionDefinition.bodyKeys || 'id'
+		);
+	}
 
 	function handleActionClick(
 		actionDefinition,
@@ -73,6 +89,8 @@ function BulkActions({
 		sidePanelId
 	) {
 		const {data, href, slug, target} = actionDefinition;
+
+		// console.log('actionDefinition', actionDefinition);
 
 		if (target === 'sidePanel') {
 			const sidePanelActionPayload = {
@@ -92,8 +110,11 @@ function BulkActions({
 			);
 
 			setCurrentSidePanelActionPayload(sidePanelActionPayload);
+		} else if (target === 'headless') {
+			handleAsyncAction(actionDefinition);
 		}
 		else {
+			console.log('in else')
 			submit({
 				action: href,
 				data: {
@@ -102,7 +123,7 @@ function BulkActions({
 						actionParameterName || selectedItemsKey
 					}`]: selectedItemsValue.join(','),
 				},
-				formId,
+				formId: namespace + formId,
 				formRef,
 			});
 		}
