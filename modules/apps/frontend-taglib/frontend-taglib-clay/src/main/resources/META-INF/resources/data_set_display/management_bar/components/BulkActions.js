@@ -24,11 +24,6 @@ import {logError} from '../../utils/logError';
 import {getOpenedSidePanel} from '../../utils/sidePanels';
 
 function submit({action, data, formId, formRef}) {
-	// console.log('action', action);
-	// console.log('data', data);
-	// console.log('formId', formId);
-	// console.log('formRef', formRef);
-
 	let form = formRef.current;
 
 	if (!form && formId) {
@@ -90,8 +85,6 @@ function BulkActions({
 	) {
 		const {data, href, slug, target} = actionDefinition;
 
-		// console.log('actionDefinition', actionDefinition);
-
 		if (target === 'sidePanel') {
 			const sidePanelActionPayload = {
 				baseURL: href,
@@ -110,11 +103,11 @@ function BulkActions({
 			);
 
 			setCurrentSidePanelActionPayload(sidePanelActionPayload);
-		} else if (target === 'headless') {
+		}
+		else if (target === 'headless') {
 			handleAsyncAction(actionDefinition);
 		}
 		else {
-			console.log('in else')
 			submit({
 				action: href,
 				data: {
