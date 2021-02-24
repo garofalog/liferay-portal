@@ -16,25 +16,7 @@ import {fetch} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 
-import OrganizationChartContext from './OrganizationChartContext';
 import SvgWrapper from './SvgWrapper';
-import ZoomControls from './ZoomControls';
-
-const avatarRadius = 24;
-const categoryHeight = 48;
-const categoryWidth = 184;
-const currentScale = 1;
-const duration = 750;
-const idCount = 0;
-const margin = 24;
-const nodeCenterOffset = 100;
-const nodeDepth = 400;
-const nodeHeight = 72;
-const nodePadding = 12;
-const nodeWidth = 310;
-const selectedIdPath = null;
-const svgHeight = '100%';
-const svgWidth = '100%';
 
 function enrichArrayItemsWithType(array = [], type) {
 	return array.map((item) => ({...item, type}))
@@ -45,10 +27,10 @@ function formatRawData({
 	organizations,
 	users,
 	...entry
-}) {
+}, type) {
 	const formattedOrganizations = enrichArrayItemsWithType(organizations, 'organization');
-	const formattedAccounts = enrichArrayItemsWithType(accounts, 'accounts');
-	const formattedUsers = enrichArrayItemsWithType(users, 'users');
+	const formattedAccounts = enrichArrayItemsWithType(accounts, 'account');
+	const formattedUsers = enrichArrayItemsWithType(users, 'user');
 
 	return {
 		...entry,
@@ -56,7 +38,8 @@ function formatRawData({
 			...formattedOrganizations,
 			...formattedAccounts,
 			...formattedUsers
-		]
+		],
+		type
 	}
 }
 
@@ -65,7 +48,6 @@ function OrganizationChartApp({
 	organizationEndpointURL,
 	spritemap
 }) {
-	const [zoomPercentage, updateZoomPercentage] = useState(100);
 	const [data, updateData] = useState(null);
 	const chartSvgRef = useRef();
 	const tree = useRef();
@@ -84,7 +66,7 @@ function OrganizationChartApp({
 			.then(jsonResponse => {
 				if(!id) {
 					const formattedData = Array.isArray(jsonResponse) 
-						? jsonResponse.map(formatRawData)
+						? jsonResponse.map((item) => formatRawData(item, type))
 						: formatRawData(jsonResponse);
 
 					updateData(() => formattedData);
@@ -96,40 +78,16 @@ function OrganizationChartApp({
 		getChildren()
 	}, [getChildren])
 
-	function zoomIn() {
-		zoomInterface.current.transition()
-			.duration(duration)
-			.call(zoomRef.current.scaleBy, 2);
-	}
-
-	function zoomOut() {
-		zoomInterface.current.transition()
-			.duration(duration)
-			.call(zoomRef.current.scaleBy, 0.5);
-	}
-
 	return (
 		<ClayIconSpriteContext.Provider value={spritemap}>
-			<OrganizationChartContext.Provider value={
-				zoomIn,
-				zoomOut,
-				getChildren
-			}>
-				<div className="org-chart-container">
-					<SvgWrapper
-						chartSvgRef={chartSvgRef}
-						data={data}
-						zoomInterface={zoomInterface}
-						zoomPercentage={zoomPercentage}
-					/>
-					<ZoomControls
-						zoomIn={zoomIn}
-						zoomOut={zoomOut}
-						zoomPercentage={zoomPercentage}
-						zoomRef={zoomRef}
-					/>
-				</div>
-			</OrganizationChartContext.Provider>
+			<div className="org-chart-container">
+				<SvgWrapper
+					chartSvgRef={chartSvgRef}
+					data={data}
+					getChildren={getChildren}
+					zoomInterface={zoomInterface}
+				/>
+			</div>
 		</ClayIconSpriteContext.Provider>
 	);
 }

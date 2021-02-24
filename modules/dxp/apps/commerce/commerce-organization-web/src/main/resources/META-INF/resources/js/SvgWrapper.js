@@ -14,116 +14,86 @@ import classnames from 'classnames';
 import * as d3 from 'd3';
 import PropTypes from 'prop-types';
 import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
+import {COLUMN_GAP, COLUMN_SIZE, NODE_PADDING, RECT_SIZES} from './utils/constants';
+import {formatHierachicalData} from './utils/index';
 
-const tree = (data, width) => {
-	const root = d3.hierarchy(data);
-	root.dx = 10;
-	root.dy = width / (root.height + 1);
+function generateNodes(chart, columns, chartWidth, chartHeight) {
 
-	return d3.tree().nodeSize([root.dx, root.dy])(root);
+	columns.forEach((columnNodes, columnCount) => {
+
+		const columnGroup = chart
+			.append('g')
+			.classed('org-chart-column', true);
+
+		let columnHeight = 0; 
+
+		const nodes = columnGroup	
+			.selectAll('.org-chart-item')
+			.data(columnNodes)
+			.enter()
+			.append('rect')
+			.classed('org-chart-item', true)
+			.attr('x', columnCount * (COLUMN_SIZE + COLUMN_GAP))
+			.attr('y', (nodeData, nodeCount) => {
+				const y = columnHeight;
+
+				columnHeight += RECT_SIZES[nodeData.type][1] + (nodeCount < columnNodes.length ? NODE_PADDING : 0);
+			
+				return y
+			})
+			.attr('width', nodeData => RECT_SIZES[nodeData.type][0])
+			.attr('height', nodeData => RECT_SIZES[nodeData.type][1])
+
+		columnGroup
+			.attr('transform', `translate(0, ${chartHeight / 2 - columnHeight / 2})`)
+	})
+
+	
+		// return columns
+	// const nodes = columns.each((columnData, i) => {
+	// 	const column = columns.selectChild(i)
+
+	// 	column.selectAll('.org-chart-item')
+	// 		.data(columnData[i])
+	// 		.enter()
+	// 		.append('rect')
+	// 		.classed('org-chart-item', true)
+	// 		.attr('width', d => RECT_SIZES[d.type][0])
+	// 		.attr('height', d => RECT_SIZES[d.type][1])
+	// })
+
+	// return nodes
 }
 
-function generateLink(g, root) {
-	g.append("g")
-		.attr("fill", "none")
-		.attr("stroke", "#555")
-		.attr("stroke-opacity", 0.4)
-		.attr("stroke-width", 1.5)
-		.selectAll("path")
-		.data(root.links())
-		.join("path")
-		.attr("d", d3.linkHorizontal()
-		.x(d => d.y)
-		.y(d => d.x));
-}
+function createChart(svgRef, data) {
+	const {height, width} = svgRef.getBoundingClientRect();
 
-function generateNode(g, root) {
-	const node = g.append("g")
-		.attr("stroke-linejoin", "round")
-		.attr("stroke-width", 1)
-		.selectAll("g")
-		.data(root.descendants())
-		.join("g")
-		.attr("transform", d => `translate(${d.y},${d.x})`);
-  
-	node.append("circle")
-		.attr("fill", d => d.children ? "#555" : "#999")
-		.attr("r", 2.5);
-  
-	node.append("text")
-		.attr("dy", "0.31em")
-		.attr("x", d => d.children ? -6 : 6)
-		.attr("text-anchor", d => d.children ? "end" : "start")
-		.text(d => d.data.name)
-		.clone(true).lower()
-		.attr("stroke", "white");
-}
+	const formattedData = formatHierachicalData(data);
 
-function handleZoom(event, g, baseTranslateY, baseTranslateX) {
-	debugger
-	event.transform.rescaleX(baseTranslateX);
-	event.transform.rescaleY(baseTranslateY);
-    g.attr("transform", event.transform);
-}
+	const chart = d3.select(svgRef)
+		.attr('width', width)
+		.attr('height', height)
+		.attr('viewBox', `0 0 ${width} ${height}`)
 
-function handleChartUpdate(svgRef, data) {
-	const {height, width} = svgRef.getBoundingClientRect()
+	const nodes = generateNodes(chart, formattedData, width, height);
 
-	const root = tree(data, width);
+	// generateLinks(links);
 
-	let x0 = Infinity;
-	let x1 = -x0;
-
-	root.each(d => {
-	  if (d.x > x1) {x1 = d.x};
-	  if (d.x < x0) {x0 = d.x};
-	});
-  
-	const svg = d3.select(svgRef)
-		.attr("viewBox", [0, 0, width, x1 - x0 + root.dx * 2]);
-
-	const baseTranslateY = root.dy / 3;
-	const baseTranslateX = root.dx - x0;
-
-	const g = svg.append("g")
-		.attr("font-family", "sans-serif")
-		.attr("font-size", '14px')
-		.attr("transform", `translate(${baseTranslateY},${baseTranslateX})`)
-		// .on('click', handleClick)
-
-	const zoom = d3.zoom()
-		.scaleExtent([0.3, 2])
-		.on("zoom", (e) => handleZoom(e, svg));
-
-	// function handleClick(event, [x, y]) {
-	// 	event.stopPropagation();
-	// 	svg.transition().duration(750).call(
-	// 		zoom.transform,
-	// 		d3.zoomIdentity.translate(width / 2, height / 2).scale(40).translate(-x, -y),
-	// 		d3.mouse(svg.node())
-	// 	);
+	// return {
+	// 	columns,
+	// 	nodes
 	// }
-	
-	svg.call(zoom)
-
-	generateLink(g, root);
-	generateNode(g, root);
-	
-	return Object.assign(svg.node(), {
-		zoomIn: () => svg.transition().call(zoom.scaleBy, 2),
-		zoomOut: () => svg.transition().call(zoom.scaleBy, 0.5),
-	});
 }
 
 function SvgWrapper({chartSvgRef, data}) {
 	useLayoutEffect(() => {
 		if(data && chartSvgRef.current) {
-			handleChartUpdate(chartSvgRef.current, data)
+			createChart(chartSvgRef.current, data)
 		}
 	}, [chartSvgRef, data])
 
 	return (
-		<svg className="svg-chart" ref={chartSvgRef}/>
+		<svg className="svg-chart" ref={chartSvgRef} />
 	);
 }
 
