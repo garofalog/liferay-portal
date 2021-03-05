@@ -12,23 +12,7 @@
  * details.
  */
 
- import React, {useContext} from 'react'
+import launcher from '../../utilities/launcher';
+import D3diagram from './D3diagram';
 
-export default function GridBackground() {
-    const { buffer, offset, scale } = useContext(CanvasContext)
-
-    return (
-        <div
-            style={{
-                backgroundImage: 'url(/grid.svg)',
-                transform: `scale(${scale})`,
-                backgroundPosition: `${-offset.x}px ${-offset.y}px`,
-                position: 'absolute',
-                bottom: buffer.y,
-                left: buffer.x,
-                right: buffer.x,
-                top: buffer.y
-            }}
-        ></div>
-    )
-}
+export default (...data) => launcher(D3diagram, ...data);
