@@ -36,6 +36,10 @@ const Diagram = (props) => {
 
     }
 
+    // const zoomIn = () => {
+
+    // }
+
 
     const options = [
         {
@@ -70,13 +74,14 @@ const Diagram = (props) => {
 
             <DiagramHeader />
 
-            <div id="canvacontainer"></div>
-            {/* <canvas id="imagecanvas"></canvas> */}
+            <ImagePins 
+                completeimageSettings={completeimageSettings} 
+                image={props.image} 
 
-            {/* <ImageCanvas completeimageSettings={completeimageSettings} image={props.image} setCanvas={setCanvas} setctxStore={setCtxStore}/> */}
-            <ImagePins image={props.image} />
+                // zoomIn={zoomIn} 
+
+                />
             
-
 
             {/* <DiagramFooter infos={forfooter} myzoom={myzoom} spritemap={props.spritemap}/> */}
             <div className="d-flex diagram-footer justify-content-end mt-3">
@@ -107,8 +112,11 @@ const Diagram = (props) => {
                         id="mySelectId">
                         {options.map(item => (
                             <ClaySelect.Option
+                                
+
                                 key={item.value}
                                 label={item.label}
+                                selected={item.value === '100' ? true : false}
                                 value={item.value}
                             />
                         ))}
@@ -118,7 +126,7 @@ const Diagram = (props) => {
                         className=""
                         displayType="secondary"
 
-                    // onClick={() => zoom(ctxStore, canvas, 250+10, 350+10, 1.1)}
+                        // onClick={() => zoomIn}
 
                     >
                         {"+"}
@@ -133,7 +141,7 @@ const Diagram = (props) => {
                     className="ml-3 reset-zoom"
                     displayType="secondary"
 
-                    onClick={() => resetZoom(ctxStore, width, height, img)}
+                    // onClick={() => resetZoom(ctxStore, width, height, img)}
 
                 >{"Reset Zoom"}</ClayButton>
 
@@ -169,6 +177,8 @@ Diagram.propTypes = {
     // setCanvas: PropTypes.func,
     // setCtxStore: PropTypes.func,
     // spritemap: PropTypes.string,
+
+    zoomIn: PropTypes.func,
 };
 
 export default Diagram;

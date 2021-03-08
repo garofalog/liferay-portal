@@ -41,7 +41,7 @@ const DiagramHeader = (props) => {
     ];
     
     return (
-        <div className="d-flex diagram-footer diagram-header justify-content-between">
+        <div className="d-flex diagram diagram-header justify-content-between">
             <div className="d-flex text-align-center">
 
                 <label className="align-middle my-auto">Circle Diagram:</label>
