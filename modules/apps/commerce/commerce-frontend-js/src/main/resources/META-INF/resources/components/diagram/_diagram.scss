@@ -10,6 +10,7 @@
     }
     .diagram-pins-container {
         border: 1px solid red;
+        position: relative;
     }
 
     &-footer {
@@ -17,5 +18,102 @@
     }
 }
 
-body { background:#eee; margin:1em; text-align:center; }
-		canvas { display:block; margin:1em auto; background:#fff; border:1px solid #ccc }
+    body { background:#eee; margin:1em; text-align:center; }
+    canvas { display:block; margin:1em auto; background:#fff; border:1px solid #ccc }
+        
+
+
+
+
+
+.chart {
+  position: absolute;
+  width:0;
+  height:0;
+  border-radius: 60px;
+  -moz-border-radius: 60px;
+  -webkit-border-radius: 60px;
+}
+
+#chart1 {
+  border-right:60px solid gray;
+  border-top:60px solid transparent;
+  border-left:60px solid transparent;
+  border-bottom:60px solid transparent;
+}
+
+#chart2 {
+  border-right:60px solid transparent;
+  border-top:60px solid green;
+  border-left:60px solid transparent;
+  border-bottom:60px solid transparent;
+}
+
+#chart3 {
+  border-right:60px solid transparent;
+  border-top:60px solid transparent;
+  border-left:60px solid blue;
+  border-bottom:60px solid transparent;
+}
+
+#chart4 {
+  border-right:60px solid transparent;
+  border-top:60px solid transparent;
+  border-left:60px solid transparent;
+  border-bottom:60px solid yellow;
+}
+
+#move-controller {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    width: 100px;
+    height: 100px;
+    display: grid;
+    grid-gap: 0;
+    grid-template-columns: repeat(2, auto);
+    grid-template-rows: auto;
+    grid-auto-flow: row;
+    transform: rotate(45deg);
+
+    .box {
+       background-color: #444;
+        color: #fff;
+        justify-content: space-between;
+
+        color: #000;
+        
+
+        .icon {
+            text-align: center;
+            vertical-align: middle;
+            height: 50px;
+            stroke: black; fill: cyan;
+            transform: rotate(-45deg);
+        }
+
+
+        &.right {
+            clip-path: circle(100% at 100% 100%);
+            transform: translate(10px, 10px);
+            transform: rotate(90deg);
+        }
+
+        &.top {
+            clip-path: circle(100% at 100% 0);
+            transform: translate(10px, 10px);
+            transform: rotate(90deg);
+        }
+        
+        &.bottom {
+            clip-path: circle(100% at 0 0);
+        }
+
+        &.left {
+            clip-path: circle(100% at 0 0);
+            transform: rotate(90deg);
+        }   
+        
+    }
+    
+}

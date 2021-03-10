@@ -20,6 +20,7 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 import debounce from '../../utilities/debounce';
+import NavigationButtons from './NavigationButtons'
 
 const ImagePins = (props) => {
     const [width, setWidth] = useState(0);
@@ -33,7 +34,7 @@ const ImagePins = (props) => {
 
 
     let container
-    let resetZoom, zoomIn, zoomOut, moveLeft, moveRight, position, move, moveTop, moveBottom
+    let resetZoom, zoomIn, zoomOut, moveLeft, moveRight, position, move, moveUp, moveDown, newPin, handleMoveUp, handleMoveDown, handleMoveLeft, handleMoveRight
 
 
     function getRandom(min, max) {
@@ -94,14 +95,9 @@ const ImagePins = (props) => {
         });
 
         const resetZoom = () => {
-            container.attr("transform", {
-                k: 1,
-                x: 0,
-                y: 0
-            });
+            container.attr("transform", "translate(" + 0 + ", " + 0 + ")");
+
         }
-
-
 
         function zoomIn() {
             zoomEV.scaleBy(container.transition().duration(750), 1.3);
@@ -112,35 +108,50 @@ const ImagePins = (props) => {
 
         }
 
+
+
         const moveRight = () => {
             position = container.attr("transform");
             const vai = position.match(/(-?[0-9]+[.,-]*)+/g)
 
-            // const values = vai[0].split(',')
-            // console.log('vai', values)
-
             container.attr("transform", "translate(" + (parseFloat(vai[0], 10) + 10) + ", " + parseFloat(vai[1], 10) + ")");
-        }            
-            
+        }               
         const moveLeft = () => {
             position = container.attr("transform")
             const vai = position.match(/(-?[0-9]+[.,-]*)+/g)
 
             container.attr("transform", "translate(" + (parseFloat(vai[0], 10) - 10) + ", " + parseFloat(vai[1], 10) + ")")
         }
-
-        const moveTop= () => {
+        const moveUp = () => {
             position = container.attr("transform")
             const vai = position.match(/(-?[0-9]+[.,-]*)+/g)
 
             container.attr("transform", "translate(" + parseFloat(vai[0], 10) + ", " + (parseFloat(vai[1], 10) - 10) + ")")
         }
-        const moveBottom = () => {
+        const handleMoveUp = () => {
+            moveUp()
+        }
+        const moveDown = () => {
             position = container.attr("transform")
             const vai = position.match(/(-?[0-9]+[.,-]*)+/g)
 
             container.attr("transform", "translate(" + parseFloat(vai[0], 10) + ", " + (parseFloat(vai[1], 10) + 10) + ")")
         }
+
+
+        
+        const handleMoveDown = () => {
+            moveDown()
+        }
+        const handleMoveLeft = () => {
+            moveLeft()
+        }
+        const handleMoveRight = () => {
+            moveRight()
+        }
+
+        
+
 
         
 
@@ -153,6 +164,38 @@ const ImagePins = (props) => {
                 .transition()
                 .attr("r", 20)
                 .attr("fill", schemeCategory10[d.index % 10]);
+        }
+
+        const pin = container.append("circle")
+
+            // .transition()
+            // .duration(500)
+            // .attr("cx", 20)
+            // .attr("cy", 20)
+            // .attr("r", 20)
+            // .style("fill", "pink")
+            // .attr("stroke", "#039BE5")
+            // .attr("stroke-width", "1px")
+            // .attr("stroke", "#455A64")
+            // .attr("stroke-width", "3px")
+            // .attr("stroke", "#455A64")
+            // .attr("stroke-width", "3px")
+            // .classed("draggable", true)
+
+
+        const newPin = () => {
+            container.append("circle")
+                .transition()
+                .duration(500)
+                .attr("cx", 20)
+                .attr("cy", 20)
+                .attr("r", 20)
+                .style("fill", "pink")
+                .attr("stroke", "#039BE5")
+                .attr("stroke-width", "1px")
+                .classed('draggable', true)
+                .attr("stroke", "#455A64")
+                .attr("stroke-width", "3px")
         }
 
         container.append("image")
@@ -180,14 +223,16 @@ const ImagePins = (props) => {
 
         container.call(zoomEV)
 
+        
+
         container.append("circle")
-                .attr("cx", 20)
-                .attr("cy", 20)
-                .attr("r", 20)
-                .style("fill", "#ff0")
+            .attr("cx", 20)
+            .attr("cy", 20)
+            .attr("r", 20)
+            .style("fill", "#ff0")
             .attr("stroke", "#039BE5")
             .attr("stroke-width", "1px")
-                .classed('draggable', true)
+            .classed('draggable', true)
 
         container.append("circle")
                 .attr("cx", 30)
@@ -205,35 +250,44 @@ const ImagePins = (props) => {
 
             const mouseEv = mouse(this);
 
+            pin
+                .transition()
+                .duration(500)
+                .attr("transform", "translate(" + mouseEv[0] + "," + mouseEv[1] + ") scale(1)")
+                .attr("x", mouseEv[0])
+                .attr("y", mouseEv[1])
+                .attr("transform", "scale(1)");
+            
+            // var dragHandler2 = drag().on("drag", function (d) {
+            //     console.log('in dragHandler2')
+            //     select(this)
+            //         .attr("x", d.x = event.x)
+            //         .attr("y", d.y = event.y);
+            // });
+
+
+            // dragHandler2(circ);
 
             
-            var dragHandler2 = drag().on("drag", function (d) {
-                console.log('in dragHandler2')
-                select(this)
-                    .attr("x", d.x = event.x)
-                    .attr("y", d.y = event.y);
-            });
 
 
-            dragHandler2(circ);
+            
 
-            dragHandler(container.selectAll('.draggable'));
-
-            circ.on("click", () => {
+            pin.on("click", () => {
                 console.log('sto  handlando')
                 if (event.ctrlKey || event.metaKey) {
                     console.log('click con o ctrl metakey')
-                    circ.transition()
+                    pin.transition()
                         .duration(500)
-                        .attr("transform", "translate(" + circ.attr("x") + "," + circ.attr("y") + ") scale(0)")
+                        .attr("transform", "translate(" + pin.attr("x") + "," + pin.attr("y") + ") scale(0)")
                         .remove();
                 } else {
 
-                    var datum = circ.datum();
-                    if (circ.datum().selected) {
+                    var datum = pin.datum();
+                    if (pin.datum().selected) {
                         console.log('datum selected')
                         datum.selected = false;
-                        circ
+                        pin
                             .datum(datum)
                             .transition()
                             .duration(500)
@@ -242,7 +296,7 @@ const ImagePins = (props) => {
                     } else {
                         console.log('datum a cazz')
                         datum.selected = true;
-                        circ
+                        pin
                             .datum(datum)
                             .transition()
                             .duration(500)
@@ -253,6 +307,11 @@ const ImagePins = (props) => {
                 }
                 event.stopPropagation();
             });
+
+            dragHandler(pin);
+
+            dragHandler(container.selectAll('.draggable'));
+
 
         });
 
@@ -274,14 +333,26 @@ const ImagePins = (props) => {
 
         dragHandler(container.selectAll('.draggable'));
 
+        
+        // register event
+        
         select('#reset').on('click', resetZoom)
         select('#zoomIn').on('click', zoomIn)
         select('#zoomOut').on('click', zoomOut)
 
         select('#moveLeft').on('click', moveLeft)
         select('#moveRight').on('click', moveRight)
-        select('#moveTop').on('click', moveTop)
-        select('#moveBottom').on('click', moveBottom)
+        select('#moveUp').on('click', moveUp)
+        select('#moveDown').on('click', moveDown)
+
+        select('.box.left').on('click', handleMoveLeft)
+        select('.box.right').on('click', handleMoveRight)
+        select('.box.top').on('click', handleMoveUp)
+        select('.box.bottom').on('click', handleMoveDown)
+
+
+
+        select('#newPin').on('click', newPin)
 
 
     }, [width]);
@@ -293,14 +364,19 @@ const ImagePins = (props) => {
                 <g transform="translate(0, 0)" />
                 <g id="second" transform="translate(0, 0)" />
             </svg>
+            
+            <NavigationButtons moveDown={handleMoveDown} moveLeft={handleMoveLeft} moveRight={handleMoveRight} moveUp={handleMoveUp} spritemap={props.spritemap} />
+
             <br />
             <button id="zoomIn" onClick={zoomIn}>Zoom In</button>
             <button id="zoomOut" onClick={zoomOut}>Zoom Out</button>
             <button id="moveLeft" onClick={moveLeft}>Move left</button>
-            <button id="moveRight" onClick={moveRight}>Move right</button>
-            <button id="moveTop" onClick={moveTop}>Move top</button>
-            <button id="moveBottom" onClick={moveBottom}>Move bottom</button>
+
+            {/* <button id="moveRight" onClick={moveRight}>Move right</button>
+            <button id="moveUp" onClick={moveUp}>Move top</button>
+            <button id="moveDown" onClick={moveDown}>Move bottom</button>
             <button id="reset" onClick={resetZoom}>Reset bitch</button>
+            <button id="newPin" onClick={newPin}>FAI USCIRE IL PIN bitch</button> */}
         </div>
     )
 };

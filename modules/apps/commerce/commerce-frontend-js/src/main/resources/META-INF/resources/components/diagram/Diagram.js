@@ -23,6 +23,8 @@ import DiagramFooter from './DiagramFooter';
 import DiagramHeader from './DiagramHeader';
 import ImagePins from './ImagePins'
 
+import NavigationButtons from './NavigationButtons'
+
 
 const Diagram = (props) => {
 
@@ -145,7 +147,10 @@ const Diagram = (props) => {
 
                 >{"Reset Zoom"}</ClayButton>
 
+
+
             </div>
+
 
         </div>
     );
@@ -176,7 +181,8 @@ Diagram.propTypes = {
     // myzoom: PropTypes.func,
     // setCanvas: PropTypes.func,
     // setCtxStore: PropTypes.func,
-    // spritemap: PropTypes.string,
+
+    spritemap: PropTypes.string,
 
     zoomIn: PropTypes.func,
 };
