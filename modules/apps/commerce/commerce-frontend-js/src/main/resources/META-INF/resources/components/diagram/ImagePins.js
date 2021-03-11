@@ -376,12 +376,18 @@ const ImagePins = ({ completeImageSettings, dragStep, enableDrag, enableZoomCont
 
     }, [width, execResetZoom, resetZoom]);
 
+    const diagramStyle = {
+        height: `${completeImageSettings.height}`,
+        width: `${completeImageSettings.width}`,
+    }
 
     return (
 
-        <div className="diagram-pins-container">
+        
 
-            <svg height={completeImageSettings.height} ref={containerRef} width="100%">
+        <div className="diagram-pins-container" style={diagramStyle}>
+
+            <svg height={completeImageSettings.height} ref={containerRef} width={completeImageSettings.width}>
                 <g transform="translate(0, 0)" />
                 <g id="second" transform="translate(0, 0)" />
             </svg>
@@ -403,11 +409,11 @@ export default ImagePins;
 
 ImagePins.propTypes = {
     completeImageSettings: PropTypes.shape({
-        height: PropTypes.number,
+        height: PropTypes.string,
         lastX: PropTypes.number,
         lastY: PropTypes.number,
         scaleFactor: PropTypes.double,
-        width: PropTypes.number,
+        width: PropTypes.string,
     }),
     enableDrag: PropTypes.bool,
     navigationController: PropTypes.shape({

@@ -23,11 +23,11 @@ launcher('diagram', 'diagram', {
 	// image: './assets/diagram.jpg',
 
 	completeImageSettings: { 
-		height: 500,
+		height: '500px',
 		lastX: 250,
 		lastY: 350,
 		scaleFactor: 1.1,
-		width: 700,
+		width: '100%',
 	},
 	dragStep: 10,
 	image: 'https://i0.wp.com/detoxicrecenze.com/wp-content/uploads/2018/05/straight-6-engine-diagram-460-ford-engine-diagram-wiring-info-e280a2-of-straight-6-engine-diagram.jpg',

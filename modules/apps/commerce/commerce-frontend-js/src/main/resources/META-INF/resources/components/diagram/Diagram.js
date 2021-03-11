@@ -180,24 +180,28 @@ Diagram.defaultProps = {
     //     scaleFactor: 1,
     // }
 
+    completeImageSettings: PropTypes.shape({
+        height: '300px',
+        width: '100%',
+    }),
     enableDrag: true,
+    enableResetZoom: true,
+    enableZoomController: true,
     navigationController: {
         dragStep: 10,
         enable: true
     },
-    enableResetZoom: true,
-    enableZoomController: true
 };
 
 Diagram.propTypes = {
     // image: PropTypes.string,
 
     completeImageSettings: PropTypes.shape({
-        height: PropTypes.number,
+        height: PropTypes.string,
         lastX: PropTypes.number,
         lastY: PropTypes.number,
         scaleFactor: PropTypes.double,
-        width: PropTypes.number,
+        width: PropTypes.string,
     }),
     enableDrag: PropTypes.bool,
     navigationController: PropTypes.shape({
