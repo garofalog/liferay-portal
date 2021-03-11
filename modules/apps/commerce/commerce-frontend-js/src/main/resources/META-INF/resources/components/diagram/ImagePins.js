@@ -25,14 +25,10 @@ import NavigationButtons from './NavigationButtons'
 import ZoomController from './ZoomController'
 
 
-const ImagePins = ({ completeImageSettings, enableDrag, enableNavigationController, enableZoomController, execResetZoom, image, spritemap}) => {
+const ImagePins = ({ completeImageSettings, dragStep, enableDrag, enableZoomController, execResetZoom, image, navigationController, spritemap}) => {
     const [width, setWidth] = useState(0);
     const containerRef = useRef(null);
-    const [cont, setCont] = useState()
 
-    const zoomStep = 0.2;
-    const actualZoomLevel = 1.0;
-    const MOVE_STEP = 100;
 
 
 
@@ -136,25 +132,25 @@ const ImagePins = ({ completeImageSettings, enableDrag, enableNavigationControll
             position = container.attr("transform");
             const vai = position.match(/(-?[0-9]+[.,-]*)+/g)
 
-            container.attr("transform", "translate(" + (parseFloat(vai[0], 10) + 10) + ", " + parseFloat(vai[1], 10) + ")");
+            container.attr("transform", "translate(" + (parseFloat(vai[0], 10) + dragStep) + ", " + parseFloat(vai[1], 10) + ")");
         }               
         const moveLeft = () => {
             position = container.attr("transform")
             const vai = position.match(/(-?[0-9]+[.,-]*)+/g)
 
-            container.attr("transform", "translate(" + (parseFloat(vai[0], 10) - 10) + ", " + parseFloat(vai[1], 10) + ")")
+            container.attr("transform", "translate(" + (parseFloat(vai[0], 10) - dragStep) + ", " + parseFloat(vai[1], 10) + ")")
         }
         const moveUp = () => {
             position = container.attr("transform")
             const vai = position.match(/(-?[0-9]+[.,-]*)+/g)
 
-            container.attr("transform", "translate(" + parseFloat(vai[0], 10) + ", " + (parseFloat(vai[1], 10) - 10) + ")")
+            container.attr("transform", "translate(" + parseFloat(vai[0], 10) + ", " + (parseFloat(vai[1], 10) - dragStep) + ")")
         }
         const moveDown = () => {
             position = container.attr("transform")
             const vai = position.match(/(-?[0-9]+[.,-]*)+/g)
 
-            container.attr("transform", "translate(" + parseFloat(vai[0], 10) + ", " + (parseFloat(vai[1], 10) + 10) + ")")
+            container.attr("transform", "translate(" + parseFloat(vai[0], 10) + ", " + (parseFloat(vai[1], 10) + dragStep) + ")")
         }
 
 
@@ -390,7 +386,7 @@ const ImagePins = ({ completeImageSettings, enableDrag, enableNavigationControll
                 <g id="second" transform="translate(0, 0)" />
             </svg>
             
-            {enableNavigationController && (
+            {navigationController.enable && (
                 <NavigationButtons moveDown={handleMoveDown} moveLeft={handleMoveLeft} moveRight={handleMoveRight} moveUp={handleMoveUp} spritemap={spritemap} />
             )}
 
@@ -414,7 +410,10 @@ ImagePins.propTypes = {
         width: PropTypes.number,
     }),
     enableDrag: PropTypes.bool,
-    enableNavigationController: PropTypes.bool,
+    navigationController: PropTypes.shape({
+        dragStep: PropTypes.number,
+        enable: PropTypes.bool,
+    }),
     enableResetZoom: PropTypes.bool,
     enableZoomController: PropTypes.bool,
     execResetZoom: PropTypes.bool,

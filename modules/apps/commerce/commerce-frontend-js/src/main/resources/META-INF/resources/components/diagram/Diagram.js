@@ -28,7 +28,7 @@ import NavigationButtons from './NavigationButtons'
 import ZoomContainer from './ZoomController'
 
 
-const Diagram = ({ completeImageSettings, enableDrag, enableNavigationController, enableResetZoom, enableZoomController, image, spritemap}) => {
+const Diagram = ({ completeImageSettings, dragStep, enableDrag, enableResetZoom, enableZoomController, image, navigationController, spritemap}) => {
     const [resetHandler, setResetHandler] = useState(false)
 
     // const completeImageSettings = {
@@ -83,11 +83,12 @@ const Diagram = ({ completeImageSettings, enableDrag, enableNavigationController
 
             <ImagePins 
                 completeImageSettings={completeImageSettings}
+                dragStep={dragStep}
                 enableDrag={enableDrag}
-                enableNavigationController={enableNavigationController}
                 enableZoomController={enableZoomController}
                 execResetZoom={resetHandler}
-                image={image} 
+                image={image}
+                navigationController={navigationController} 
 
                 // zoomIn={zoomIn} 
 
@@ -180,7 +181,10 @@ Diagram.defaultProps = {
     // }
 
     enableDrag: true,
-    enableNavigationController: true,
+    navigationController: {
+        dragStep: 10,
+        enable: true
+    },
     enableResetZoom: true,
     enableZoomController: true
 };
@@ -196,7 +200,11 @@ Diagram.propTypes = {
         width: PropTypes.number,
     }),
     enableDrag: PropTypes.bool,
-    enableNavigationController: PropTypes.bool,
+    navigationController: PropTypes.shape({
+        dragStep: PropTypes.number,
+        enable: PropTypes.bool,
+
+    }),
     enableResetZoom: PropTypes.bool,
 
     enableZoomController: PropTypes.bool,
