@@ -22,7 +22,10 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import debounce from '../../utilities/debounce';
 import NavigationButtons from './NavigationButtons'
 
-const ImagePins = (props) => {
+import ZoomController from './ZoomController'
+
+
+const ImagePins = ({ completeimageSettings, enableNavigationController, enableZoomController, image, spritemap}) => {
     const [width, setWidth] = useState(0);
     const containerRef = useRef(null);
     const [cont, setCont] = useState()
@@ -34,7 +37,7 @@ const ImagePins = (props) => {
 
 
     let container
-    let resetZoom, zoomIn, zoomOut, moveLeft, moveRight, position, move, moveUp, moveDown, newPin, handleMoveUp, handleMoveDown, handleMoveLeft, handleMoveRight
+    let resetZoom, zoomIn, zoomOut, moveLeft, moveRight, position, move, moveUp, moveDown, newPin, handleMoveUp, handleMoveDown, handleMoveLeft, handleMoveRight, handleZoomIn, handleZoomOut
 
 
     function getRandom(min, max) {
@@ -99,13 +102,20 @@ const ImagePins = (props) => {
 
         }
 
-        function zoomIn() {
+        const zoomIn = () => {
             zoomEV.scaleBy(container.transition().duration(750), 1.3);
         }
 
         const zoomOut = () => {
             zoomEV.scaleBy(container.transition().duration(750), 0.8);
 
+        }
+
+        const handleZoomIn = () => {
+            zoomIn();
+        }
+        const handleZoomOut = () => {
+            zoomOut();
         }
 
 
@@ -128,9 +138,6 @@ const ImagePins = (props) => {
 
             container.attr("transform", "translate(" + parseFloat(vai[0], 10) + ", " + (parseFloat(vai[1], 10) - 10) + ")")
         }
-        const handleMoveUp = () => {
-            moveUp()
-        }
         const moveDown = () => {
             position = container.attr("transform")
             const vai = position.match(/(-?[0-9]+[.,-]*)+/g)
@@ -139,7 +146,9 @@ const ImagePins = (props) => {
         }
 
 
-        
+        const handleMoveUp = () => {
+            moveUp()
+        }
         const handleMoveDown = () => {
             moveDown()
         }
@@ -199,11 +208,11 @@ const ImagePins = (props) => {
         }
 
         container.append("image")
-            .attr("xlink:href", props.image)
+            .attr("xlink:href", image)
 
             // .attr("width", props.completeimageSettings.width)
 
-            .attr("height", props.completeimageSettings.height)
+            .attr("height", completeimageSettings.height)
 
         const circ = range(10).map(i => ({
             // x: Math.random() * (width - radius * 2) + radius,
@@ -350,6 +359,8 @@ const ImagePins = (props) => {
         select('.box.top').on('click', handleMoveUp)
         select('.box.bottom').on('click', handleMoveDown)
 
+        select('.box.hr').on('click', handleZoomOut)
+        select('.box.plus').on('click', handleZoomIn)
 
 
         select('#newPin').on('click', newPin)
@@ -360,23 +371,20 @@ const ImagePins = (props) => {
 
     return (
         <div className="diagram-pins-container">
-            <svg height={props.completeimageSettings.height} ref={containerRef} width="100%">
+            <svg height={completeimageSettings.height} ref={containerRef} width="100%">
                 <g transform="translate(0, 0)" />
                 <g id="second" transform="translate(0, 0)" />
             </svg>
             
-            <NavigationButtons moveDown={handleMoveDown} moveLeft={handleMoveLeft} moveRight={handleMoveRight} moveUp={handleMoveUp} spritemap={props.spritemap} />
+            {enableNavigationController && (
+                <NavigationButtons moveDown={handleMoveDown} moveLeft={handleMoveLeft} moveRight={handleMoveRight} moveUp={handleMoveUp} spritemap={spritemap} />
+            )}
 
+            {enableZoomController && (
+                <ZoomController zoomIn={handleZoomIn} zoomOut={handleZoomOut} />
+            )}
             <br />
-            <button id="zoomIn" onClick={zoomIn}>Zoom In</button>
-            <button id="zoomOut" onClick={zoomOut}>Zoom Out</button>
-            <button id="moveLeft" onClick={moveLeft}>Move left</button>
 
-            {/* <button id="moveRight" onClick={moveRight}>Move right</button>
-            <button id="moveUp" onClick={moveUp}>Move top</button>
-            <button id="moveDown" onClick={moveDown}>Move bottom</button>
-            <button id="reset" onClick={resetZoom}>Reset bitch</button>
-            <button id="newPin" onClick={newPin}>FAI USCIRE IL PIN bitch</button> */}
         </div>
     )
 };
@@ -391,6 +399,8 @@ ImagePins.propTypes = {
         scaleFactor: PropTypes.double,
         width: PropTypes.number,
     }),
+    enableNavigationController: PropTypes.bool,
+    enableZoomController: PropTypes.bool,
     image: PropTypes.string,
 
     // zommIn: PropTypes.from

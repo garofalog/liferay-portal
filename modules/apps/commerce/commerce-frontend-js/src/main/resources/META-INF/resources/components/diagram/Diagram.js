@@ -25,6 +25,8 @@ import ImagePins from './ImagePins'
 
 import NavigationButtons from './NavigationButtons'
 
+import ZoomContainer from './ZoomController'
+
 
 const Diagram = (props) => {
 
@@ -77,7 +79,9 @@ const Diagram = (props) => {
             <DiagramHeader />
 
             <ImagePins 
-                completeimageSettings={completeimageSettings} 
+                completeimageSettings={completeimageSettings}
+                enableNavigationController={props.enableNavigationController}
+                enableZoomController={props.enableNavigationController} 
                 image={props.image} 
 
                 // zoomIn={zoomIn} 
@@ -165,6 +169,9 @@ Diagram.defaultProps = {
 
     //     scaleFactor: 1,
     // }
+
+    enableNavigationController: true,
+    enableZoomController: true
 };
 
 Diagram.propTypes = {
@@ -177,6 +184,8 @@ Diagram.propTypes = {
         scaleFactor: PropTypes.double,
         width: PropTypes.number,
     }),
+    enableNavigationController: PropTypes.bool,
+    enableZoomController: PropTypes.bool,
 
     // myzoom: PropTypes.func,
     // setCanvas: PropTypes.func,
