@@ -25,7 +25,7 @@ import NavigationButtons from './NavigationButtons'
 import ZoomController from './ZoomController'
 
 
-const ImagePins = ({ completeimageSettings, enableNavigationController, enableZoomController, image, spritemap}) => {
+const ImagePins = ({ completeImageSettings, enableDrag, enableNavigationController, enableZoomController, execResetZoom, image, spritemap}) => {
     const [width, setWidth] = useState(0);
     const containerRef = useRef(null);
     const [cont, setCont] = useState()
@@ -37,7 +37,7 @@ const ImagePins = ({ completeimageSettings, enableNavigationController, enableZo
 
 
     let container
-    let resetZoom, zoomIn, zoomOut, moveLeft, moveRight, position, move, moveUp, moveDown, newPin, handleMoveUp, handleMoveDown, handleMoveLeft, handleMoveRight, handleZoomIn, handleZoomOut
+    let resetZoom, zoomIn, zoomOut, moveLeft, moveRight, position, move, moveUp, moveDown, newPin, handleMoveUp, handleMoveDown, handleMoveLeft, handleMoveRight, handleZoomIn, handleZoomOut, handleResetZoom
 
 
     function getRandom(min, max) {
@@ -53,7 +53,7 @@ const ImagePins = ({ completeimageSettings, enableNavigationController, enableZo
 
 
     
-
+    
 
     // useEffect(() => {
     //     const updateWidth = () => {
@@ -89,6 +89,10 @@ const ImagePins = ({ completeimageSettings, enableNavigationController, enableZo
         .on("end", dragended)
 
 
+    // useEffect(() => {
+        
+    // }, [execResetZoom, resetZoom])
+
     useLayoutEffect(() => {
         container = select('g')
 
@@ -102,6 +106,16 @@ const ImagePins = ({ completeimageSettings, enableNavigationController, enableZo
 
         }
 
+        const handleResetZoom = () => resetZoom();
+
+        console.log('prima di if execResetZoom ')
+        console.log('execResetZoom', execResetZoom)
+        if (execResetZoom) {
+            console.log('sono in imagepins > resetzoom is calling')
+            handleResetZoom();
+        }
+
+
         const zoomIn = () => {
             zoomEV.scaleBy(container.transition().duration(750), 1.3);
         }
@@ -111,12 +125,10 @@ const ImagePins = ({ completeimageSettings, enableNavigationController, enableZo
 
         }
 
-        const handleZoomIn = () => {
-            zoomIn();
-        }
-        const handleZoomOut = () => {
-            zoomOut();
-        }
+        const handleZoomIn = () => zoomIn();
+        
+        const handleZoomOut = () => zoomOut();
+        
 
 
 
@@ -210,9 +222,9 @@ const ImagePins = ({ completeimageSettings, enableNavigationController, enableZo
         container.append("image")
             .attr("xlink:href", image)
 
-            // .attr("width", props.completeimageSettings.width)
+            // .attr("width", props.completeImageSettings.width)
 
-            .attr("height", completeimageSettings.height)
+            .attr("height", completeImageSettings.height)
 
         const circ = range(10).map(i => ({
             // x: Math.random() * (width - radius * 2) + radius,
@@ -229,8 +241,9 @@ const ImagePins = ({ completeimageSettings, enableNavigationController, enableZo
         
 
         
-
-        container.call(zoomEV)
+        if (enableDrag) {
+            container.call(zoomEV)
+        }
 
         
 
@@ -362,16 +375,17 @@ const ImagePins = ({ completeimageSettings, enableNavigationController, enableZo
         select('.box.hr').on('click', handleZoomOut)
         select('.box.plus').on('click', handleZoomIn)
 
-
         select('#newPin').on('click', newPin)
 
 
-    }, [width]);
+    }, [width, execResetZoom, resetZoom]);
 
 
     return (
+
         <div className="diagram-pins-container">
-            <svg height={completeimageSettings.height} ref={containerRef} width="100%">
+
+            <svg height={completeImageSettings.height} ref={containerRef} width="100%">
                 <g transform="translate(0, 0)" />
                 <g id="second" transform="translate(0, 0)" />
             </svg>
@@ -383,24 +397,27 @@ const ImagePins = ({ completeimageSettings, enableNavigationController, enableZo
             {enableZoomController && (
                 <ZoomController zoomIn={handleZoomIn} zoomOut={handleZoomOut} />
             )}
-            <br />
 
         </div>
+        
     )
 };
 
 export default ImagePins;
 
 ImagePins.propTypes = {
-    completeimageSettings: PropTypes.shape({
+    completeImageSettings: PropTypes.shape({
         height: PropTypes.number,
         lastX: PropTypes.number,
         lastY: PropTypes.number,
         scaleFactor: PropTypes.double,
         width: PropTypes.number,
     }),
+    enableDrag: PropTypes.bool,
     enableNavigationController: PropTypes.bool,
+    enableResetZoom: PropTypes.bool,
     enableZoomController: PropTypes.bool,
+    execResetZoom: PropTypes.bool,
     image: PropTypes.string,
 
     // zommIn: PropTypes.from

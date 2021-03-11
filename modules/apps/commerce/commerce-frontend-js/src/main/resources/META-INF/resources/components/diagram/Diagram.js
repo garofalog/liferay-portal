@@ -28,21 +28,24 @@ import NavigationButtons from './NavigationButtons'
 import ZoomContainer from './ZoomController'
 
 
-const Diagram = (props) => {
+const Diagram = ({ completeImageSettings, enableDrag, enableNavigationController, enableResetZoom, enableZoomController, image, spritemap}) => {
+    const [resetHandler, setResetHandler] = useState(false)
 
-
-    const completeimageSettings = {
-        height: props.imageSettings.height,
-        lastX: props.imageSettings.width / 2,
-        lastY: props.imageSettings.height / 2,
-        scale: 1.1, //props.imageSettings.scaleFactor,
-        width: props.imageSettings.width,
-
-    }
-
-    // const zoomIn = () => {
+    // const completeImageSettings = {
+    //     height: imageSettings.height,
+    //     lastX: imageSettings.width / 2,
+    //     lastY: imageSettings.height / 2,
+    //     scale: 1.1, //imageSettings.scaleFactor,
+    //     width: imageSettings.width,
 
     // }
+
+    useEffect(() => {
+        setTimeout(() => {
+            console.log('è un debbounce')
+            setResetHandler(false)
+        }, 500);
+    })
 
 
     const options = [
@@ -79,22 +82,24 @@ const Diagram = (props) => {
             <DiagramHeader />
 
             <ImagePins 
-                completeimageSettings={completeimageSettings}
-                enableNavigationController={props.enableNavigationController}
-                enableZoomController={props.enableNavigationController} 
-                image={props.image} 
+                completeImageSettings={completeImageSettings}
+                enableDrag={enableDrag}
+                enableNavigationController={enableNavigationController}
+                enableZoomController={enableZoomController}
+                execResetZoom={resetHandler}
+                image={image} 
 
                 // zoomIn={zoomIn} 
 
                 />
             
 
-            {/* <DiagramFooter infos={forfooter} myzoom={myzoom} spritemap={props.spritemap}/> */}
+            {/* <DiagramFooter infos={forfooter} myzoom={myzoom} spritemap={spritemap}/> */}
             <div className="d-flex diagram-footer justify-content-end mt-3">
 
                 <ClayButton className="mr-3">
                     <span className="inline-item inline-item-before">
-                        <ClayIcon spritemap={props.spritemap} symbol="expand" />
+                        <ClayIcon spritemap={spritemap} symbol="expand" />
                     </span>
 
                     {"Expand"}
@@ -143,13 +148,17 @@ const Diagram = (props) => {
 
                 </div>
 
-                <ClayButton
-                    className="ml-3 reset-zoom"
-                    displayType="secondary"
+                {enableResetZoom && (
+                    <ClayButton
+                        className="ml-3 reset-zoom"
+                        displayType="secondary"
+                        id="reset"
+                        onClick={() => setResetHandler(true)}
 
-                    // onClick={() => resetZoom(ctxStore, width, height, img)}
+                    >{"Reset Zoom"}</ClayButton>
+                )}
 
-                >{"Reset Zoom"}</ClayButton>
+                
 
 
 
@@ -170,21 +179,26 @@ Diagram.defaultProps = {
     //     scaleFactor: 1,
     // }
 
+    enableDrag: true,
     enableNavigationController: true,
+    enableResetZoom: true,
     enableZoomController: true
 };
 
 Diagram.propTypes = {
     // image: PropTypes.string,
 
-    completeimageSettings: PropTypes.shape({
+    completeImageSettings: PropTypes.shape({
         height: PropTypes.number,
         lastX: PropTypes.number,
         lastY: PropTypes.number,
         scaleFactor: PropTypes.double,
         width: PropTypes.number,
     }),
+    enableDrag: PropTypes.bool,
     enableNavigationController: PropTypes.bool,
+    enableResetZoom: PropTypes.bool,
+
     enableZoomController: PropTypes.bool,
 
     // myzoom: PropTypes.func,
