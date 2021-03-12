@@ -419,14 +419,10 @@ const ImagePins = ({
         width: `${completeImageSettings.width}`,
     }
 
-    const imageStyle = {
-        transform: `translate(0, 0) scale(${scale})`
-    }
-
     return (
         <div className="diagram-pins-container" style={diagramStyle}>
             <svg height={completeImageSettings.height} ref={containerRef} width={completeImageSettings.width}>
-                <g transform={"translate(" + imageStyle.x + ", " + imageStyle.y + "0) scale(" + imageState.k + ")"}
+                <g transform={"translate(" + imageState.x + ", " + imageState.y + "0) scale(" + imageState.k + ")"}
                  />
             </svg>
 
