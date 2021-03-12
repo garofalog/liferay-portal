@@ -25,28 +25,26 @@ import NavigationButtons from './NavigationButtons'
 import ZoomController from './ZoomController'
 
 
-const ImagePins = ({ completeImageSettings, dragStep, enableDrag, enableZoomController, execResetZoom, image, navigationController, spritemap}) => {
+const ImagePins = ({ 
+    completeImageSettings, 
+    dragStep,
+    enableDrag, 
+    execResetZoom, 
+    image, 
+    navigationController, 
+    pins, 
+    spritemap,
+    zoomController
+}) => {
     const [width, setWidth] = useState(0);
+    const [imageState, setImageState] = useState({
+        k:1, 
+        x: 0,
+        y: 0,
+    })
     const containerRef = useRef(null);
 
-
-
-
-    let container
-    let resetZoom, zoomIn, zoomOut, moveLeft, moveRight, position, move, moveUp, moveDown, newPin, handleMoveUp, handleMoveDown, handleMoveLeft, handleMoveRight, handleZoomIn, handleZoomOut, handleResetZoom
-
-
-    function getRandom(min, max) {
-        min = Math.ceil(min);
-        max = Math.floor(max);
-
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-    
-    function roundFloat(value) {
-        return value.toFixed(2);
-    }
-
+    let container, resetZoom, zoomIn, zoomOut, moveLeft, moveRight, position, move, moveUp, moveDown, newPin, handleMoveUp, handleMoveDown, handleMoveLeft, handleMoveRight, handleZoomIn, handleZoomOut, handleResetZoom
 
     
     
@@ -72,7 +70,7 @@ const ImagePins = ({ completeImageSettings, dragStep, enableDrag, enableZoomCont
         current
             .attr('cx', event.x)
             .attr('cy', event.y);
-        console.log(`${event.x}, ${event.y}`);
+        console.log('blabla', `${event.x}, ${event.y}`);
     }
     function dragended (event, d)  {
         const current = select(this);
@@ -92,14 +90,30 @@ const ImagePins = ({ completeImageSettings, dragStep, enableDrag, enableZoomCont
     useLayoutEffect(() => {
         container = select('g')
 
+        // const getRandom = (min, max) => {
+        //     min = Math.ceil(min);
+        //     max = Math.floor(max);
+
+        //     return Math.floor(Math.random() * (max - min + 1)) + min;
+        // }
+        // const roundFloat = (value) => value.toFixed(2);
+        // const pins = range(10).map(i => ({
+        //     color: getRandom(0, 9),
+        //     r: getRandom(5, 30),
+        //     x: Math.random() * (completeImageSettings.width - 20 * 2) + 20,
+        //     y: Math.random() * (completeImageSettings.height - 20 * 2) + 20,
+        // }));
+
         const zoomEV = zoom().on("zoom", () => {
             container.attr("transform", event.transform);
             console.log(event.transform)
+            setImageState(event.transform)
         });
+
+        ////////////////////////////////////////////////
 
         const resetZoom = () => {
             container.attr("transform", "translate(" + 0 + ", " + 0 + ")");
-
         }
 
         const handleResetZoom = () => resetZoom();
@@ -112,13 +126,15 @@ const ImagePins = ({ completeImageSettings, dragStep, enableDrag, enableZoomCont
         }
 
 
+        ////////////////////////////////////////////////
+
+
         const zoomIn = () => {
             zoomEV.scaleBy(container.transition().duration(750), 1.3);
         }
 
         const zoomOut = () => {
             zoomEV.scaleBy(container.transition().duration(750), 0.8);
-
         }
 
         const handleZoomIn = () => zoomIn();
@@ -126,33 +142,54 @@ const ImagePins = ({ completeImageSettings, dragStep, enableDrag, enableZoomCont
         const handleZoomOut = () => zoomOut();
         
 
-
-
+        ////////////////////////////////////////////////
+    
+        
         const moveRight = () => {
             position = container.attr("transform");
-            const vai = position.match(/(-?[0-9]+[.,-]*)+/g)
-
-            container.attr("transform", "translate(" + (parseFloat(vai[0], 10) + dragStep) + ", " + parseFloat(vai[1], 10) + ")");
+            const vai = position.match(/(-?[0-9]+[.,-\s]*)+/g);
+            const co = vai[0].split(',')
+            const s = {
+                k: vai[1],
+                x: co[0],
+                y: co[1],
+            }
+            container.attr("transform", "translate(" + (parseFloat(s.x, 10) + dragStep) + ", " + parseFloat(s.y, 10) + ")" + "scale(" + s.k + ")");
         }               
         const moveLeft = () => {
             position = container.attr("transform")
-            const vai = position.match(/(-?[0-9]+[.,-]*)+/g)
-
-            container.attr("transform", "translate(" + (parseFloat(vai[0], 10) - dragStep) + ", " + parseFloat(vai[1], 10) + ")")
+            const vai = position.match(/(-?[0-9]+[.,-\s]*)+/g);
+            const co = vai[0].split(',')
+            const s = {
+                k: vai[1],
+                x: co[0],
+                y: co[1],
+            }
+            container.attr("transform", "translate(" + (parseFloat(s.x, 10) - dragStep) + ", " + parseFloat(s.y, 10) + ")" + "scale(" + s.k + ")")
         }
         const moveUp = () => {
             position = container.attr("transform")
-            const vai = position.match(/(-?[0-9]+[.,-]*)+/g)
-
-            container.attr("transform", "translate(" + parseFloat(vai[0], 10) + ", " + (parseFloat(vai[1], 10) - dragStep) + ")")
+            const vai = position.match(/(-?[0-9]+[.,-\s]*)+/g);
+            const co = vai[0].split(',')
+            const s = {
+                k: vai[1],
+                x: co[0],
+                y: co[1],
+            }           
+ 
+            container.attr("transform", "translate(" + parseFloat(s.x, 10) + ", " + (parseFloat(s.y, 10) - dragStep) + ")" + "scale(" + s.k + ")")
         }
         const moveDown = () => {
             position = container.attr("transform")
-            const vai = position.match(/(-?[0-9]+[.,-]*)+/g)
-
-            container.attr("transform", "translate(" + parseFloat(vai[0], 10) + ", " + (parseFloat(vai[1], 10) + dragStep) + ")")
+            const vai = position.match(/(-?[0-9]+[.,-\s]*)+/g);
+            const co = vai[0].split(',')
+            const s = {
+                k: vai[1],
+                x: co[0],
+                y: co[1],
+            }
+            container.attr("transform", "translate(" + parseFloat(s.x, 10) + ", " + (parseFloat(s.y, 10) + dragStep) + ")" + "scale(" + s.k + ")")
         }
-
 
         const handleMoveUp = () => {
             moveUp()
@@ -168,10 +205,9 @@ const ImagePins = ({ completeImageSettings, dragStep, enableDrag, enableZoomCont
         }
 
         
-
+        ////////////////////////////////////////////////
 
         
-
         function clicked(event, d) {
             if (event.defaultPrevented) {return;} // dragged
 
@@ -222,27 +258,6 @@ const ImagePins = ({ completeImageSettings, dragStep, enableDrag, enableZoomCont
 
             .attr("height", completeImageSettings.height)
 
-        const circ = range(10).map(i => ({
-            // x: Math.random() * (width - radius * 2) + radius,
-
-            color: getRandom(0, 9),
-            r: getRandom(5,30),
-            x: Math.random() * (500 - 20 * 2) + 20,
-
-            // y: Math.random() * (heigth - 20 * 2) + 20,
-
-            y: Math.random() * (450 - 20 * 2) + 20,
-        }));
-
-        
-
-        
-        if (enableDrag) {
-            container.call(zoomEV)
-        }
-
-        
-
         container.append("circle")
             .attr("cx", 20)
             .attr("cy", 20)
@@ -253,15 +268,25 @@ const ImagePins = ({ completeImageSettings, dragStep, enableDrag, enableZoomCont
             .classed('draggable', true)
 
         container.append("circle")
-                .attr("cx", 30)
-                .attr("cy", 30)
-                .attr("r", 30)
-                .style("fill", "#ae2")
+            .attr("cx", 30)
+            .attr("cy", 30)
+            .attr("r", 30)
+            .style("fill", "#ae2")
             .attr("stroke", "#039BE5")
             .attr("stroke-width", "1px")
             .classed('draggable', true)
 
         
+        ////////////////////////////////////////////////
+        
+        if (navigationController.enableDrag) {
+            container.call(zoomEV)
+        }
+
+        ////////////////////////////////////////////////
+
+        
+
 
         container.on("click", function () {
             console.log('in click')
@@ -286,10 +311,6 @@ const ImagePins = ({ completeImageSettings, dragStep, enableDrag, enableZoomCont
 
             // dragHandler2(circ);
 
-            
-
-
-            
 
             pin.on("click", () => {
                 console.log('sto  handlando')
@@ -333,9 +354,12 @@ const ImagePins = ({ completeImageSettings, dragStep, enableDrag, enableZoomCont
 
         });
 
-        console.log('all the circles', circ)
+
+
+
+        console.log('all the circles', pins)
         container.selectAll("circle")
-            .data(circ)
+            .data(pins)
             .join("circle")
             .attr("cx", d => d.x)
             .attr("cy", d => d.y)
@@ -352,8 +376,9 @@ const ImagePins = ({ completeImageSettings, dragStep, enableDrag, enableZoomCont
         dragHandler(container.selectAll('.draggable'));
 
         
-        // register event
+        ////////////////////// register event //////////////////////////
         
+
         select('#reset').on('click', resetZoom)
         select('#zoomIn').on('click', zoomIn)
         select('#zoomOut').on('click', zoomOut)
@@ -376,32 +401,26 @@ const ImagePins = ({ completeImageSettings, dragStep, enableDrag, enableZoomCont
 
     }, [width, execResetZoom, resetZoom]);
 
+
     const diagramStyle = {
         height: `${completeImageSettings.height}`,
         width: `${completeImageSettings.width}`,
     }
 
     return (
-
-        
-
         <div className="diagram-pins-container" style={diagramStyle}>
-
             <svg height={completeImageSettings.height} ref={containerRef} width={completeImageSettings.width}>
-                <g transform="translate(0, 0)" />
-                <g id="second" transform="translate(0, 0)" />
+                <g transform="translate(0, 0) scale(1)" />
             </svg>
-            
+
             {navigationController.enable && (
-                <NavigationButtons moveDown={handleMoveDown} moveLeft={handleMoveLeft} moveRight={handleMoveRight} moveUp={handleMoveUp} spritemap={spritemap} />
+                <NavigationButtons moveDown={handleMoveDown} moveLeft={handleMoveLeft} moveRight={handleMoveRight} moveUp={handleMoveUp} position={navigationController.position} spritemap={spritemap} />
             )}
 
-            {enableZoomController && (
-                <ZoomController zoomIn={handleZoomIn} zoomOut={handleZoomOut} />
+            {zoomController.enable && (
+                <ZoomController position={zoomController.position} zoomIn={handleZoomIn} zoomOut={handleZoomOut} />
             )}
-
         </div>
-        
     )
 };
 
@@ -415,16 +434,35 @@ ImagePins.propTypes = {
         scaleFactor: PropTypes.double,
         width: PropTypes.string,
     }),
-    enableDrag: PropTypes.bool,
+    enableResetZoom: PropTypes.bool,
+    execResetZoom: PropTypes.bool,
+    image: PropTypes.string,
     navigationController: PropTypes.shape({
         dragStep: PropTypes.number,
         enable: PropTypes.bool,
+        enableDrag: PropTypes.bool,
+        position: PropTypes.shape({
+            bottom: PropTypes.string,
+            left: PropTypes.string,
+            right: PropTypes.string,
+            top: PropTypes.string,
+        }),
     }),
-    enableResetZoom: PropTypes.bool,
-    enableZoomController: PropTypes.bool,
-    execResetZoom: PropTypes.bool,
-    image: PropTypes.string,
-
-    // zommIn: PropTypes.from
-
+    pins: PropTypes.arrayOf(
+        PropTypes.shape({
+            color: PropTypes.number,
+            r: PropTypes.number,
+            x: PropTypes.double,
+            y: PropTypes.double,
+        })
+    ),
+    zoomController: PropTypes.shape({
+        enable: PropTypes.bool,
+        position: PropTypes.shape({
+            bottom: PropTypes.string,
+            left: PropTypes.string,
+            right: PropTypes.string,
+            top: PropTypes.string,
+        })
+    }),
 }

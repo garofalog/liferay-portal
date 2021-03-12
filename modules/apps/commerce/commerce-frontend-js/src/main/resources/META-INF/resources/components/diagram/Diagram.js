@@ -28,17 +28,18 @@ import NavigationButtons from './NavigationButtons'
 import ZoomContainer from './ZoomController'
 
 
-const Diagram = ({ completeImageSettings, dragStep, enableDrag, enableResetZoom, enableZoomController, image, navigationController, spritemap}) => {
+const Diagram = ({ 
+    completeImageSettings, 
+    dragStep, 
+    enableDrag, 
+    enableResetZoom, 
+    image, 
+    navigationController, 
+    pins, 
+    spritemap,
+    zoomController
+}) => {
     const [resetHandler, setResetHandler] = useState(false)
-
-    // const completeImageSettings = {
-    //     height: imageSettings.height,
-    //     lastX: imageSettings.width / 2,
-    //     lastY: imageSettings.height / 2,
-    //     scale: 1.1, //imageSettings.scaleFactor,
-    //     width: imageSettings.width,
-
-    // }
 
     useEffect(() => {
         setTimeout(() => {
@@ -85,10 +86,11 @@ const Diagram = ({ completeImageSettings, dragStep, enableDrag, enableResetZoom,
                 completeImageSettings={completeImageSettings}
                 dragStep={dragStep}
                 enableDrag={enableDrag}
-                enableZoomController={enableZoomController}
                 execResetZoom={resetHandler}
                 image={image}
-                navigationController={navigationController} 
+                navigationController={navigationController}
+                pins={pins} 
+                zoomController={zoomController}
 
                 // zoomIn={zoomIn} 
 
@@ -186,10 +188,25 @@ Diagram.defaultProps = {
     }),
     enableDrag: true,
     enableResetZoom: true,
-    enableZoomController: true,
     navigationController: {
         dragStep: 10,
-        enable: true
+        enable: true,
+        position: {
+            bottom: '15px',
+            left: '',
+            right: '50px',
+            top: ''
+        }
+    },
+    pins: [],
+    zoomController: {
+        enable: true,
+        position: {
+            bottom: '0px',
+            left: '',
+            right: '200px',
+            top: ''
+        }
     },
 };
 
@@ -204,22 +221,35 @@ Diagram.propTypes = {
         width: PropTypes.string,
     }),
     enableDrag: PropTypes.bool,
+    enableResetZoom: PropTypes.bool,
     navigationController: PropTypes.shape({
         dragStep: PropTypes.number,
         enable: PropTypes.bool,
-
+        position: PropTypes.shape({
+            bottom: PropTypes.string,
+            left: PropTypes.string,
+            right: PropTypes.string,
+            top: PropTypes.string,
+        }),
     }),
-    enableResetZoom: PropTypes.bool,
-
-    enableZoomController: PropTypes.bool,
-
-    // myzoom: PropTypes.func,
-    // setCanvas: PropTypes.func,
-    // setCtxStore: PropTypes.func,
-
+    pins: PropTypes.arrayOf(
+        PropTypes.shape({
+            color: PropTypes.number,
+            r: PropTypes.number,
+            x: PropTypes.double,
+            y: PropTypes.double,
+        })
+    ),
     spritemap: PropTypes.string,
-
-    zoomIn: PropTypes.func,
+    zoomController: PropTypes.shape({
+        enable: PropTypes.bool,
+        position: PropTypes.shape({
+            bottom: PropTypes.string,
+            left: PropTypes.string,
+            right: PropTypes.string,
+            top: PropTypes.string,
+        }),
+    }),
 };
 
 export default Diagram;

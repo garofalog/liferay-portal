@@ -17,10 +17,17 @@ import PropTypes from 'prop-types';
 import React, {useLayoutEffect} from 'react';
 
 
-const NavigationButtons = ({moveDown, moveLeft, moveRight, moveUp, spritemap}) => {
+const NavigationButtons = ({moveDown, moveLeft, moveRight, moveUp, spritemap, position}) => {
+
+    const navigationButtonStyle= {
+        bottom: '15px',
+        left: '',
+        right: '50px',
+        top: '',
+    }
 
     return (
-        <div id="move-controller">
+        <div id="move-controller" style={navigationButtonStyle}>
                    
             <div className="box top" onClick={() => moveUp}>
                 <ClayIcon className="icon" spritemap={spritemap} symbol="angle-left" />
@@ -47,6 +54,12 @@ NavigationButtons.propTypes = {
     moveLeft: PropTypes.func,
     moveRight: PropTypes.func,
     moveUp: PropTypes.func,
+    position: PropTypes.shape({
+        bottom: PropTypes.string,
+        left: PropTypes.string,
+        right: PropTypes.string,
+        top: PropTypes.string,
+    }),
     spritemap: PropTypes.string,
 }
 

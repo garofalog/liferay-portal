@@ -17,10 +17,17 @@ import PropTypes from 'prop-types';
 import React, { useLayoutEffect } from 'react';
 
 
-const ZoomController = ({ spritemap, zoomIn, zoomOut }) => {
+const ZoomController = ({ position, spritemap, zoomIn, zoomOut }) => {
+
+    const zoomButtonStyle = {
+        bottom: position.bottom,
+        left: position.left,
+        right: position.right,
+        top: position.top,
+    }
 
     return (
-        <div id="zoom-controller">
+        <div id="zoom-controller" style={zoomButtonStyle}>
 
             <div className="box plus" onClick={() => zoomIn}>
                 <ClayIcon className="icon" spritemap={spritemap} symbol="plus" />
@@ -38,6 +45,12 @@ const ZoomController = ({ spritemap, zoomIn, zoomOut }) => {
 export default ZoomController;
 
 ZoomController.propTypes = {
+    position: PropTypes.shape({
+        bottom: PropTypes.string,
+        left: PropTypes.string,
+        right: PropTypes.string,
+        top: PropTypes.string,
+    }),
     spritemap: PropTypes.string,
     zoomIn: PropTypes.func,
     zoomOut: PropTypes.func,
