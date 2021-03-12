@@ -14,7 +14,7 @@
 
 import ClayButton, { ClayButtonWithIcon } from '@clayui/button';
 import { ClayInput } from '@clayui/form';
-import { ClaySelect } from '@clayui/form';
+import { ClaySelect, ClaySelectWithOption } from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
@@ -30,8 +30,6 @@ import ZoomContainer from './ZoomController'
 
 const Diagram = ({ 
     completeImageSettings, 
-    dragStep, 
-    enableDrag, 
     enableResetZoom, 
     image, 
     navigationController, 
@@ -40,6 +38,13 @@ const Diagram = ({
     zoomController
 }) => {
     const [resetHandler, setResetHandler] = useState(false)
+    const [imageState, setImageState] = useState({
+        k: 1,
+        x: 0,
+        y: 0,
+    })
+    const [scale, setScale] = useState(1)
+
 
     useEffect(() => {
         setTimeout(() => {
@@ -47,6 +52,10 @@ const Diagram = ({
             setResetHandler(false)
         }, 500);
     })
+
+    useEffect(() => {
+
+    }, [imageState])
 
 
     const options = [
@@ -76,6 +85,19 @@ const Diagram = ({
         }
     ];
 
+    function handleZoomChange(event) {
+        setScale(parseFloat(event.target.value / 100))
+    }
+    
+    const handleImageState = (p) => {
+        console.log("cliccato +")
+        setImageState({
+            k: p.k,
+            x: p.x,
+            y: p.y,
+        })
+    }
+
 
     return (
         <div className="diagram mx-auto">
@@ -84,16 +106,15 @@ const Diagram = ({
 
             <ImagePins 
                 completeImageSettings={completeImageSettings}
-                dragStep={dragStep}
-                enableDrag={enableDrag}
                 execResetZoom={resetHandler}
                 image={image}
-                navigationController={navigationController}
-                pins={pins} 
+                imageState={imageState}
+                navigationController={navigationController} 
+                pins={pins}
+                scale={scale}
+                setImageState={handleImageState}
+                setScale={setScale}
                 zoomController={zoomController}
-
-                // zoomIn={zoomIn} 
-
                 />
             
 
@@ -114,8 +135,11 @@ const Diagram = ({
                         className=""
                         displayType="secondary"
 
-                    // onclick={() => zoom()}
-
+                        onClick={() => handleImageState({
+                            k: imageState.k - .5,
+                            x: imageState.x,
+                            y: imageState.y,
+                        })}
                     >
                         {"-"}
                     </ClayButton>
@@ -123,11 +147,11 @@ const Diagram = ({
                     <ClaySelect
                         aria-label="Select Label"
                         className="ml-3 mr-3"
-                        id="mySelectId">
+                        id="mySelectId"
+                        onChange={handleZoomChange}>
                         {options.map(item => (
                             <ClaySelect.Option
                                 
-
                                 key={item.value}
                                 label={item.label}
                                 selected={item.value === '100' ? true : false}
@@ -140,7 +164,11 @@ const Diagram = ({
                         className=""
                         displayType="secondary"
 
-                        // onClick={() => zoomIn}
+                        onClick={() => handleImageState({
+                            k: imageState.k + .5,
+                            x: imageState.x,
+                            y: imageState.y,
+                        })}
 
                     >
                         {"+"}

@@ -30,7 +30,7 @@ launcher('diagram', 'diagram', {
 	dragStep: 50,
 	image: 'https://i0.wp.com/detoxicrecenze.com/wp-content/uploads/2018/05/straight-6-engine-diagram-460-ford-engine-diagram-wiring-info-e280a2-of-straight-6-engine-diagram.jpg',
 	navigationController: {
-		dragStart: 10,
+		dragStep: 10,
 		enable: true,
 		enableDrag: true,
 		position: {

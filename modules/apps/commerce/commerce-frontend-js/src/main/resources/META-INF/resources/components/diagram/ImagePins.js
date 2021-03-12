@@ -19,36 +19,38 @@ import { drag, event, mouse, range, schemeCategory10, select, zoom } from 'd3';
 import PropTypes from 'prop-types';
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
-import debounce from '../../utilities/debounce';
-import NavigationButtons from './NavigationButtons'
-
-import ZoomController from './ZoomController'
+import NavigationButtons from './NavigationButtons';
+import ZoomController from './ZoomController';
 
 
 const ImagePins = ({ 
     completeImageSettings, 
-    dragStep,
-    enableDrag, 
     execResetZoom, 
     image, 
+    imageState,
     navigationController, 
     pins, 
+    scale,
+    setImageState,
     spritemap,
     zoomController
 }) => {
     const [width, setWidth] = useState(0);
-    const [imageState, setImageState] = useState({
-        k:1, 
-        x: 0,
-        y: 0,
-    })
     const containerRef = useRef(null);
-
     let container, resetZoom, zoomIn, zoomOut, moveLeft, moveRight, position, move, moveUp, moveDown, newPin, handleMoveUp, handleMoveDown, handleMoveLeft, handleMoveRight, handleZoomIn, handleZoomOut, handleResetZoom
 
-    
-    
+    useEffect(() => {
+        setImageState({
+            k: scale,
+            x: imageState.x,
+            y: imageState.y,
+        })
+    }, [scale])
 
+    useEffect(() => {
+        console.log(imageState)
+    }, [imageState])
+    
     // useEffect(() => {
     //     const updateWidth = () => {
     //         setWidth(containerRef.current.clientWidth / (data.length + 1));
@@ -77,15 +79,11 @@ const ImagePins = ({
         current.attr("stroke", null);
     }
 
-    var dragHandler = drag()
+    const dragHandler = drag()
         .on('drag', dragged)
         .on("start", dragstarted)
         .on("end", dragended)
 
-
-    // useEffect(() => {
-        
-    // }, [execResetZoom, resetZoom])
 
     useLayoutEffect(() => {
         container = select('g')
@@ -106,14 +104,26 @@ const ImagePins = ({
 
         const zoomEV = zoom().on("zoom", () => {
             container.attr("transform", event.transform);
+
             console.log(event.transform)
-            setImageState(event.transform)
+            setImageState({
+                k: event.transform.k,
+                x: event.transform.x,
+                y: event.transform.y,
+            })
+
         });
 
         ////////////////////////////////////////////////
 
         const resetZoom = () => {
-            container.attr("transform", "translate(" + 0 + ", " + 0 + ")");
+            setImageState({
+                k: 1,
+                x: 0,
+                y: 0,
+            })
+            container.attr("transform", "translate(" + 0 + ", " + 0 + ")" + "scale(" + 1 + ")");
+
         }
 
         const handleResetZoom = () => resetZoom();
@@ -130,15 +140,16 @@ const ImagePins = ({
 
 
         const zoomIn = () => {
-            zoomEV.scaleBy(container.transition().duration(750), 1.3);
-        }
+            zoomEV.scaleBy(container.transition().duration(400), 1.2);
+            console.log("transform zoomin", event.transform);
 
-        const zoomOut = () => {
-            zoomEV.scaleBy(container.transition().duration(750), 0.8);
         }
-
         const handleZoomIn = () => zoomIn();
-        
+        const zoomOut = () => {
+            zoomEV.scaleBy(container.transition().duration(400), 0.8);
+            console.log("transform zoomout", event.transform);
+
+        }
         const handleZoomOut = () => zoomOut();
         
 
@@ -154,7 +165,8 @@ const ImagePins = ({
                 x: co[0],
                 y: co[1],
             }
-            container.attr("transform", "translate(" + (parseFloat(s.x, 10) + dragStep) + ", " + parseFloat(s.y, 10) + ")" + "scale(" + s.k + ")");
+            setImageState(s)       
+            container.attr("transform", "translate(" + (parseFloat(s.x, 10) + navigationController.dragStep) + ", " + parseFloat(s.y, 10) + ")" + "scale(" + s.k + ")");
         }               
         const moveLeft = () => {
             position = container.attr("transform")
@@ -165,7 +177,8 @@ const ImagePins = ({
                 x: co[0],
                 y: co[1],
             }
-            container.attr("transform", "translate(" + (parseFloat(s.x, 10) - dragStep) + ", " + parseFloat(s.y, 10) + ")" + "scale(" + s.k + ")")
+            setImageState(s)       
+            container.attr("transform", "translate(" + (parseFloat(s.x, 10) - navigationController.dragStep) + ", " + parseFloat(s.y, 10) + ")" + "scale(" + s.k + ")")
         }
         const moveUp = () => {
             position = container.attr("transform")
@@ -175,9 +188,9 @@ const ImagePins = ({
                 k: vai[1],
                 x: co[0],
                 y: co[1],
-            }           
- 
-            container.attr("transform", "translate(" + parseFloat(s.x, 10) + ", " + (parseFloat(s.y, 10) - dragStep) + ")" + "scale(" + s.k + ")")
+            }    
+            setImageState(s)       
+            container.attr("transform", "translate(" + parseFloat(s.x, 10) + ", " + (parseFloat(s.y, 10) - navigationController.dragStep) + ")" + "scale(" + s.k + ")")
         }
         const moveDown = () => {
             position = container.attr("transform")
@@ -188,7 +201,8 @@ const ImagePins = ({
                 x: co[0],
                 y: co[1],
             }
-            container.attr("transform", "translate(" + parseFloat(s.x, 10) + ", " + (parseFloat(s.y, 10) + dragStep) + ")" + "scale(" + s.k + ")")
+            setImageState(s)       
+            container.attr("transform", "translate(" + parseFloat(s.x, 10) + ", " + (parseFloat(s.y, 10) + navigationController.dragStep) + ")" + "scale(" + s.k + ")")
         }
 
         const handleMoveUp = () => {
@@ -207,12 +221,9 @@ const ImagePins = ({
         
         ////////////////////////////////////////////////
 
-        
-        function clicked(event, d) {
-            if (event.defaultPrevented) {return;} // dragged
-
+        const clicked = (event, d) => {
+            if (event.defaultPrevented) { return; } // dragged
             select(this).transition()
-
                 .attr("r", 20 * 2)
                 .transition()
                 .attr("r", 20)
@@ -221,19 +232,19 @@ const ImagePins = ({
 
         const pin = container.append("circle")
 
-            // .transition()
-            // .duration(500)
-            // .attr("cx", 20)
-            // .attr("cy", 20)
-            // .attr("r", 20)
-            // .style("fill", "pink")
-            // .attr("stroke", "#039BE5")
-            // .attr("stroke-width", "1px")
-            // .attr("stroke", "#455A64")
-            // .attr("stroke-width", "3px")
-            // .attr("stroke", "#455A64")
-            // .attr("stroke-width", "3px")
-            // .classed("draggable", true)
+        // .transition()
+        // .duration(500)
+        // .attr("cx", 20)
+        // .attr("cy", 20)
+        // .attr("r", 20)
+        // .style("fill", "pink")
+        // .attr("stroke", "#039BE5")
+        // .attr("stroke-width", "1px")
+        // .attr("stroke", "#455A64")
+        // .attr("stroke-width", "3px")
+        // .attr("stroke", "#455A64")
+        // .attr("stroke-width", "3px")
+        // .classed("draggable", true)
 
 
         const newPin = () => {
@@ -276,11 +287,16 @@ const ImagePins = ({
             .attr("stroke-width", "1px")
             .classed('draggable', true)
 
-        
+
+
         ////////////////////////////////////////////////
         
         if (navigationController.enableDrag) {
+            console.log('ok enabled')
             container.call(zoomEV)
+            console.log("transform dragzzom", container);
+
+
         }
 
         ////////////////////////////////////////////////
@@ -379,10 +395,6 @@ const ImagePins = ({
         ////////////////////// register event //////////////////////////
         
 
-        select('#reset').on('click', resetZoom)
-        select('#zoomIn').on('click', zoomIn)
-        select('#zoomOut').on('click', zoomOut)
-
         select('#moveLeft').on('click', moveLeft)
         select('#moveRight').on('click', moveRight)
         select('#moveUp').on('click', moveUp)
@@ -407,10 +419,15 @@ const ImagePins = ({
         width: `${completeImageSettings.width}`,
     }
 
+    const imageStyle = {
+        transform: `translate(0, 0) scale(${scale})`
+    }
+
     return (
         <div className="diagram-pins-container" style={diagramStyle}>
             <svg height={completeImageSettings.height} ref={containerRef} width={completeImageSettings.width}>
-                <g transform="translate(0, 0) scale(1)" />
+                <g transform={"translate(" + imageStyle.x + ", " + imageStyle.y + "0) scale(" + imageState.k + ")"}
+                 />
             </svg>
 
             {navigationController.enable && (
@@ -426,6 +443,10 @@ const ImagePins = ({
 
 export default ImagePins;
 
+ImagePins.default = {
+    scale: 1
+}
+
 ImagePins.propTypes = {
     completeImageSettings: PropTypes.shape({
         height: PropTypes.string,
@@ -437,6 +458,11 @@ ImagePins.propTypes = {
     enableResetZoom: PropTypes.bool,
     execResetZoom: PropTypes.bool,
     image: PropTypes.string,
+    imageState: PropTypes.shape({
+        k: PropTypes.double,
+        x: PropTypes.double,
+        y: PropTypes.double,
+    }),
     navigationController: PropTypes.shape({
         dragStep: PropTypes.number,
         enable: PropTypes.bool,
@@ -456,6 +482,15 @@ ImagePins.propTypes = {
             y: PropTypes.double,
         })
     ),
+    scale: PropTypes.double,
+    setImageState: PropTypes.func,
+
+    // PropTypes.shape({
+    //     k: PropTypes.double,
+    //     x: PropTypes.double,
+    //     y: PropTypes.double,
+    // }),
+
     zoomController: PropTypes.shape({
         enable: PropTypes.bool,
         position: PropTypes.shape({
