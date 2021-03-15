@@ -163,52 +163,53 @@ const ImagePins = ({
     
         
         const moveRight = () => {
+            console.log('moveright clicked')
             position = container.attr("transform");
             const vai = position.match(/(-?[0-9]+[.,-\s]*)+/g);
-            const co = parseInt(vai[0].split(','), 10)
+            const co = vai[0].split(',').map(x => parseInt(x, 10))
             const s = {
                 k: vai[1],
-                x: co[0],
+                x: co[0] + navigationController.dragStep,
                 y: co[1],
             }
             setImageState(s)       
-            container.attr("transform", "translate(" + (parseFloat(s.x, 10) + navigationController.dragStep) + "," + parseFloat(s.y, 10) + ")" + "scale(" + s.k + ")");
+            container.attr("transform", `translate(${s.x},${s.y}) scale(${s.k})`);
         }               
         const moveLeft = () => {
             position = container.attr("transform")
             const vai = position.match(/(-?[0-9]+[.,-\s]*)+/g);
-            const co = parseInt(vai[0].split(','), 10)
+            const co = vai[0].split(',').map(x => parseInt(x, 10))
             const s = {
                 k: vai[1],
-                x: co[0],
+                x: co[0] - navigationController.dragStep,
                 y: co[1],
             }
             setImageState(s)       
-            container.attr("transform", "translate(" + (parseFloat(s.x, 10) - navigationController.dragStep) + "," + parseFloat(s.y, 10) + ")" + "scale(" + s.k + ")")
+            container.attr("transform", `translate(${s.x},${s.y}) scale(${s.k})`);
         }
         const moveUp = () => {
             position = container.attr("transform")
             const vai = position.match(/(-?[0-9]+[.,-\s]*)+/g);
-            const co = parseInt(vai[0].split(','), 10)
+            const co = vai[0].split(',').map(x => parseInt(x, 10))
             const s = {
                 k: vai[1],
                 x: co[0],
-                y: co[1],
+                y: co[1] - navigationController.dragStep,
             }    
             setImageState(s)       
-            container.attr("transform", "translate(" + parseFloat(s.x, 10) + "," + (parseFloat(s.y, 10) - navigationController.dragStep) + ")" + "scale(" + s.k + ")")
+            container.attr("transform", `translate(${s.x},${s.y}) scale(${s.k})`);
         }
         const moveDown = () => {
             position = container.attr("transform")
             const vai = position.match(/(-?[0-9]+[.,-\s]*)+/g);
-            const co = parseInt(vai[0].split(','), 10)
+            const co = vai[0].split(',').map(x => parseInt(x, 10))
             const s = {
                 k: vai[1],
                 x: co[0],
-                y: co[1],
+                y: co[1] + navigationController.dragStep,
             }
-            setImageState(s)       
-            container.attr("transform", "translate(" + parseFloat(s.x, 10) + "," + (parseFloat(s.y, 10) + navigationController.dragStep) + ")" + "scale(" + s.k + ")")
+            setImageState(s)   
+            container.attr("transform", `translate(${s.x},${s.y}) scale(${s.k})`);    
         }
 
         const handleMoveUp = () => {

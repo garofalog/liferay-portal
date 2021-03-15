@@ -140,11 +140,14 @@ const Diagram = ({
                         className=""
                         displayType="secondary"
 
-                        onClick={() => handleImageState({
-                            k: imageState.k - .5,
-                            x: imageState.x,
-                            y: imageState.y,
-                        })}
+                        // onClick={() => {
+                        //     setImageState({
+                        //         k: imageState.k - .5,
+                        //         x: imageState.x,
+                        //         y: imageState.y,
+                        //     })
+                        // }}
+
                     >
                         {"-"}
                     </ClayButton>
@@ -169,11 +172,11 @@ const Diagram = ({
                         className=""
                         displayType="secondary"
 
-                        onClick={() => handleImageState({
-                            k: imageState.k + .5,
-                            x: imageState.x,
-                            y: imageState.y,
-                        })}
+                        // onClick={() => setImageState({
+                        //     k: imageState.k + .5,
+                        //     x: imageState.x,
+                        //     y: imageState.y,
+                        // })}
 
                     >
                         {"+"}

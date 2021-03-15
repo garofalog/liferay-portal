@@ -17,7 +17,14 @@ import PropTypes from 'prop-types';
 import React, {useLayoutEffect} from 'react';
 
 
-const NavigationButtons = ({moveDown, moveLeft, moveRight, moveUp, spritemap, position}) => {
+const NavigationButtons = ({
+    moveDown, 
+    moveLeft, 
+    moveRight, 
+    moveUp, 
+    position, 
+    spritemap
+}) => {
 
     const navigationButtonStyle= {
         bottom: '15px',
