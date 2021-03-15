@@ -30,7 +30,6 @@ const ImagePins = ({
     imageState,
     navigationController, 
     pins, 
-    scale,
     setImageState,
     spritemap,
     zoomController
@@ -39,17 +38,14 @@ const ImagePins = ({
     const containerRef = useRef(null);
     let container, resetZoom, zoomIn, zoomOut, moveLeft, moveRight, position, move, moveUp, moveDown, newPin, handleMoveUp, handleMoveDown, handleMoveLeft, handleMoveRight, handleZoomIn, handleZoomOut, handleResetZoom
 
-    useEffect(() => {
-        setImageState({
-            k: scale,
-            x: imageState.x,
-            y: imageState.y,
-        })
-    }, [scale])
+    // useEffect(() => {
+    //     setImageState({
+    //         k: imageState.k,
+    //         x: imageState.x,
+    //         y: imageState.y,
+    //     })
+    // }, [imageState])
 
-    useEffect(() => {
-        console.log(imageState)
-    }, [imageState])
     
     // useEffect(() => {
     //     const updateWidth = () => {
@@ -105,7 +101,7 @@ const ImagePins = ({
         const zoomEV = zoom().on("zoom", () => {
             container.attr("transform", event.transform);
 
-            console.log(event.transform)
+            console.log("ZOOMEV event.transform ->", event.transform)
             setImageState({
                 k: event.transform.k,
                 x: event.transform.x,
@@ -143,12 +139,22 @@ const ImagePins = ({
             zoomEV.scaleBy(container.transition().duration(400), 1.2);
             console.log("transform zoomin", event.transform);
 
+            // setImageState({
+            //     k: imageState.k + .2,
+            //     x: imageState.k,
+            //     y: imageState.y,
+            // })
         }
         const handleZoomIn = () => zoomIn();
         const zoomOut = () => {
             zoomEV.scaleBy(container.transition().duration(400), 0.8);
             console.log("transform zoomout", event.transform);
 
+            // setImageState({
+            //     k: imageState.k - .2,
+            //     x: imageState.k,
+            //     y: imageState.y,
+            // })
         }
         const handleZoomOut = () => zoomOut();
         
@@ -159,50 +165,50 @@ const ImagePins = ({
         const moveRight = () => {
             position = container.attr("transform");
             const vai = position.match(/(-?[0-9]+[.,-\s]*)+/g);
-            const co = vai[0].split(',')
+            const co = parseInt(vai[0].split(','), 10)
             const s = {
                 k: vai[1],
                 x: co[0],
                 y: co[1],
             }
             setImageState(s)       
-            container.attr("transform", "translate(" + (parseFloat(s.x, 10) + navigationController.dragStep) + ", " + parseFloat(s.y, 10) + ")" + "scale(" + s.k + ")");
+            container.attr("transform", "translate(" + (parseFloat(s.x, 10) + navigationController.dragStep) + "," + parseFloat(s.y, 10) + ")" + "scale(" + s.k + ")");
         }               
         const moveLeft = () => {
             position = container.attr("transform")
             const vai = position.match(/(-?[0-9]+[.,-\s]*)+/g);
-            const co = vai[0].split(',')
+            const co = parseInt(vai[0].split(','), 10)
             const s = {
                 k: vai[1],
                 x: co[0],
                 y: co[1],
             }
             setImageState(s)       
-            container.attr("transform", "translate(" + (parseFloat(s.x, 10) - navigationController.dragStep) + ", " + parseFloat(s.y, 10) + ")" + "scale(" + s.k + ")")
+            container.attr("transform", "translate(" + (parseFloat(s.x, 10) - navigationController.dragStep) + "," + parseFloat(s.y, 10) + ")" + "scale(" + s.k + ")")
         }
         const moveUp = () => {
             position = container.attr("transform")
             const vai = position.match(/(-?[0-9]+[.,-\s]*)+/g);
-            const co = vai[0].split(',')
+            const co = parseInt(vai[0].split(','), 10)
             const s = {
                 k: vai[1],
                 x: co[0],
                 y: co[1],
             }    
             setImageState(s)       
-            container.attr("transform", "translate(" + parseFloat(s.x, 10) + ", " + (parseFloat(s.y, 10) - navigationController.dragStep) + ")" + "scale(" + s.k + ")")
+            container.attr("transform", "translate(" + parseFloat(s.x, 10) + "," + (parseFloat(s.y, 10) - navigationController.dragStep) + ")" + "scale(" + s.k + ")")
         }
         const moveDown = () => {
             position = container.attr("transform")
             const vai = position.match(/(-?[0-9]+[.,-\s]*)+/g);
-            const co = vai[0].split(',')
+            const co = parseInt(vai[0].split(','), 10)
             const s = {
                 k: vai[1],
                 x: co[0],
                 y: co[1],
             }
             setImageState(s)       
-            container.attr("transform", "translate(" + parseFloat(s.x, 10) + ", " + (parseFloat(s.y, 10) + navigationController.dragStep) + ")" + "scale(" + s.k + ")")
+            container.attr("transform", "translate(" + parseFloat(s.x, 10) + "," + (parseFloat(s.y, 10) + navigationController.dragStep) + ")" + "scale(" + s.k + ")")
         }
 
         const handleMoveUp = () => {
@@ -292,12 +298,10 @@ const ImagePins = ({
         ////////////////////////////////////////////////
         
         if (zoomController.enablePanZoom) {
-            console.log('ok enabled')
+            select('g').call(zoomEV)
+            console.log('vaimo')
 
-            container.call(zoomEV)
-
-            console.log("transform dragzzom", container);
-
+            //  container.call(zoomEV)
         }
 
         ////////////////////////////////////////////////
@@ -423,7 +427,7 @@ const ImagePins = ({
     return (
         <div className="diagram-pins-container" style={diagramStyle}>
             <svg height={completeImageSettings.height} ref={containerRef} width={completeImageSettings.width}>
-                <g transform={"translate(" + imageState.x + ", " + imageState.y + "0) scale(" + imageState.k + ")"}
+                <g transform={"translate(" + imageState.x + ", " + imageState.y + ") scale(" + imageState.k + ")"}
                  />
             </svg>
 
@@ -479,7 +483,6 @@ ImagePins.propTypes = {
             y: PropTypes.double,
         })
     ),
-    scale: PropTypes.double,
     setImageState: PropTypes.func,
 
     // PropTypes.shape({

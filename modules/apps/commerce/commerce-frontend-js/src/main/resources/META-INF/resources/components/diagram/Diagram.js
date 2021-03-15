@@ -27,7 +27,6 @@ import NavigationButtons from './NavigationButtons'
 
 import ZoomContainer from './ZoomController'
 
-
 const Diagram = ({ 
     completeImageSettings, 
     enableResetZoom, 
@@ -51,11 +50,11 @@ const Diagram = ({
             console.log('è un debbounce')
             setResetHandler(false)
         }, 500);
-    })
+    }, [resetHandler])
 
-    useEffect(() => {
+    // useEffect(() => {
 
-    }, [imageState])
+    // }, [imageState])
 
 
     const options = [
@@ -86,7 +85,12 @@ const Diagram = ({
     ];
 
     function handleZoomChange(event) {
-        setScale(parseFloat(event.target.value / 100))
+        console.log('handleZoom')
+        setImageState({
+            k: parseFloat(event.target.value / 100),
+            x: imageState.x,
+            y: imageState.y,
+        })
     }
     
     const handleImageState = (p) => {
@@ -97,7 +101,6 @@ const Diagram = ({
             y: p.y,
         })
     }
-
 
     return (
         <div className="diagram mx-auto">
@@ -112,7 +115,9 @@ const Diagram = ({
                 navigationController={navigationController} 
                 pins={pins}
                 scale={scale}
-                setImageState={handleImageState}
+
+                setImageState={setImageState}
+
                 setScale={setScale}
                 zoomController={zoomController}
                 />
