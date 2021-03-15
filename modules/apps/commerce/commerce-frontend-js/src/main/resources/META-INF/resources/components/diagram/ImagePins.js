@@ -15,7 +15,7 @@
 //  import * as d3 from 'd3';
 //  console.log(d3)
 
-import { drag, event, mouse, range, schemeCategory10, select, zoom } from 'd3';
+import { drag, event, mouse, schemeCategory10, select, zoom } from 'd3';
 import PropTypes from 'prop-types';
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
@@ -291,11 +291,12 @@ const ImagePins = ({
 
         ////////////////////////////////////////////////
         
-        if (navigationController.enableDrag) {
+        if (zoomController.enablePanZoom) {
             console.log('ok enabled')
-            container.call(zoomEV)
-            console.log("transform dragzzom", container);
 
+            container.call(zoomEV)
+
+            console.log("transform dragzzom", container);
 
         }
 

@@ -214,11 +214,11 @@ Diagram.defaultProps = {
         height: '300px',
         width: '100%',
     }),
-    enableDrag: true,
     enableResetZoom: true,
     navigationController: {
         dragStep: 10,
         enable: true,
+        enableDrag: true,
         position: {
             bottom: '15px',
             left: '',
@@ -248,11 +248,11 @@ Diagram.propTypes = {
         scaleFactor: PropTypes.double,
         width: PropTypes.string,
     }),
-    enableDrag: PropTypes.bool,
     enableResetZoom: PropTypes.bool,
     navigationController: PropTypes.shape({
         dragStep: PropTypes.number,
         enable: PropTypes.bool,
+        enableDrag: PropTypes.bool,
         position: PropTypes.shape({
             bottom: PropTypes.string,
             left: PropTypes.string,
@@ -271,6 +271,7 @@ Diagram.propTypes = {
     spritemap: PropTypes.string,
     zoomController: PropTypes.shape({
         enable: PropTypes.bool,
+        enablePanZoom: PropTypes.true,
         position: PropTypes.shape({
             bottom: PropTypes.string,
             left: PropTypes.string,

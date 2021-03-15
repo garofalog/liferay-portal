@@ -56,6 +56,7 @@ launcher('diagram', 'diagram', {
 	spritemap: './assets/clay/icons.svg',
 	zoomController: {
 		enable: true,
+		enablePanZoom: true,
 		position: {
 			bottom: '0px',
 			left: '',
