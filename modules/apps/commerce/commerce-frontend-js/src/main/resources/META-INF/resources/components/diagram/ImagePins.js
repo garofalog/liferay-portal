@@ -25,18 +25,22 @@ import ZoomController from './ZoomController';
 
 const ImagePins = ({ 
     completeImageSettings, 
-    execResetZoom, 
+    execResetZoom,
+    execZoomIn,
+    execZoomOut,
     image, 
     imageState,
     navigationController, 
     pins, 
     setImageState,
     spritemap,
-    zoomController
+    zoomController,
+    zoomIn,
+    zoomOut,
 }) => {
     const [width, setWidth] = useState(0);
     const containerRef = useRef(null);
-    let container, resetZoom, zoomIn, zoomOut, moveLeft, moveRight, position, move, moveUp, moveDown, newPin, handleMoveUp, handleMoveDown, handleMoveLeft, handleMoveRight, handleZoomIn, handleZoomOut, handleResetZoom
+    let svg, container, resetZoom, moveLeft, moveRight, position, move, moveUp, moveDown, newPin, handleMoveUp, handleMoveDown, handleMoveLeft, handleMoveRight, handleZoomIn, handleZoomOut, handleResetZoom
 
     // useEffect(() => {
     //     setImageState({
@@ -57,32 +61,14 @@ const ImagePins = ({
     //     return () => window.removeEventListener('resize', handleResize);
     // }, [data.length]);
 
-    function dragstarted (event, d) {
-        console.log('drag started')
-        const current = select(this);
-        current.raise().attr("stroke", "red ");
-    }
-
-    function dragged() {
-        const current = select(this);
-        current
-            .attr('cx', event.x)
-            .attr('cy', event.y);
-        console.log('blabla', `${event.x}, ${event.y}`);
-    }
-    function dragended (event, d)  {
-        const current = select(this);
-        current.attr("stroke", null);
-    }
-
-    const dragHandler = drag()
-        .on('drag', dragged)
-        .on("start", dragstarted)
-        .on("end", dragended)
 
 
     useLayoutEffect(() => {
+        svg = select('svg')
         container = select('g')
+
+        // .attr("viewBox", [0, 0, completeImageSettings.width, completeImageSettings.height]);
+
 
         // const getRandom = (min, max) => {
         //     min = Math.ceil(min);
@@ -98,10 +84,10 @@ const ImagePins = ({
         //     y: Math.random() * (completeImageSettings.height - 20 * 2) + 20,
         // }));
 
+        
+
         const zoomEV = zoom().on("zoom", () => {
             container.attr("transform", event.transform);
-
-            console.log("ZOOMEV event.transform ->", event.transform)
             setImageState({
                 k: event.transform.k,
                 x: event.transform.x,
@@ -109,6 +95,20 @@ const ImagePins = ({
             })
 
         });
+        svg.call(zoomEV)
+
+        // zoom()
+        //     .extent([[0, 0], [completeImageSettings.width, completeImageSettings.height]])
+        //     .scaleExtent([1, 8])
+        //     .on("zoom", () => {
+        //         console.log("event", event.target)
+        //         container.attr("transform", event.transform);
+        //         setImageState({
+        //             k: event.transform.k,
+        //             x: event.transform.x,
+        //             y: event.transform.y,
+        //         })
+        //     }));
 
         ////////////////////////////////////////////////
 
@@ -124,51 +124,52 @@ const ImagePins = ({
 
         const handleResetZoom = () => resetZoom();
 
-        console.log('prima di if execResetZoom ')
-        console.log('execResetZoom', execResetZoom)
         if (execResetZoom) {
             console.log('sono in imagepins > resetzoom is calling')
             handleResetZoom();
         }
 
-
-        ////////////////////////////////////////////////
-
-
         const zoomIn = () => {
             zoomEV.scaleBy(container.transition().duration(400), 1.2);
-            console.log("transform zoomin", event.transform);
-
-            // setImageState({
-            //     k: imageState.k + .2,
-            //     x: imageState.k,
-            //     y: imageState.y,
-            // })
         }
         const handleZoomIn = () => zoomIn();
         const zoomOut = () => {
             zoomEV.scaleBy(container.transition().duration(400), 0.8);
-            console.log("transform zoomout", event.transform);
-
-            // setImageState({
-            //     k: imageState.k - .2,
-            //     x: imageState.k,
-            //     y: imageState.y,
-            // })
         }
         const handleZoomOut = () => zoomOut();
         
+        if (execZoomIn) {
+            console.log('sono in imagepins > resetzoom is calling')
+            handleZoomIn();
+        }
+
+        if (execZoomOut) {
+            console.log('sono in imagepins > resetzoom is calling')
+            zoomOut();
+        }
+
+        // if (zoomController.enablePanZoom) {
+        //     // select('g').call(zoomEV)
+
+        //     console.log(zoomEV)
+        // }
+
+
+        
+
+        
+
+
 
         ////////////////////////////////////////////////
     
         
         const moveRight = () => {
-            console.log('moveright clicked')
             position = container.attr("transform");
             const vai = position.match(/(-?[0-9]+[.,-\s]*)+/g);
             const co = vai[0].split(',').map(x => parseInt(x, 10))
             const s = {
-                k: vai[1],
+                k: parseFloat(vai[1]),
                 x: co[0] + navigationController.dragStep,
                 y: co[1],
             }
@@ -180,7 +181,7 @@ const ImagePins = ({
             const vai = position.match(/(-?[0-9]+[.,-\s]*)+/g);
             const co = vai[0].split(',').map(x => parseInt(x, 10))
             const s = {
-                k: vai[1],
+                k: parseFloat(vai[1]),
                 x: co[0] - navigationController.dragStep,
                 y: co[1],
             }
@@ -192,7 +193,7 @@ const ImagePins = ({
             const vai = position.match(/(-?[0-9]+[.,-\s]*)+/g);
             const co = vai[0].split(',').map(x => parseInt(x, 10))
             const s = {
-                k: vai[1],
+                k: parseFloat(vai[1]),
                 x: co[0],
                 y: co[1] - navigationController.dragStep,
             }    
@@ -204,7 +205,7 @@ const ImagePins = ({
             const vai = position.match(/(-?[0-9]+[.,-\s]*)+/g);
             const co = vai[0].split(',').map(x => parseInt(x, 10))
             const s = {
-                k: vai[1],
+                k: parseFloat(vai[1]),
                 x: co[0],
                 y: co[1] + navigationController.dragStep,
             }
@@ -227,6 +228,49 @@ const ImagePins = ({
 
         
         ////////////////////////////////////////////////
+
+
+        function dragstarted(event, d) {
+            console.log('drag started')
+            const current = select(this);
+            current.raise().attr("stroke", "red ");
+        }
+
+        function dragged() {
+            const current = select(this);
+            current
+                .attr('cx', event.x)
+                .attr('cy', event.y);
+            setImageState({
+                k: imageState.k,
+                x: event.x,
+                y: event.y,
+            })
+            console.log('blabla', `${event.x}, ${event.y}`);
+        }
+        function dragended(event, d) {
+            const current = select(this);
+            current.attr("stroke", null);
+        }
+
+        const dragHandler = drag()
+            .on('drag', dragged)
+            .on("start", dragstarted)
+            .on("end", dragended)
+
+        // var dragHandler2 = drag().on("drag", function (d) {
+        //     console.log('in dragHandler2')
+        //     select(this)
+        //         .attr("x", d.x = event.x)
+        //         .attr("y", d.y = event.y);
+        // });
+
+
+
+
+
+
+
 
         const clicked = (event, d) => {
             if (event.defaultPrevented) { return; } // dragged
@@ -298,83 +342,73 @@ const ImagePins = ({
 
         ////////////////////////////////////////////////
         
-        if (zoomController.enablePanZoom) {
-            select('g').call(zoomEV)
-            console.log('vaimo')
-
-            //  container.call(zoomEV)
-        }
+        
 
         ////////////////////////////////////////////////
 
         
 
 
-        container.on("click", function () {
-            console.log('in click')
+        // container.on("click", function () {
+        //     console.log('in click')
 
-            const mouseEv = mouse(this);
+        //     const mouseEv = mouse(this);
 
-            pin
-                .transition()
-                .duration(500)
-                .attr("transform", "translate(" + mouseEv[0] + "," + mouseEv[1] + ") scale(1)")
-                .attr("x", mouseEv[0])
-                .attr("y", mouseEv[1])
-                .attr("transform", "scale(1)");
+        //     pin
+        //         .transition()
+        //         .duration(500)
+        //         .attr("transform", "translate(" + mouseEv[0] + "," + mouseEv[1] + ") scale(1)")
+        //         .attr("x", mouseEv[0])
+        //         .attr("y", mouseEv[1])
+        //         .attr("transform", "scale(1)");
             
-            // var dragHandler2 = drag().on("drag", function (d) {
-            //     console.log('in dragHandler2')
-            //     select(this)
-            //         .attr("x", d.x = event.x)
-            //         .attr("y", d.y = event.y);
-            // });
+            
 
 
-            // dragHandler2(circ);
+        //     // dragHandler2(circ);
 
 
-            pin.on("click", () => {
-                console.log('sto  handlando')
-                if (event.ctrlKey || event.metaKey) {
-                    console.log('click con o ctrl metakey')
-                    pin.transition()
-                        .duration(500)
-                        .attr("transform", "translate(" + pin.attr("x") + "," + pin.attr("y") + ") scale(0)")
-                        .remove();
-                } else {
+        //     pin.on("click", () => {
+        //         console.log('sto  handlando')
+        //         if (event.ctrlKey || event.metaKey) {
+        //             console.log('click con o ctrl metakey')
+        //             pin.transition()
+        //                 .duration(500)
+        //                 .attr("transform", "translate(" + pin.attr("x") + "," + pin.attr("y") + ") scale(0)")
+        //                 .remove();
+        //         } else {
 
-                    var datum = pin.datum();
-                    if (pin.datum().selected) {
-                        console.log('datum selected')
-                        datum.selected = false;
-                        pin
-                            .datum(datum)
-                            .transition()
-                            .duration(500)
-                            .attr("stroke", "#039BE5")
-                            .attr("stroke-width", "1px");
-                    } else {
-                        console.log('datum a cazz')
-                        datum.selected = true;
-                        pin
-                            .datum(datum)
-                            .transition()
-                            .duration(500)
-                            .attr("stroke", "#455A64")
-                            .attr("stroke-width", "3px");
-                    }
+        //             var datum = pin.datum();
+        //             if (pin.datum().selected) {
+        //                 console.log('datum selected')
+        //                 datum.selected = false;
+        //                 pin
+        //                     .datum(datum)
+        //                     .transition()
+        //                     .duration(500)
+        //                     .attr("stroke", "#039BE5")
+        //                     .attr("stroke-width", "1px");
+        //             } else {
+        //                 console.log('datum a cazz')
+        //                 datum.selected = true;
+        //                 pin
+        //                     .datum(datum)
+        //                     .transition()
+        //                     .duration(500)
+        //                     .attr("stroke", "#455A64")
+        //                     .attr("stroke-width", "3px");
+        //             }
 
-                }
-                event.stopPropagation();
-            });
+        //         }
+        //         event.stopPropagation();
+        //     });
 
-            dragHandler(pin);
+        //     dragHandler(container);
 
-            dragHandler(container.selectAll('.draggable'));
+        //     dragHandler(container.selectAll('.draggable'));
 
 
-        });
+        // });
 
 
 
@@ -417,7 +451,7 @@ const ImagePins = ({
         select('#newPin').on('click', newPin)
 
 
-    }, [width, execResetZoom, resetZoom]);
+    }, [width, execResetZoom, resetZoom, execZoomIn, execZoomOut]);
 
 
     const diagramStyle = {
@@ -433,11 +467,20 @@ const ImagePins = ({
             </svg>
 
             {navigationController.enable && (
-                <NavigationButtons moveDown={handleMoveDown} moveLeft={handleMoveLeft} moveRight={handleMoveRight} moveUp={handleMoveUp} position={navigationController.position} spritemap={spritemap} />
+                <NavigationButtons 
+                    moveDown={handleMoveDown} 
+                    moveLeft={handleMoveLeft} 
+                    moveRight={handleMoveRight} 
+                    moveUp={handleMoveUp} 
+                    position={navigationController.position} 
+                    spritemap={spritemap} />
             )}
 
             {zoomController.enable && (
-                <ZoomController position={zoomController.position} zoomIn={handleZoomIn} zoomOut={handleZoomOut} />
+                <ZoomController 
+                position={zoomController.position} 
+                zoomIn={handleZoomIn} 
+                zoomOut={handleZoomOut} />
             )}
         </div>
     )
@@ -459,6 +502,8 @@ ImagePins.propTypes = {
     }),
     enableResetZoom: PropTypes.bool,
     execResetZoom: PropTypes.bool,
+    handleZoomIn: PropTypes.func,
+    handleZoomOut: PropTypes.func,
     image: PropTypes.string,
     imageState: PropTypes.shape({
         k: PropTypes.double,
@@ -492,6 +537,8 @@ ImagePins.propTypes = {
     //     y: PropTypes.double,
     // }),
 
+    zoomIn: PropTypes.func,
+    zoomOut: PropTypes.func,
     zoomController: PropTypes.shape({
         enable: PropTypes.bool,
         position: PropTypes.shape({

@@ -37,27 +37,48 @@ const Diagram = ({
     zoomController
 }) => {
     const [resetHandler, setResetHandler] = useState(false)
+    const [zoomInHandler, setZoomInHandler] = useState(false)
+    const [zoomOutHandler, setZoomOutHandler ] = useState(false)
     const [imageState, setImageState] = useState({
         k: 1,
         x: 0,
         y: 0,
     })
     const [scale, setScale] = useState(1)
+    const  [seletedOption, setSeletedOption] = useState(1)
 
 
     useEffect(() => {
         setTimeout(() => {
-            console.log('è un debbounce')
+            console.log('è un setResetHandler')
             setResetHandler(false)
         }, 500);
     }, [resetHandler])
 
-    // useEffect(() => {
+    useEffect(() => {
+        setTimeout(() => {
+            console.log('è un setZoomInHandler')
+            setZoomInHandler(false)
+        },100);
+    }, [zoomInHandler])
 
-    // }, [imageState])
+    useEffect(() => {
+        setTimeout(() => {
+            console.log('è un setZoomOutHandler')
+            setZoomOutHandler(false)
+        }, 100);
+    }, [zoomOutHandler])
+
+    useEffect(() => {
+        setSeletedOption(imageState.k)
+    }, [imageState])
 
 
     const options = [
+        {
+            label: "200%",
+            value: "200"
+        },
         {
             label: "175%",
             value: "175"
@@ -86,6 +107,7 @@ const Diagram = ({
 
     function handleZoomChange(event) {
         console.log('handleZoom')
+        setSeletedOption(event.target.value / 100)
         setImageState({
             k: parseFloat(event.target.value / 100),
             x: imageState.x,
@@ -110,6 +132,11 @@ const Diagram = ({
             <ImagePins 
                 completeImageSettings={completeImageSettings}
                 execResetZoom={resetHandler}
+                execZoomIn={zoomInHandler}
+                execZoomOut={zoomOutHandler}
+
+                // handleZoomIn={handleZoomIn}
+
                 image={image}
                 imageState={imageState}
                 navigationController={navigationController} 
@@ -120,6 +147,10 @@ const Diagram = ({
 
                 setScale={setScale}
                 zoomController={zoomController}
+
+                // zoomOut={zoomOut}
+                // zoomIn={zoomIn}
+
                 />
             
 
@@ -140,13 +171,9 @@ const Diagram = ({
                         className=""
                         displayType="secondary"
 
-                        // onClick={() => {
-                        //     setImageState({
-                        //         k: imageState.k - .5,
-                        //         x: imageState.x,
-                        //         y: imageState.y,
-                        //     })
-                        // }}
+                        onClick={() => {
+                            setZoomOutHandler(true)
+                        }}
 
                     >
                         {"-"}
@@ -172,11 +199,11 @@ const Diagram = ({
                         className=""
                         displayType="secondary"
 
-                        // onClick={() => setImageState({
-                        //     k: imageState.k + .5,
-                        //     x: imageState.x,
-                        //     y: imageState.y,
-                        // })}
+                        onClick={() => {
+                            // handleZoomIn()
+
+                            setZoomInHandler(true)
+                        }}
 
                     >
                         {"+"}
