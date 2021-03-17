@@ -1,6 +1,60 @@
 @import 'atlas-variables';
 
 .svg-chart {
-    width: 100%;
-    min-height: 500px;
+	width: 100%;
+	min-height: 500px;
+}
+
+.chart-link {
+	fill: none;
+	stroke: $secondary-l2;
+	stroke-width: 1.5;
+}
+
+.chart-rect {
+	fill: white;
+	stroke: $secondary-l2;
+	stroke-width: 1.5;
+}
+
+.icon-wrapper {
+	.lexicon-icon {
+		overflow: visible;
+		width: 16px;
+		height: 16px;
+
+		use {
+			transform: translate(19px, -8px) scale(512/100 * 0.004);
+		}
+	}
+}
+
+.icon-circle {
+	r: 16px;
+	transform: translate(16px * 2, 0);
+
+	.chart-item-organization & {
+		fill: #5fc8ff;
+	}
+
+	.chart-item-account & {
+		fill: #50d2a0;
+	}
+	.chart-item-user & {
+		fill: #ffd76e;
+	}
+}
+
+.node-title {
+	font-size: 14px;
+	font-weight: bold;
+	transform: translate(#{16px * 4}, -3px);
+	text-anchor: start;
+}
+
+.node-description {
+    fill: $gray-600;
+	font-size: 14px;
+	transform: translate(#{16px * 4}, 15px);
+	text-anchor: start;
 }

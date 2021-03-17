@@ -10,13 +10,23 @@
  */
 
 export const RECT_SIZES = {
-	account: [260, 64],
-	organization: [280, 72],
-	user: [240, 56]
-}
+	account: {
+		height: 64,
+		width: 260,
+	},
+	organization: {
+		height: 72,
+		width: 280,
+	},
+	user: {
+		height: 56,
+		width: 240,
+	},
+};
 
-export const NODE_PADDING = 20;
+export const RECT_PADDING = 16;
+export const ICON_RADIUS = 16;
 
-export const COLUMN_SIZE = RECT_SIZES.organization[0]
+export const COLUMN_SIZE = RECT_SIZES.organization[0];
 
 export const COLUMN_GAP = 60;

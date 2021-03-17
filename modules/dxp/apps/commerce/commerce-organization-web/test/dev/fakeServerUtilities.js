@@ -25,29 +25,29 @@ const tree = [
 			{
 				id: 4,
 				name: 'Liferay Ireland',
-			}
-		]
+			},
+		],
 	},
 	{
 		accounts: [
 			{
 				id: 11,
-				name: 'Car Dealer'
-			}
+				name: 'Car Dealer',
+			},
 		],
 		id: 5,
 		name: 'Riuvo',
 		users: [
 			{
 				id: 111,
-				name: 'Fabio Mastrorilli'
+				name: 'Fabio Mastrorilli',
 			},
 			{
 				id: 113,
-				name: 'Andrea Censi'
+				name: 'Andrea Censi',
 			},
-		]
-	}
+		],
+	},
 ];
 
 const definitions = {
@@ -58,9 +58,9 @@ const definitions = {
 			users: [
 				{
 					id: 113,
-					name: 'Luca Pellizon'
-				}
-			]
+					name: 'Luca Pellizon',
+				},
+			],
 		},
 	},
 	organizations: {
@@ -70,13 +70,13 @@ const definitions = {
 			users: [
 				{
 					id: 111,
-					name: 'Fabio Mastrorilli'
+					name: 'Fabio Mastrorilli',
 				},
 				{
 					id: 112,
-					name: 'Andrea Censi'
+					name: 'Andrea Censi',
 				},
-			]
+			],
 		},
 		3: {
 			id: 12,
@@ -84,9 +84,9 @@ const definitions = {
 			users: [
 				{
 					id: 114,
-					name: 'Julien Castelain'
-				}
-			]
+					name: 'Julien Castelain',
+				},
+			],
 		},
 		4: {
 			id: 13,
@@ -96,22 +96,22 @@ const definitions = {
 	users: {
 		111: {
 			id: 111,
-			name: 'Fabio Mastrorilli'
+			name: 'Fabio Mastrorilli',
 		},
 		112: {
 			id: 112,
-			name: 'Andrea Censi'
+			name: 'Andrea Censi',
 		},
 		113: {
 			id: 113,
-			name: 'Luca Pellizon'
+			name: 'Luca Pellizon',
 		},
 		114: {
 			id: 114,
-			name: 'Julien Castelain'
-		}
-	}
-}
+			name: 'Julien Castelain',
+		},
+	},
+};
 
 function defineServerResponses(app) {
 	app.get('/get-account/', (_, res) => {
@@ -123,7 +123,7 @@ function defineServerResponses(app) {
 	});
 
 	app.get('/get-organization/', (_, res) => {
-		res.json(tree)
+		res.json(tree);
 	});
 
 	app.get('/get-organization/:id', (req, res) => {

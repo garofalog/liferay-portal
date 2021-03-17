@@ -10,37 +10,37 @@
  */
 
 function getColumns(items) {
-    const columns = [];
-    let depth = 0;
-    
-    function loopTroughItems(items) {
-        if(!columns[depth]) {
-            columns[depth] = [];
-        }
+	const columns = [];
+	let depth = 0;
 
-        const children = []
+	function loopTroughItems(items) {
+		if (!columns[depth]) {
+			columns[depth] = [];
+		}
 
-        items.forEach(item => {
-            columns[depth].push(item);
+		const children = [];
 
-            if(item.children){
-                children.push(...item.children)
-            }
-        })
+		items.forEach((item) => {
+			columns[depth].push(item);
 
-        if(children.length){
-            depth++
-            loopTroughItems(children)
-        }
-    }
+			if (item.children) {
+				children.push(...item.children);
+			}
+		});
 
-    loopTroughItems(items)
+		if (children.length) {
+			depth++;
+			loopTroughItems(children);
+		}
+	}
 
-    return columns;
+	loopTroughItems(items);
+
+	return columns;
 }
 
 export function formatHierachicalData(data) {
-    const columns = getColumns(data);
+	const columns = getColumns(data);
 
-    return columns;
+	return columns;
 }

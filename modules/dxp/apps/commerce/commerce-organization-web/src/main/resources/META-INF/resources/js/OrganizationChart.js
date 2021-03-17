@@ -14,21 +14,25 @@ import classnames from 'classnames';
 import * as d3 from 'd3';
 import {fetch} from 'frontend-js-web';
 import PropTypes from 'prop-types';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {
+	useCallback,
+	useEffect,
+	useLayoutEffect,
+	useRef,
+	useState,
+} from 'react';
 
-import SvgWrapper from './SvgWrapper';
+import D3OrganizationChart from './D3OrganizationChart';
 
 function enrichArrayItemsWithType(array = [], type) {
-	return array.map((item) => ({...item, type}))
+	return array.map((item) => ({...item, type}));
 }
 
-function formatRawData({
-	accounts,
-	organizations,
-	users,
-	...entry
-}, type) {
-	const formattedOrganizations = enrichArrayItemsWithType(organizations, 'organization');
+function formatRawData({accounts, organizations, users, ...entry}, type) {
+	const formattedOrganizations = enrichArrayItemsWithType(
+		organizations,
+		'organization'
+	);
 	const formattedAccounts = enrichArrayItemsWithType(accounts, 'account');
 	const formattedUsers = enrichArrayItemsWithType(users, 'user');
 
@@ -37,58 +41,72 @@ function formatRawData({
 		children: [
 			...formattedOrganizations,
 			...formattedAccounts,
-			...formattedUsers
+			...formattedUsers,
 		],
-		type
-	}
+		type,
+	};
 }
 
 function OrganizationChartApp({
 	accountEndpointURL,
 	organizationEndpointURL,
-	spritemap
+	spritemap,
 }) {
 	const [data, updateData] = useState(null);
-	const chartSvgRef = useRef();
-	const tree = useRef();
-	const zoomPercent = useRef();
-	const treeNode = useRef();
-	const zoomRef = useRef();
-	const zoomInterface = useRef();
+	const chartSvgRef = useRef(null);
 
-	const getChildren = useCallback((id, type = 'organization') => {
-		const endpoint = type === 'organization' ? organizationEndpointURL : accountEndpointURL;
-	
-		const url = new URL(`${endpoint}/${id || ''}`, themeDisplay.getPortalURL());
-	
+	const getChildren = useCallback(
+		(id, type) => {
+			const endpoint =
+				type === 'organization'
+					? organizationEndpointURL
+					: accountEndpointURL;
+			const url = new URL(
+				`${endpoint}/${id}`,
+				themeDisplay.getPortalURL()
+			);
+
+			return fetch(url).then((res) => res.json());
+		},
+		[accountEndpointURL, organizationEndpointURL]
+	);
+
+	const getInitialData = useCallback(() => {
+		const url = new URL(
+			organizationEndpointURL,
+			themeDisplay.getPortalURL()
+		);
+
 		return fetch(url)
-			.then(res => res.json())
-			.then(jsonResponse => {
-				if(!id) {
-					const formattedData = Array.isArray(jsonResponse) 
-						? jsonResponse.map((item) => formatRawData(item, type))
-						: formatRawData(jsonResponse);
+			.then((res) => res.json())
+			.then((jsonResponse) => {
+				const formattedData = jsonResponse.map((item) =>
+					formatRawData(item, 'organization')
+				);
 
-					updateData(() => formattedData);
-				}
-			})
-	}, [accountEndpointURL, organizationEndpointURL])
+				updateData(formattedData);
+			});
+	}, [organizationEndpointURL]);
 
 	useEffect(() => {
-		getChildren()
-	}, [getChildren])
+		getInitialData();
+	}, [getInitialData]);
+
+	useLayoutEffect(() => {
+		if (data && chartSvgRef.current) {
+			new D3OrganizationChart(
+				chartSvgRef.current,
+				data,
+				getChildren,
+				spritemap
+			);
+		}
+	}, [data, getChildren, spritemap]);
 
 	return (
-		<ClayIconSpriteContext.Provider value={spritemap}>
-			<div className="org-chart-container">
-				<SvgWrapper
-					chartSvgRef={chartSvgRef}
-					data={data}
-					getChildren={getChildren}
-					zoomInterface={zoomInterface}
-				/>
-			</div>
-		</ClayIconSpriteContext.Provider>
+		<div className="org-chart-container">
+			<svg className="svg-chart" ref={chartSvgRef} />
+		</div>
 	);
 }
 

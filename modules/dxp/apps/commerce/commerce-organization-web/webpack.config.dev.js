@@ -98,9 +98,9 @@ module.exports = {
 	],
 	resolve: {
 		alias: {
-			'frontend-js-react-web': path.resolve(
+			'@liferay/frontend-js-react-web': path.resolve(
 				__dirname,
-				'../../../../node_modules/frontend-js-react-web/src/main/resources/META-INF/resources/js/index.es.js'
+				'../../../../node_modules/@liferay/frontend-js-react-web/src/main/resources/META-INF/resources/js/index.es.js'
 			),
 			'frontend-js-web': path.resolve(
 				__dirname,

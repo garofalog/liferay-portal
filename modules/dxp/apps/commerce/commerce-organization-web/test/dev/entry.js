@@ -16,11 +16,11 @@ import OrganizationChart from '../../src/main/resources/META-INF/resources/js/Or
 import '../../src/main/resources/META-INF/resources/style/main.scss';
 
 render(
-    OrganizationChart,
-    {
-        accountEndpointURL: '/get-account',
-        organizationEndpointURL: '/get-organization',
-        spritemap: './assets/clay/icons.svg'
-    },
-    document.getElementById('organizations-chart-root')
+	OrganizationChart,
+	{
+		accountEndpointURL: '/get-account',
+		organizationEndpointURL: '/get-organization',
+		spritemap: './assets/clay/icons.svg',
+	},
+	document.getElementById('organizations-chart-root')
 );
