@@ -32,6 +32,7 @@ const ImagePins = ({
     imageState,
     navigationController, 
     pins, 
+    setCpins,
     setImageState,
     spritemap,
     zoomController,
@@ -82,33 +83,53 @@ const ImagePins = ({
         //     r: getRandom(5, 30),
         //     x: Math.random() * (completeImageSettings.width - 20 * 2) + 20,
         //     y: Math.random() * (completeImageSettings.height - 20 * 2) + 20,
-        // }));
-
-        
+        // }));        
 
         const zoomEV = zoom().on("zoom", () => {
-            container.attr("transform", event.transform);
-            setImageState({
+
+            // container.attr("transform", `translate(${s.x},${s.y}) scale(${s.k})`);
+
+
+            // {
+            //     k: event.transform.k,
+            //     x: event.transform.x,
+            //     y: event.transform.y,
+            // }
+
+            const t = {
                 k: event.transform.k,
                 x: event.transform.x,
                 y: event.transform.y,
-            })
+            }
+            if (imageState.x === event.transform.x) {
+                
+                console.log("===")
+                container.attr("transform", t)
+                setImageState(t)
+            } else {
+                const v = {
+                    k: imageState.k,
+                    x: imageState.x,
+                    y: imageState.y,
+                }
+                setImageState(t)
+                console.log("!== v ->", v)
+                console.log('imageState ->', imageState)
+                container.attr("transform", event.transform);
+
+            }
+
+            // setImageState({
+            //     k: event.transform.k,
+            //     x: event.transform.x,
+            //     y: event.transform.y,
+            // })
 
         });
-        svg.call(zoomEV)
 
-        // zoom()
-        //     .extent([[0, 0], [completeImageSettings.width, completeImageSettings.height]])
-        //     .scaleExtent([1, 8])
-        //     .on("zoom", () => {
-        //         console.log("event", event.target)
-        //         container.attr("transform", event.transform);
-        //         setImageState({
-        //             k: event.transform.k,
-        //             x: event.transform.x,
-        //             y: event.transform.y,
-        //         })
-        //     }));
+        if (zoomController.enablePanZoom) {
+            svg.call(zoomEV)
+        }
 
         ////////////////////////////////////////////////
 
@@ -118,14 +139,12 @@ const ImagePins = ({
                 x: 0,
                 y: 0,
             })
-            container.attr("transform", "translate(" + 0 + ", " + 0 + ")" + "scale(" + 1 + ")");
-
+            container.attr("transform", "translate(0,0)scale(1)");
         }
 
         const handleResetZoom = () => resetZoom();
 
         if (execResetZoom) {
-            console.log('sono in imagepins > resetzoom is calling')
             handleResetZoom();
         }
 
@@ -139,12 +158,10 @@ const ImagePins = ({
         const handleZoomOut = () => zoomOut();
         
         if (execZoomIn) {
-            console.log('sono in imagepins > resetzoom is calling')
             handleZoomIn();
         }
 
         if (execZoomOut) {
-            console.log('sono in imagepins > resetzoom is calling')
             zoomOut();
         }
 
@@ -233,19 +250,22 @@ const ImagePins = ({
         function dragstarted(event, d) {
             console.log('drag started')
             const current = select(this);
-            current.raise().attr("stroke", "red ");
+            current.raise().attr("stroke", "red");
         }
 
         function dragged() {
             const current = select(this);
+            console.log(current)
             current
                 .attr('cx', event.x)
                 .attr('cy', event.y);
-            setImageState({
-                k: imageState.k,
-                x: event.x,
-                y: event.y,
-            })
+
+            // setImageState({
+            //     k: imageState.k,
+            //     x: event.x,
+            //     y: event.y,
+            // })
+
             console.log('blabla', `${event.x}, ${event.y}`);
         }
         function dragended(event, d) {
@@ -253,24 +273,21 @@ const ImagePins = ({
             current.attr("stroke", null);
         }
 
+        //////////////////////////// 
+
         const dragHandler = drag()
             .on('drag', dragged)
             .on("start", dragstarted)
             .on("end", dragended)
 
-        // var dragHandler2 = drag().on("drag", function (d) {
-        //     console.log('in dragHandler2')
-        //     select(this)
-        //         .attr("x", d.x = event.x)
-        //         .attr("y", d.y = event.y);
-        // });
+        var dragHandler2 = drag().on("drag", function (d) {
+            console.log('in dragHandler2')
+            select(this)
+                .attr("x", d.x = event.x)
+                .attr("y", d.y = event.y);
+        });
 
-
-
-
-
-
-
+        ///////////////////////////////////////////////////////////////////// 
 
         const clicked = (event, d) => {
             if (event.defaultPrevented) { return; } // dragged
@@ -280,8 +297,6 @@ const ImagePins = ({
                 .attr("r", 20)
                 .attr("fill", schemeCategory10[d.index % 10]);
         }
-
-        const pin = container.append("circle")
 
         // .transition()
         // .duration(500)
@@ -298,52 +313,39 @@ const ImagePins = ({
         // .classed("draggable", true)
 
 
-        const newPin = () => {
-            container.append("circle")
-                .transition()
-                .duration(500)
-                .attr("cx", 20)
-                .attr("cy", 20)
-                .attr("r", 20)
-                .style("fill", "pink")
-                .attr("stroke", "#039BE5")
-                .attr("stroke-width", "1px")
-                .classed('draggable', true)
-                .attr("stroke", "#455A64")
-                .attr("stroke-width", "3px")
-        }
 
-        container.append("image")
-            .attr("xlink:href", image)
+        // container.append("circle")
+        //     .attr("cx", 20)
+        //     .attr("cy", 20)
+        //     .attr("r", 20)
+        //     .style("fill", "#ff0")
+        //     .attr("stroke", "#039BE5")
+        //     .attr("stroke-width", "1px")
+        //     .classed('draggable', true)
 
-            // .attr("width", props.completeImageSettings.width)
+        // container.append("circle")
+        //     .attr("cx", 30)
+        //     .attr("cy", 30)
+        //     .attr("r", 30)
+        //     .style("fill", "#ae2")
+        //     .attr("stroke", "#039BE5")
+        //     .attr("stroke-width", "1px")
+        //     .classed('draggable', true)
 
-            .attr("height", completeImageSettings.height)
-
-        container.append("circle")
-            .attr("cx", 20)
-            .attr("cy", 20)
-            .attr("r", 20)
-            .style("fill", "#ff0")
-            .attr("stroke", "#039BE5")
-            .attr("stroke-width", "1px")
-            .classed('draggable', true)
-
-        container.append("circle")
-            .attr("cx", 30)
-            .attr("cy", 30)
-            .attr("r", 30)
-            .style("fill", "#ae2")
-            .attr("stroke", "#039BE5")
-            .attr("stroke-width", "1px")
-            .classed('draggable', true)
-
-
-
-        ////////////////////////////////////////////////
-        
-        
-
+        // const newPin = () => {
+        //     container.append("circle")
+        //         .transition()
+        //         .duration(500)
+        //         .attr("cx", 20)
+        //         .attr("cy", 20)
+        //         .attr("r", 20)
+        //         .style("fill", "pink")
+        //         .attr("stroke", "#039BE5")
+        //         .attr("stroke-width", "1px")
+        //         .classed('draggable', true)
+        //         .attr("stroke", "#455A64")
+        //         .attr("stroke-width", "3px")
+        // }
         ////////////////////////////////////////////////
 
         
@@ -363,9 +365,6 @@ const ImagePins = ({
         //         .attr("transform", "scale(1)");
             
             
-
-
-        //     // dragHandler2(circ);
 
 
         //     pin.on("click", () => {
@@ -389,7 +388,7 @@ const ImagePins = ({
         //                     .attr("stroke", "#039BE5")
         //                     .attr("stroke-width", "1px");
         //             } else {
-        //                 console.log('datum a cazz')
+        //                 console.log('datum')
         //                 datum.selected = true;
         //                 pin
         //                     .datum(datum)
@@ -403,9 +402,8 @@ const ImagePins = ({
         //         event.stopPropagation();
         //     });
 
-        //     dragHandler(container);
+            // dragHandler(svg);
 
-        //     dragHandler(container.selectAll('.draggable'));
 
 
         // });
@@ -414,7 +412,7 @@ const ImagePins = ({
 
 
         console.log('all the circles', pins)
-        container.selectAll("circle")
+        const pinnn = container.selectAll("circle")
             .data(pins)
             .join("circle")
             .attr("cx", d => d.x)
@@ -425,11 +423,17 @@ const ImagePins = ({
 
             .attr("fill", d => schemeCategory10[d.color])
 
-            .call(drag)
-            .classed('draggable', true)
-            .on("click", clicked);
+            // .call(dragHandler)
 
-        dragHandler(container.selectAll('.draggable'));
+            .classed('draggable', true)
+
+            // .on("click", clicked);
+
+
+        dragHandler(pinnn);
+
+
+
 
         
         ////////////////////// register event //////////////////////////
@@ -450,8 +454,24 @@ const ImagePins = ({
 
         select('#newPin').on('click', newPin)
 
+        // dragHandler2(container.selectAll('.draggable'));
 
-    }, [width, execResetZoom, resetZoom, execZoomIn, execZoomOut]);
+        // dragHandler(container.selectAll('.draggable'));
+
+
+
+
+    }, [
+        width, 
+        execResetZoom,
+
+        // imageState, 
+
+        resetZoom, 
+        execZoomIn, 
+        execZoomOut, 
+        pins
+    ]);
 
 
     const diagramStyle = {
@@ -462,8 +482,9 @@ const ImagePins = ({
     return (
         <div className="diagram-pins-container" style={diagramStyle}>
             <svg height={completeImageSettings.height} ref={containerRef} width={completeImageSettings.width}>
-                <g transform={"translate(" + imageState.x + ", " + imageState.y + ") scale(" + imageState.k + ")"}
-                 />
+                <g transform={"translate(" + imageState.x + ", " + imageState.y + ") scale(" + imageState.k + ")"}>
+                    <image height={completeImageSettings.height} href={image}></image>
+                </g>    
             </svg>
 
             {navigationController.enable && (
@@ -529,6 +550,7 @@ ImagePins.propTypes = {
             y: PropTypes.double,
         })
     ),
+    setCpins: PropTypes.func,
     setImageState: PropTypes.func,
 
     // PropTypes.shape({
@@ -537,8 +559,6 @@ ImagePins.propTypes = {
     //     y: PropTypes.double,
     // }),
 
-    zoomIn: PropTypes.func,
-    zoomOut: PropTypes.func,
     zoomController: PropTypes.shape({
         enable: PropTypes.bool,
         position: PropTypes.shape({
@@ -548,4 +568,6 @@ ImagePins.propTypes = {
             top: PropTypes.string,
         })
     }),
+    zoomIn: PropTypes.func,
+    zoomOut: PropTypes.func,
 }

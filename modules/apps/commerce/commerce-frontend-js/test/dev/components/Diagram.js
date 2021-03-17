@@ -32,7 +32,7 @@ launcher('diagram', 'diagram', {
 	navigationController: {
 		dragStep: 10,
 		enable: true,
-		enableDrag: true,
+		enableDrag: false,
 		position: {
 			bottom: '15px',
 			left: '',

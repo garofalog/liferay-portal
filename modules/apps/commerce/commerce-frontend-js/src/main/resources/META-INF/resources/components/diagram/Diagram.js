@@ -46,6 +46,7 @@ const Diagram = ({
     })
     const [scale, setScale] = useState(1)
     const  [seletedOption, setSeletedOption] = useState(1)
+    const [cPins, setCpins] = useState(pins)
 
 
     useEffect(() => {
@@ -140,9 +141,9 @@ const Diagram = ({
                 image={image}
                 imageState={imageState}
                 navigationController={navigationController} 
-                pins={pins}
+                pins={cPins}
                 scale={scale}
-
+                setCpins={setCpins}
                 setImageState={setImageState}
 
                 setScale={setScale}
@@ -303,6 +304,7 @@ Diagram.propTypes = {
             y: PropTypes.double,
         })
     ),
+    setPins: PropTypes.func,
     spritemap: PropTypes.string,
     zoomController: PropTypes.shape({
         enable: PropTypes.bool,
