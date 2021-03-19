@@ -29,6 +29,10 @@
 	}
 }
 
+.node-icon {
+	transform: translate(24px, -8px);
+}
+
 .icon-circle {
 	r: 16px;
 	transform: translate(16px * 2, 0);
@@ -53,8 +57,20 @@
 }
 
 .node-description {
-    fill: $gray-600;
+	fill: $gray-600;
 	font-size: 14px;
 	transform: translate(#{16px * 4}, 15px);
 	text-anchor: start;
+}
+
+
+.main-action-wrapper {
+	transform: translate(36px, 0px);
+	
+}
+
+.action-circle {
+	fill: white;
+	stroke: $secondary-l2;
+	stroke-width: 1.5px;
 }

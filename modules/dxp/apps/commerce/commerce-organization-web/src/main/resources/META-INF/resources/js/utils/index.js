@@ -9,38 +9,10 @@
  * distribution rights of the Software.
  */
 
-function getColumns(items) {
-	const columns = [];
-	let depth = 0;
-
-	function loopTroughItems(items) {
-		if (!columns[depth]) {
-			columns[depth] = [];
-		}
-
-		const children = [];
-
-		items.forEach((item) => {
-			columns[depth].push(item);
-
-			if (item.children) {
-				children.push(...item.children);
-			}
-		});
-
-		if (children.length) {
-			depth++;
-			loopTroughItems(children);
-		}
-	}
-
-	loopTroughItems(items);
-
-	return columns;
-}
-
-export function formatHierachicalData(data) {
-	const columns = getColumns(data);
-
-	return columns;
+export function appendIcon(node, symbol, size) {
+	return node.append('use')
+		.attr('class', 'node-icon')
+		.attr('width', size)
+		.attr('height', size)
+		.attr('href', symbol);
 }

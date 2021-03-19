@@ -12,6 +12,7 @@
 import * as d3 from 'd3';
 import classNames from 'classnames';
 import {ICON_RADIUS, RECT_PADDING, RECT_SIZES} from './utils/constants';
+import { appendIcon } from './utils';
 
 const symbolMap = {
 	account: 'users',
@@ -22,22 +23,19 @@ const symbolMap = {
 const dx = 90;
 const dy = 400;
 
-const treeLink = d3
+const diagonal = d3
 	.linkHorizontal()
-	.x((d) => {
-		if (d.height === 1) {
-			const value = RECT_SIZES[d.data.type].width + d.y;
+    .source(({source, target}, initialPosition) => {
+        const sourceRectWidth = RECT_SIZES[source.data.type]?.width || 0;
+		
+        return [sourceRectWidth + source.y, source.x];
+    })
+    .target(({source, target}, initialPosition) => {
 
-			return value;
-		}
-
-		return d.y;
-	})
-	.y((d) => d.x);
+		return initialPosition ? [source.y, source.x] : [target.y, target.x]
+    })
 
 const tree = d3.tree().nodeSize([dx, dy]);
-
-const highlight = () => false;
 
 const marginLeft = 40;
 
@@ -48,8 +46,29 @@ const formatData = (rawData) => {
 		name: 'root',
 	};
 
-	return d3.hierarchy(dataWithRoot, d => d.children);
+	return dataWithRoot;
 };
+
+function getNodeId(node) {
+    const nodePathIds = []
+
+    function parseNode(node) {
+        if(node.parent) {
+            parseNode(node.parent)
+        }
+
+        nodePathIds.push(node.data.id);        
+    }
+
+    parseNode(node)
+
+    return nodePathIds.join('_')
+}
+
+function getLinkId(link) {
+    return getNodeId(link.target)
+}
+
 
 const formatItemDescription = (d) => {
 	switch (d.data.type) {
@@ -64,6 +83,82 @@ const formatItemDescription = (d) => {
 	}
 };
 
+function generateAddButtonContent(nodeEnter, spritemap) {
+	const mainButtonWrapper = nodeEnter.append('g')
+		.attr('class', 'main-action-wrapper')
+
+	mainButtonWrapper
+		.append('circle')
+		.attr('r', 36)
+		.attr('class', 'action-circle')
+
+	appendIcon(mainButtonWrapper, `${spritemap}#times`, 18)
+
+	const addOrganizationWrapper = nodeEnter.append('g')
+		.attr('class', 'add-organization-wrapper')
+		
+	addOrganizationWrapper
+		.append('circle')
+		.attr('r', 16)
+		.attr('class', 'action-circle')
+
+	appendIcon(addOrganizationWrapper, `${spritemap}#organizations`, 18)
+
+	const addAccountWrapper = nodeEnter.append('g')
+		.attr('class', 'add-account-wrapper')
+		
+	addAccountWrapper
+		.append('circle')
+		.attr('r', 16)
+		.attr('class', 'action-circle')
+
+	appendIcon(addAccountWrapper, `${spritemap}#users`, 18)
+	
+	const addUserWrapper = nodeEnter.append('g')
+		.attr('class', 'add-user-wrapper')
+
+	addUserWrapper
+		.append('circle')
+		.attr('r', 16)
+		.attr('class', 'action-circle')
+
+	appendIcon(addUserWrapper, `${spritemap}#user`, 18)
+
+}
+
+function generateNodeContent(nodeEnter, spritemap) {
+	nodeEnter
+		.append('rect')
+		.attr('width', (d) => RECT_SIZES[d.data.type].width)
+		.attr('height', (d) => RECT_SIZES[d.data.type].height)
+		.attr(
+			'transform',
+			(d) => `translate(0, ${RECT_SIZES[d.data.type].height * -0.5})`
+		)
+		.attr('rx', (d) => RECT_SIZES[d.data.type].height / 2)
+		.attr('class', 'chart-rect');
+
+	const iconWrappers = nodeEnter
+		.append('g')
+		.attr('class', 'icon-wrapper')
+	
+	iconWrappers.append('circle')
+		.attr('class', 'icon-circle');
+
+	appendIcon(iconWrappers, d => `${spritemap}#${symbolMap[d.data.type]}`, 16)
+
+	const infos = nodeEnter.append('g')
+		.attr('class', 'chart-item-info');
+
+	infos.append('text')
+		.attr('class', 'node-title')
+		.text(d => d.data.name);
+
+	infos.append('text')
+		.attr('class', 'node-description')
+		.text(formatItemDescription);
+}
+
 class D3OrganizationChart {
 	constructor(rootRef, rawData, getChildren, spritemap) {
 		this.spritemap = spritemap;
@@ -73,7 +168,6 @@ class D3OrganizationChart {
 		const clientRect = this.rootRef.getBoundingClientRect();
 		this.width = clientRect.width;
 		this.height = clientRect.height;
-
 		this.handleNodeClick = this.handleNodeClick.bind(this);
 
 		this.createChart();
@@ -86,28 +180,74 @@ class D3OrganizationChart {
 		);
 	}
 
-	createLinks() {
-		this.links = this.wrapper
-			.append('g')
+	updateLinks(source) {
+        const links = this.root.links().filter((d) => d.source.depth);
 
-			.selectAll('path')
-			.data(this.root.links().filter((d) => d.source.depth))
-			.join('path')
+		const link = this.links
+			.selectAll('.chart-link')
+			.data(links, getLinkId);
+
+		const linkEnter = link
+			.enter()
+			.append('path')
 			.attr('class', 'chart-link')
-			.attr('stroke', (d) =>
-				highlight(d.source) && highlight(d.target) ? 'red' : null
-			)
-			.attr('d', treeLink);
+			.attr('d', d => {
+				const o = {x: source.x0, y: source.y0, data: {type: source.data.type}};
+				return diagonal({source: o, target: o});
+			  });
+
+		link.merge(linkEnter).transition(this.transition).attr('d', (d) => diagonal(d));
+
+		link.exit()
+			.transition(this.transition)
+			.remove()
+			.attr('d', d => {
+				const o = {x: source.x, y: source.y, data: {type: source.data.type}};
+				return diagonal({source: o, target: o});
+			  });
 	}
 
 	addPlusButton(d) {}
 
 	handleNodeClick(d) {
-		if (d.data.type !== 'user' && !d.children) {
+		if (d.data.type !== 'user' && d.children) {
+			d._children = d.children;
+            d.data._children = d.data.children; 
+			d.children = null;
+            d.data.children = null; 
+			
+			this.update(d);
+		} else if (d.data.type !== 'user' && d._children) {
+			d.children = d._children;
+			d.data.children = d.data._children; 
+			d._children = null;
+			d.data._children = null; 
+			
+			this.update(d);
+		} else if (d.data.type !== 'user' && !d.children) {
 			this.getChildren(d.data.id, d.data.type).then((children) => {
-				d.children = children;
-                this.createNodes()
-                this.createLinks()
+				if(!children.length){
+                    return;
+                }
+
+                d.children = [];
+                d.data.children = [];
+				
+				children.unshift({
+					type: 'add'
+				})
+
+                children.forEach(child => {
+                    const newNode = d3.hierarchy(child, d => d.children);
+    
+                    newNode.parent = d;
+                    newNode.depth = d.depth + 1;
+
+                    d.children.push(newNode)
+                    d.data.children.push(newNode)
+                })
+
+				this.update(d);
 			});
 		}
 		else if (d.data.type === 'organization') {
@@ -115,73 +255,47 @@ class D3OrganizationChart {
 		}
 	}
 
-	createNodes() {
-		this.nodes = this.wrapper
+	updateNodes(source) {
+        const nodes = this.root.descendants().filter((d) => d.depth !== 0).reverse();
+
+		const node = this.nodes.selectAll('.chart-item').data(nodes, getNodeId);
+
+        this.nodeEnter = node
+			.enter()
 			.append('g')
-			.selectAll('g')
-			.data(this.root.descendants().filter((d) => d.depth !== 0))
-			.join('g')
-			.attr('transform', (d) => `translate(${d.y},${d.x})`)
+			.attr('transform', (_) => `translate(${source.y0},${source.x0})`)
+			.attr('opacity', 0)
 			.attr('class', (d) => `chart-item chart-item-${d.data.type}`)
 			.on('click', this.handleNodeClick);
 
-		this.nodes
-			.append('rect')
-			.attr('width', (d) => RECT_SIZES[d.data.type].width)
-			.attr('height', (d) => RECT_SIZES[d.data.type].height)
-			.attr(
-				'transform',
-				(d) => `translate(0, ${RECT_SIZES[d.data.type].height * -0.5})`
-			)
-			.attr('rx', (d) => RECT_SIZES[d.data.type].height / 2)
-			.attr('class', 'chart-rect');
+		const addButton = this.nodeEnter.filter((d) => d.data.type === 'add')
+		const children = this.nodeEnter.filter(d => d.data.type !== 'add')
+		
+		generateAddButtonContent(addButton, this.spritemap);
+		generateNodeContent(children, this.spritemap);
 
-		this.iconWrappers = this.nodes
-			.append('g')
-			.attr('class', 'icon-wrapper');
+		node.merge(this.nodeEnter)
+			.transition(this.transition)
+			.attr('opacity', 1)
+			.attr('transform', (d) => `translate(${d.y},${d.x})`);
 
-		this.iconWrappers.append('circle').attr('class', 'icon-circle');
+		node.exit()
+			.transition(this.transition)
+			.remove()
+			.attr('opacity', 0)
+			.attr('transform', (_) => `translate(${source.y},${source.x})`);
 
-		this.iconWrappers
-			.append('svg')
-			.attr('class', `lexicon-icon lexicon-icon-emoji`)
-			.attr('role', 'presentation')
-			.append('use')
-			.attr(
-				'xlink:href',
-				(d) => `${this.spritemap}#${symbolMap[d.data.type]}`
-			);
-
-		this.infos = this.nodes.append('g').attr('class', 'chart-item-info');
-
-		this.infos
-			.append('text')
-			.attr('class', 'node-title')
-			.text((d) => d.data.name);
-
-		this.infos
-			.append('text')
-			.attr('class', 'node-description')
-			.text(formatItemDescription);
 	}
 
 	createChart() {
-		let x0 = Infinity;
-		let x1 = -x0;
-		this.root = tree(this.data);
+		this.root = d3.hierarchy(this.data, d => d.children);
 
-		this.root.each((d) => {
-			if (d.x > x1) {
-				x1 = d.x;
-			}
-			if (d.x < x0) {
-				x0 = d.x;
-			}
-		});
+		this.root.x0 = dy / 2;
+		this.root.y0 = 0;
 
 		this.svg = d3
 			.select(this.rootRef)
-			.attr('viewBox', [0, 0, this.width, x1 - x0 + dx * 2])
+			.attr('viewBox', [0, 0, this.width, dx])
 			.call(
 				d3.zoom().on('zoom', () => {
 					this.zoomHandler.attr('transform', d3.event.transform);
@@ -192,18 +306,51 @@ class D3OrganizationChart {
 
 		this.wrapper = this.zoomHandler
 			.append('g')
-			.attr('transform', `translate(${marginLeft},${dx - x0})`);
+			.attr('transform', `translate(${marginLeft},${dx - this.root.x0})`);
 
-		this.createLinks();
-		this.createNodes();
+		this.links = this.wrapper.append('g');
+		this.nodes = this.wrapper.append('g');
 
-		// this.svg = this.svg.node();
-
+		this.update(this.root);
 	}
 
-    update(source) {
+	update(source) {
+		const duration = d3.event && d3.event.altKey ? 2500 : 1000;
 
-    }
+		tree(this.root);
+
+		let left = this.root;
+		let right = this.root;
+		this.root.eachBefore((node) => {
+			if (node.x < left.x) {
+				left = node;
+			}
+			if (node.x > right.x) {
+				right = node;
+			}
+		});
+
+		const height = right.x - left.x;
+
+		this.transition = this.svg
+			.transition()
+			.duration(duration)
+			.attr('viewBox', [0, left.x, this.width, height])
+			.tween(
+				'resize',
+				window.ResizeObserver
+					? null
+					: () => () => this.svg.dispatch('toggle')
+			);
+
+		this.updateLinks(source);
+		this.updateNodes(source);
+
+		this.root.eachBefore((d) => {
+			d.x0 = d.x;
+			d.y0 = d.y;
+		});
+	}
 }
 
 export default D3OrganizationChart;

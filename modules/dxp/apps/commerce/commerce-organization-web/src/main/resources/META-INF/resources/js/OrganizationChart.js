@@ -47,6 +47,22 @@ function formatRawData({accounts, organizations, users, ...entry}, type) {
 	};
 }
 
+function formatChildren(item) {
+	const children = [];
+
+	if(item.users) {
+		children.push(...item.users.map(user => ({...user, type: 'user'})))
+	}
+	if(item.accounts) {
+		children.push(...item.accounts.map(account => ({...account, type: 'account'})))
+	}
+	if(item.organizations) {
+		children.push(...item.organizations.map(organization => ({...organization, type: 'account'})))
+	}
+
+	return children
+}
+
 function OrganizationChartApp({
 	accountEndpointURL,
 	organizationEndpointURL,
@@ -66,7 +82,9 @@ function OrganizationChartApp({
 				themeDisplay.getPortalURL()
 			);
 
-			return fetch(url).then((res) => res.json());
+			return fetch(url)
+				.then((res) => res.json())
+				.then(formatChildren);
 		},
 		[accountEndpointURL, organizationEndpointURL]
 	);
