@@ -7,6 +7,7 @@
         .auto-mapping {
             height: 40px;
         }
+       
     }
     .diagram-pins-container {
         border: 1px solid red;
@@ -22,7 +23,11 @@
     canvas { display:block; margin:1em auto; background:#fff; border:1px solid #ccc }
         
 
-
+.diagram-header-picker {
+    .clay-color-picker {
+        margin: 0 .5rem;
+    }
+}
 
 #move-controller {
     position: absolute;

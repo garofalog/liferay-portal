@@ -13,6 +13,7 @@
  */
 
 import ClayButton from '@clayui/button';
+import ClayColorPicker from '@clayui/color-picker';
 import ClayDropDown from '@clayui/drop-down';
 import { ClaySelect, ClaySelectWithOption} from '@clayui/form';
 import ClaySlider from '@clayui/slider';
@@ -21,9 +22,12 @@ import React, { useState } from 'react';
 
 
 
-const DiagramHeader = (props) => {
+const DiagramHeader = ({spritemap}) => {
     const [active, setActive] = useState(false);
     const [diameter, setDiameter] = useState(0)
+    
+    const [customColors, setCustoms] = useState(["008000", "00FFFF", "0000FF"]);
+    const [color, setColor] = useState(customColors[0]);
 
     const diameters = [
         {
@@ -59,6 +63,24 @@ const DiagramHeader = (props) => {
 			            </ClayButton>
                     }
                 >
+                    <ClayDropDown.ItemList
+                        className="diagram-header-picker">
+                        <ClayDropDown.Group 
+                            header="SELECT COLOR">
+                            <ClayColorPicker
+                                className="mx-2"
+                                colors={customColors}
+                                label="Custom Colors"
+                                name="colorPicker2"
+                                onColorsChange={setCustoms}
+                                onValueChange={setColor}
+                                showHex={true}
+                                spritemap={spritemap}
+                                value={color}
+                            />
+                        </ClayDropDown.Group>
+                    </ClayDropDown.ItemList>
+                    <ClayDropDown.Divider></ClayDropDown.Divider>
                     <ClayDropDown.ItemList>
                         <ClayDropDown.Group header="STANDARD">
                             {diameters.map((item, i) => (
@@ -83,6 +105,11 @@ const DiagramHeader = (props) => {
                             <label htmlFor="slider">CUSTOM</label>
                             <ClaySlider id="slider" onValueChange={setDiameter} value={diameter} />
                         </div>
+                        <ClayButton 
+                            block="true"
+                            displayType="primary">
+                            Add Pin
+                        </ClayButton>
 
                     </ClayDropDown.Caption>
                 </ClayDropDown>

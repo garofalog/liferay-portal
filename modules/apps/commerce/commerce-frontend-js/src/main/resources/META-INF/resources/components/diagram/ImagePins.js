@@ -38,14 +38,12 @@ const ImagePins = ({
     setZoomOutHandler, 
     spritemap,
     zoomController,
-    zoomIn,
     zoomInHandler,
-    zoomOut,
     zoomOutHandler,
 }) => {
     const [width, setWidth] = useState(0);
     const containerRef = useRef(null);
-    let svg, container, moveLeft, moveRight, position, move, moveUp, moveDown, newPin, handleMoveUp, handleMoveDown, handleMoveLeft, handleMoveRight, handleZoomIn, handleZoomOut, handleResetZoom
+    let svg, container, position, newPin, handleMoveUp, handleMoveDown, handleMoveLeft, handleMoveRight, handleZoomIn, handleZoomOut;
 
     // useEffect(() => {
     //     setImageState({
@@ -397,7 +395,6 @@ const ImagePins = ({
             }
 
             const newState = pins.map(element => element.id === newCoords.id ? newCoords : element);
-            console.log(newState)
 
             setCpins(newState)
 
@@ -548,10 +545,7 @@ const ImagePins = ({
             .attr("cy", d => d.y)
             .attr("r", d => d.r)
             .attr("id", d => d.id)
-
-            // .style("fill", d => d.color)
-
-            .attr("fill", d => schemeCategory10[d.color])
+            .attr("fill", d => d.color)
 
             // .call(dragHandler)
 
@@ -672,7 +666,7 @@ ImagePins.propTypes = {
     }),
     pins: PropTypes.arrayOf(
         PropTypes.shape({
-            color: PropTypes.number,
+            color: PropTypes.string,
             id: PropTypes.number,
             r: PropTypes.number,
             x: PropTypes.double,

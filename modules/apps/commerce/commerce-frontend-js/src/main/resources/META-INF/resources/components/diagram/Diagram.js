@@ -278,7 +278,8 @@ Diagram.propTypes = {
     }),
     pins: PropTypes.arrayOf(
         PropTypes.shape({
-            color: PropTypes.number,
+            color: PropTypes.string,
+            id: PropTypes.number,
             r: PropTypes.number,
             x: PropTypes.double,
             y: PropTypes.double,
