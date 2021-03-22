@@ -1,5 +1,7 @@
 @import 'atlas-variables';
 
+$text: $gray-600;
+
 .svg-chart {
 	width: 100%;
 	min-height: 500px;
@@ -9,12 +11,29 @@
 	fill: none;
 	stroke: $secondary-l2;
 	stroke-width: 1.5;
+
+	&.highlighted {
+		stroke: rgba($primary, 0.4);
+	}
 }
 
 .chart-rect {
 	fill: white;
 	stroke: $secondary-l2;
 	stroke-width: 1.5;
+}
+
+.chart-item {
+	&.highlighted {
+		.chart-rect {
+			stroke: rgba($primary, 0.6);
+		}
+	}
+	&.selected {
+		.chart-rect {
+			stroke: $primary;
+		}
+	}
 }
 
 .icon-wrapper {
@@ -29,7 +48,7 @@
 	}
 }
 
-.node-icon {
+.node-type-icon {
 	transform: translate(24px, -8px);
 }
 
@@ -57,20 +76,71 @@
 }
 
 .node-description {
-	fill: $gray-600;
+	fill: $text;
 	font-size: 14px;
 	transform: translate(#{16px * 4}, 15px);
 	text-anchor: start;
 }
 
-
-.main-action-wrapper {
+.actions-wrapper {
 	transform: translate(36px, 0px);
-	
+	fill: $text;
 }
 
 .action-circle {
 	fill: white;
 	stroke: $secondary-l2;
 	stroke-width: 1.5px;
+	transition: stroke 0.1s ease-in-out;
+
+	.open-actions-wrapper:hover &,
+	.add-action-wrapper:hover & {
+		stroke: $secondary;
+	}
+}
+
+.open-actions-wrapper {
+	transform: rotate(0);
+	transition: transform 0.5s ease-in-out;
+
+	.menu-open & {
+		transform: rotate(45deg * 5);
+	}
+	.action-icon {
+		transform: translate(-9px, -9px);
+	}
+}
+
+.add-action-wrapper {
+	transition: transform 0.2s ease-in;
+
+	.action-icon {
+		transform: translate(-8px, -8px);
+	}
+
+	&.user {
+		transition-delay: 0.2s;
+		transform: translate(50px, 0) scale(0);
+
+		.menu-open & {
+			transform: translate(60px, 0) scale(1);
+		}
+	}
+
+	&.organization {
+		transform: translate(0px, -50px) scale(0);
+
+		.menu-open & {
+			transform: translate(0px, -60px) scale(1);
+		}
+	}
+
+	&.account {
+		transition-delay: 0.1s;
+		transform: translate(35px, -35px) scale(0);
+
+		.menu-open & {
+			transform: translate(43px, -43px) scale(1);
+		}
+	}
 }

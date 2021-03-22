@@ -30,3 +30,12 @@ export const ICON_RADIUS = 16;
 export const COLUMN_SIZE = RECT_SIZES.organization[0];
 
 export const COLUMN_GAP = 60;
+
+export const SYMBOLS_MAP = {
+	account: 'users',
+	organization: 'organizations',
+	user: 'user',
+};
+
+export const DX = 90;
+export const DY = 400;

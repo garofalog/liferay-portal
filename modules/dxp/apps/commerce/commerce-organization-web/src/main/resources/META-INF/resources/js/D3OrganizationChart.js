@@ -9,35 +9,24 @@
  * distribution rights of the Software.
  */
 
-import * as d3 from 'd3';
 import classNames from 'classnames';
-import {ICON_RADIUS, RECT_PADDING, RECT_SIZES} from './utils/constants';
-import { appendIcon } from './utils';
+import * as d3 from 'd3';
 
-const symbolMap = {
-	account: 'users',
-	organization: 'organizations',
-	user: 'user',
-};
+import {
+	appendIcon,
+	getLinkDiagonal,
+	getLinkId,
+	getNodeId,
+	insertAddButton,
+	insertChildrenIntoNode,
+	toggleChildren,
+} from './utils';
+import {DX, DY, RECT_SIZES, SYMBOLS_MAP} from './utils/constants';
+import {highlight, removeHighlight} from './utils/highlight';
 
-const dx = 90;
-const dy = 400;
+const tree = d3.tree().nodeSize([DX, DY]);
 
-const diagonal = d3
-	.linkHorizontal()
-    .source(({source, target}, initialPosition) => {
-        const sourceRectWidth = RECT_SIZES[source.data.type]?.width || 0;
-		
-        return [sourceRectWidth + source.y, source.x];
-    })
-    .target(({source, target}, initialPosition) => {
-
-		return initialPosition ? [source.y, source.x] : [target.y, target.x]
-    })
-
-const tree = d3.tree().nodeSize([dx, dy]);
-
-const marginLeft = 40;
+const MARGIN_LEFT = 40;
 
 const formatData = (rawData) => {
 	const dataWithRoot = {
@@ -48,27 +37,6 @@ const formatData = (rawData) => {
 
 	return dataWithRoot;
 };
-
-function getNodeId(node) {
-    const nodePathIds = []
-
-    function parseNode(node) {
-        if(node.parent) {
-            parseNode(node.parent)
-        }
-
-        nodePathIds.push(node.data.id);        
-    }
-
-    parseNode(node)
-
-    return nodePathIds.join('_')
-}
-
-function getLinkId(link) {
-    return getNodeId(link.target)
-}
-
 
 const formatItemDescription = (d) => {
 	switch (d.data.type) {
@@ -83,47 +51,63 @@ const formatItemDescription = (d) => {
 	}
 };
 
-function generateAddButtonContent(nodeEnter, spritemap) {
-	const mainButtonWrapper = nodeEnter.append('g')
-		.attr('class', 'main-action-wrapper')
+function appendCircle(node, size, className) {
+	return node.append('circle').attr('r', size).attr('class', className);
+}
 
-	mainButtonWrapper
-		.append('circle')
-		.attr('r', 36)
-		.attr('class', 'action-circle')
+function generateAddButtonContent(nodeEnter, spritemap, openModal) {
+	const actionsWrapper = nodeEnter
+		.append('g')
+		.attr('class', 'actions-wrapper');
 
-	appendIcon(mainButtonWrapper, `${spritemap}#times`, 18)
+	const openActionsWrapper = actionsWrapper
+		.append('g')
+		.attr('class', 'open-actions-wrapper')
+		.on('click', (d, node) => {
+			if (node.parent.data.type === 'account') {
+				openModal(node.parent.data, 'account')
+			} else {
+				actionsWrapper.node().classList.toggle('menu-open');
+			}
+		});
 
-	const addOrganizationWrapper = nodeEnter.append('g')
-		.attr('class', 'add-organization-wrapper')
-		
-	addOrganizationWrapper
-		.append('circle')
-		.attr('r', 16)
-		.attr('class', 'action-circle')
+	appendCircle(openActionsWrapper, 36, 'action-circle');
+	appendIcon(openActionsWrapper, `${spritemap}#plus`, 18, 'action-icon');
 
-	appendIcon(addOrganizationWrapper, `${spritemap}#organizations`, 18)
+	const addOrganizationWrapper = actionsWrapper
+		.append('g')
+		.attr('class', 'add-action-wrapper organization')
+		.on('click', (_event, node) => {
+			openModal(node.parent.data, 'organization')
+		})
 
-	const addAccountWrapper = nodeEnter.append('g')
-		.attr('class', 'add-account-wrapper')
-		
-	addAccountWrapper
-		.append('circle')
-		.attr('r', 16)
-		.attr('class', 'action-circle')
+	appendCircle(addOrganizationWrapper, 16, 'action-circle');
+	appendIcon(
+		addOrganizationWrapper,
+		`${spritemap}#organizations`,
+		16,
+		'action-icon'
+	);
 
-	appendIcon(addAccountWrapper, `${spritemap}#users`, 18)
-	
-	const addUserWrapper = nodeEnter.append('g')
-		.attr('class', 'add-user-wrapper')
+	const addAccountWrapper = actionsWrapper
+		.append('g')
+		.attr('class', 'add-action-wrapper account')
+		.on('click', (_event, node) => {
+			openModal(node.parent.data, 'account')
+		})
 
-	addUserWrapper
-		.append('circle')
-		.attr('r', 16)
-		.attr('class', 'action-circle')
+	appendCircle(addAccountWrapper, 16, 'action-circle');
+	appendIcon(addAccountWrapper, `${spritemap}#users`, 16, 'action-icon');
 
-	appendIcon(addUserWrapper, `${spritemap}#user`, 18)
+	const addUserWrapper = actionsWrapper
+		.append('g')
+		.attr('class', 'add-action-wrapper user')
+		.on('click', (_event, node) => {
+			openModal(node.parent.data, 'user')
+		})
 
+	appendCircle(addUserWrapper, 16, 'action-circle');
+	appendIcon(addUserWrapper, `${spritemap}#user`, 16, 'action-icon');
 }
 
 function generateNodeContent(nodeEnter, spritemap) {
@@ -138,29 +122,34 @@ function generateNodeContent(nodeEnter, spritemap) {
 		.attr('rx', (d) => RECT_SIZES[d.data.type].height / 2)
 		.attr('class', 'chart-rect');
 
-	const iconWrappers = nodeEnter
-		.append('g')
-		.attr('class', 'icon-wrapper')
-	
-	iconWrappers.append('circle')
-		.attr('class', 'icon-circle');
+	const iconWrappers = nodeEnter.append('g').attr('class', 'icon-wrapper');
 
-	appendIcon(iconWrappers, d => `${spritemap}#${symbolMap[d.data.type]}`, 16)
+	iconWrappers.append('circle').attr('class', 'icon-circle');
 
-	const infos = nodeEnter.append('g')
-		.attr('class', 'chart-item-info');
+	appendIcon(
+		iconWrappers,
+		(d) => `${spritemap}#${SYMBOLS_MAP[d.data.type]}`,
+		16,
+		'node-type-icon'
+	);
 
-	infos.append('text')
+	const infos = nodeEnter.append('g').attr('class', 'chart-item-info');
+
+	infos
+		.append('text')
 		.attr('class', 'node-title')
-		.text(d => d.data.name);
+		.text((d) => d.data.name);
 
-	infos.append('text')
+	infos
+		.append('text')
 		.attr('class', 'node-description')
 		.text(formatItemDescription);
 }
 
 class D3OrganizationChart {
-	constructor(rootRef, rawData, getChildren, spritemap) {
+	_selectedId = null;
+
+	constructor(rootRef, rawData, getChildren, spritemap, openModal) {
 		this.spritemap = spritemap;
 		this.rootRef = rootRef;
 		this.data = formatData(rawData);
@@ -169,153 +158,67 @@ class D3OrganizationChart {
 		this.width = clientRect.width;
 		this.height = clientRect.height;
 		this.handleNodeClick = this.handleNodeClick.bind(this);
-
+		this._openModal = openModal;
 		this.createChart();
 	}
 
-	zoom() {
-		this.svg.attr(
-			'transform',
-			`translate('${d3.event.translate}') scale('${d3.event.scale}')`
-		);
-	}
+	handleNodeClick(event, d) {
+		event.stopPropagation();
 
-	updateLinks(source) {
-        const links = this.root.links().filter((d) => d.source.depth);
+		this._selectedNode = d; 
 
-		const link = this.links
-			.selectAll('.chart-link')
-			.data(links, getLinkId);
+		if (d.data.type !== 'user') {
+			if (!d.data.fetched) {
+				return this.getChildren(d.data.id, d.data.type)
+					.then((children) => insertChildrenIntoNode(children, d))
+					.then(() => {
+						d.data.fetched = true;
 
-		const linkEnter = link
-			.enter()
-			.append('path')
-			.attr('class', 'chart-link')
-			.attr('d', d => {
-				const o = {x: source.x0, y: source.y0, data: {type: source.data.type}};
-				return diagonal({source: o, target: o});
-			  });
-
-		link.merge(linkEnter).transition(this.transition).attr('d', (d) => diagonal(d));
-
-		link.exit()
-			.transition(this.transition)
-			.remove()
-			.attr('d', d => {
-				const o = {x: source.x, y: source.y, data: {type: source.data.type}};
-				return diagonal({source: o, target: o});
-			  });
-	}
-
-	addPlusButton(d) {}
-
-	handleNodeClick(d) {
-		if (d.data.type !== 'user' && d.children) {
-			d._children = d.children;
-            d.data._children = d.data.children; 
-			d.children = null;
-            d.data.children = null; 
-			
-			this.update(d);
-		} else if (d.data.type !== 'user' && d._children) {
-			d.children = d._children;
-			d.data.children = d.data._children; 
-			d._children = null;
-			d.data._children = null; 
-			
-			this.update(d);
-		} else if (d.data.type !== 'user' && !d.children) {
-			this.getChildren(d.data.id, d.data.type).then((children) => {
-				if(!children.length){
-                    return;
-                }
-
-                d.children = [];
-                d.data.children = [];
-				
-				children.unshift({
-					type: 'add'
-				})
-
-                children.forEach(child => {
-                    const newNode = d3.hierarchy(child, d => d.children);
-    
-                    newNode.parent = d;
-                    newNode.depth = d.depth + 1;
-
-                    d.children.push(newNode)
-                    d.data.children.push(newNode)
-                })
-
-				this.update(d);
-			});
+						this.update(d);
+					});
+			}
+			else {
+				toggleChildren(d);
+			}
 		}
-		else if (d.data.type === 'organization') {
-			this.addPlusButton(d);
-		}
-	}
 
-	updateNodes(source) {
-        const nodes = this.root.descendants().filter((d) => d.depth !== 0).reverse();
-
-		const node = this.nodes.selectAll('.chart-item').data(nodes, getNodeId);
-
-        this.nodeEnter = node
-			.enter()
-			.append('g')
-			.attr('transform', (_) => `translate(${source.y0},${source.x0})`)
-			.attr('opacity', 0)
-			.attr('class', (d) => `chart-item chart-item-${d.data.type}`)
-			.on('click', this.handleNodeClick);
-
-		const addButton = this.nodeEnter.filter((d) => d.data.type === 'add')
-		const children = this.nodeEnter.filter(d => d.data.type !== 'add')
-		
-		generateAddButtonContent(addButton, this.spritemap);
-		generateNodeContent(children, this.spritemap);
-
-		node.merge(this.nodeEnter)
-			.transition(this.transition)
-			.attr('opacity', 1)
-			.attr('transform', (d) => `translate(${d.y},${d.x})`);
-
-		node.exit()
-			.transition(this.transition)
-			.remove()
-			.attr('opacity', 0)
-			.attr('transform', (_) => `translate(${source.y},${source.x})`);
-
+		this.update(d);
 	}
 
 	createChart() {
-		this.root = d3.hierarchy(this.data, d => d.children);
+		this.root = d3.hierarchy(this.data, (d) => d.children);
 
-		this.root.x0 = dy / 2;
+		this.root.x0 = DY / 2;
 		this.root.y0 = 0;
 
 		this.svg = d3
 			.select(this.rootRef)
-			.attr('viewBox', [0, 0, this.width, dx])
+			.attr('viewBox', [0, 0, this.width, DX])
 			.call(
-				d3.zoom().on('zoom', () => {
-					this.zoomHandler.attr('transform', d3.event.transform);
+				d3.zoom().on('zoom', (event) => {
+					this.zoomHandler.attr('transform', event.transform);
 				})
 			);
 
 		this.zoomHandler = this.svg.append('g');
 
-		this.wrapper = this.zoomHandler
+		this.dataWrapper = this.zoomHandler
 			.append('g')
-			.attr('transform', `translate(${marginLeft},${dx - this.root.x0})`);
+			.attr(
+				'transform',
+				`translate(${MARGIN_LEFT},${DX - this.root.x0})`
+			);
 
-		this.links = this.wrapper.append('g');
-		this.nodes = this.wrapper.append('g');
+		this.linksGroup = this.dataWrapper.append('g');
+		this.nodesGroup = this.dataWrapper.append('g');
 
 		this.update(this.root);
 	}
 
 	update(source) {
-		const duration = d3.event && d3.event.altKey ? 2500 : 1000;
+		const duration = d3.event && d3.event.altKey ? 2500 : 800;
+
+		insertAddButton(this.root, this._selectedNode);
 
 		tree(this.root);
 
@@ -350,6 +253,96 @@ class D3OrganizationChart {
 			d.x0 = d.x;
 			d.y0 = d.y;
 		});
+	}
+
+	updateLinks(source) {
+		const links = this.root.links().filter((d) => d.source.depth);
+		const bindedLinks = this.linksGroup
+			.selectAll('.chart-link')
+			.data(links, getLinkId);
+
+		this.bindedChartLink = bindedLinks
+			.enter()
+			.append('path')
+			.attr('class', 'chart-link')
+			.attr('d', (d) => getLinkDiagonal(d, source, 'enter'))
+			.attr('opacity', 0);
+
+		bindedLinks
+			.merge(this.bindedChartLink)
+			.transition(this.transition)
+			.attr('d', (d) => getLinkDiagonal(d, source))
+			.attr('opacity', 1);
+
+		bindedLinks
+			.exit()
+			.transition(this.transition)
+			.remove()
+			.attr('d', (d) => getLinkDiagonal(d, source, d.target.data.type !== 'add' ? 'exit' : null))
+			.attr('opacity', 0);
+	}
+
+	updateNodes(source) {
+		const dataNodes = this.root
+			.descendants()
+			.filter((d) => d.depth !== 0)
+			.reverse();
+
+		const bindedNodes = this.nodesGroup
+			.selectAll('.chart-item')
+			.data(dataNodes, getNodeId);
+
+		this.bindedChartItems = bindedNodes
+			.enter()
+			.append('g')
+			.attr('opacity', 0)
+			.attr('class', (d) =>
+				classNames('chart-item', `chart-item-${d.data.type}`)
+			);
+
+		const addButton = this.bindedChartItems.filter(
+			(d) => d.data.type === 'add'
+		);
+		const children = this.bindedChartItems.filter(
+			(d) => d.data.type !== 'add'
+		);
+
+		addButton.attr('transform', (d) => `translate(${d.y},${d.x}) scale(0)`)
+		children.attr('transform', () => `translate(${source.y0},${source.x0})`)
+
+		generateAddButtonContent(addButton, this.spritemap, this._openModal);
+		generateNodeContent(children, this.spritemap);
+
+		children
+			.on('mouseenter', (_event, d) => {
+				highlight(d, this.nodesGroup, this.linksGroup);
+			})
+			.on('mouseleave', () => {
+				removeHighlight();
+			})
+			.on('click', this.handleNodeClick);
+
+		bindedNodes
+			.merge(this.bindedChartItems)
+			.transition(this.transition)
+			.attr('opacity', 1)
+			.attr('transform', (d) => d.data.type !== 'add' ? `translate(${d.y},${d.x})` : `translate(${d.y},${d.x}) scale(1)`);
+
+		bindedNodes.classed('selected', (d) => d.data.id === this._selectedNode?.data?.id);
+
+		bindedNodes
+			.exit()
+			.transition(this.transition)
+			.remove()
+			.attr('opacity', 0)
+			.attr('transform', (d) => d.data.type !== 'add' ? `translate(${source.y},${source.x})` : `translate(${d.y},${d.x}) scale(0)`);
+	}
+
+	zoom() {
+		this.svg.attr(
+			'transform',
+			`translate('${d3.event.translate}') scale('${d3.event.scale}')`
+		);
 	}
 }
 

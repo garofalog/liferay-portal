@@ -11,6 +11,7 @@
 
 const tree = [
 	{
+		fetched: true,
 		id: 1,
 		name: 'Liferay World',
 		organizations: [
@@ -35,6 +36,7 @@ const tree = [
 				name: 'Car Dealer',
 			},
 		],
+		fetched: true,
 		id: 5,
 		name: 'Riuvo',
 		users: [
@@ -57,7 +59,7 @@ const definitions = {
 			name: 'Car Dealer',
 			users: [
 				{
-					id: 113,
+					id: 115,
 					name: 'Luca Pellizon',
 				},
 			],

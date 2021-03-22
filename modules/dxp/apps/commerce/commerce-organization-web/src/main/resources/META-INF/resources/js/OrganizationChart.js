@@ -11,7 +11,6 @@
 
 import ClayIcon, {ClayIconSpriteContext} from '@clayui/icon';
 import classnames from 'classnames';
-import * as d3 from 'd3';
 import {fetch} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React, {
@@ -21,6 +20,7 @@ import React, {
 	useRef,
 	useState,
 } from 'react';
+import ConnectEntityModal from './ConnectEntityModal';
 
 import D3OrganizationChart from './D3OrganizationChart';
 
@@ -50,17 +50,24 @@ function formatRawData({accounts, organizations, users, ...entry}, type) {
 function formatChildren(item) {
 	const children = [];
 
-	if(item.users) {
-		children.push(...item.users.map(user => ({...user, type: 'user'})))
+	if (item.users) {
+		children.push(...item.users.map((user) => ({...user, type: 'user'})));
 	}
-	if(item.accounts) {
-		children.push(...item.accounts.map(account => ({...account, type: 'account'})))
+	if (item.accounts) {
+		children.push(
+			...item.accounts.map((account) => ({...account, type: 'account'}))
+		);
 	}
-	if(item.organizations) {
-		children.push(...item.organizations.map(organization => ({...organization, type: 'account'})))
+	if (item.organizations) {
+		children.push(
+			...item.organizations.map((organization) => ({
+				...organization,
+				type: 'account',
+			}))
+		);
 	}
 
-	return children
+	return children;
 }
 
 function OrganizationChartApp({
@@ -68,6 +75,9 @@ function OrganizationChartApp({
 	organizationEndpointURL,
 	spritemap,
 }) {
+	const [modalParentNode, updateModalParentNode] = useState(false);
+	const [modalEntityType, updateModalEntityType] = useState(null);
+	
 	const [data, updateData] = useState(null);
 	const chartSvgRef = useRef(null);
 
@@ -116,15 +126,27 @@ function OrganizationChartApp({
 				chartSvgRef.current,
 				data,
 				getChildren,
-				spritemap
+				spritemap,
+				(node, entityType) => {
+					updateModalEntityType(entityType);
+					updateModalParentNode(() => node);
+				}
 			);
 		}
 	}, [data, getChildren, spritemap]);
 
 	return (
-		<div className="org-chart-container">
-			<svg className="svg-chart" ref={chartSvgRef} />
-		</div>
+		<ClayIconSpriteContext.Provider value={spritemap}>
+			<div className="org-chart-container">
+				<svg className="svg-chart" ref={chartSvgRef} />
+			</div>
+			<ConnectEntityModal 
+				newEntityType={modalEntityType}
+				parentNode={modalParentNode}
+				updateModalEntityType={updateModalEntityType}
+				updateModalParentNode={updateModalParentNode}
+			/>
+		</ClayIconSpriteContext.Provider>
 	);
 }
 

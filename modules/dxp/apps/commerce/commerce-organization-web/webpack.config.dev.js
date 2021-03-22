@@ -24,6 +24,7 @@ module.exports = {
 		},
 		compress: false,
 		contentBase: './test/dev/public',
+		disableHostCheck: true,
 		open: true,
 		openPage: 'index.html',
 		port: 9000,
