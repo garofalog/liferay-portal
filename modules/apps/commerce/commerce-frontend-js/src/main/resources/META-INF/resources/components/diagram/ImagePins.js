@@ -25,23 +25,27 @@ import ZoomController from './ZoomController';
 
 const ImagePins = ({ 
     completeImageSettings, 
-    execResetZoom,
     execZoomIn,
-    execZoomOut,
-    image, 
+    image,
     imageState,
-    navigationController, 
-    pins, 
+    navigationController,
+    pins,
+    resetZoom, 
     setCpins,
-    setImageState,
+    setImageState, 
+    setResetZoom,
+    setZoomInHandler,
+    setZoomOutHandler, 
     spritemap,
     zoomController,
     zoomIn,
+    zoomInHandler,
     zoomOut,
+    zoomOutHandler,
 }) => {
     const [width, setWidth] = useState(0);
     const containerRef = useRef(null);
-    let svg, container, resetZoom, moveLeft, moveRight, position, move, moveUp, moveDown, newPin, handleMoveUp, handleMoveDown, handleMoveLeft, handleMoveRight, handleZoomIn, handleZoomOut, handleResetZoom
+    let svg, container, moveLeft, moveRight, position, move, moveUp, moveDown, newPin, handleMoveUp, handleMoveDown, handleMoveLeft, handleMoveRight, handleZoomIn, handleZoomOut, handleResetZoom
 
     // useEffect(() => {
     //     setImageState({
@@ -61,6 +65,54 @@ const ImagePins = ({
     //     window.addEventListener('resize', handleResize);
     //     return () => window.removeEventListener('resize', handleResize);
     // }, [data.length]);
+
+    useEffect(() => {
+        let t 
+
+        if (!event) {
+            t = {
+                k: imageState.k,
+                x: imageState.x,
+                y: imageState.y,
+            } 
+            
+        }else{
+
+            t = {
+                k: event.transform.k,
+                x: event.transform.x,
+                y: event.transform.y,
+            }
+        }
+
+        if (resetZoom) {
+            
+            console.log("reset true")
+            setResetZoom(false)
+            setImageState({
+                k: 1,
+                x: 0,
+                y: 0,
+            })
+
+            console.log("!== t==imageState ->", t)
+            container.attr("transform", "translate(0,0)scale(1)");
+        } else {
+            setImageState(t)
+
+            // if (imageState.x === event.transform.x) {
+            //     console.log("===")
+            //     container.attr("transform", event.transform)
+            //     setImageState(t)
+            // } else {
+
+            console.log("!== t ->", t)
+            console.log('imageState ->', imageState)
+            container.attr("transform", `translate(${t.x},${t.y}) scale(${t.k})`)
+        }
+
+        // }
+    }, [resetZoom])
 
 
 
@@ -85,75 +137,93 @@ const ImagePins = ({
         //     y: Math.random() * (completeImageSettings.height - 20 * 2) + 20,
         // }));        
 
-        const zoomEV = zoom().on("zoom", () => {
+        const panZoom = zoom().on("zoom", () => {
 
             // container.attr("transform", `translate(${s.x},${s.y}) scale(${s.k})`);
-
-
-            // {
-            //     k: event.transform.k,
-            //     x: event.transform.x,
-            //     y: event.transform.y,
-            // }
 
             const t = {
                 k: event.transform.k,
                 x: event.transform.x,
                 y: event.transform.y,
             }
-            if (imageState.x === event.transform.x) {
-                
+            const v = {
+                k: imageState.k,
+                x: imageState.x,
+                y: imageState.y,
+            }
+
+            if (t === v) {
+
                 console.log("===")
+                console.log("resetZoom ==", resetZoom)
                 container.attr("transform", t)
                 setImageState(t)
             } else {
-                const v = {
-                    k: imageState.k,
-                    x: imageState.x,
-                    y: imageState.y,
-                }
-                setImageState(t)
+       
                 console.log("!== v ->", v)
-                console.log('imageState ->', imageState)
+                console.log("resetZoom !=", resetZoom)
+
+                console.log('imageState ->', event.transform)
+
+                setImageState(event.transform)
+
                 container.attr("transform", event.transform);
+
+            // if (resetZoom) {
+            //     console.log("reset true")
+            //     event.transform = {
+            //         k: imageState.k,
+            //         x: imageState.x,
+            //         y: imageState.y,
+            //     }
+                
+            //     setResetZoom(false)
+            //     setImageState({
+            //         k: 1,
+            //         x: 0,
+            //         y: 0,
+            //     })
+            //     console.log("!== v ->", v)
+            //     console.log("!== t ->", t)
+            //     console.log('imageState ->', imageState)
+            //     container.attr("transform", "translate(0,0)scale(1)");
+
+            // } else {
+            //     console.log("reset false")
+
+                
+            //     setImageState(t)
+
+            //     // if (imageState.x === event.transform.x) {
+            //     //     console.log("===")
+
+
+            // setImageState(t)
+
+
+
+
+            //     // } else {
+
+
 
             }
 
-            // setImageState({
-            //     k: event.transform.k,
-            //     x: event.transform.x,
-            //     y: event.transform.y,
-            // })
 
         });
 
         if (zoomController.enablePanZoom) {
-            svg.call(zoomEV)
+            svg.call(panZoom)
         }
 
         ////////////////////////////////////////////////
 
-        const resetZoom = () => {
-            setImageState({
-                k: 1,
-                x: 0,
-                y: 0,
-            })
-            container.attr("transform", "translate(0,0)scale(1)");
-        }
-
-        const handleResetZoom = () => resetZoom();
-
-        if (execResetZoom) {
-            handleResetZoom();
-        }
-
         const zoomIn = () => {
-            zoomEV.scaleBy(container.transition().duration(400), 1.2);
+            panZoom.scaleBy(container.transition().duration(400), 1.2);
         }
         const handleZoomIn = () => zoomIn();
         const zoomOut = () => {
-            zoomEV.scaleBy(container.transition().duration(400), 0.8);
+            panZoom.scaleBy(container.transition().duration(400), 0.8);
         }
         const handleZoomOut = () => zoomOut();
         
@@ -161,14 +231,20 @@ const ImagePins = ({
             handleZoomIn();
         }
 
-        if (execZoomOut) {
+        if (zoomOutHandler) {
+            setZoomOutHandler(false)
             zoomOut();
         }
 
-        // if (zoomController.enablePanZoom) {
-        //     // select('g').call(zoomEV)
+        if (zoomInHandler) {
+            setZoomInHandler(false)
+            zoomIn();
+        }
 
-        //     console.log(zoomEV)
+        // if (zoomController.enablePanZoom) {
+        //     // select('g').call(panZoom)
+
+        //     console.log(panZoom)
         // }
 
 
@@ -248,14 +324,15 @@ const ImagePins = ({
 
 
         function dragstarted(event, d) {
-            console.log('drag started')
             const current = select(this);
             current.raise().attr("stroke", "red");
         }
 
         function dragged() {
             const current = select(this);
-            console.log(current)
+
+            // console.log(current)
+
             current
                 .attr('cx', event.x)
                 .attr('cy', event.y);
@@ -266,11 +343,66 @@ const ImagePins = ({
             //     y: event.y,
             // })
 
-            console.log('blabla', `${event.x}, ${event.y}`);
         }
+
+
+        
+
         function dragended(event, d) {
+
+            const filterId = (id) => {
+                
+            }
+
             const current = select(this);
+            const newPos = current._groups[0].[0].attributes
+
+            const beSure = [...newPos]
+
+            const id = beSure.filter(d => {
+                if (d.name === "id") {
+                    return d
+                }
+            })
+
+            const x = beSure.filter(d => {
+                if (d.name === "cx") {
+                    return d
+                }
+            })
+
+            const y = beSure.filter(d => {
+                if (d.name === "cy") {
+                    return d
+                }
+            })
+            const r = beSure.filter(d => {
+                if (d.name === "r") {
+                    return d
+                }
+            })
+
+            const color = beSure.filter(d => {
+                if (d.name === "fill") {
+                    return d
+                }
+            })
+
+            const newCoords = {
+                color: color[0].value,
+                id: id[0].value,
+                r: r[0].value,
+                x: x[0].value,
+                y: y[0].value,
+            }
+
+            const newState = pins.map(element => element.id === newCoords.id ? newCoords : element);
+            console.log(newState)
+
+            setCpins(newState)
+
             current.attr("stroke", null);
+            current.attr("fill", color[0].value)
         }
 
         //////////////////////////// 
@@ -409,15 +541,13 @@ const ImagePins = ({
         // });
 
 
-
-
-        console.log('all the circles', pins)
         const pinnn = container.selectAll("circle")
             .data(pins)
             .join("circle")
             .attr("cx", d => d.x)
             .attr("cy", d => d.y)
             .attr("r", d => d.r)
+            .attr("id", d => d.id)
 
             // .style("fill", d => d.color)
 
@@ -463,14 +593,12 @@ const ImagePins = ({
 
     }, [
         width, 
-        execResetZoom,
-
-        // imageState, 
-
+        imageState,
+        setResetZoom,
         resetZoom, 
-        execZoomIn, 
-        execZoomOut, 
-        pins
+        zoomOutHandler, 
+        zoomInHandler, 
+        pins,
     ]);
 
 
@@ -545,6 +673,7 @@ ImagePins.propTypes = {
     pins: PropTypes.arrayOf(
         PropTypes.shape({
             color: PropTypes.number,
+            id: PropTypes.number,
             r: PropTypes.number,
             x: PropTypes.double,
             y: PropTypes.double,
@@ -552,13 +681,15 @@ ImagePins.propTypes = {
     ),
     setCpins: PropTypes.func,
     setImageState: PropTypes.func,
-
+    setZoomInHandler: PropTypes.func,
+    setZoomOutHandler: PropTypes.func,
+    
     // PropTypes.shape({
-    //     k: PropTypes.double,
-    //     x: PropTypes.double,
-    //     y: PropTypes.double,
-    // }),
-
+        //     k: PropTypes.double,
+        //     x: PropTypes.double,
+        //     y: PropTypes.double,
+        // }),
+        
     zoomController: PropTypes.shape({
         enable: PropTypes.bool,
         position: PropTypes.shape({
@@ -569,5 +700,7 @@ ImagePins.propTypes = {
         })
     }),
     zoomIn: PropTypes.func,
+    zoomInHandler: PropTypes.bool,
     zoomOut: PropTypes.func,
+    zoomOutHandler: PropTypes.bool,
 }

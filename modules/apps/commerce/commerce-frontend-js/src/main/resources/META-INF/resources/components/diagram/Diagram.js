@@ -36,7 +36,7 @@ const Diagram = ({
     spritemap,
     zoomController
 }) => {
-    const [resetHandler, setResetHandler] = useState(false)
+    const [resetZoom, setResetZoom] = useState(false)
     const [zoomInHandler, setZoomInHandler] = useState(false)
     const [zoomOutHandler, setZoomOutHandler ] = useState(false)
     const [imageState, setImageState] = useState({
@@ -47,28 +47,6 @@ const Diagram = ({
     const [scale, setScale] = useState(1)
     const  [seletedOption, setSeletedOption] = useState(1)
     const [cPins, setCpins] = useState(pins)
-
-
-    useEffect(() => {
-        setTimeout(() => {
-            console.log('è un setResetHandler')
-            setResetHandler(false)
-        }, 500);
-    }, [resetHandler])
-
-    useEffect(() => {
-        setTimeout(() => {
-            console.log('è un setZoomInHandler')
-            setZoomInHandler(false)
-        },100);
-    }, [zoomInHandler])
-
-    useEffect(() => {
-        setTimeout(() => {
-            console.log('è un setZoomOutHandler')
-            setZoomOutHandler(false)
-        }, 100);
-    }, [zoomOutHandler])
 
     useEffect(() => {
         setSeletedOption(imageState.k)
@@ -132,22 +110,24 @@ const Diagram = ({
 
             <ImagePins 
                 completeImageSettings={completeImageSettings}
-                execResetZoom={resetHandler}
-                execZoomIn={zoomInHandler}
-                execZoomOut={zoomOutHandler}
+                image={image}
+                imageState={imageState}
+                navigationController={navigationController}
+                pins={cPins}
 
                 // handleZoomIn={handleZoomIn}
 
-                image={image}
-                imageState={imageState}
-                navigationController={navigationController} 
-                pins={cPins}
+                resetZoom={resetZoom}
                 scale={scale}
-                setCpins={setCpins}
+                setCpins={setCpins} 
                 setImageState={setImageState}
-
+                setResetZoom={setResetZoom}
                 setScale={setScale}
+                setZoomInHandler={setZoomInHandler}
+                setZoomOutHandler={setZoomOutHandler}
                 zoomController={zoomController}
+                zoomInHandler={zoomInHandler}
+                zoomOutHandler={zoomOutHandler}
 
                 // zoomOut={zoomOut}
                 // zoomIn={zoomIn}
@@ -220,7 +200,7 @@ const Diagram = ({
                         className="ml-3 reset-zoom"
                         displayType="secondary"
                         id="reset"
-                        onClick={() => setResetHandler(true)}
+                        onClick={() => setResetZoom(true)}
 
                     >{"Reset Zoom"}</ClayButton>
                 )}
