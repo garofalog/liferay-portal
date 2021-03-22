@@ -113,7 +113,6 @@ const ImagePins = ({
     }, [resetZoom])
 
 
-
     useLayoutEffect(() => {
         svg = select('svg')
         container = select('g')
@@ -151,20 +150,17 @@ const ImagePins = ({
             }
 
             if (t === v) {
+                // console.log("===")
+                // console.log("resetZoom ==", resetZoom)
 
-                console.log("===")
-                console.log("resetZoom ==", resetZoom)
                 container.attr("transform", t)
                 setImageState(t)
             } else {
-       
-                console.log("!== v ->", v)
-                console.log("resetZoom !=", resetZoom)
-
-                console.log('imageState ->', event.transform)
+                // console.log("!== v ->", v)
+                // console.log("resetZoom !=", resetZoom)
+                // console.log('imageState ->', event.transform)
 
                 setImageState(event.transform)
-
                 container.attr("transform", event.transform);
 
             // if (resetZoom) {
@@ -173,8 +169,7 @@ const ImagePins = ({
             //         k: imageState.k,
             //         x: imageState.x,
             //         y: imageState.y,
-            //     }
-                
+            //     }  
             //     setResetZoom(false)
             //     setImageState({
             //         k: 1,
@@ -185,29 +180,14 @@ const ImagePins = ({
             //     console.log("!== t ->", t)
             //     console.log('imageState ->', imageState)
             //     container.attr("transform", "translate(0,0)scale(1)");
-
             // } else {
             //     console.log("reset false")
-
-                
             //     setImageState(t)
-
             //     // if (imageState.x === event.transform.x) {
             //     //     console.log("===")
-
-
             // setImageState(t)
-
-
-
-
             //     // } else {
-
-
-
             }
-
-
         });
 
         if (zoomController.enablePanZoom) {
@@ -239,22 +219,8 @@ const ImagePins = ({
             zoomIn();
         }
 
-        // if (zoomController.enablePanZoom) {
-        //     // select('g').call(panZoom)
-
-        //     console.log(panZoom)
-        // }
-
-
-        
-
-        
-
-
-
         ////////////////////////////////////////////////
     
-        
         const moveRight = () => {
             position = container.attr("transform");
             const vai = position.match(/(-?[0-9]+[.,-\s]*)+/g);
@@ -328,33 +294,14 @@ const ImagePins = ({
 
         function dragged() {
             const current = select(this);
-
-            // console.log(current)
-
             current
                 .attr('cx', event.x)
                 .attr('cy', event.y);
-
-            // setImageState({
-            //     k: imageState.k,
-            //     x: event.x,
-            //     y: event.y,
-            // })
-
         }
-
-
         
-
         function dragended(event, d) {
-
-            const filterId = (id) => {
-                
-            }
-
             const current = select(this);
             const newPos = current._groups[0].[0].attributes
-
             const beSure = [...newPos]
 
             const id = beSure.filter(d => {
@@ -362,13 +309,11 @@ const ImagePins = ({
                     return d
                 }
             })
-
             const x = beSure.filter(d => {
                 if (d.name === "cx") {
                     return d
                 }
             })
-
             const y = beSure.filter(d => {
                 if (d.name === "cy") {
                     return d
@@ -379,7 +324,6 @@ const ImagePins = ({
                     return d
                 }
             })
-
             const color = beSure.filter(d => {
                 if (d.name === "fill") {
                     return d
@@ -394,12 +338,10 @@ const ImagePins = ({
                 y: y[0].value,
             }
 
-            const newState = pins.map(element => element.id === newCoords.id ? newCoords : element);
-
-            setCpins(newState)
-
             current.attr("stroke", null);
             current.attr("fill", color[0].value)
+            const newState = pins.map(element => element.id === newCoords.id ? newCoords : element);
+            setCpins(newState)
         }
 
         //////////////////////////// 
@@ -408,13 +350,6 @@ const ImagePins = ({
             .on('drag', dragged)
             .on("start", dragstarted)
             .on("end", dragended)
-
-        var dragHandler2 = drag().on("drag", function (d) {
-            console.log('in dragHandler2')
-            select(this)
-                .attr("x", d.x = event.x)
-                .attr("y", d.y = event.y);
-        });
 
         ///////////////////////////////////////////////////////////////////// 
 
