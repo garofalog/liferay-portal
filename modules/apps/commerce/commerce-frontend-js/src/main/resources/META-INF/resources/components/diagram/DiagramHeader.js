@@ -56,10 +56,10 @@ const DiagramHeader = ({spritemap}) => {
                     onActiveChange={setActive}
                     trigger={
                         <ClayButton 
-                            alt={'Click-to-select-custom-diameter'} 
+                            alt="Click-to-select-custom-diameter" 
                             className="ml-3 select-diameter"
                             displayType="secondary">
-                            {diameter || 'Default-diameter'}
+                            Default-diameter
 			            </ClayButton>
                     }
                 >
@@ -68,7 +68,6 @@ const DiagramHeader = ({spritemap}) => {
                         <ClayDropDown.Group 
                             header="SELECT COLOR">
                             <ClayColorPicker
-                                className="mx-2"
                                 colors={customColors}
                                 label="Custom Colors"
                                 name="colorPicker2"
@@ -116,7 +115,7 @@ const DiagramHeader = ({spritemap}) => {
             </div>
 
             <ClayButton className="auto-mapping my-auto pull-right" displayType="secondary">
-                {'Auto-mapping'}
+                Auto-mapping
 			</ClayButton>
         </div>
     )
