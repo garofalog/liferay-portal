@@ -9,9 +9,9 @@
  * distribution rights of the Software.
  */
 
-import {hierarchy, linkHorizontal} from 'd3';
+import {hierarchy, linkHorizontal, tree as d3Tree} from 'd3';
 
-import {RECT_SIZES} from './constants';
+import {DX, DY, RECT_SIZES, SYMBOLS_MAP} from './constants';
 
 export function appendIcon(node, symbol, size, className) {
 	return node
@@ -190,4 +190,125 @@ export function insertAddButton(root, selectedNode) {
 	});
 
 	prevSelectedNode = selectedNode;
+}
+
+
+export const tree = d3Tree().nodeSize([DX, DY]);
+
+export const formatData = (rawData) => {
+	const dataWithRoot = {
+		children: rawData,
+		id: 0,
+		name: 'root',
+	};
+
+	return dataWithRoot;
+};
+
+export const formatItemDescription = (d) => {
+	switch (d.data.type) {
+		case 'organization':
+			return '3 Org. | 4 Acc. | 0 Users';
+		case 'account':
+			return '4 Users';
+		case 'user':
+			return 'User Role';
+		default:
+			break;
+	}
+};
+
+export function appendCircle(node, size, className) {
+	return node.append('circle').attr('r', size).attr('class', className);
+}
+
+export function generateAddButtonContent(nodeEnter, spritemap, openModal) {
+	const actionsWrapper = nodeEnter
+		.append('g')
+		.attr('class', 'actions-wrapper');
+
+	const openActionsWrapper = actionsWrapper
+		.append('g')
+		.attr('class', 'open-actions-wrapper')
+		.on('click', (_event, node) => {
+			if (node.parent.data.type === 'account') {
+				openModal(node.parent.data, 'account')
+			} else {
+				actionsWrapper.node().classList.toggle('menu-open');
+			}
+		});
+
+	appendCircle(openActionsWrapper, 36, 'action-circle');
+	appendIcon(openActionsWrapper, `${spritemap}#plus`, 18, 'action-icon');
+
+	const addOrganizationWrapper = actionsWrapper
+		.append('g')
+		.attr('class', 'add-action-wrapper organization')
+		.on('click', (_event, node) => {
+			openModal(node.parent.data, 'organization')
+		})
+
+	appendCircle(addOrganizationWrapper, 16, 'action-circle');
+	appendIcon(
+		addOrganizationWrapper,
+		`${spritemap}#organizations`,
+		16,
+		'action-icon'
+	);
+
+	const addAccountWrapper = actionsWrapper
+		.append('g')
+		.attr('class', 'add-action-wrapper account')
+		.on('click', (_event, node) => {
+			openModal(node.parent.data, 'account')
+		})
+
+	appendCircle(addAccountWrapper, 16, 'action-circle');
+	appendIcon(addAccountWrapper, `${spritemap}#users`, 16, 'action-icon');
+
+	const addUserWrapper = actionsWrapper
+		.append('g')
+		.attr('class', 'add-action-wrapper user')
+		.on('click', (_event, node) => {
+			openModal(node.parent.data, 'user')
+		})
+
+	appendCircle(addUserWrapper, 16, 'action-circle');
+	appendIcon(addUserWrapper, `${spritemap}#user`, 16, 'action-icon');
+}
+
+export function generateNodeContent(nodeEnter, spritemap) {
+	nodeEnter
+		.append('rect')
+		.attr('width', (d) => RECT_SIZES[d.data.type].width)
+		.attr('height', (d) => RECT_SIZES[d.data.type].height)
+		.attr(
+			'transform',
+			(d) => `translate(0, ${RECT_SIZES[d.data.type].height * -0.5})`
+		)
+		.attr('rx', (d) => RECT_SIZES[d.data.type].height / 2)
+		.attr('class', 'chart-rect');
+
+	const iconWrappers = nodeEnter.append('g').attr('class', 'icon-wrapper');
+
+	iconWrappers.append('circle').attr('class', 'icon-circle');
+
+	appendIcon(
+		iconWrappers,
+		(d) => `${spritemap}#${SYMBOLS_MAP[d.data.type]}`,
+		16,
+		'node-type-icon'
+	);
+
+	const infos = nodeEnter.append('g').attr('class', 'chart-item-info');
+
+	infos
+		.append('text')
+		.attr('class', 'node-title')
+		.text((d) => d.data.name);
+
+	infos
+		.append('text')
+		.attr('class', 'node-description')
+		.text(formatItemDescription);
 }

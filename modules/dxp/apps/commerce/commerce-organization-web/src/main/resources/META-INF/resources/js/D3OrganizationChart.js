@@ -13,138 +13,20 @@ import classNames from 'classnames';
 import * as d3 from 'd3';
 
 import {
-	appendIcon,
+	formatData,
+	generateAddButtonContent,
+	generateNodeContent,
 	getLinkDiagonal,
 	getLinkId,
 	getNodeId,
 	insertAddButton,
 	insertChildrenIntoNode,
 	toggleChildren,
+	tree
 } from './utils';
-import {DX, DY, RECT_SIZES, SYMBOLS_MAP} from './utils/constants';
+import {DX, DY, MARGIN_LEFT} from './utils/constants';
 import {highlight, removeHighlight} from './utils/highlight';
 
-const tree = d3.tree().nodeSize([DX, DY]);
-
-const MARGIN_LEFT = 40;
-
-const formatData = (rawData) => {
-	const dataWithRoot = {
-		children: rawData,
-		id: 0,
-		name: 'root',
-	};
-
-	return dataWithRoot;
-};
-
-const formatItemDescription = (d) => {
-	switch (d.data.type) {
-		case 'organization':
-			return '3 Org. | 4 Acc. | 0 Users';
-		case 'account':
-			return '4 Users';
-		case 'user':
-			return 'User Role';
-		default:
-			break;
-	}
-};
-
-function appendCircle(node, size, className) {
-	return node.append('circle').attr('r', size).attr('class', className);
-}
-
-function generateAddButtonContent(nodeEnter, spritemap, openModal) {
-	const actionsWrapper = nodeEnter
-		.append('g')
-		.attr('class', 'actions-wrapper');
-
-	const openActionsWrapper = actionsWrapper
-		.append('g')
-		.attr('class', 'open-actions-wrapper')
-		.on('click', (d, node) => {
-			if (node.parent.data.type === 'account') {
-				openModal(node.parent.data, 'account')
-			} else {
-				actionsWrapper.node().classList.toggle('menu-open');
-			}
-		});
-
-	appendCircle(openActionsWrapper, 36, 'action-circle');
-	appendIcon(openActionsWrapper, `${spritemap}#plus`, 18, 'action-icon');
-
-	const addOrganizationWrapper = actionsWrapper
-		.append('g')
-		.attr('class', 'add-action-wrapper organization')
-		.on('click', (_event, node) => {
-			openModal(node.parent.data, 'organization')
-		})
-
-	appendCircle(addOrganizationWrapper, 16, 'action-circle');
-	appendIcon(
-		addOrganizationWrapper,
-		`${spritemap}#organizations`,
-		16,
-		'action-icon'
-	);
-
-	const addAccountWrapper = actionsWrapper
-		.append('g')
-		.attr('class', 'add-action-wrapper account')
-		.on('click', (_event, node) => {
-			openModal(node.parent.data, 'account')
-		})
-
-	appendCircle(addAccountWrapper, 16, 'action-circle');
-	appendIcon(addAccountWrapper, `${spritemap}#users`, 16, 'action-icon');
-
-	const addUserWrapper = actionsWrapper
-		.append('g')
-		.attr('class', 'add-action-wrapper user')
-		.on('click', (_event, node) => {
-			openModal(node.parent.data, 'user')
-		})
-
-	appendCircle(addUserWrapper, 16, 'action-circle');
-	appendIcon(addUserWrapper, `${spritemap}#user`, 16, 'action-icon');
-}
-
-function generateNodeContent(nodeEnter, spritemap) {
-	nodeEnter
-		.append('rect')
-		.attr('width', (d) => RECT_SIZES[d.data.type].width)
-		.attr('height', (d) => RECT_SIZES[d.data.type].height)
-		.attr(
-			'transform',
-			(d) => `translate(0, ${RECT_SIZES[d.data.type].height * -0.5})`
-		)
-		.attr('rx', (d) => RECT_SIZES[d.data.type].height / 2)
-		.attr('class', 'chart-rect');
-
-	const iconWrappers = nodeEnter.append('g').attr('class', 'icon-wrapper');
-
-	iconWrappers.append('circle').attr('class', 'icon-circle');
-
-	appendIcon(
-		iconWrappers,
-		(d) => `${spritemap}#${SYMBOLS_MAP[d.data.type]}`,
-		16,
-		'node-type-icon'
-	);
-
-	const infos = nodeEnter.append('g').attr('class', 'chart-item-info');
-
-	infos
-		.append('text')
-		.attr('class', 'node-title')
-		.text((d) => d.data.name);
-
-	infos
-		.append('text')
-		.attr('class', 'node-description')
-		.text(formatItemDescription);
-}
 
 class D3OrganizationChart {
 	_selectedId = null;
@@ -162,10 +44,15 @@ class D3OrganizationChart {
 		this.createChart();
 	}
 
-	handleNodeClick(event, d) {
+	handleNodeClick(event, d, ...asd) {
 		event.stopPropagation();
 
-		this._selectedNode = d; 
+		this._selectedNode = d;
+
+		// console.log(asd);
+		// debugger
+
+		this.zoomHandler.translateTo() 
 
 		if (d.data.type !== 'user') {
 			if (!d.data.fetched) {
@@ -193,7 +80,7 @@ class D3OrganizationChart {
 
 		this.svg = d3
 			.select(this.rootRef)
-			.attr('viewBox', [0, 0, this.width, DX])
+			.attr('viewBox', [0, 0, this.width, this.height])
 			.call(
 				d3.zoom().on('zoom', (event) => {
 					this.zoomHandler.attr('transform', event.transform);
@@ -233,12 +120,9 @@ class D3OrganizationChart {
 			}
 		});
 
-		const height = right.x - left.x;
-
 		this.transition = this.svg
 			.transition()
 			.duration(duration)
-			.attr('viewBox', [0, left.x, this.width, height])
 			.tween(
 				'resize',
 				window.ResizeObserver
@@ -336,13 +220,6 @@ class D3OrganizationChart {
 			.remove()
 			.attr('opacity', 0)
 			.attr('transform', (d) => d.data.type !== 'add' ? `translate(${source.y},${source.x})` : `translate(${d.y},${d.x}) scale(0)`);
-	}
-
-	zoom() {
-		this.svg.attr(
-			'transform',
-			`translate('${d3.event.translate}') scale('${d3.event.scale}')`
-		);
 	}
 }
 

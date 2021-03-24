@@ -20,8 +20,8 @@ import React, {
 	useRef,
 	useState,
 } from 'react';
-import ConnectEntityModal from './ConnectEntityModal';
 
+import ConnectEntityModal from './ConnectEntityModal';
 import D3OrganizationChart from './D3OrganizationChart';
 
 function enrichArrayItemsWithType(array = [], type) {

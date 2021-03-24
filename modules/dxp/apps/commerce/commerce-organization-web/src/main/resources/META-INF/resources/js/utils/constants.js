@@ -31,6 +31,8 @@ export const COLUMN_SIZE = RECT_SIZES.organization[0];
 
 export const COLUMN_GAP = 60;
 
+export const MARGIN_LEFT = 40;
+
 export const SYMBOLS_MAP = {
 	account: 'users',
 	organization: 'organizations',
