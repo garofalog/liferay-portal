@@ -15,6 +15,7 @@
 //  import * as d3 from 'd3';
 //  console.log(d3)
 
+import ClayButton from '@clayui/button';
 import { drag, event, mouse, schemeCategory10, select, zoom } from 'd3';
 import PropTypes from 'prop-types';
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
@@ -332,10 +333,10 @@ const ImagePins = ({
 
             const newCoords = {
                 color: color[0].value,
-                id: id[0].value,
-                r: r[0].value,
-                x: x[0].value,
-                y: y[0].value,
+                id: parseInt(id[0].value,10),
+                r: parseInt(r[0].value, 10),
+                x: parseFloat(x[0].value,10),
+                y: parseFloat(y[0].value,10),
             }
 
             current.attr("stroke", null);
@@ -362,116 +363,17 @@ const ImagePins = ({
                 .attr("fill", schemeCategory10[d.index % 10]);
         }
 
-        // .transition()
-        // .duration(500)
-        // .attr("cx", 20)
-        // .attr("cy", 20)
-        // .attr("r", 20)
-        // .style("fill", "pink")
-        // .attr("stroke", "#039BE5")
-        // .attr("stroke-width", "1px")
-        // .attr("stroke", "#455A64")
-        // .attr("stroke-width", "3px")
-        // .attr("stroke", "#455A64")
-        // .attr("stroke-width", "3px")
-        // .classed("draggable", true)
+        const addPin = () => {
+            setCpins(pins.concat({
+                color: "#FFFF00",
+                id: pins.length + 1,
+                r: 30,
+                x: 50,
+                y: 50, 
+            }))
+        }
 
-
-
-        // container.append("circle")
-        //     .attr("cx", 20)
-        //     .attr("cy", 20)
-        //     .attr("r", 20)
-        //     .style("fill", "#ff0")
-        //     .attr("stroke", "#039BE5")
-        //     .attr("stroke-width", "1px")
-        //     .classed('draggable', true)
-
-        // container.append("circle")
-        //     .attr("cx", 30)
-        //     .attr("cy", 30)
-        //     .attr("r", 30)
-        //     .style("fill", "#ae2")
-        //     .attr("stroke", "#039BE5")
-        //     .attr("stroke-width", "1px")
-        //     .classed('draggable', true)
-
-        // const newPin = () => {
-        //     container.append("circle")
-        //         .transition()
-        //         .duration(500)
-        //         .attr("cx", 20)
-        //         .attr("cy", 20)
-        //         .attr("r", 20)
-        //         .style("fill", "pink")
-        //         .attr("stroke", "#039BE5")
-        //         .attr("stroke-width", "1px")
-        //         .classed('draggable', true)
-        //         .attr("stroke", "#455A64")
-        //         .attr("stroke-width", "3px")
-        // }
         ////////////////////////////////////////////////
-
-        
-
-
-        // container.on("click", function () {
-        //     console.log('in click')
-
-        //     const mouseEv = mouse(this);
-
-        //     pin
-        //         .transition()
-        //         .duration(500)
-        //         .attr("transform", "translate(" + mouseEv[0] + "," + mouseEv[1] + ") scale(1)")
-        //         .attr("x", mouseEv[0])
-        //         .attr("y", mouseEv[1])
-        //         .attr("transform", "scale(1)");
-            
-            
-
-
-        //     pin.on("click", () => {
-        //         console.log('sto  handlando')
-        //         if (event.ctrlKey || event.metaKey) {
-        //             console.log('click con o ctrl metakey')
-        //             pin.transition()
-        //                 .duration(500)
-        //                 .attr("transform", "translate(" + pin.attr("x") + "," + pin.attr("y") + ") scale(0)")
-        //                 .remove();
-        //         } else {
-
-        //             var datum = pin.datum();
-        //             if (pin.datum().selected) {
-        //                 console.log('datum selected')
-        //                 datum.selected = false;
-        //                 pin
-        //                     .datum(datum)
-        //                     .transition()
-        //                     .duration(500)
-        //                     .attr("stroke", "#039BE5")
-        //                     .attr("stroke-width", "1px");
-        //             } else {
-        //                 console.log('datum')
-        //                 datum.selected = true;
-        //                 pin
-        //                     .datum(datum)
-        //                     .transition()
-        //                     .duration(500)
-        //                     .attr("stroke", "#455A64")
-        //                     .attr("stroke-width", "3px");
-        //             }
-
-        //         }
-        //         event.stopPropagation();
-        //     });
-
-            // dragHandler(svg);
-
-
-
-        // });
-
 
         const pinnn = container.selectAll("circle")
             .data(pins)
@@ -481,18 +383,40 @@ const ImagePins = ({
             .attr("r", d => d.r)
             .attr("id", d => d.id)
             .attr("fill", d => d.color)
-
-            // .call(dragHandler)
-
-            .classed('draggable', true)
-
-            // .on("click", clicked);
-
+            .classed('draggable', true);
 
         dragHandler(pinnn);
 
 
+        // pinnn.on("click", () => {
+        //     console.log('sto  handlando')
 
+        //         var datum = pinnn.datum();
+        //         if (pinnn.datum().selected) {
+        //             console.log('datum selected')
+        //             datum.selected = false;
+        //             pinnn
+        //                 .datum(datum)
+        //                 .transition()
+        //                 .duration(500)
+        //                 .attr("stroke", "#039BE5")
+        //                 .attr("stroke-width", "1px");
+        //         } else {
+        //             console.log('datum')
+        //             datum.selected = true;
+        //             pinnn
+        //                 .datum(datum)
+        //                 .transition()
+        //                 .duration(500)
+        //                 .attr("stroke", "#455A64")
+        //                 .attr("stroke-width", "3px");
+        //         }
+
+
+        //     event.stopPropagation();
+        // });
+
+        // dragHandler(svg);
 
         
         ////////////////////// register event //////////////////////////
@@ -511,14 +435,10 @@ const ImagePins = ({
         select('.box.hr').on('click', handleZoomOut)
         select('.box.plus').on('click', handleZoomIn)
 
-        select('#newPin').on('click', newPin)
+        select('#newPin').on('click', addPin)
 
         // dragHandler2(container.selectAll('.draggable'));
-
         // dragHandler(container.selectAll('.draggable'));
-
-
-
 
     }, [
         width, 
@@ -560,6 +480,8 @@ const ImagePins = ({
                 zoomIn={handleZoomIn} 
                 zoomOut={handleZoomOut} />
             )}
+
+            <ClayButton id="newPin"></ClayButton>
         </div>
     )
 };

@@ -129,9 +129,6 @@ const Diagram = ({
                 zoomInHandler={zoomInHandler}
                 zoomOutHandler={zoomOutHandler}
 
-                // zoomOut={zoomOut}
-                // zoomIn={zoomIn}
-
                 />
             
 
