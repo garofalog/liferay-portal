@@ -18,41 +18,73 @@ import {
 	generateNodeContent,
 	getLinkDiagonal,
 	getLinkId,
+	getMinWidth,
 	getNodeId,
 	insertAddButton,
 	insertChildrenIntoNode,
 	toggleChildren,
 	tree
 } from './utils';
-import {DX, DY, MARGIN_LEFT} from './utils/constants';
+import {DY, RECT_SIZES, ZOOM_EXTENT} from './utils/constants';
 import {highlight, removeHighlight} from './utils/highlight';
-
 
 class D3OrganizationChart {
 	_selectedId = null;
 
-	constructor(rootRef, rawData, getChildren, spritemap, openModal) {
+	constructor(rawData, refs, getChildren, spritemap, openModal) {
 		this.spritemap = spritemap;
-		this.rootRef = rootRef;
+		this.refs = refs;
 		this.data = formatData(rawData);
 		this.getChildren = getChildren;
-		const clientRect = this.rootRef.getBoundingClientRect();
+		const clientRect = this.refs.svg.getBoundingClientRect();
 		this.width = clientRect.width;
 		this.height = clientRect.height;
-		this.handleNodeClick = this.handleNodeClick.bind(this);
+		this._handleNodeClick = this._handleNodeClick.bind(this);
+		this._handleZoomIn = this._handleZoomIn.bind(this);
+		this._handleZoomOut = this._handleZoomOut.bind(this);
+		this._handleNodeClick = this._handleNodeClick.bind(this);
+		this._currentScale = 1;
 		this._openModal = openModal;
-		this.createChart();
+
+		this._initialiseZoomListeners(this.refs);
+
+		this._createChart();
 	}
 
-	handleNodeClick(event, d, ...asd) {
+	_initialiseZoomListeners() {
+		this.refs.zoomIn.disabled = true;
+
+		this.refs.zoomIn.addEventListener('click', this._handleZoomIn)
+		this.refs.zoomOut.addEventListener('click', this._handleZoomOut)
+	}
+
+	_handleZoom(event) {
+		this._currentScale = event.transform.k;
+		this.zoomHandler.attr("transform", event.transform);
+	}
+
+	_handleZoomIn() {
+		if(this._currentScale * 2 >= ZOOM_EXTENT[1]) {
+			this.refs.zoomIn.disabled = true;
+		} 
+
+		this.refs.zoomOut.disabled = false;
+		this.svg.transition().duration(700).call(this._zoom.scaleBy, 2);
+	}
+
+	_handleZoomOut() {
+		if(this._currentScale * 0.5 <= ZOOM_EXTENT[0]) {
+			this.refs.zoomOut.disabled = true;
+		} 
+
+		this.refs.zoomIn.disabled = false;
+		this.svg.transition().duration(700).call(this._zoom.scaleBy, 0.5);
+	}
+
+	_handleNodeClick(event, d) {
 		event.stopPropagation();
 
 		this._selectedNode = d;
-
-		// console.log(asd);
-		// debugger
-
-		this.zoomHandler.translateTo() 
 
 		if (d.data.type !== 'user') {
 			if (!d.data.fetched) {
@@ -72,30 +104,26 @@ class D3OrganizationChart {
 		this.update(d);
 	}
 
-	createChart() {
-		this.root = d3.hierarchy(this.data, (d) => d.children);
+	_createChart() {
+		this.root = d3.hierarchy(this.data, d => d.children);
 
 		this.root.x0 = DY / 2;
 		this.root.y0 = 0;
 
+		this._zoom = d3.zoom()
+			.scaleExtent(ZOOM_EXTENT)
+			.on('zoom', this._handleZoom.bind(this))
+			
 		this.svg = d3
-			.select(this.rootRef)
-			.attr('viewBox', [0, 0, this.width, this.height])
-			.call(
-				d3.zoom().on('zoom', (event) => {
-					this.zoomHandler.attr('transform', event.transform);
-				})
-			);
-
-		this.zoomHandler = this.svg.append('g');
+			.select(this.refs.svg)
+			.call(this._zoom)
+			
+		this.zoomHandler = this.svg
+			.append('g')
 
 		this.dataWrapper = this.zoomHandler
 			.append('g')
-			.attr(
-				'transform',
-				`translate(${MARGIN_LEFT},${DX - this.root.x0})`
-			);
-
+			
 		this.linksGroup = this.dataWrapper.append('g');
 		this.nodesGroup = this.dataWrapper.append('g');
 
@@ -108,17 +136,6 @@ class D3OrganizationChart {
 		insertAddButton(this.root, this._selectedNode);
 
 		tree(this.root);
-
-		let left = this.root;
-		let right = this.root;
-		this.root.eachBefore((node) => {
-			if (node.x < left.x) {
-				left = node;
-			}
-			if (node.x > right.x) {
-				right = node;
-			}
-		});
 
 		this.transition = this.svg
 			.transition()
@@ -137,6 +154,31 @@ class D3OrganizationChart {
 			d.x0 = d.x;
 			d.y0 = d.y;
 		});
+
+		this.updateTransform(source);
+	}
+
+	updateTransform(source) {
+		const {height, width} = this.refs.svg.getBoundingClientRect();
+
+		const k = this._currentScale;
+
+		let y0;
+		
+		if(source.depth) {
+			y0 = source.y0 + (RECT_SIZES[source.data.type].width / 2)
+		} else {
+			y0 = source.children[0].y0 + (getMinWidth(source.children) / 2) ;
+		} 
+		
+		const x = -y0 * k + width / 2;
+		const y = -source.x0 * k + height / 2;
+		
+		this.svg.transition()
+			.ease(d3.easeLinear).duration(500).call(
+				this._zoom.transform,
+				d3.zoomIdentity.translate(x, y).scale(k)
+			);
 	}
 
 	updateLinks(source) {
@@ -204,7 +246,7 @@ class D3OrganizationChart {
 			.on('mouseleave', () => {
 				removeHighlight();
 			})
-			.on('click', this.handleNodeClick);
+			.on('click', this._handleNodeClick);
 
 		bindedNodes
 			.merge(this.bindedChartItems)

@@ -10,6 +10,7 @@
  */
 
 import {hierarchy, linkHorizontal, tree as d3Tree} from 'd3';
+import { node } from 'prop-types';
 
 import {DX, DY, RECT_SIZES, SYMBOLS_MAP} from './constants';
 
@@ -200,6 +201,7 @@ export const formatData = (rawData) => {
 		children: rawData,
 		id: 0,
 		name: 'root',
+		type: 'root'
 	};
 
 	return dataWithRoot;
@@ -311,4 +313,12 @@ export function generateNodeContent(nodeEnter, spritemap) {
 		.append('text')
 		.attr('class', 'node-description')
 		.text(formatItemDescription);
+}
+
+export function getMinWidth(nodes){
+	return nodes.reduce((maxWidth, node) => {
+		const width = RECT_SIZES[node.data.type].width
+
+		return maxWidth > width ? maxWidth : width
+	}, 0)
 }

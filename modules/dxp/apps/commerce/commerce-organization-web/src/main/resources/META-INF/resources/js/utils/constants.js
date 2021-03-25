@@ -18,11 +18,17 @@ export const RECT_SIZES = {
 		height: 72,
 		width: 280,
 	},
+	root: {
+		height: 56,
+		width: 240,
+	},
 	user: {
 		height: 56,
 		width: 240,
 	},
 };
+
+export const ZOOM_EXTENT = [.25, 1];
 
 export const RECT_PADDING = 16;
 export const ICON_RADIUS = 16;

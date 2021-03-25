@@ -9,6 +9,7 @@
  * distribution rights of the Software.
  */
 
+import ClayButton, {ClayButtonGroup, ClayButtonWithIcon} from '@clayui/button';
 import ClayIcon, {ClayIconSpriteContext} from '@clayui/icon';
 import classnames from 'classnames';
 import {fetch} from 'frontend-js-web';
@@ -77,9 +78,12 @@ function OrganizationChartApp({
 }) {
 	const [modalParentNode, updateModalParentNode] = useState(false);
 	const [modalEntityType, updateModalEntityType] = useState(null);
-	
+	const [expanded, updateExpanded] = useState(false)
+
 	const [data, updateData] = useState(null);
 	const chartSvgRef = useRef(null);
+	const zoomOutRef = useRef(null);
+	const zoomInRef = useRef(null);
 
 	const getChildren = useCallback(
 		(id, type) => {
@@ -123,8 +127,12 @@ function OrganizationChartApp({
 	useLayoutEffect(() => {
 		if (data && chartSvgRef.current) {
 			new D3OrganizationChart(
-				chartSvgRef.current,
 				data,
+				{
+					svg: chartSvgRef.current,
+					zoomIn: zoomInRef.current,
+					zoomOut: zoomOutRef.current,
+				},
 				getChildren,
 				spritemap,
 				(node, entityType) => {
@@ -137,8 +145,15 @@ function OrganizationChartApp({
 
 	return (
 		<ClayIconSpriteContext.Provider value={spritemap}>
-			<div className="org-chart-container">
+			<div className={classnames("org-chart-container", expanded && 'expanded')}>
 				<svg className="svg-chart" ref={chartSvgRef} />
+				<div className="zoom-controls">
+					<ClayButtonWithIcon displayType="secondary" onClick={() => updateExpanded(!expanded)} small symbol="expand" />
+					<ClayButton.Group className="ml-3">
+						<ClayButtonWithIcon displayType="secondary" ref={zoomOutRef} small symbol="hr" />
+						<ClayButtonWithIcon displayType="secondary" ref={zoomInRef} small symbol="plus" />
+					</ClayButton.Group>
+				</div>
 			</div>
 			<ConnectEntityModal 
 				newEntityType={modalEntityType}
