@@ -24,7 +24,7 @@ export function highlight(node, nodesGroup, linksGroup) {
 		.filter((d) => ancestorIds.includes(d.target.data.id));
 
 	highlightedLinks.each((_node, _index, nodeInstances) => {
-		nodeInstances.forEach(nodeInstance => {
+		nodeInstances.forEach((nodeInstance) => {
 			nodeInstance.parentElement.append(nodeInstance);
 		});
 	});

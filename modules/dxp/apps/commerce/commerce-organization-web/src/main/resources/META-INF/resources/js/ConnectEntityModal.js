@@ -14,76 +14,85 @@ import ClayModal, {useModal} from '@clayui/modal';
 import React, {useMemo, useState} from 'react';
 
 function AddOrganizationsContent() {
-    return (
-        <>
-            <ClayModal.Header>{Liferay.Language.get('add-organizations')}</ClayModal.Header>
-            <ClayModal.Body>
-            <h1>{"Hello world!"}</h1>
-            </ClayModal.Body>
-        </>
-    )
+	return (
+		<>
+			<ClayModal.Header>
+				{Liferay.Language.get('add-organizations')}
+			</ClayModal.Header>
+			<ClayModal.Body>
+				<h1>{'Hello world!'}</h1>
+			</ClayModal.Body>
+		</>
+	);
 }
 function AddUsersContent() {
-    return (
-        <>
-            <ClayModal.Header>{Liferay.Language.get('add-users')}</ClayModal.Header>
-            <ClayModal.Body>
-            <h1>{"Hello world!"}</h1>
-            </ClayModal.Body>
-        </>
-    )
+	return (
+		<>
+			<ClayModal.Header>
+				{Liferay.Language.get('add-users')}
+			</ClayModal.Header>
+			<ClayModal.Body>
+				<h1>{'Hello world!'}</h1>
+			</ClayModal.Body>
+		</>
+	);
 }
 function AddAccountsContent() {
-    return (
-        <>
-            <ClayModal.Header>{Liferay.Language.get('add-accounts')}</ClayModal.Header>
-            <ClayModal.Body>
-            <h1>{"Hello world!"}</h1>
-            </ClayModal.Body>
-        </>
-    )
+	return (
+		<>
+			<ClayModal.Header>
+				{Liferay.Language.get('add-accounts')}
+			</ClayModal.Header>
+			<ClayModal.Body>
+				<h1>{'Hello world!'}</h1>
+			</ClayModal.Body>
+		</>
+	);
 }
 
 const modalContents = {
-    account: AddAccountsContent,
-    organization: AddOrganizationsContent,
-    user: AddUsersContent,
-}
+	account: AddAccountsContent,
+	organization: AddOrganizationsContent,
+	user: AddUsersContent,
+};
 
 function ConnectEntityModal({
-    newEntityType,
-    parentNode,
-    updateModalEntityType,
-    updateModalParentNode,
+	newEntityType,
+	parentNode,
+	updateModalEntityType,
+	updateModalParentNode,
 }) {
-    const closeModal = () => {
-        updateModalParentNode(null)
-    }
+	const closeModal = () => {
+		updateModalParentNode(null);
+	};
 
-    const { observer, onClose } = useModal({
-        onClose: closeModal
-    });
+	const {observer, onClose} = useModal({
+		onClose: closeModal,
+	});
 
-    const ModalContent = useMemo(() => {
-        return modalContents[newEntityType]
-    }, [newEntityType])
+	const ModalContent = useMemo(() => {
+		return modalContents[newEntityType];
+	}, [newEntityType]);
 
-    return !!parentNode && (
-          <ClayModal
-            observer={observer}
-            size="md"
-          >
-            <ModalContent />
-            <ClayModal.Footer
-              first={
-                <ClayButton.Group spaced>
-                  <ClayButton displayType="secondary">{Liferay.Language.get('cancel')}</ClayButton>
-                  <ClayButton onClick={onClose}>{Liferay.Language.get('cancel')}</ClayButton>
-                </ClayButton.Group>
-              }
-            />
-          </ClayModal>
-        )
-  };
-  
-  export default ConnectEntityModal
+	return (
+		!!parentNode && (
+			<ClayModal observer={observer} size="md">
+				<ModalContent />
+				<ClayModal.Footer
+					first={
+						<ClayButton.Group spaced>
+							<ClayButton displayType="secondary">
+								{Liferay.Language.get('cancel')}
+							</ClayButton>
+							<ClayButton onClick={onClose}>
+								{Liferay.Language.get('cancel')}
+							</ClayButton>
+						</ClayButton.Group>
+					}
+				/>
+			</ClayModal>
+		)
+	);
+}
+
+export default ConnectEntityModal;

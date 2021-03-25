@@ -28,7 +28,7 @@ export const RECT_SIZES = {
 	},
 };
 
-export const ZOOM_EXTENT = [.25, 1];
+export const ZOOM_EXTENT = [0.25, 1];
 
 export const RECT_PADDING = 16;
 export const ICON_RADIUS = 16;

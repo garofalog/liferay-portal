@@ -6,7 +6,7 @@ $text: $gray-600;
 	position: relative;
 	background-color: $light;
 	height: 700px;
-	
+
 	&.expanded {
 		position: fixed;
 		top: 0;
@@ -26,23 +26,23 @@ $text: $gray-600;
 		width: 100%;
 		height: 100%;
 	}
-	
+
 	.chart-link {
 		fill: none;
 		stroke: $secondary-l2;
 		stroke-width: 1.5;
-	
+
 		&.highlighted {
 			stroke: rgba($primary, 0.4);
 		}
 	}
-	
+
 	.chart-rect {
 		fill: white;
 		stroke: $secondary-l2;
 		stroke-width: 1.5;
 	}
-	
+
 	.chart-item {
 		&.highlighted {
 			.chart-rect {
@@ -54,16 +54,16 @@ $text: $gray-600;
 				stroke: $primary;
 			}
 		}
-	
+
 		&:hover {
 			cursor: pointer;
 		}
 	}
-	
+
 	.node-type-icon {
 		transform: translate(24px, -8px);
 	}
-	
+
 	.icon-circle {
 		r: 16px;
 		transform: translate(16px * 2, 0);
@@ -79,73 +79,73 @@ $text: $gray-600;
 	.chart-item-user .icon-circle {
 		fill: #ffd76e;
 	}
-	
+
 	.node-title {
 		font-size: 14px;
 		font-weight: bold;
 		transform: translate(#{16px * 4}, -3px);
 		text-anchor: start;
+		user-select: none;
 	}
-	
+
 	.node-description {
 		fill: $text;
 		font-size: 14px;
 		transform: translate(#{16px * 4}, 15px);
 		text-anchor: start;
+		user-select: none;
 	}
-	
+
 	.actions-wrapper {
 		transform: translate(36px, 0px);
 		fill: $text;
 	}
-	
+
 	.action-circle {
 		fill: white;
 		stroke: $secondary-l2;
 		stroke-width: 1.5px;
 		transition: stroke 0.1s ease-in-out;
-	
 	}
 
 	.open-actions-wrapper,
 	.add-action-wrapper {
-		&:hover .action-circle{
+		&:hover .action-circle {
 			stroke: $secondary;
 		}
 	}
-	
+
 	.open-actions-wrapper {
 		transform: rotate(0);
 		transition: transform 0.5s ease-in-out;
-	
+
 		.action-icon {
 			transform: translate(-9px, -9px);
 		}
 	}
-	
+
 	.add-action-wrapper {
 		transition: transform 0.2s ease-in;
-	
+
 		.action-icon {
 			transform: translate(-8px, -8px);
 		}
-	
+
 		&.account {
 			transition-delay: 0.1s;
 			transform: translate(35px, -35px) scale(0);
 		}
-	
+
 		&.organization {
 			transform: translate(0px, -50px) scale(0);
 		}
-	
+
 		&.user {
 			transition-delay: 0.2s;
 			transform: translate(50px, 0) scale(0);
 		}
 	}
-	
-	
+
 	.menu-open {
 		.account {
 			transform: translate(43px, -43px) scale(1);
@@ -162,5 +162,5 @@ $text: $gray-600;
 		.open-actions-wrapper {
 			transform: rotate(45deg * 5);
 		}
-	} 
+	}
 }

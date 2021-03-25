@@ -10,7 +10,7 @@
  */
 
 import {hierarchy, linkHorizontal, tree as d3Tree} from 'd3';
-import { node } from 'prop-types';
+import {node} from 'prop-types';
 
 import {DX, DY, RECT_SIZES, SYMBOLS_MAP} from './constants';
 
@@ -93,16 +93,16 @@ export function toggleChildren(d) {
 }
 
 export function insertChildrenIntoNode(children, node) {
-	if(children.length) {
+	if (children.length) {
 		node.children = [];
 		node.data.children = [];
-	
+
 		children.forEach((child) => {
 			const newNode = hierarchy(child, (node) => node.children);
-	
+
 			newNode.parent = node;
 			newNode.depth = node.depth + 1;
-	
+
 			node.children.push(newNode);
 			node.data.children.push(newNode);
 		});
@@ -113,22 +113,22 @@ export function insertChildrenIntoNode(children, node) {
 
 function removeAddButton(node) {
 	const children = node.children || node._children;
-	const dataChildren = node.data.children || node.data._children
+	const dataChildren = node.data.children || node.data._children;
 
-	if(!children) {
-		return
+	if (!children) {
+		return;
 	}
 
-	if(children[0]?.data?.type === 'add') {
+	if (children[0]?.data?.type === 'add') {
 		children.shift();
 		dataChildren.shift();
 	}
 
-	if(Array.isArray(node.children) && !node.children.length) {
+	if (Array.isArray(node.children) && !node.children.length) {
 		node.children = null;
 		node.data.children = null;
 	}
-	if(Array.isArray(node._children) && !node._children.length) {
+	if (Array.isArray(node._children) && !node._children.length) {
 		node._children = null;
 		node.data._children = null;
 	}
@@ -139,46 +139,49 @@ function getAllNodes(root) {
 
 	function parseNode(node) {
 		const children = node.children || node._children;
-		if(children) {
+		if (children) {
 			children.forEach(parseNode);
 
 			nodes.push(...children);
 		}
-		
-	} 
+	}
 
 	parseNode(root);
 
 	return nodes;
 }
 
-let prevSelectedNode = null
+let prevSelectedNode = null;
 
 export function insertAddButton(root, selectedNode) {
-	if(
-		!selectedNode 
-		|| (prevSelectedNode?.data?.id === selectedNode.data.id)
-	) {
+	if (!selectedNode || prevSelectedNode?.data?.id === selectedNode.data.id) {
 		return;
 	}
 
-	getAllNodes(root).forEach(d => {
-		if(d.data.id === prevSelectedNode?.data?.id) {
-			removeAddButton(d)
-		} else if (d.data.id === selectedNode.data.id && d.data.type !== 'user') {
-			if(!d.children && d._children) {
-				toggleChildren(d)
+	getAllNodes(root).forEach((d) => {
+		if (d.data.id === prevSelectedNode?.data?.id) {
+			removeAddButton(d);
+		}
+		else if (
+			d.data.id === selectedNode.data.id &&
+			d.data.type !== 'user'
+		) {
+			if (!d.children && d._children) {
+				toggleChildren(d);
 			}
 
-			if(!d.children) {
+			if (!d.children) {
 				d.children = [];
 				d.data.children = [];
 			}
 
-			const newNode = hierarchy({
-				id: Math.random(),
-				type: 'add',
-			}, (node) => node.children)
+			const newNode = hierarchy(
+				{
+					id: Math.random(),
+					type: 'add',
+				},
+				(node) => node.children
+			);
 
 			newNode.parent = d;
 			newNode.depth = d.depth + 1;
@@ -187,12 +190,11 @@ export function insertAddButton(root, selectedNode) {
 			d.data.children.unshift(newNode);
 
 			return;
-		} 
+		}
 	});
 
 	prevSelectedNode = selectedNode;
 }
-
 
 export const tree = d3Tree().nodeSize([DX, DY]);
 
@@ -201,7 +203,7 @@ export const formatData = (rawData) => {
 		children: rawData,
 		id: 0,
 		name: 'root',
-		type: 'root'
+		type: 'root',
 	};
 
 	return dataWithRoot;
@@ -232,10 +234,11 @@ export function generateAddButtonContent(nodeEnter, spritemap, openModal) {
 	const openActionsWrapper = actionsWrapper
 		.append('g')
 		.attr('class', 'open-actions-wrapper')
-		.on('click', (_event, node) => {
+		.on('mousedown', (_event, node) => {
 			if (node.parent.data.type === 'account') {
-				openModal(node.parent.data, 'account')
-			} else {
+				openModal(node.parent.data, 'account');
+			}
+			else {
 				actionsWrapper.node().classList.toggle('menu-open');
 			}
 		});
@@ -246,9 +249,9 @@ export function generateAddButtonContent(nodeEnter, spritemap, openModal) {
 	const addOrganizationWrapper = actionsWrapper
 		.append('g')
 		.attr('class', 'add-action-wrapper organization')
-		.on('click', (_event, node) => {
-			openModal(node.parent.data, 'organization')
-		})
+		.on('mousedown', (_event, node) => {
+			openModal(node.parent.data, 'organization');
+		});
 
 	appendCircle(addOrganizationWrapper, 16, 'action-circle');
 	appendIcon(
@@ -261,9 +264,9 @@ export function generateAddButtonContent(nodeEnter, spritemap, openModal) {
 	const addAccountWrapper = actionsWrapper
 		.append('g')
 		.attr('class', 'add-action-wrapper account')
-		.on('click', (_event, node) => {
-			openModal(node.parent.data, 'account')
-		})
+		.on('mousedown', (_event, node) => {
+			openModal(node.parent.data, 'account');
+		});
 
 	appendCircle(addAccountWrapper, 16, 'action-circle');
 	appendIcon(addAccountWrapper, `${spritemap}#users`, 16, 'action-icon');
@@ -271,9 +274,9 @@ export function generateAddButtonContent(nodeEnter, spritemap, openModal) {
 	const addUserWrapper = actionsWrapper
 		.append('g')
 		.attr('class', 'add-action-wrapper user')
-		.on('click', (_event, node) => {
-			openModal(node.parent.data, 'user')
-		})
+		.on('mousedown', (_event, node) => {
+			openModal(node.parent.data, 'user');
+		});
 
 	appendCircle(addUserWrapper, 16, 'action-circle');
 	appendIcon(addUserWrapper, `${spritemap}#user`, 16, 'action-icon');
@@ -315,10 +318,10 @@ export function generateNodeContent(nodeEnter, spritemap) {
 		.text(formatItemDescription);
 }
 
-export function getMinWidth(nodes){
+export function getMinWidth(nodes) {
 	return nodes.reduce((maxWidth, node) => {
-		const width = RECT_SIZES[node.data.type].width
+		const width = RECT_SIZES[node.data.type].width;
 
-		return maxWidth > width ? maxWidth : width
-	}, 0)
+		return maxWidth > width ? maxWidth : width;
+	}, 0);
 }

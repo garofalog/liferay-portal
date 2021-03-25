@@ -78,7 +78,7 @@ function OrganizationChartApp({
 }) {
 	const [modalParentNode, updateModalParentNode] = useState(false);
 	const [modalEntityType, updateModalEntityType] = useState(null);
-	const [expanded, updateExpanded] = useState(false)
+	const [expanded, updateExpanded] = useState(false);
 
 	const [data, updateData] = useState(null);
 	const chartSvgRef = useRef(null);
@@ -145,17 +145,37 @@ function OrganizationChartApp({
 
 	return (
 		<ClayIconSpriteContext.Provider value={spritemap}>
-			<div className={classnames("org-chart-container", expanded && 'expanded')}>
+			<div
+				className={classnames(
+					'org-chart-container',
+					expanded && 'expanded'
+				)}
+			>
 				<svg className="svg-chart" ref={chartSvgRef} />
 				<div className="zoom-controls">
-					<ClayButtonWithIcon displayType="secondary" onClick={() => updateExpanded(!expanded)} small symbol="expand" />
+					<ClayButtonWithIcon
+						displayType="secondary"
+						onClick={() => updateExpanded(!expanded)}
+						small
+						symbol="expand"
+					/>
 					<ClayButton.Group className="ml-3">
-						<ClayButtonWithIcon displayType="secondary" ref={zoomOutRef} small symbol="hr" />
-						<ClayButtonWithIcon displayType="secondary" ref={zoomInRef} small symbol="plus" />
+						<ClayButtonWithIcon
+							displayType="secondary"
+							ref={zoomOutRef}
+							small
+							symbol="hr"
+						/>
+						<ClayButtonWithIcon
+							displayType="secondary"
+							ref={zoomInRef}
+							small
+							symbol="plus"
+						/>
 					</ClayButton.Group>
 				</div>
 			</div>
-			<ConnectEntityModal 
+			<ConnectEntityModal
 				newEntityType={modalEntityType}
 				parentNode={modalParentNode}
 				updateModalEntityType={updateModalEntityType}
