@@ -24,6 +24,7 @@ import ZoomController from './ZoomController';
 
 
 const ImagePins = ({ 
+    addNewPinState,
     addPinHandler,
     cPins, 
     completeImageSettings,
@@ -137,8 +138,6 @@ const ImagePins = ({
         // }));        
 
         const panZoom = zoom().on("zoom", () => {
-
-            // container.attr("transform", `translate(${s.x},${s.y}) scale(${s.k})`);
 
             const t = {
                 k: event.transform.k,
@@ -366,9 +365,9 @@ const ImagePins = ({
 
         const addPin = () => {
             setCpins(cPins.concat({
-                color: "#FFFF00",
+                color: "#" + addNewPinState.color,
                 id: cPins.length + 1,
-                r: 30,
+                r: addNewPinState.radius,
                 x: 50,
                 y: 50, 
             }))
@@ -504,7 +503,7 @@ ImagePins.default = {
 }
 
 ImagePins.propTypes = {
-    addPinHandler: PropTypes.func,
+    addPinHandler: PropTypes.bool,
     cPins: PropTypes.arrayOf(
         PropTypes.shape({
             color: PropTypes.string,

@@ -13,6 +13,7 @@
  */
 
 import ClayButton, { ClayButtonWithIcon } from '@clayui/button';
+import ClayColorPicker from '@clayui/color-picker';
 import { ClayInput } from '@clayui/form';
 import { ClaySelect, ClaySelectWithOption } from '@clayui/form';
 import ClayIcon from '@clayui/icon';
@@ -32,6 +33,7 @@ const Diagram = ({
     enableResetZoom, 
     image, 
     navigationController, 
+    newPinSettings,
     pins, 
     spritemap,
     zoomController
@@ -48,6 +50,15 @@ const Diagram = ({
     const [scale, setScale] = useState(1)
     const  [seletedOption, setSeletedOption] = useState(1)
     const [cPins, setCpins] = useState(pins)
+
+    const [addNewPinState, setAddNewPinState] = useState({
+        color: newPinSettings.colorPicker.selectedColor,
+        radius: newPinSettings.defaultRadius,
+    })
+
+
+    // const [customColors, setCustoms] = useState(["008000", "00FFFF", "0000FF"]);
+    // const [color, setColor] = useState(customColors[0]);
 
     useEffect(() => {
         setSeletedOption(imageState.k)
@@ -96,7 +107,6 @@ const Diagram = ({
     }
     
     const handleImageState = (p) => {
-        console.log("cliccato +")
         setImageState({
             k: p.k,
             x: p.x,
@@ -106,19 +116,32 @@ const Diagram = ({
 
     return (
         <div className="diagram mx-auto">
-
-            <DiagramHeader />
+            {/* <ClayColorPicker
+                colors={customColors}
+                label="Custom Colors"
+                name="colorPicker2"
+                onColorsChange={setCustoms}
+                onValueChange={setColor}
+                showHex={true}
+                spritemap={spritemap}
+                title="Custom Colors"
+                value={color}
+            /> */}
+            <DiagramHeader 
+                addNewPinState={addNewPinState}
+                newPinSettings={newPinSettings}
+                setAddNewPinState={setAddNewPinState}
+                setAddPinHandler={setAddPinHandler}
+            />
 
             <ImagePins 
+                addNewPinState={addNewPinState}
                 addPinHandler={addPinHandler}
                 cPins={cPins}
                 completeImageSettings={completeImageSettings}
                 image={image}
                 imageState={imageState}
                 navigationController={navigationController}
-
-                // handleZoomIn={handleZoomIn}
-
                 resetZoom={resetZoom}
                 scale={scale}
                 setAddPinHandler={setAddPinHandler} 
@@ -130,9 +153,7 @@ const Diagram = ({
                 setZoomOutHandler={setZoomOutHandler}
                 zoomController={zoomController}
                 zoomInHandler={zoomInHandler}
-                zoomOutHandler={zoomOutHandler}
-
-                />
+                zoomOutHandler={zoomOutHandler}/>
             
 
             {/* <DiagramFooter infos={forfooter} myzoom={myzoom} spritemap={spritemap}/> */}
@@ -140,9 +161,8 @@ const Diagram = ({
 
                 <ClayButton 
                     className="mr-3"
-                    onClick={() => {
-                        setAddPinHandler(true)
-                    }}>
+                    onClick={() => setAddPinHandler(true)
+                    }>
                     <span className="inline-item inline-item-before">
                         <ClayIcon spritemap={spritemap} symbol="pin" />
                     </span>
@@ -222,15 +242,7 @@ const Diagram = ({
 };
 
 Diagram.defaultProps = {
-    // imageSettings: {
-
-    //     clicks: null, 
-    //     ctx: null,
-    //     imagePoints, 
-
-    //     scaleFactor: 1,
-    // }
-
+    cPins: [],
     completeImageSettings: PropTypes.shape({
         height: '300px',
         width: '100%',
@@ -247,7 +259,14 @@ Diagram.defaultProps = {
             top: ''
         }
     },
-    cPins: [],
+    newPinSettings: {
+        colorPicker: {
+            defaultColors: ['AC68D7', '96D470', 'F2EE8F', 'F4C4A9', 'F1A3BB', '67DC19', '959FEF', 'A6C198', 'FED998', '#38F95', 'FD9945', '1A588B'],
+            selectedColor: 'F1A3BB',
+            useNative: false
+        },
+        defaultRadius: 15,
+    },
     zoomController: {
         enable: true,
         position: {
@@ -287,6 +306,14 @@ Diagram.propTypes = {
             right: PropTypes.string,
             top: PropTypes.string,
         }),
+    }),
+    newPinSettings: PropTypes.shape({
+        colorPicker: PropTypes.shape({
+            defaultColors: PropTypes.array,
+            selectedColor: PropTypes.string,
+            useNative: PropTypes.bool,
+        }),
+        defaultRadius: PropTypes.number,
     }),
     setPins: PropTypes.func,
     spritemap: PropTypes.string,
