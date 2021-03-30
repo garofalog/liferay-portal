@@ -48,7 +48,7 @@ const Diagram = ({
         y: 0,
     })
     const [scale, setScale] = useState(1)
-    const  [seletedOption, setSeletedOption] = useState(1)
+    const  [selectedOption, setSelectedOption] = useState(1)
     const [cPins, setCpins] = useState(pins)
 
     const [addNewPinState, setAddNewPinState] = useState({
@@ -57,11 +57,8 @@ const Diagram = ({
     })
 
 
-    // const [customColors, setCustoms] = useState(["008000", "00FFFF", "0000FF"]);
-    // const [color, setColor] = useState(customColors[0]);
-
     useEffect(() => {
-        setSeletedOption(imageState.k)
+        setSelectedOption(imageState.k)
     }, [imageState])
 
 
@@ -98,7 +95,7 @@ const Diagram = ({
 
     function handleZoomChange(event) {
         console.log('handleZoom')
-        setSeletedOption(event.target.value / 100)
+        setSelectedOption(event.target.value / 100)
         setImageState({
             k: parseFloat(event.target.value / 100),
             x: imageState.x,
@@ -116,17 +113,7 @@ const Diagram = ({
 
     return (
         <div className="diagram mx-auto">
-            {/* <ClayColorPicker
-                colors={customColors}
-                label="Custom Colors"
-                name="colorPicker2"
-                onColorsChange={setCustoms}
-                onValueChange={setColor}
-                showHex={true}
-                spritemap={spritemap}
-                title="Custom Colors"
-                value={color}
-            /> */}
+
             <DiagramHeader 
                 addNewPinState={addNewPinState}
                 newPinSettings={newPinSettings}
@@ -197,8 +184,7 @@ const Diagram = ({
                         id="mySelectId"
                         onChange={handleZoomChange}>
                         {options.map(item => (
-                            <ClaySelect.Option
-                                
+                            <ClaySelect.Option 
                                 key={item.value}
                                 label={item.label}
                                 selected={item.value === '100' ? true : false}
@@ -210,17 +196,14 @@ const Diagram = ({
                     <ClayButton
                         className=""
                         displayType="secondary"
-
                         onClick={() => {
                             setZoomInHandler(true)
                         }}
-
                     >
                         +
                     </ClayButton>
 
                     {/* <Datalist items={options} /> */}
-
 
                 </div>
 
@@ -230,7 +213,6 @@ const Diagram = ({
                         displayType="secondary"
                         id="reset"
                         onClick={() => setResetZoom(true)}
-
                     >Reset Zoom</ClayButton>
                 )}
 
@@ -263,7 +245,7 @@ Diagram.defaultProps = {
         colorPicker: {
             defaultColors: ['AC68D7', '96D470', 'F2EE8F', 'F4C4A9', 'F1A3BB', '67DC19', '959FEF', 'A6C198', 'FED998', '#38F95', 'FD9945', '1A588B'],
             selectedColor: 'F1A3BB',
-            useNative: false
+            useNative: true,
         },
         defaultRadius: 15,
     },

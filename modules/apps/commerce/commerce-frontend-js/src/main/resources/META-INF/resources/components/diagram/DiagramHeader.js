@@ -76,9 +76,9 @@ const DiagramHeader = ({
                                 name="diagram-color-picker"
                                 onColorsChange={setCustoms}
                                 onValueChange={(item) => {
-                                    setColor(item);
+                                    setColor(item.replace('#', ''));
                                     setAddNewPinState({
-                                        color: item,
+                                        color: item.replace('#', ''),
                                         radius: addNewPinState.radius
                                     })
                                 }}
@@ -119,14 +119,11 @@ const DiagramHeader = ({
                             <label htmlFor="slider">CUSTOM</label>
                             <ClaySlider 
                                 id="slider" 
-                                onValueChange={
-
-                                    (item)=> 
+                                onValueChange={(item)=> 
                                     setAddNewPinState({
                                         color,
                                         radius: item,
                                     })
-
                                 }
                                 value={addNewPinState.radius}/>
                         </div>
