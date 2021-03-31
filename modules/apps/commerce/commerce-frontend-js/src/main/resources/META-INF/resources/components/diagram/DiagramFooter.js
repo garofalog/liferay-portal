@@ -22,11 +22,12 @@ import Datalist from '../datalist/Datalist';
 
 const DiagramFooter = ({
 	enableResetZoom,
+	imageState,
 	setAddPinHandler,
-	setImageState,
-	setResetZoom,
+    setImageState,
+    setResetZoom,
 	setSelectedOption,
-	setZoomInHandler,
+    setZoomInHandler,
 	setZoomOutHandler,
 	spritemap,
 }) => {
@@ -36,7 +37,6 @@ const DiagramFooter = ({
 	// const [zoomInHandler, setZoomInHandler] = useState(false)
 
 	function handleZoomChange(event) {
-		console.log('handleZoom');
 		setSelectedOption(event.target.value / 100);
 		setImageState({
 			k: parseFloat(event.target.value / 100),
@@ -149,12 +149,22 @@ const DiagramFooter = ({
 DiagramFooter.defaultProps = {};
 
 DiagramFooter.propTypes = {
+    enableResetZoom: PropTypes.func,
 	infos: PropTypes.shape({
 		canvas: PropTypes.any,
 		ctxStore: PropTypes.any,
 	}),
 	myzoom: PropTypes.func,
-	resetZoom: PropTypes.func,
+
+    // resetZoom: PropTypes.func,
+    // setAddPinHandler: PropTypes.func,
+
+    // setImageState: PropTypes.func,
+
+    // setResetZoom: PropTypes.func,
+    // setSelectedOption: PropTypes.func,
+    // setZoomInHandler: PropTypes.func,
+    // setZoomOutHandler: PropTypes.func,
 };
 
 export default DiagramFooter;
