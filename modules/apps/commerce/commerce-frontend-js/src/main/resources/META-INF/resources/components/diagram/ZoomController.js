@@ -14,50 +14,43 @@
 
 import ClayIcon from '@clayui/icon';
 import PropTypes from 'prop-types';
-import React, { useLayoutEffect } from 'react';
+import React, {useLayoutEffect} from 'react';
 
+const ZoomController = ({position, spritemap, zoomIn, zoomOut}) => {
+	const zoomButtonStyle = {
+		bottom: position.bottom,
+		left: position.left,
+		right: position.right,
+		top: position.top,
+	};
 
-const ZoomController = ({ 
-    position, 
-    spritemap, 
-    zoomIn, 
-    zoomOut 
-}) => {
+	return (
+		<div id="zoom-controller" style={zoomButtonStyle}>
+			<div className="box plus" onClick={() => zoomIn}>
+				<ClayIcon
+					className="icon"
+					spritemap={spritemap}
+					symbol="plus"
+				/>
+			</div>
 
-    const zoomButtonStyle = {
-        bottom: position.bottom,
-        left: position.left,
-        right: position.right,
-        top: position.top,
-    }
-
-    return (
-        <div id="zoom-controller" style={zoomButtonStyle}>
-
-            <div className="box plus" onClick={() => zoomIn}>
-                <ClayIcon className="icon" spritemap={spritemap} symbol="plus" />
-            </div>
-
-            <div className="box hr" onClick={() => zoomOut}>
-                <ClayIcon className="icon" spritemap={spritemap} symbol="hr" />
-            </div>
-
-        </div>
-
-    )
-}
+			<div className="box hr" onClick={() => zoomOut}>
+				<ClayIcon className="icon" spritemap={spritemap} symbol="hr" />
+			</div>
+		</div>
+	);
+};
 
 export default ZoomController;
 
 ZoomController.propTypes = {
-    position: PropTypes.shape({
-        bottom: PropTypes.string,
-        left: PropTypes.string,
-        right: PropTypes.string,
-        top: PropTypes.string,
-    }),
-    spritemap: PropTypes.string,
-    zoomIn: PropTypes.func,
-    zoomOut: PropTypes.func,
-}
-
+	position: PropTypes.shape({
+		bottom: PropTypes.string,
+		left: PropTypes.string,
+		right: PropTypes.string,
+		top: PropTypes.string,
+	}),
+	spritemap: PropTypes.string,
+	zoomIn: PropTypes.func,
+	zoomOut: PropTypes.func,
+};

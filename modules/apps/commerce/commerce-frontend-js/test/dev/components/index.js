@@ -37,7 +37,7 @@ module.exports = [
 		entry: 'Diagram',
 		name: 'diagram',
 		page: 'diagram.html',
-	}, 
+	},
 	{
 		entry: 'Dropdown',
 		name: 'Dropdown',

@@ -18,9 +18,8 @@ import '../../../src/main/resources/META-INF/resources/styles/main.scss';
 
 import '../../../src/main/resources/META-INF/resources/components/diagram/_diagram.scss';
 
-
 launcher('diagram', 'diagram', {
-	completeImageSettings: { 
+	completeImageSettings: {
 		height: '500px',
 		lastX: 250,
 		lastY: 350,
@@ -28,7 +27,8 @@ launcher('diagram', 'diagram', {
 		width: '100%',
 	},
 	dragStep: 50,
-	image: 'https://i0.wp.com/detoxicrecenze.com/wp-content/uploads/2018/05/straight-6-engine-diagram-460-ford-engine-diagram-wiring-info-e280a2-of-straight-6-engine-diagram.jpg',
+	image:
+		'https://i0.wp.com/detoxicrecenze.com/wp-content/uploads/2018/05/straight-6-engine-diagram-460-ford-engine-diagram-wiring-info-e280a2-of-straight-6-engine-diagram.jpg',
 	navigationController: {
 		dragStep: 10,
 		enable: true,
@@ -37,21 +37,110 @@ launcher('diagram', 'diagram', {
 			bottom: '15px',
 			left: '',
 			right: '50px',
-			top: ''
-		
-		}
+			top: '',
+		},
 	},
 	pins: [
-		{ linked_to_sku:"sku", sku:"", quantity:"", color: '#f90e19', id:0, r: 5, x: 35.902106833857765, y: 54.17876064769725 }, 
-		{ linked_to_sku:"sku", sku:"", quantity:"", color: '#b6fb00', id:1, r: 10, x: 353.6965532023335, y: 36.92566831583167 }, 
-		{ linked_to_sku:"sku", sku:"", quantity:"", color: '#733edc', id:2, r: 21, x: 100.38075900390436, y: 404.9651880080625 }, 
-		{ linked_to_sku:"sku", sku:"", quantity:"", color: '#34fbe8', id:3, r: 12, x: 225.42119508877246, y: 208.01679515257248 }, 
-		{ linked_to_sku:"sku", sku:"", quantity:"", color: '#dc7aa5', id:4, r: 12, x: 284.1028161914142, y: 179.06395973801364 }, 
-		{ linked_to_sku:"sku", sku:"", quantity:"", color: '#2c3d34', id:5, r: 23, x: 51.23146641116725, y: 130.62750589926333 }, 
-		{ linked_to_sku:"sku", sku:"", quantity:"", color: '#96e135', id:6, r: 16, x: 469.6902055639296, y: 111.82067084583896 }, 
-		{ linked_to_sku:"sku", sku:"", quantity:"", color: '#ff7f0e', id:7, r: 18, x: 343.7363091925929, y: 151.74109656223635 }, 
-		{ linked_to_sku:"sku", sku:"", quantity:"", color: '#c60f0c', id:8, r: 5, x: 463.6874080642692, y: 393.84202391797453 }, 
-		{ linked_to_sku:"sku", sku:"", quantity:"", color: '#ad9520', id:9, r: 25, x: 139.69729329671517, y: 195.0193289694761 }
+		{
+			linked_to_sku: 'sku',
+			sku: '',
+			quantity: '',
+			color: '#f90e19',
+			id: 0,
+			r: 5,
+			x: 35.902106833857765,
+			y: 54.17876064769725,
+		},
+		{
+			linked_to_sku: 'sku',
+			sku: '',
+			quantity: '',
+			color: '#b6fb00',
+			id: 1,
+			r: 10,
+			x: 353.6965532023335,
+			y: 36.92566831583167,
+		},
+		{
+			linked_to_sku: 'sku',
+			sku: '',
+			quantity: '',
+			color: '#733edc',
+			id: 2,
+			r: 21,
+			x: 100.38075900390436,
+			y: 404.9651880080625,
+		},
+		{
+			linked_to_sku: 'sku',
+			sku: '',
+			quantity: '',
+			color: '#34fbe8',
+			id: 3,
+			r: 12,
+			x: 225.42119508877246,
+			y: 208.01679515257248,
+		},
+		{
+			linked_to_sku: 'sku',
+			sku: '',
+			quantity: '',
+			color: '#dc7aa5',
+			id: 4,
+			r: 12,
+			x: 284.1028161914142,
+			y: 179.06395973801364,
+		},
+		{
+			linked_to_sku: 'sku',
+			sku: '',
+			quantity: '',
+			color: '#2c3d34',
+			id: 5,
+			r: 23,
+			x: 51.23146641116725,
+			y: 130.62750589926333,
+		},
+		{
+			linked_to_sku: 'sku',
+			sku: '',
+			quantity: '',
+			color: '#96e135',
+			id: 6,
+			r: 16,
+			x: 469.6902055639296,
+			y: 111.82067084583896,
+		},
+		{
+			linked_to_sku: 'sku',
+			sku: '',
+			quantity: '',
+			color: '#ff7f0e',
+			id: 7,
+			r: 18,
+			x: 343.7363091925929,
+			y: 151.74109656223635,
+		},
+		{
+			linked_to_sku: 'sku',
+			sku: '',
+			quantity: '',
+			color: '#c60f0c',
+			id: 8,
+			r: 5,
+			x: 463.6874080642692,
+			y: 393.84202391797453,
+		},
+		{
+			linked_to_sku: 'sku',
+			sku: '',
+			quantity: '',
+			color: '#ad9520',
+			id: 9,
+			r: 25,
+			x: 139.69729329671517,
+			y: 195.0193289694761,
+		},
 	],
 	spritemap: './assets/clay/icons.svg',
 	zoomController: {
@@ -61,9 +150,7 @@ launcher('diagram', 'diagram', {
 			bottom: '0px',
 			left: '',
 			right: '200px',
-			top: ''
-
-		}
+			top: '',
+		},
 	},
 });
-

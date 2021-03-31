@@ -12,161 +12,149 @@
  * details.
  */
 
-import ClayButton, { ClayButtonWithIcon } from '@clayui/button';
-import { ClaySelect } from '@clayui/form';
+import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
+import {ClaySelect} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import Datalist from '../datalist/Datalist'
+import Datalist from '../datalist/Datalist';
 
 const DiagramFooter = ({
-    enableResetZoom,
-    setAddPinHandler,
-    setImageState,
-    setResetZoom,
-    setSelectedOption,
-    setZoomInHandler,
-    setZoomOutHandler,
-    spritemap,
+	enableResetZoom,
+	setAddPinHandler,
+	setImageState,
+	setResetZoom,
+	setSelectedOption,
+	setZoomInHandler,
+	setZoomOutHandler,
+	spritemap,
 }) => {
 
-    // const [addPinHandler, setAddPinHandler] = useState(false)
-    // const [zoomOutHandler, setZoomOutHandler] = useState(false)
-    // const [zoomInHandler, setZoomInHandler] = useState(false)
+	// const [addPinHandler, setAddPinHandler] = useState(false)
+	// const [zoomOutHandler, setZoomOutHandler] = useState(false)
+	// const [zoomInHandler, setZoomInHandler] = useState(false)
 
+	function handleZoomChange(event) {
+		console.log('handleZoom');
+		setSelectedOption(event.target.value / 100);
+		setImageState({
+			k: parseFloat(event.target.value / 100),
+			x: imageState.x,
+			y: imageState.y,
+		});
+	}
 
-    function handleZoomChange(event) {
-        console.log('handleZoom')
-        setSelectedOption(event.target.value / 100)
-        setImageState({
-            k: parseFloat(event.target.value / 100),
-            x: imageState.x,
-            y: imageState.y,
-        })
-    }
+	const options = [
+		{
+			label: '200%',
+			value: '200',
+		},
+		{
+			label: '175%',
+			value: '175',
+		},
+		{
+			label: '150%',
+			value: '150',
+		},
+		{
+			label: '125%',
+			value: '125',
+		},
+		{
+			label: '100%',
+			value: '100',
+		},
+		{
+			label: '75%',
+			value: '75',
+		},
+		{
+			label: '50%',
+			value: '50',
+		},
+	];
 
+	return (
+		<div className="d-flex diagram-footer justify-content-end mt-3">
+			<ClayButton className="mr-3" onClick={() => setAddPinHandler(true)}>
+				<span className="inline-item inline-item-before">
+					<ClayIcon spritemap={spritemap} symbol="pin" />
+				</span>
+				Add Pin
+			</ClayButton>
 
-    const options = [
-        {
-            label: "200%",
-            value: "200"
-        },
-        {
-            label: "175%",
-            value: "175"
-        },
-        {
-            label: "150%",
-            value: "150"
-        },
-        {
-            label: "125%",
-            value: "125"
-        },
-        {
-            label: "100%",
-            value: "100"
-        },
-        {
-            label: "75%",
-            value: "75"
-        },
-        {
-            label: "50%",
-            value: "50"
-        }
-    ];
-    
-    return (
-        <div className="d-flex diagram-footer justify-content-end mt-3">
+			<ClayButton className="mr-3">
+				<span className="inline-item inline-item-before">
+					<ClayIcon spritemap={spritemap} symbol="expand" />
+				</span>
+				Expand
+			</ClayButton>
 
-            <ClayButton
-                className="mr-3"
-                onClick={() => setAddPinHandler(true)
-                }>
-                <span className="inline-item inline-item-before">
-                    <ClayIcon spritemap={spritemap} symbol="pin" />
-                </span>
-                    Add Pin
-                </ClayButton>
+			<div className="d-flex">
+				<ClayButton
+					className=""
+					displayType="secondary"
+					onClick={() => {
+						setZoomOutHandler(true);
+					}}
+				>
+					-
+				</ClayButton>
 
-            <ClayButton className="mr-3">
-                <span className="inline-item inline-item-before">
-                    <ClayIcon spritemap={spritemap} symbol="expand" />
-                </span>
+				<ClaySelect
+					aria-label="Select Label"
+					className="ml-3 mr-3"
+					id="mySelectId"
+					onChange={handleZoomChange}
+				>
+					{options.map((item) => (
+						<ClaySelect.Option
+							key={item.value}
+							label={item.label}
+							selected={item.value === '100' ? true : false}
+							value={item.value}
+						/>
+					))}
+				</ClaySelect>
 
-                    Expand
-                </ClayButton>
+				<ClayButton
+					className=""
+					displayType="secondary"
+					onClick={() => {
+						setZoomInHandler(true);
+					}}
+				>
+					+
+				</ClayButton>
 
-            <div className="d-flex">
+				{/* <Datalist items={options} /> */}
+			</div>
 
-                <ClayButton
-                    className=""
-                    displayType="secondary"
+			{enableResetZoom && (
+				<ClayButton
+					className="ml-3 reset-zoom"
+					displayType="secondary"
+					id="reset"
+					onClick={() => setResetZoom(true)}
+				>
+					Reset Zoom
+				</ClayButton>
+			)}
+		</div>
+	);
+};
 
-                    onClick={() => {
-                        setZoomOutHandler(true)
-                    }}
-
-                >
-                    -
-                    </ClayButton>
-
-                <ClaySelect
-                    aria-label="Select Label"
-                    className="ml-3 mr-3"
-                    id="mySelectId"
-                    onChange={handleZoomChange}>
-                    {options.map(item => (
-                        <ClaySelect.Option
-                            key={item.value}
-                            label={item.label}
-                            selected={item.value === '100' ? true : false}
-                            value={item.value}
-                        />
-                    ))}
-                </ClaySelect>
-
-                <ClayButton
-                    className=""
-                    displayType="secondary"
-                    onClick={() => {
-                        setZoomInHandler(true)
-                    }}
-                >
-                    +
-                    </ClayButton>
-
-                {/* <Datalist items={options} /> */}
-
-            </div>
-
-            {enableResetZoom && (
-                <ClayButton
-                    className="ml-3 reset-zoom"
-                    displayType="secondary"
-                    id="reset"
-                    onClick={() => setResetZoom(true)}
-                >Reset Zoom</ClayButton>
-            )}
-
-        </div>
-        
-    )
-}
-
-DiagramFooter.defaultProps = {
-
-}
+DiagramFooter.defaultProps = {};
 
 DiagramFooter.propTypes = {
-    infos: PropTypes.shape({
-        canvas: PropTypes.any,
-        ctxStore: PropTypes.any
-    }),
-    myzoom: PropTypes.func,
-    resetZoom: PropTypes.func
-}
+	infos: PropTypes.shape({
+		canvas: PropTypes.any,
+		ctxStore: PropTypes.any,
+	}),
+	myzoom: PropTypes.func,
+	resetZoom: PropTypes.func,
+};
 
 export default DiagramFooter;
