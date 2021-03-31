@@ -20,8 +20,38 @@ import React from 'react';
 
 import Datalist from '../datalist/Datalist'
 
-const DiagramFooter = (props) => {
+const DiagramFooter = ({
+    enableResetZoom,
+    setAddPinHandler,
+    setImageState,
+    setResetZoom,
+    setSelectedOption,
+    setZoomInHandler,
+    setZoomOutHandler,
+    spritemap,
+}) => {
+
+    // const [addPinHandler, setAddPinHandler] = useState(false)
+    // const [zoomOutHandler, setZoomOutHandler] = useState(false)
+    // const [zoomInHandler, setZoomInHandler] = useState(false)
+
+
+    function handleZoomChange(event) {
+        console.log('handleZoom')
+        setSelectedOption(event.target.value / 100)
+        setImageState({
+            k: parseFloat(event.target.value / 100),
+            x: imageState.x,
+            y: imageState.y,
+        })
+    }
+
+
     const options = [
+        {
+            label: "200%",
+            value: "200"
+        },
         {
             label: "175%",
             value: "175"
@@ -51,60 +81,77 @@ const DiagramFooter = (props) => {
     return (
         <div className="d-flex diagram-footer justify-content-end mt-3">
 
-            <ClayButton className="mr-3">
+            <ClayButton
+                className="mr-3"
+                onClick={() => setAddPinHandler(true)
+                }>
                 <span className="inline-item inline-item-before">
-                    <ClayIcon spritemap={props.spritemap} symbol="pin" />
+                    <ClayIcon spritemap={spritemap} symbol="pin" />
                 </span>
-                Add Pin
-            </ClayButton>
+                    Add Pin
+                </ClayButton>
 
             <ClayButton className="mr-3">
                 <span className="inline-item inline-item-before">
-                    <ClayIcon spritemap={props.spritemap} symbol="expand" />
+                    <ClayIcon spritemap={spritemap} symbol="expand" />
                 </span>
 
-                Expand
-            </ClayButton>
-            
+                    Expand
+                </ClayButton>
+
             <div className="d-flex">
 
-                <ClayButton 
-                    className="" 
-                    displayType="secondary" 
+                <ClayButton
+                    className=""
+                    displayType="secondary"
+
+                    onClick={() => {
+                        setZoomOutHandler(true)
+                    }}
+
                 >
                     -
-                </ClayButton>
-            
-                <ClaySelect 
-                    aria-label="Select Label" 
-                    className="ml-3 mr-3" 
-                    id="mySelectId">
+                    </ClayButton>
+
+                <ClaySelect
+                    aria-label="Select Label"
+                    className="ml-3 mr-3"
+                    id="mySelectId"
+                    onChange={handleZoomChange}>
                     {options.map(item => (
                         <ClaySelect.Option
                             key={item.value}
                             label={item.label}
+                            selected={item.value === '100' ? true : false}
                             value={item.value}
                         />
                     ))}
                 </ClaySelect>
 
-                <ClayButton 
-                    className="" 
-                    displayType="secondary">
-                        +
-                </ClayButton>
+                <ClayButton
+                    className=""
+                    displayType="secondary"
+                    onClick={() => {
+                        setZoomInHandler(true)
+                    }}
+                >
+                    +
+                    </ClayButton>
 
                 {/* <Datalist items={options} /> */}
 
-
             </div>
 
-            <ClayButton 
-                className="ml-3 reset-zoom" 
-                displayType="secondary"
-                onClick={() => resetZoom()}>Reset Zoom</ClayButton>
+            {enableResetZoom && (
+                <ClayButton
+                    className="ml-3 reset-zoom"
+                    displayType="secondary"
+                    id="reset"
+                    onClick={() => setResetZoom(true)}
+                >Reset Zoom</ClayButton>
+            )}
 
-        </div>     
+        </div>
         
     )
 }

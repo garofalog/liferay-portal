@@ -20,13 +20,11 @@ import ClayIcon from '@clayui/icon';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
 
+// import AdminTooltip from './AdminTooltip'
+
 import DiagramFooter from './DiagramFooter';
 import DiagramHeader from './DiagramHeader';
 import ImagePins from './ImagePins'
-
-import NavigationButtons from './NavigationButtons'
-
-import ZoomContainer from './ZoomController'
 
 const Diagram = ({ 
     completeImageSettings, 
@@ -102,7 +100,7 @@ const Diagram = ({
             y: imageState.y,
         })
     }
-    
+     
     const handleImageState = (p) => {
         setImageState({
             k: p.k,
@@ -119,6 +117,9 @@ const Diagram = ({
                 newPinSettings={newPinSettings}
                 setAddNewPinState={setAddNewPinState}
                 setAddPinHandler={setAddPinHandler}
+                setImageState={setImageState}
+                setSelectedOption={setSelectedOption}
+
             />
 
             <ImagePins 
@@ -143,7 +144,15 @@ const Diagram = ({
                 zoomOutHandler={zoomOutHandler}/>
             
 
-            {/* <DiagramFooter infos={forfooter} myzoom={myzoom} spritemap={spritemap}/> */}
+            <DiagramFooter 
+                enableResetZoom={enableResetZoom}
+                setAddPinHandler={setAddPinHandler}
+                setResetZoom={setResetZoom}
+                setZoomInHandler={setZoomInHandler}
+                setZoomOutHandler={setZoomOutHandler}
+                spritemap={spritemap}/>
+
+            {/* //////////////////// */}
             <div className="d-flex diagram-footer justify-content-end mt-3">
 
                 <ClayButton 
@@ -217,8 +226,9 @@ const Diagram = ({
                 )}
 
             </div>
+            {/* /////////////////////////////////////// */}
 
-
+                {/* <AdminTooltip /> */}
         </div>
     );
 };
@@ -264,7 +274,9 @@ Diagram.propTypes = {
     cPins: PropTypes.arrayOf(
         PropTypes.shape({
             color: PropTypes.string,
-            id: PropTypes.number,
+            id: PropTypes.number, 
+            linked_to_sku: PropTypes.oneOf(['sku', 'diagram']),
+            quantity: PropTypes.double,
             r: PropTypes.number,
             x: PropTypes.double,
             y: PropTypes.double,

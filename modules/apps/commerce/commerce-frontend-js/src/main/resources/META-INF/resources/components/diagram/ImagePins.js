@@ -391,6 +391,9 @@ const ImagePins = ({
             .attr("cy", d => d.y)
             .attr("r", d => d.r)
             .attr("id", d => d.id)
+            .attr("linked_to_sku", d => d.linked_to_sku)
+            .attr("sku", d => d.sku)
+            .attr("quantity", d => d.quantity)
             .attr("fill", d => d.color)
             .classed('draggable', true);
 
@@ -508,6 +511,8 @@ ImagePins.propTypes = {
         PropTypes.shape({
             color: PropTypes.string,
             id: PropTypes.number,
+            linked_to_sku: PropTypes.oneOf(['sku', 'diagram']),
+            quantity: PropTypes.double,
             r: PropTypes.number,
             x: PropTypes.double,
             y: PropTypes.double,
