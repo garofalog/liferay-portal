@@ -29,15 +29,13 @@ export const RECT_SIZES = {
 };
 
 export const ZOOM_EXTENT = [0.25, 1];
-
 export const RECT_PADDING = 16;
 export const ICON_RADIUS = 16;
-
 export const COLUMN_SIZE = RECT_SIZES.organization[0];
-
 export const COLUMN_GAP = 60;
-
 export const MARGIN_LEFT = 40;
+export const DX = 90;
+export const DY = 400;
 
 export const SYMBOLS_MAP = {
 	account: 'users',
@@ -45,5 +43,3 @@ export const SYMBOLS_MAP = {
 	user: 'user',
 };
 
-export const DX = 90;
-export const DY = 400;

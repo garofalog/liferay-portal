@@ -9,7 +9,6 @@
  * distribution rights of the Software.
  */
 
-import classNames from 'classnames';
 import * as d3 from 'd3';
 
 import {
@@ -20,7 +19,7 @@ import {
 	getLinkId,
 	getMinWidth,
 	getNodeId,
-	insertAddButton,
+	insertAddButtons,
 	insertChildrenIntoNode,
 	toggleChildren,
 	tree,
@@ -32,45 +31,41 @@ class D3OrganizationChart {
 	_selectedId = null;
 
 	constructor(rawData, refs, getChildren, spritemap, openModal) {
-		this.spritemap = spritemap;
-		this.refs = refs;
-		this.data = formatData(rawData);
-		this.getChildren = getChildren;
-		const clientRect = this.refs.svg.getBoundingClientRect();
-		this.width = clientRect.width;
-		this.height = clientRect.height;
-		this._handleNodeClick = this._handleNodeClick.bind(this);
+		this._spritemap = spritemap;
+		this._refs = refs;
+		this._getChildren = getChildren;
 		this._handleZoomIn = this._handleZoomIn.bind(this);
+		this._handleZoom = this._handleZoom.bind(this);
 		this._handleZoomOut = this._handleZoomOut.bind(this);
 		this._handleNodeClick = this._handleNodeClick.bind(this);
 		this._currentScale = 1;
 		this._openModal = openModal;
 
-		this._initialiseZoomListeners(this.refs);
-
-		this._createChart();
+		this._initialiseZoomListeners(this._refs);
+		this._createChart(formatData(rawData));
 	}
 
 	_initialiseZoomListeners() {
-		this.refs.zoomIn.disabled = true;
+		this._refs.zoomIn.disabled = true;
 
-		this.refs.zoomIn.addEventListener('click', this._handleZoomIn);
-		this.refs.zoomOut.addEventListener('click', this._handleZoomOut);
+		this._refs.zoomIn.addEventListener('click', this._handleZoomIn);
+		this._refs.zoomOut.addEventListener('click', this._handleZoomOut);
 	}
 
-	_handleZoom(event) {
-		this._currentScale = event.transform.k;
-		this.zoomHandler.attr('transform', event.transform);
+	_handleZoom() {
+		this._currentScale = d3.event.transform.k;
+
+		this.zoomHandler.attr('transform', d3.event.transform);
 	}
 
 	_handleZoomIn() {
+		this._refs.zoomOut.disabled = false;
 		this._currentScale = this._currentScale * 2;
 
 		if (this._currentScale >= ZOOM_EXTENT[1]) {
-			this.refs.zoomOut.disabled = true;
+			this._refs.zoomIn.disabled = true;
 		}
 
-		this.refs.zoomOut.disabled = false;
 		this.svg
 			.transition()
 			.duration(700)
@@ -78,32 +73,32 @@ class D3OrganizationChart {
 	}
 
 	_handleZoomOut() {
+		this._refs.zoomIn.disabled = false;
 		this._currentScale = this._currentScale * 0.5;
 
 		if (this._currentScale <= ZOOM_EXTENT[0]) {
-			this.refs.zoomOut.disabled = true;
+			this._refs.zoomOut.disabled = true;
 		}
 
-		this.refs.zoomIn.disabled = false;
 		this.svg
 			.transition()
 			.duration(700)
 			.call(this._zoom.scaleTo, this._currentScale);
 	}
 
-	_handleNodeClick(event, d) {
-		event.stopPropagation();
+	_handleNodeClick(d) {
+		d3.event.stopPropagation();
 
 		this._selectedNode = d;
 
 		if (d.data.type !== 'user') {
 			if (!d.data.fetched) {
-				return this.getChildren(d.data.id, d.data.type)
+				return this._getChildren(d.data.id, d.data.type)
 					.then((children) => insertChildrenIntoNode(children, d))
 					.then(() => {
 						d.data.fetched = true;
 
-						this.update(d);
+						this._update(d);
 					});
 			}
 			else {
@@ -111,38 +106,38 @@ class D3OrganizationChart {
 			}
 		}
 
-		this.update(d);
+		this._update(d);
 	}
 
-	_createChart() {
-		this.root = d3.hierarchy(this.data, (d) => d.children);
-
+	_createChart(initialData) {
+		this.root = d3.hierarchy(initialData, (d) => d.children);
 		this.root.x0 = DY / 2;
 		this.root.y0 = 0;
-
+		
 		this._zoom = d3
 			.zoom()
 			.scaleExtent(ZOOM_EXTENT)
-			.on('zoom', this._handleZoom.bind(this));
+			.on('zoom', this._handleZoom);
 
-		this.svg = d3.select(this.refs.svg).call(this._zoom);
-
+		this.svg = d3.select(this._refs.svg).call(this._zoom);
 		this.zoomHandler = this.svg.append('g');
-
 		this.dataWrapper = this.zoomHandler.append('g');
-
 		this.linksGroup = this.dataWrapper.append('g');
 		this.nodesGroup = this.dataWrapper.append('g');
 
-		this.update(this.root);
+		this._update(this.root);
 	}
 
-	update(source) {
-		const duration = d3.event && d3.event.altKey ? 2500 : 800;
-
-		insertAddButton(this.root, this._selectedNode);
-
+	_update(source) {
+		insertAddButtons(this.root, this._selectedNode);
 		tree(this.root);
+
+		this.root.eachBefore((d) => {
+			d.x0 = d.x;
+			d.y0 = d.y;
+		});
+
+		const duration = d3.event && d3.event.altKey ? 2500 : 800;
 
 		this.transition = this.svg
 			.transition()
@@ -154,20 +149,13 @@ class D3OrganizationChart {
 					: () => () => this.svg.dispatch('toggle')
 			);
 
-		this.updateLinks(source);
-		this.updateNodes(source);
-
-		this.root.eachBefore((d) => {
-			d.x0 = d.x;
-			d.y0 = d.y;
-		});
-
-		this.updateTransform(source);
+		this._recenterViewport(source);
+		this._updateLinks(source);
+		this._updateNodes(source);
 	}
 
-	updateTransform(source) {
-		const {height, width} = this.refs.svg.getBoundingClientRect();
-
+	_recenterViewport(source) {
+		const {height, width} = this._refs.svg.getBoundingClientRect();
 		const k = this._currentScale;
 
 		let y0;
@@ -191,7 +179,7 @@ class D3OrganizationChart {
 			);
 	}
 
-	updateLinks(source) {
+	_updateLinks(source) {
 		const links = this.root.links().filter((d) => d.source.depth);
 		const bindedLinks = this.linksGroup
 			.selectAll('.chart-link')
@@ -224,7 +212,7 @@ class D3OrganizationChart {
 			.attr('opacity', 0);
 	}
 
-	updateNodes(source) {
+	_updateNodes(source) {
 		const dataNodes = this.root
 			.descendants()
 			.filter((d) => d.depth !== 0)
@@ -238,34 +226,29 @@ class D3OrganizationChart {
 			.enter()
 			.append('g')
 			.attr('opacity', 0)
-			.attr('class', (d) =>
-				classNames('chart-item', `chart-item-${d.data.type}`)
-			);
+			.attr('class', (d) => `chart-item chart-item-${d.data.type}`);
 
 		const addButton = this.bindedChartItems.filter(
 			(d) => d.data.type === 'add'
 		);
+
 		const children = this.bindedChartItems.filter(
 			(d) => d.data.type !== 'add'
 		);
 
 		addButton.attr('transform', (d) => `translate(${d.y},${d.x}) scale(0)`);
-		children.attr(
-			'transform',
-			() => `translate(${source.y0},${source.x0})`
-		);
+		children.attr('transform', `translate(${source.y0},${source.x0})`);
 
-		generateAddButtonContent(addButton, this.spritemap, this._openModal);
-		generateNodeContent(children, this.spritemap);
+		generateAddButtonContent(addButton, this._spritemap, this._openModal);
+		generateNodeContent(children, this._spritemap);
 
 		children
-			.on('mouseenter', (_event, d) => {
+			.on('mouseenter', (d) => {
 				highlight(d, this.nodesGroup, this.linksGroup);
 			})
-			.on('mouseleave', () => {
-				removeHighlight();
-			})
-			.on('mousedown', this._handleNodeClick);
+			.on('mouseleave', removeHighlight)
+			.on('click', this._handleNodeClick)
+			// .on('mouseup', (e) => console.log('up', e))
 
 		bindedNodes
 			.merge(this.bindedChartItems)

@@ -153,7 +153,7 @@ function getAllNodes(root) {
 
 let prevSelectedNode = null;
 
-export function insertAddButton(root, selectedNode) {
+export function insertAddButtons(root, selectedNode) {
 	if (!selectedNode || prevSelectedNode?.data?.id === selectedNode.data.id) {
 		return;
 	}
@@ -234,7 +234,7 @@ export function generateAddButtonContent(nodeEnter, spritemap, openModal) {
 	const openActionsWrapper = actionsWrapper
 		.append('g')
 		.attr('class', 'open-actions-wrapper')
-		.on('mousedown', (_event, node) => {
+		.on('mousedown', (node) => {
 			if (node.parent.data.type === 'account') {
 				openModal(node.parent.data, 'account');
 			}
@@ -249,7 +249,7 @@ export function generateAddButtonContent(nodeEnter, spritemap, openModal) {
 	const addOrganizationWrapper = actionsWrapper
 		.append('g')
 		.attr('class', 'add-action-wrapper organization')
-		.on('mousedown', (_event, node) => {
+		.on('mousedown', (node) => {
 			openModal(node.parent.data, 'organization');
 		});
 
@@ -264,7 +264,7 @@ export function generateAddButtonContent(nodeEnter, spritemap, openModal) {
 	const addAccountWrapper = actionsWrapper
 		.append('g')
 		.attr('class', 'add-action-wrapper account')
-		.on('mousedown', (_event, node) => {
+		.on('mousedown', (node) => {
 			openModal(node.parent.data, 'account');
 		});
 
@@ -274,7 +274,7 @@ export function generateAddButtonContent(nodeEnter, spritemap, openModal) {
 	const addUserWrapper = actionsWrapper
 		.append('g')
 		.attr('class', 'add-action-wrapper user')
-		.on('mousedown', (_event, node) => {
+		.on('mousedown', (node) => {
 			openModal(node.parent.data, 'user');
 		});
 
