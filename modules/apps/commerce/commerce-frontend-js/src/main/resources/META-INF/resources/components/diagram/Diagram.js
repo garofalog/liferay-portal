@@ -15,8 +15,7 @@
 import PropTypes from 'prop-types';
 import React, {useEffect, useState} from 'react';
 
-// import AdminTooltip from './AdminTooltip'
-
+import AdminTooltip from './AdminTooltip';
 import DiagramFooter from './DiagramFooter';
 import DiagramHeader from './DiagramHeader';
 import ImagePins from './ImagePins';
@@ -98,7 +97,7 @@ const Diagram = ({
 				spritemap={spritemap}
 			/>
 
-			{/* <AdminTooltip /> */}
+			<AdminTooltip />
 
 		</div>
 	);

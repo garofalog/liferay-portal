@@ -63,7 +63,7 @@ const Liferay = {
 
 window.defaultFetch = fetch;
 
-window.fetch = (resource, {headers, ...init}) => {
+window.fetch = (resource, {headers, ...init} = {}) => {
 	headers = new Headers({
 		Accept: 'application/json',
 		Authorization: `Basic ${window.btoa('test@liferay.com:test')}`,

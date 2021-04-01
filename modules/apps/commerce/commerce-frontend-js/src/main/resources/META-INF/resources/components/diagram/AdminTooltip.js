@@ -21,124 +21,125 @@ import ClayForm, {ClayInput, ClayRadio, ClayRadioGroup} from '@clayui/form';
 import PropTypes from 'prop-types';
 import React, {useState} from 'react';
 
-const AdminTooltip = ({}) => {
-	const [value, setValue] = useState('sku');
-	const [loading] = useState(true);
-	const [autoValue, setAutoValue] = useState('');
+const AdminTooltip = () => {
+	const [linkedValue, setLinkedValue] = useState('sku');
+    
+    // /////////////////////
 
-	const [atValue, setAtValue] = useState('');
-	const [networkStatus, setNetworkStatus] = useState(4);
+    const [autoValue, setAutoValue] = useState('');
+    const [networkStatus, setNetworkStatus] = useState(4);
+
+    // ////////////////////////////////
+
+    const initialLoading = networkStatus === 1;
+    const loadingAd = networkStatus < 4;
+    const error = networkStatus === 5;
+
 	const {resource} = useResource({
 		fetchPolicy: 'cache-first',
 		link: 'https://rickandmortyapi.com/api/character/',
 		onNetworkStatusChange: setNetworkStatus,
-		variables: {name: value},
+        variables: { name: autoValue},
 	});
 
-	const initialLoading = networkStatus === 1;
-	const loadingAd = networkStatus < 4;
-	const error = networkStatus === 5;
+	
+	return (	
+        <ClayCard className="admin-tooltip">      
+            <ClayCard.Body className="row">
 
-	return (
-		<div className="admin-tooltip">
-			<ClayCard>
-				<ClayCard.Body>
-					<ClayCard.Description displayType="text" truncate={false}>
-						<ClayForm.Group className="row">
-							<div className="col-12 text-left">
-								<label htmlFor="basicInputText">Position</label>
-								<ClayInput
-									id="basicInputText"
-									placeholder="Insert your name here"
-									type="text"
-								/>
-							</div>
+                    <ClayForm.Group className="col-12 form-group-sm text-left">
+                        <label htmlFor="basicInputText">Position</label>
+                        <ClayInput
+                            id="basicInputText"
+                            placeholder="Insert your name here"
+                            type="text"
+                        />
+                    </ClayForm.Group>
 
-							<div className="col-12">
-								<ClayRadioGroup
-									className="d-flex justify-content-start mt-4"
-									inline
-									onSelectedValueChange={(val) =>
-										setValue(val)
-									}
-									selectedValue={value}
-								>
-									<ClayRadio
-										label="Linked to SKU"
-										value="sku"
-									/>
-									<ClayRadio
-										label="Linked to Diagram"
-										value="diagram"
-									/>
-								</ClayRadioGroup>
-							</div>
+                    <ClayForm.Group className="col-12 form-group-sm">
+                        <ClayRadioGroup
+                            className="d-flex justify-content-start mt-4"
+                            inline
+                            onSelectedValueChange={(val) =>
+                                setLinkedValue(val)
+                            }
+                            selectedValue={linkedValue}
+                        >
+                            <ClayRadio
+                                label="Linked to SKU"
+                                value="sku"
+                            />
+                            <ClayRadio
+                                label="Linked to Diagram"
+                                value="diagram"
+                            />
+                        </ClayRadioGroup>
+                    </ClayForm.Group>
 
-							<div className="col-10 text-left">
-								<label htmlFor="basicInputText">SKU</label>
-								<ClayAutocomplete>
-									<ClayAutocomplete.Input
-										onChange={(event) =>
-											setValue(event.target.value)
-										}
-										placeholder="Type here"
-										value={value}
-									/>
-									<ClayAutocomplete.DropDown
-										active={
-											(!!resource && !!value) ||
-											initialLoading
-										}
-									>
-										<ClayDropDown.ItemList>
-											{(error ||
-												(resource &&
-													resource.error)) && (
-												<ClayDropDown.Item className="disabled">
-													No Results Found
-												</ClayDropDown.Item>
-											)}
-											{!error &&
-												resource &&
-												resource.results &&
-												resource.results.map((item) => (
-													<ClayAutocomplete.Item
-														key={item.id}
-														match={value}
-														value={item.name}
-													/>
-												))}
-										</ClayDropDown.ItemList>
-									</ClayAutocomplete.DropDown>
-									{loadingAd && (
-										<ClayAutocomplete.LoadingIndicator />
-									)}
-								</ClayAutocomplete>
-							</div>
+                    <ClayForm.Group className="col-10 form-group-sm text-left">
+                        <label htmlFor="basicInputText">Select SKU</label>
+                        <ClayAutocomplete>
+                            <ClayAutocomplete.Input
+                                onChange={(event) =>
+                                    setAutoValue(event.target.value)
+                                }
+                                placeholder="Type here"
+                                value={autoValue}
+                            />
+                            <ClayAutocomplete.DropDown
+                                active={
+                                    (!!resource && !!autoValue) ||
+                                    initialLoading
+                                }
+                            >
+                                <ClayDropDown.ItemList>
+                                    {(error ||
+                                        (resource &&
+                                            resource.error)) && (
+                                            <ClayDropDown.Item className="disabled">
+                                                No Results Found
+                                            </ClayDropDown.Item>
+                                        )}
+                                    {!error &&
+                                        resource &&
+                                        resource.results &&
+                                        resource.results.map((item) => (
+                                            <ClayAutocomplete.Item
+                                                key={item.id}
+                                                match={autoValue}
+                                                value={item.name}
+                                            />
+                                        ))}
+                                </ClayDropDown.ItemList>
+                            </ClayAutocomplete.DropDown>
+                            {loadingAd && (
+                                <ClayAutocomplete.LoadingIndicator />
+                            )}
+                        </ClayAutocomplete>
+                    </ClayForm.Group>
 
-							<div className="col-2">
-								<label htmlFor="basicInputText">Qty</label>
-								<ClayInput id="basicInputText" type="number" />
-							</div>
+                    <ClayForm.Group className="col-2 form-group-sm">
+                        <label htmlFor="basicInputText">Qty</label>
+                        <ClayInput id="basicInputText" type="number" />
+                    </ClayForm.Group>
 
-							<div className="col-6 d-flex justify-content-start mt-4">
-								<ClayButton displayType="link">
-									Delete
-								</ClayButton>
-							</div>
-							<div className="col-6 d-flex justify-content-between mt-4">
-								<ClayButton displayType="secondary">
-									Cancel
-								</ClayButton>
-								<ClayButton displayType="primary">
-									Save
-								</ClayButton>
-							</div>
-						</ClayForm.Group>
-					</ClayCard.Description>
-				</ClayCard.Body>
-			</ClayCard>
-		</div>
+                    <ClayForm.Group className="col-6 d-flex form-group-sm justify-content-start mt-4">
+                        <ClayButton displayType="link">
+                            Delete
+                        </ClayButton>
+                    </ClayForm.Group>
+
+                    <ClayForm.Group className="col-6 d-flex form-group-sm justify-content-between mt-4">
+                        <ClayButton displayType="secondary">
+                            Cancel
+                        </ClayButton>
+                        <ClayButton displayType="primary">
+                            Save
+                        </ClayButton>
+                    </ClayForm.Group>
+
+            </ClayCard.Body>
+        </ClayCard>
 	);
 };
 

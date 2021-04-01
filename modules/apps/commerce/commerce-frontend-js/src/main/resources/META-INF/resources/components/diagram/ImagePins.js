@@ -75,8 +75,8 @@ const ImagePins = ({
 	// }, [data.length]);
 
 	useEffect(() => {
-		let t;
-
+        let t;
+        
 		if (!event) {
 			t = {
 				k: imageState.k,
@@ -101,7 +101,6 @@ const ImagePins = ({
 				y: 0,
 			});
 
-			console.log('!== t==imageState ->', t);
 			container.attr('transform', 'translate(0,0)scale(1)');
 		}
 		else {
@@ -112,9 +111,9 @@ const ImagePins = ({
 			//     container.attr("transform", event.transform)
 			//     setImageState(t)
 			// } else {
+			// console.log('!== t ->', t);
+			// console.log('imageState ->', imageState);
 
-			console.log('!== t ->', t);
-			console.log('imageState ->', imageState);
 			container.attr(
 				'transform',
 				`translate(${t.x},${t.y}) scale(${t.k})`
@@ -399,10 +398,6 @@ const ImagePins = ({
 			);
 		};
 
-		// const handleAddPin = () => {
-		//     addPin()
-		// }
-
 		if (addPinHandler) {
 			setAddPinHandler(false);
 			addPin();
@@ -420,40 +415,59 @@ const ImagePins = ({
 			.attr('id', (d) => d.id)
 			.attr('linked_to_sku', (d) => d.linked_to_sku)
 			.attr('sku', (d) => d.sku)
-			.attr('quantity', (d) => d.quantity)
+            .attr('quantity', (d) => d.quantity)
+            .attr('stroke', (d) => '#43936')
+            .attr('stroke-width', 2)
 			.attr('fill', (d) => d.color)
 			.classed('draggable', true);
 
 		dragHandler(pinnn);
 
-		// pinnn.on("click", () => {
-		//     console.log('sto  handlando')
+		pinnn.on("click", () => {
+		    console.log('sto facendocose')
 
-		//         var datum = pinnn.datum();
-		//         if (pinnn.datum().selected) {
-		//             console.log('datum selected')
-		//             datum.selected = false;
-		//             pinnn
-		//                 .datum(datum)
-		//                 .transition()
-		//                 .duration(500)
-		//                 .attr("stroke", "#039BE5")
-		//                 .attr("stroke-width", "1px");
-		//         } else {
-		//             console.log('datum')
-		//             datum.selected = true;
-		//             pinnn
-		//                 .datum(datum)
-		//                 .transition()
-		//                 .duration(500)
-		//                 .attr("stroke", "#455A64")
-		//                 .attr("stroke-width", "3px");
-		//         }
 
-		//     event.stopPropagation();
-		// });
+            var tooltip2 = select("#div_customContent")
+                .append("div")
+                .style("position", "absolute")
+                .style("visibility", "hidden")
+                .style("background-color", "white")
+                .style("border", "solid")
+                .style("border-width", "1px")
+                .style("border-radius", "5px")
+                .style("padding", "10px")
+                .html("<p>I'm a tooltip written in HTML</p><img src='https://github.com/holtzy/D3-graph-gallery/blob/master/img/section/ArcSmal.png?raw=true'></img><br>Fancy<br><span style='font-size: 40px;'>Isn't it?</span>");
 
-		// dragHandler(svg);
+                select("#circleCustomTooltip")
+                .on("mouseover", () => { return tooltip2.style("visibility", "visible"); })
+                .on("mousemove", () => { return tooltip2.style("top", (event.pageY - 2390) + "px").style("left", (event.pageX - 800) + "px"); })
+                .on("mouseout", () => { return tooltip2.style("visibility", "hidden"); });
+
+		        // var datum = pinnn.datum();
+		        // if (pinnn.datum().selected) {
+		        //     console.log('datum selected')
+		        //     datum.selected = false;
+		        //     pinnn
+		        //         .datum(datum)
+		        //         .transition()
+		        //         .duration(500)
+		        //         .attr("stroke", "#039BE5")
+		        //         .attr("stroke-width", "1px");
+		        // } else {
+		        //     console.log('datum')
+		        //     datum.selected = true;
+		        //     pinnn
+		        //         .datum(datum)
+		        //         .transition()
+		        //         .duration(500)
+		        //         .attr("stroke", "#455A64")
+		        //         .attr("stroke-width", "3px");
+		        // }
+
+		    event.stopPropagation();
+		});
+
+		dragHandler(svg);
 
 		////////////////////// register event //////////////////////////
 

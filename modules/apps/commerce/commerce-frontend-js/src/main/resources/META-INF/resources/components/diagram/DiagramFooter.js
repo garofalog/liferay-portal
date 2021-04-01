@@ -149,7 +149,7 @@ const DiagramFooter = ({
 DiagramFooter.defaultProps = {};
 
 DiagramFooter.propTypes = {
-    enableResetZoom: PropTypes.func,
+    enableResetZoom: PropTypes.bool,
 	infos: PropTypes.shape({
 		canvas: PropTypes.any,
 		ctxStore: PropTypes.any,
