@@ -10,7 +10,6 @@
  */
 
 import {hierarchy, linkHorizontal, tree as d3Tree} from 'd3';
-import {node} from 'prop-types';
 
 import {DX, DY, RECT_SIZES, SYMBOLS_MAP} from './constants';
 
@@ -77,19 +76,24 @@ export function getLinkId(link) {
 	return getNodeId(link.target);
 }
 
-export function toggleChildren(d) {
-	if (d.children) {
-		d._children = d.children;
-		d.data._children = d.data.children;
-		d.children = null;
-		d.data.children = null;
+export function showChildren(d) {
+	if(d.children && !d._children) {
+		return
 	}
-	else {
-		d.children = d._children;
-		d.data.children = d.data._children;
-		d._children = null;
-		d.data._children = null;
+	d.children = d._children;
+	d.data.children = d.data._children;
+	d._children = null;
+	d.data._children = null;
+}
+
+export function hideChildren(d) {
+	if(d._children && !d.children) {
+		return
 	}
+	d._children = d.children;
+	d.data._children = d.data.children;
+	d.children = null;
+	d.data.children = null;
 }
 
 export function insertChildrenIntoNode(children, node) {
@@ -151,28 +155,25 @@ function getAllNodes(root) {
 	return nodes;
 }
 
-let prevSelectedNode = null;
-
-export function insertAddButtons(root, selectedNode) {
-	if (!selectedNode || prevSelectedNode?.data?.id === selectedNode.data.id) {
+export function insertAddButtons(root, selectedNodesIds) {
+	if (!selectedNodesIds.size) {
 		return;
 	}
 
-	getAllNodes(root).forEach((d) => {
-		if (d.data.id === prevSelectedNode?.data?.id) {
-			removeAddButton(d);
-		}
-		else if (
-			d.data.id === selectedNode.data.id &&
+	root.each((d) => {
+		if (
+			selectedNodesIds.has(d.data.id) &&
 			d.data.type !== 'user'
 		) {
-			if (!d.children && d._children) {
-				toggleChildren(d);
-			}
+			showChildren(d);
 
 			if (!d.children) {
 				d.children = [];
 				d.data.children = [];
+			}
+
+			if(d.children.length && d.children[0].data.type === 'add') {
+				return;
 			}
 
 			const newNode = hierarchy(
@@ -188,12 +189,10 @@ export function insertAddButtons(root, selectedNode) {
 
 			d.children.unshift(newNode);
 			d.data.children.unshift(newNode);
-
-			return;
+		} else {
+			removeAddButton(d);
 		}
 	});
-
-	prevSelectedNode = selectedNode;
 }
 
 export const tree = d3Tree().nodeSize([DX, DY]);
@@ -234,7 +233,7 @@ export function generateAddButtonContent(nodeEnter, spritemap, openModal) {
 	const openActionsWrapper = actionsWrapper
 		.append('g')
 		.attr('class', 'open-actions-wrapper')
-		.on('mousedown', (node) => {
+		.on('mousedown', (_event, node) => {
 			if (node.parent.data.type === 'account') {
 				openModal(node.parent.data, 'account');
 			}
@@ -249,7 +248,7 @@ export function generateAddButtonContent(nodeEnter, spritemap, openModal) {
 	const addOrganizationWrapper = actionsWrapper
 		.append('g')
 		.attr('class', 'add-action-wrapper organization')
-		.on('mousedown', (node) => {
+		.on('mousedown', (_event, node) => {
 			openModal(node.parent.data, 'organization');
 		});
 
@@ -264,7 +263,7 @@ export function generateAddButtonContent(nodeEnter, spritemap, openModal) {
 	const addAccountWrapper = actionsWrapper
 		.append('g')
 		.attr('class', 'add-action-wrapper account')
-		.on('mousedown', (node) => {
+		.on('mousedown', (_event, node) => {
 			openModal(node.parent.data, 'account');
 		});
 
@@ -274,7 +273,7 @@ export function generateAddButtonContent(nodeEnter, spritemap, openModal) {
 	const addUserWrapper = actionsWrapper
 		.append('g')
 		.attr('class', 'add-action-wrapper user')
-		.on('mousedown', (node) => {
+		.on('mousedown', (_event, node) => {
 			openModal(node.parent.data, 'user');
 		});
 

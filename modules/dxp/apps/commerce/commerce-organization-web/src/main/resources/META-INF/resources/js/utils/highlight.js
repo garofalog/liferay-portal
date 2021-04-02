@@ -23,11 +23,7 @@ export function highlight(node, nodesGroup, linksGroup) {
 		.selectAll('.chart-link')
 		.filter((d) => ancestorIds.includes(d.target.data.id));
 
-	highlightedLinks.each((_node, _index, nodeInstances) => {
-		nodeInstances.forEach((nodeInstance) => {
-			nodeInstance.parentElement.append(nodeInstance);
-		});
-	});
+	highlightedLinks.raise();
 
 	highlightedLinks.classed('highlighted', true);
 	highlightedNodes.classed('highlighted', true);

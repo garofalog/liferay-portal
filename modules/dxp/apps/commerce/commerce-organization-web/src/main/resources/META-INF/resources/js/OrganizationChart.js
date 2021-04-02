@@ -9,11 +9,10 @@
  * distribution rights of the Software.
  */
 
-import ClayButton, {ClayButtonGroup, ClayButtonWithIcon} from '@clayui/button';
-import ClayIcon, {ClayIconSpriteContext} from '@clayui/icon';
+import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
+import {ClayIconSpriteContext} from '@clayui/icon';
 import classnames from 'classnames';
 import {fetch} from 'frontend-js-web';
-import PropTypes from 'prop-types';
 import React, {
 	useCallback,
 	useEffect,

@@ -19,17 +19,16 @@ import {
 	getLinkId,
 	getMinWidth,
 	getNodeId,
+	hideChildren,
 	insertAddButtons,
 	insertChildrenIntoNode,
-	toggleChildren,
+	showChildren,
 	tree,
 } from './utils';
 import {DY, RECT_SIZES, ZOOM_EXTENT} from './utils/constants';
 import {highlight, removeHighlight} from './utils/highlight';
 
 class D3OrganizationChart {
-	_selectedId = null;
-
 	constructor(rawData, refs, getChildren, spritemap, openModal) {
 		this._spritemap = spritemap;
 		this._refs = refs;
@@ -38,8 +37,12 @@ class D3OrganizationChart {
 		this._handleZoom = this._handleZoom.bind(this);
 		this._handleZoomOut = this._handleZoomOut.bind(this);
 		this._handleNodeClick = this._handleNodeClick.bind(this);
+		this._handleDrag = this._handleDrag.bind(this);
+		this._handleDragEnd = this._handleDragEnd.bind(this);
+		this._handleDragStart = this._handleDragStart.bind(this);
 		this._currentScale = 1;
 		this._openModal = openModal;
+		this._selectedNodeIds = new Set();
 
 		this._initialiseZoomListeners(this._refs);
 		this._createChart(formatData(rawData));
@@ -52,10 +55,29 @@ class D3OrganizationChart {
 		this._refs.zoomOut.addEventListener('click', this._handleZoomOut);
 	}
 
-	_handleZoom() {
-		this._currentScale = d3.event.transform.k;
+	_handleDragStart(...args) {
+		console.log(args)
+		this.draggedNode = d3.select(this);
+		this.draggedNode.classed('dragging', true);
 
-		this.zoomHandler.attr('transform', d3.event.transform);
+		this.draggedNodesPlaceholder = this.draggedNode.node().cloneNode(true);
+		this.draggedNode.raise();
+		this.draggedNode.node().parentElement.append(this.draggedNodesPlaceholder)
+	}
+
+	_handleDrag(event, d) {
+		this.draggedNode.attr('transform', `translate(${event.x}, ${event.y})`);
+	}
+
+	_handleDragEnd(event, d) {
+		this.draggedNode.classed('dragging', false);
+		this.draggedNodesPlaceholder.remove();
+	}
+
+	_handleZoom(event) {
+		this._currentScale = event.transform.k;
+
+		this.zoomHandler.attr('transform', event.transform);
 	}
 
 	_handleZoomIn() {
@@ -86,10 +108,23 @@ class D3OrganizationChart {
 			.call(this._zoom.scaleTo, this._currentScale);
 	}
 
-	_handleNodeClick(d) {
-		d3.event.stopPropagation();
+	_handleNodeClick(event, d) {
+		event.stopPropagation();
 
-		this._selectedNode = d;
+		let expanded = true;
+		if(this._selectedNodeIds.has(d.data.id)){
+			expanded = false;
+		}
+
+		if(!event.shiftKey){
+			this._selectedNodeIds.clear();
+		}
+
+		if(expanded) {
+			this._selectedNodeIds.add(d.data.id);
+		} else {
+			this._selectedNodeIds.delete(d.data.id)
+		}
 
 		if (d.data.type !== 'user') {
 			if (!d.data.fetched) {
@@ -101,8 +136,11 @@ class D3OrganizationChart {
 						this._update(d);
 					});
 			}
-			else {
-				toggleChildren(d);
+
+			if(expanded){
+				showChildren(d);	
+			} else {
+				hideChildren(d)
 			}
 		}
 
@@ -113,11 +151,16 @@ class D3OrganizationChart {
 		this.root = d3.hierarchy(initialData, (d) => d.children);
 		this.root.x0 = DY / 2;
 		this.root.y0 = 0;
-		
+
 		this._zoom = d3
 			.zoom()
 			.scaleExtent(ZOOM_EXTENT)
 			.on('zoom', this._handleZoom);
+
+		// this._dndHandler = d3.drag()
+		// 	.on("start", handleDragStart)
+		// 	.on("drag", handleDrag)
+		// 	.on("end", handleDragEnd);
 
 		this.svg = d3.select(this._refs.svg).call(this._zoom);
 		this.zoomHandler = this.svg.append('g');
@@ -129,7 +172,7 @@ class D3OrganizationChart {
 	}
 
 	_update(source) {
-		insertAddButtons(this.root, this._selectedNode);
+		insertAddButtons(this.root, this._selectedNodeIds);
 		tree(this.root);
 
 		this.root.eachBefore((d) => {
@@ -243,7 +286,7 @@ class D3OrganizationChart {
 		generateNodeContent(children, this._spritemap);
 
 		children
-			.on('mouseenter', (d) => {
+			.on('mouseenter', (_event, d) => {
 				highlight(d, this.nodesGroup, this.linksGroup);
 			})
 			.on('mouseleave', removeHighlight)
@@ -262,7 +305,7 @@ class D3OrganizationChart {
 
 		bindedNodes.classed(
 			'selected',
-			(d) => d.data.id === this._selectedNode?.data?.id
+			(d) => this._selectedNodeIds.has(d.data.id)
 		);
 
 		bindedNodes
@@ -275,6 +318,8 @@ class D3OrganizationChart {
 					? `translate(${source.y},${source.x})`
 					: `translate(${d.y},${d.x}) scale(0)`
 			);
+
+		//this._dndHandler(bindedNodes)
 	}
 }
 

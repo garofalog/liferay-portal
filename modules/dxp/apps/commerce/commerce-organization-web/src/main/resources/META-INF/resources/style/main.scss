@@ -43,6 +43,10 @@ $text: $gray-600;
 		stroke-width: 1.5;
 	}
 
+	.dragging {
+		opacity: .5;
+	}
+
 	.chart-item {
 		&.highlighted {
 			.chart-rect {

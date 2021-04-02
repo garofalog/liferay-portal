@@ -11,7 +11,7 @@
 
 import ClayButton from '@clayui/button';
 import ClayModal, {useModal} from '@clayui/modal';
-import React, {useMemo, useState} from 'react';
+import React, {useMemo} from 'react';
 
 function AddOrganizationsContent() {
 	return (
