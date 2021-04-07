@@ -11,8 +11,21 @@
 
 let highlightedLinks;
 let highlightedNodes;
+let enabled = true;
+
+export function enableHighlight() {
+	enabled = true;
+}
+
+export function disableHighlight() {
+	enabled = false;
+}
 
 export function highlight(node, nodesGroup, linksGroup) {
+	if (!enabled) {
+		return;
+	}
+
 	const ancestorIds = node.ancestors().map((d) => d.data.id);
 
 	highlightedNodes = nodesGroup

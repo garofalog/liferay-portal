@@ -28,6 +28,8 @@ export const RECT_SIZES = {
 	},
 };
 
+export const DRAGGING_THRESHOLD = 2;
+
 export const ZOOM_EXTENT = [0.25, 1];
 export const RECT_PADDING = 16;
 export const ICON_RADIUS = 16;
@@ -42,4 +44,3 @@ export const SYMBOLS_MAP = {
 	organization: 'organizations',
 	user: 'user',
 };
-

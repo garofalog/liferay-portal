@@ -43,24 +43,40 @@ $text: $gray-600;
 		stroke-width: 1.5;
 	}
 
-	.dragging {
-		opacity: .5;
+	.dnd-handle-content {
+		transition: transform 0.2s linear;
+		pointer-events: none;
+
+		.chart-rect {
+			stroke: rgba($primary, 0.6);
+		}
+	}
+
+	.dnd-handle.dragging .dnd-handle-content {
+		transform: scale(.8);
+	}
+
+	.highlighted {
+		.chart-rect {
+			stroke: rgba($primary, 0.6);
+		}
+	}
+
+	.selected {
+		.chart-rect {
+			stroke: $primary;
+		}
 	}
 
 	.chart-item {
-		&.highlighted {
-			.chart-rect {
-				stroke: rgba($primary, 0.6);
-			}
-		}
-		&.selected {
-			.chart-rect {
-				stroke: $primary;
-			}
-		}
+		cursor: pointer;
+	}
 
-		&:hover {
-			cursor: pointer;
+	.disabled {
+		opacity: 0.5;
+
+		.chart-rect {
+			stroke: $secondary-l2;
 		}
 	}
 

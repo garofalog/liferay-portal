@@ -11,7 +11,17 @@
 
 import {hierarchy, linkHorizontal, tree as d3Tree} from 'd3';
 
-import {DX, DY, RECT_SIZES, SYMBOLS_MAP} from './constants';
+import {DRAGGING_THRESHOLD, DX, DY, RECT_SIZES, SYMBOLS_MAP} from './constants';
+
+export function hasPositionChanged(start, end) {
+	if (!end) {
+		return false;
+	}
+
+	const diff = Math.max(Math.abs(start.x - end.x), Math.abs(start.y - end.y));
+
+	return diff > DRAGGING_THRESHOLD;
+}
 
 export function appendIcon(node, symbol, size, className) {
 	return node
@@ -77,8 +87,8 @@ export function getLinkId(link) {
 }
 
 export function showChildren(d) {
-	if(d.children && !d._children) {
-		return
+	if (d.children && !d._children) {
+		return;
 	}
 	d.children = d._children;
 	d.data.children = d.data._children;
@@ -87,8 +97,8 @@ export function showChildren(d) {
 }
 
 export function hideChildren(d) {
-	if(d._children && !d.children) {
-		return
+	if (d._children && !d.children) {
+		return;
 	}
 	d._children = d.children;
 	d.data._children = d.data.children;
@@ -161,10 +171,7 @@ export function insertAddButtons(root, selectedNodesIds) {
 	}
 
 	root.each((d) => {
-		if (
-			selectedNodesIds.has(d.data.id) &&
-			d.data.type !== 'user'
-		) {
+		if (selectedNodesIds.has(d.data.id) && d.data.type !== 'user') {
 			showChildren(d);
 
 			if (!d.children) {
@@ -172,7 +179,7 @@ export function insertAddButtons(root, selectedNodesIds) {
 				d.data.children = [];
 			}
 
-			if(d.children.length && d.children[0].data.type === 'add') {
+			if (d.children.length && d.children[0].data.type === 'add') {
 				return;
 			}
 
@@ -189,7 +196,8 @@ export function insertAddButtons(root, selectedNodesIds) {
 
 			d.children.unshift(newNode);
 			d.data.children.unshift(newNode);
-		} else {
+		}
+		else {
 			removeAddButton(d);
 		}
 	});
@@ -240,7 +248,7 @@ export function generateAddButtonContent(nodeEnter, spritemap, openModal) {
 			else {
 				actionsWrapper.node().classList.toggle('menu-open');
 			}
-		});
+		})
 
 	appendCircle(openActionsWrapper, 36, 'action-circle');
 	appendIcon(openActionsWrapper, `${spritemap}#plus`, 18, 'action-icon');

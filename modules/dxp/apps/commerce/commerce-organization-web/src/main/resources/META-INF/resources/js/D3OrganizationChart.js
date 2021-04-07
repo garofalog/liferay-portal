@@ -26,6 +26,7 @@ import {
 	tree,
 } from './utils';
 import {DY, RECT_SIZES, ZOOM_EXTENT} from './utils/constants';
+import {handleDnd} from './utils/dnd';
 import {highlight, removeHighlight} from './utils/highlight';
 
 class D3OrganizationChart {
@@ -37,9 +38,7 @@ class D3OrganizationChart {
 		this._handleZoom = this._handleZoom.bind(this);
 		this._handleZoomOut = this._handleZoomOut.bind(this);
 		this._handleNodeClick = this._handleNodeClick.bind(this);
-		this._handleDrag = this._handleDrag.bind(this);
-		this._handleDragEnd = this._handleDragEnd.bind(this);
-		this._handleDragStart = this._handleDragStart.bind(this);
+		this._handleNodeMouseDown = this._handleNodeMouseDown.bind(this);
 		this._currentScale = 1;
 		this._openModal = openModal;
 		this._selectedNodeIds = new Set();
@@ -53,25 +52,6 @@ class D3OrganizationChart {
 
 		this._refs.zoomIn.addEventListener('click', this._handleZoomIn);
 		this._refs.zoomOut.addEventListener('click', this._handleZoomOut);
-	}
-
-	_handleDragStart(...args) {
-		console.log(args)
-		this.draggedNode = d3.select(this);
-		this.draggedNode.classed('dragging', true);
-
-		this.draggedNodesPlaceholder = this.draggedNode.node().cloneNode(true);
-		this.draggedNode.raise();
-		this.draggedNode.node().parentElement.append(this.draggedNodesPlaceholder)
-	}
-
-	_handleDrag(event, d) {
-		this.draggedNode.attr('transform', `translate(${event.x}, ${event.y})`);
-	}
-
-	_handleDragEnd(event, d) {
-		this.draggedNode.classed('dragging', false);
-		this.draggedNodesPlaceholder.remove();
 	}
 
 	_handleZoom(event) {
@@ -108,40 +88,55 @@ class D3OrganizationChart {
 			.call(this._zoom.scaleTo, this._currentScale);
 	}
 
+	_handleNodeMouseDown(event, d) {
+		event.stopPropagation();
+
+		handleDnd(
+			event,
+			d,
+			this._handleNodeClick,
+			this._selectedNodeIds,
+			this._refs.svg,
+			this.nodesGroup,
+			this._currentScale
+		);
+	}
+
 	_handleNodeClick(event, d) {
 		event.stopPropagation();
 
 		let expanded = true;
-		if(this._selectedNodeIds.has(d.data.id)){
+
+		if (this._selectedNodeIds.has(d.data.id)) {
 			expanded = false;
 		}
 
-		if(!event.shiftKey){
+		if (!event.shiftKey) {
 			this._selectedNodeIds.clear();
 		}
 
-		if(expanded) {
+		if (expanded) {
 			this._selectedNodeIds.add(d.data.id);
-		} else {
-			this._selectedNodeIds.delete(d.data.id)
+		}
+		else {
+			this._selectedNodeIds.delete(d.data.id);
 		}
 
-		if (d.data.type !== 'user') {
-			if (!d.data.fetched) {
-				return this._getChildren(d.data.id, d.data.type)
-					.then((children) => insertChildrenIntoNode(children, d))
-					.then(() => {
-						d.data.fetched = true;
+		if (!d.data.fetched) {
+			return this._getChildren(d.data.id, d.data.type)
+				.then((children) => insertChildrenIntoNode(children, d))
+				.then(() => {
+					d.data.fetched = true;
 
-						this._update(d);
-					});
-			}
+					this._update(d);
+				});
+		}
 
-			if(expanded){
-				showChildren(d);	
-			} else {
-				hideChildren(d)
-			}
+		if (expanded) {
+			showChildren(d);
+		}
+		else {
+			hideChildren(d);
 		}
 
 		this._update(d);
@@ -156,11 +151,6 @@ class D3OrganizationChart {
 			.zoom()
 			.scaleExtent(ZOOM_EXTENT)
 			.on('zoom', this._handleZoom);
-
-		// this._dndHandler = d3.drag()
-		// 	.on("start", handleDragStart)
-		// 	.on("drag", handleDrag)
-		// 	.on("end", handleDragEnd);
 
 		this.svg = d3.select(this._refs.svg).call(this._zoom);
 		this.zoomHandler = this.svg.append('g');
@@ -290,8 +280,17 @@ class D3OrganizationChart {
 				highlight(d, this.nodesGroup, this.linksGroup);
 			})
 			.on('mouseleave', removeHighlight)
-			.on('click', this._handleNodeClick)
-			// .on('mouseup', (e) => console.log('up', e))
+			.on('mousedown', (event, d) => {
+				event.stopPropagation();
+
+				if(d.data.type === 'user') {
+					this._recenterViewport(d);
+				} else {
+					this._handleNodeMouseDown(event, d);
+					// this._handleNodeClick(event, d);
+				}
+			}
+			);
 
 		bindedNodes
 			.merge(this.bindedChartItems)
@@ -303,9 +302,8 @@ class D3OrganizationChart {
 					: `translate(${d.y},${d.x}) scale(1)`
 			);
 
-		bindedNodes.classed(
-			'selected',
-			(d) => this._selectedNodeIds.has(d.data.id)
+		bindedNodes.classed('selected', (d) =>
+			this._selectedNodeIds.has(d.data.id)
 		);
 
 		bindedNodes
@@ -318,8 +316,6 @@ class D3OrganizationChart {
 					? `translate(${source.y},${source.x})`
 					: `translate(${d.y},${d.x}) scale(0)`
 			);
-
-		//this._dndHandler(bindedNodes)
 	}
 }
 
