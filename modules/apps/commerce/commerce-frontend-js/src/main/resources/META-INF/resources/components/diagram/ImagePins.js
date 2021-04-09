@@ -15,10 +15,11 @@
 //  import * as d3 from 'd3';
 //  console.log(d3)
 
-import {drag, event, schemeCategory10, select, zoom} from 'd3';
+import {drag, event, mouse, select, zoom} from 'd3';
 import PropTypes from 'prop-types';
 import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 
+import AdminTooltip from './AdminTooltip';
 import NavigationButtons from './NavigationButtons';
 import ZoomController from './ZoomController';
 
@@ -75,8 +76,8 @@ const ImagePins = ({
 	// }, [data.length]);
 
 	useEffect(() => {
-        let t;
-        
+		let t;
+
 		if (!event) {
 			t = {
 				k: imageState.k,
@@ -126,7 +127,7 @@ const ImagePins = ({
 
 	useLayoutEffect(() => {
 		svg = select('svg');
-		container = select('g');
+		container = select('g#container');
 
 		// .attr("viewBox", [0, 0, completeImageSettings.width, completeImageSettings.height]);
 
@@ -308,92 +309,120 @@ const ImagePins = ({
 
 		////////////////////////////////////////////////
 
-		function dragstarted(event, d) {
+		const editPin = () => {
+			console.log('sto facendocose');
+		};
+
+		function dragstarted(d) {
 			const current = select(this);
 			current.raise().attr('stroke', 'red');
+			current.raise().classed("active", true);
+
 		}
 
-		function dragged() {
+		function dragged(d) {
 			const current = select(this);
-			current.attr('cx', event.x).attr('cy', event.y);
+
+			// current.attr('cx', event.x).attr('cy', event.y);
+
+			console.log('event', event.x, event.y);
+			console.log('d', d)
+			current.attr("transform", "translate(" + event.x + ',' + event.y + ')');
+
 		}
 
-		function dragended(event, d) {
+		function dragended(d) {
+
 			const current = select(this);
+			current.classed("active", false);
+
+			// current.attr("transform", "translate(" + event.cx + ',' + event.cy + ')');
+
 			const newPos = current._groups[0][0].attributes;
+
+			// const newPos = current._groups[0][0].children[0].attributes;
+
+
 			const beSure = [...newPos];
 
-			const id = beSure.filter((d) => {
-				if (d.name === 'id') {
-					return d;
-				}
-			});
-			const x = beSure.filter((d) => {
-				if (d.name === 'cx') {
-					return d;
-				}
-			});
-			const y = beSure.filter((d) => {
-				if (d.name === 'cy') {
-					return d;
-				}
-			});
-			const r = beSure.filter((d) => {
-				if (d.name === 'r') {
-					return d;
-				}
-			});
-			const color = beSure.filter((d) => {
-				if (d.name === 'fill') {
-					return d;
-				}
+
+			// console.log('event', event);
+			// console.log('d', d)
+			// console.log('current', current)
+
+			const arr = [
+				'cx',
+				'cy',
+				'draggable',
+				'fill',
+				'id',
+				'linked_to_sku',
+				'sku',
+				'quantity',
+				'r',
+			];
+			const newww = {};
+
+			arr.map((el) => {
+				beSure.filter(d => {
+
+					if (d.name === el) {
+						if (el === 'cx' || el === 'cy') {
+							newww[`${d.name}`] = parseFloat(d.value)
+						} else if (el === 'quantity' || el === 'r' || el === 'id') {
+							newww[`${d.name}`] = parseInt(d.value, 10)
+						} else if (el === 'draggable') {
+							newww[`${d.name}`] = d.value ? true : false
+						} else {
+							newww[`${d.name}`] = d.value;
+						}
+					}
+				});
 			});
 
-			const newCoords = {
-				color: color[0].value,
-				id: parseInt(id[0].value, 10),
-				r: parseInt(r[0].value, 10),
-				x: parseFloat(x[0].value, 10),
-				y: parseFloat(y[0].value, 10),
-			};
+
+
+
+			// console.log('newww', newww);
+
+			// current.attr('cx', current.attributes.filter(e => e.name === 'cx') )
+			// current.attr('cy', current.attributes.filter(e => e.name === 'cy'))
 
 			current.attr('stroke', null);
-			current.attr('fill', color[0].value);
+			current.attr('fill', event.fill);
+
 			const newState = cPins.map((element) =>
-				element.id === newCoords.id ? newCoords : element
+				element.id === newww.id ? newww : element
 			);
+
 			setCpins(newState);
 		}
 
 		////////////////////////////
 
+		const editPinHandler = () => {};
+
 		const dragHandler = drag()
-			.on('drag', dragged)
 			.on('start', dragstarted)
+			.on('drag', dragged)
 			.on('end', dragended);
 
-		/////////////////////////////////////////////////////////////////////
+		
 
-		const clicked = (event, d) => {
-			if (event.defaultPrevented) {
-				return;
-			} // dragged
-			select(this)
-				.transition()
-				.attr('r', 20 * 2)
-				.transition()
-				.attr('r', 20)
-				.attr('fill', schemeCategory10[d.index % 10]);
-		};
+		/////////////////////////////////////////////////////////////////////
 
 		const addPin = () => {
 			setCpins(
 				cPins.concat({
-					color: '#' + addNewPinState.color,
+					cx: 50,
+					cy: 50,
+					draggable: true,
+					fill: '#' + addNewPinState.fill,
 					id: cPins.length + 1,
+					linked_to_sku: '',
+					quantity: 1,
 					r: addNewPinState.radius,
-					x: 50,
-					y: 50,
+					sku: addNewPinState.sku,
 				})
 			);
 		};
@@ -405,67 +434,176 @@ const ImagePins = ({
 
 		////////////////////////////////////////////////
 
-		const pinnn = container
-			.selectAll('circle')
+		// works
+
+		// const pinnn = container
+		// 	.selectAll('circle')
+		//     .data(cPins)
+
+		//     .enter()
+		//     .append('circle')
+		// 	.attr('cx', (d) => d.cx)
+		// 	.attr('cy', (d) => d.cy)
+		// 	.attr('id', (d) => d.id)
+		// 	.attr('linked_to_sku', (d) => d.linked_to_sku)
+		// 	.attr('sku', (d) => d.sku)
+		// 	.attr('quantity', (d) => d.quantity)
+		// 	.attr('fill', (d) => d.fill)
+		// 	.attr('r', (d) => d.r)
+		// 	.attr('id', (d) => d.id)
+
+		const cont = container
+			.selectAll('g')
 			.data(cPins)
-			.join('circle')
-			.attr('cx', (d) => d.x)
-			.attr('cy', (d) => d.y)
-			.attr('r', (d) => d.r)
+			.enter()
+			.append('g')
+			.attr('transform', d => "translate(" + d.cx + "," + d.cy + ")")
+
+			.attr('cx', (d) => d.cx)
+			.attr('cy', (d) => d.cy)
+
 			.attr('id', (d) => d.id)
 			.attr('linked_to_sku', (d) => d.linked_to_sku)
 			.attr('sku', (d) => d.sku)
-            .attr('quantity', (d) => d.quantity)
-            .attr('stroke', (d) => '#43936')
-            .attr('stroke-width', 2)
-			.attr('fill', (d) => d.color)
-			.classed('draggable', true);
+			.attr('quantity', (d) => d.quantity)
+			.attr('fill', (d) => d.fill)
+			.attr('r', (d) => d.r)
+			.attr('id', (d) => d.id)
+			.attr('draggable', (d) => (d.draggable ? true : false))
+			.call(dragHandler)
+			.on('click', (d, i) => {
+				console.log("clicking on", this, d);
+				select(this)
+					.transition()
+					.attr('r', 20);
+			})		 
+		
+			cont.append('circle')
+				.attr('r', (d) => d.r)
+				.attr('fill', (d) => d.fill)
+				.attr('r', (d) => d.r)
+				.attr('stroke', () => '#0D62CE')
+				.attr('stroke-width', 2)
+		
+			cont.append('text')
+				.text(d => d.id)
+				.attr('font-size', (d) => d.r)
+				.attr('text-anchor', 'middle')
+				.attr('fill', '#ffffff')
+				.attr('alignment-baseline', 'central');
+		
 
-		dragHandler(pinnn);
 
-		pinnn.on("click", () => {
-		    console.log('sto facendocose')
+		// pinnn.on("click", (d) => {
+		//     console.log('cu')
+
+		//     // const mouseEV = mouse(this);
+
+		//     container.append("div")
+		//         .style("position", "absolute")
+		//         .style("visibility", "hidden")
+		//         .style("background-color", "white")
+		//         .style("border", "solid")
+		//         .style("border-width", "1px")
+		//         .style("border-radius", "5px")
+		//         .style("padding", "10px")
+		//         .html(`<AdminTooltip/>`)
+
+		//     return (
+		//         <AdminTooltip />
+		//     )
+
+		//     // debugger;
+		//     // console.log('sto facendo altre cose')
+		//     // console.log(d)
+		//     // select(this)
+		//     //     .attr("fill", "rgb(0," + d + ",0)")
+
+		// })
+
+		// container.selectAll("circle")
+		//     .on("click", function (d) {
+		//         console.log('sto facendo altre cose')
+		//         console.log(d)
+		//         select(this)
+		//             .attr("fill", "rgb(0," + d + ",0)")
+		//     })
+
+		//     // .on("mouseover", function () {
+		//     //     select(this)
+		//     //         .style("background-color", "orange");
+
+		//     //     // Get current event info
+
+		//     //     console.log(event);
+
+		//     //     // Get x & y co-ordinates
+
+		//     //     console.log(mouse(this));
+		//     // })
+
+		//     .on("mouseout", () => {
+		//         console.log('mouseout')
+
+		//         // select(this)
+		//         //     .style("background-color", "steelblue")
+		//     });
+
+		// container.on("click", () => {
+		//     pinnn.on("click", () => {
+		//         console.log('stocazzo')
+		//     })
+		// })
 
 
-            var tooltip2 = select("#div_customContent")
-                .append("div")
-                .style("position", "absolute")
-                .style("visibility", "hidden")
-                .style("background-color", "white")
-                .style("border", "solid")
-                .style("border-width", "1px")
-                .style("border-radius", "5px")
-                .style("padding", "10px")
-                .html("<p>I'm a tooltip written in HTML</p><img src='https://github.com/holtzy/D3-graph-gallery/blob/master/img/section/ArcSmal.png?raw=true'></img><br>Fancy<br><span style='font-size: 40px;'>Isn't it?</span>");
+		// editPinHandler(circleContainer);
 
-                select("#circleCustomTooltip")
-                .on("mouseover", () => { return tooltip2.style("visibility", "visible"); })
-                .on("mousemove", () => { return tooltip2.style("top", (event.pageY - 2390) + "px").style("left", (event.pageX - 800) + "px"); })
-                .on("mouseout", () => { return tooltip2.style("visibility", "hidden"); });
+		// pinnn._groups[0].forEach((p) => {
 
-		        // var datum = pinnn.datum();
-		        // if (pinnn.datum().selected) {
-		        //     console.log('datum selected')
-		        //     datum.selected = false;
-		        //     pinnn
-		        //         .datum(datum)
-		        //         .transition()
-		        //         .duration(500)
-		        //         .attr("stroke", "#039BE5")
-		        //         .attr("stroke-width", "1px");
-		        // } else {
-		        //     console.log('datum')
-		        //     datum.selected = true;
-		        //     pinnn
-		        //         .datum(datum)
-		        //         .transition()
-		        //         .duration(500)
-		        //         .attr("stroke", "#455A64")
-		        //         .attr("stroke-width", "3px");
-		        // }
+		//     p.on("click", () => {
+		//         console.log('sto facendocose')
 
-		    event.stopPropagation();
-		});
+		//         var tooltip2 = select("#div_customContent")
+		//             .append("div")
+		//             .style("position", "absolute")
+		//             .style("visibility", "hidden")
+		//             .style("background-color", "white")
+		//             .style("border", "solid")
+		//             .style("border-width", "1px")
+		//             .style("border-radius", "5px")
+		//             .style("padding", "10px")
+		//             .html("<p>I'm a tooltip written in HTML</p><img src='https://github.com/holtzy/D3-graph-gallery/blob/master/img/section/ArcSmal.png?raw=true'></img><br>Fancy<br><span style='font-size: 40px;'>Isn't it?</span>");
+
+		//         select("#circleCustomTooltip")
+		//             .on("mouseover", () => { return tooltip2.style("visibility", "visible"); })
+		//             .on("mousemove", () => { return tooltip2.style("top", (event.pageY - 2390) + "px").style("left", (event.pageX - 800) + "px"); })
+		//             .on("mouseout", () => { return tooltip2.style("visibility", "hidden"); });
+
+		//         // var datum = pinnn.datum();
+		//         // if (pinnn.datum().selected) {
+		//         //     console.log('datum selected')
+		//         //     datum.selected = false;
+		//         //     pinnn
+		//         //         .datum(datum)
+		//         //         .transition()
+		//         //         .duration(500)
+		//         //         .attr("stroke", "#039BE5")
+		//         //         .attr("stroke-width", "1px");
+		//         // } else {
+		//         //     console.log('datum')
+		//         //     datum.selected = true;
+		//         //     pinnn
+		//         //         .datum(datum)
+		//         //         .transition()
+		//         //         .duration(500)
+		//         //         .attr("stroke", "#455A64")
+		//         //         .attr("stroke-width", "3px");
+		//         // }
+
+		//         event.stopPropagation();
+		//     });
+
+		// })
 
 		dragHandler(svg);
 
@@ -486,16 +624,23 @@ const ImagePins = ({
 
 		select('#newPin').on('click', handleAddPin);
 
+		// select('.draggable').on('click', editPin)
+
 		// dragHandler2(container.selectAll('.draggable'));
 		// dragHandler(container.selectAll('.draggable'));
 
 	}, [
 		addPinHandler,
-		imageState,
-		cPins,
+
+		// imageState,
+
+		// cPins,
+
 		resetZoom,
 		setResetZoom,
-		setCpins,
+
+		// setCpins,
+
 		width,
 		zoomOutHandler,
 		zoomInHandler,
@@ -513,7 +658,7 @@ const ImagePins = ({
 				ref={containerRef}
 				width={completeImageSettings.width}
 			>
-				<g
+				<g	id="container"
 					transform={
 						'translate(' +
 						imageState.x +
@@ -563,13 +708,15 @@ ImagePins.propTypes = {
 	addPinHandler: PropTypes.bool,
 	cPins: PropTypes.arrayOf(
 		PropTypes.shape({
-			color: PropTypes.string,
+			cx: PropTypes.double,
+			cy: PropTypes.double,
+			draggable: PropTypes.bool,
+			fill: PropTypes.string,
 			id: PropTypes.number,
 			linked_to_sku: PropTypes.oneOf(['sku', 'diagram']),
-			quantity: PropTypes.double,
+			quantity: PropTypes.number,
 			r: PropTypes.number,
-			x: PropTypes.double,
-			y: PropTypes.double,
+			sku: PropTypes.string,
 		})
 	),
 	completeImageSettings: PropTypes.shape({

@@ -44,7 +44,7 @@ const Diagram = ({
 	const [cPins, setCpins] = useState(pins);
 
 	const [addNewPinState, setAddNewPinState] = useState({
-		color: newPinSettings.colorPicker.selectedColor,
+		fill: newPinSettings.colorPicker.selectedColor,
 		radius: newPinSettings.defaultRadius,
 	});
 
@@ -88,17 +88,16 @@ const Diagram = ({
 			<DiagramFooter
 				enableResetZoom={enableResetZoom}
 				imageState={imageState}
-                setAddPinHandler={setAddPinHandler}
-                setImageState={setImageState}
-                setResetZoom={setResetZoom}
-                setSelectedOption={setSelectedOption}
-                setZoomInHandler={setZoomInHandler}
-                setZoomOutHandler={setZoomOutHandler}
+				setAddPinHandler={setAddPinHandler}
+				setImageState={setImageState}
+				setResetZoom={setResetZoom}
+				setSelectedOption={setSelectedOption}
+				setZoomInHandler={setZoomInHandler}
+				setZoomOutHandler={setZoomOutHandler}
 				spritemap={spritemap}
 			/>
 
 			<AdminTooltip />
-
 		</div>
 	);
 };
@@ -156,15 +155,17 @@ Diagram.defaultProps = {
 Diagram.propTypes = {
 	cPins: PropTypes.arrayOf(
 		PropTypes.shape({
-			color: PropTypes.string,
+			cx: PropTypes.double,
+			cy: PropTypes.double,
+			draggable: PropTypes.bool,
+			fill: PropTypes.string,
 			id: PropTypes.number,
 			linked_to_sku: PropTypes.oneOf(['sku', 'diagram']),
-			quantity: PropTypes.double,
+			quantity: PropTypes.number,
 			r: PropTypes.number,
-			x: PropTypes.double,
-			y: PropTypes.double,
+			sku: PropTypes.string,
 		})
-	),
+		),
 	completeImageSettings: PropTypes.shape({
 		height: PropTypes.string,
 		lastX: PropTypes.number,

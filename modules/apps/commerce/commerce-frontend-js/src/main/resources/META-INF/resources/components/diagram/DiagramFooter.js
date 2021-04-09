@@ -24,10 +24,10 @@ const DiagramFooter = ({
 	enableResetZoom,
 	imageState,
 	setAddPinHandler,
-    setImageState,
-    setResetZoom,
+	setImageState,
+	setResetZoom,
 	setSelectedOption,
-    setZoomInHandler,
+	setZoomInHandler,
 	setZoomOutHandler,
 	spritemap,
 }) => {
@@ -149,22 +149,23 @@ const DiagramFooter = ({
 DiagramFooter.defaultProps = {};
 
 DiagramFooter.propTypes = {
-    enableResetZoom: PropTypes.bool,
+	enableResetZoom: PropTypes.bool,
 	infos: PropTypes.shape({
 		canvas: PropTypes.any,
 		ctxStore: PropTypes.any,
 	}),
 	myzoom: PropTypes.func,
 
-    // resetZoom: PropTypes.func,
-    // setAddPinHandler: PropTypes.func,
+	// resetZoom: PropTypes.func,
+	// setAddPinHandler: PropTypes.func,
 
-    // setImageState: PropTypes.func,
+	// setImageState: PropTypes.func,
 
-    // setResetZoom: PropTypes.func,
-    // setSelectedOption: PropTypes.func,
-    // setZoomInHandler: PropTypes.func,
-    // setZoomOutHandler: PropTypes.func,
+	// setResetZoom: PropTypes.func,
+	// setSelectedOption: PropTypes.func,
+	// setZoomInHandler: PropTypes.func,
+	// setZoomOutHandler: PropTypes.func,
+
 };
 
 export default DiagramFooter;
