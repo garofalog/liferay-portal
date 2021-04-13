@@ -9,19 +9,15 @@
  * distribution rights of the Software.
  */
 
-import {render} from '@liferay/frontend-js-react-web';
+import React from 'react';
+import {Autocomplete} from 'commerce-frontend-js';
 
-import OrganizationChart from '../../src/main/resources/META-INF/resources/js/OrganizationChart';
+function Search() {
+    return (
+        <Autocomplete 
+            
+        />
+    )
+}
 
-import '../../src/main/resources/META-INF/resources/style/main.scss';
-
-render(
-	OrganizationChart,
-	{
-		accountEndpointURL: '/get-account',
-		organizationEndpointURL: '/get-organization',
-		rootOrganizationId: 0,
-		spritemap: './assets/clay/icons.svg',
-	},
-	document.getElementById('organizations-chart-root')
-);
+export default Search

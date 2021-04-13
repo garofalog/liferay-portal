@@ -21,70 +21,49 @@ import React, {
 	useState,
 } from 'react';
 
+import ChartContext from './ChartContext';
 import ConnectEntityModal from './ConnectEntityModal';
 import D3OrganizationChart from './D3OrganizationChart';
+import ManagementBar from './ManagementBar/ManagementBar';
+import NodeMenu from './NodeMenu';
+import {ACCOUNTS_PROPERTY_NAME, ORGANIZATIONS_PROPERTY_NAME, USERS_PROPERTY_NAME, VIEWS} from './utils/constants'
 
-function enrichArrayItemsWithType(array = [], type) {
-	return array.map((item) => ({...item, type}));
-}
+function formatChildren(item, type) {
+	item.type = type;
+	item.children = [...item[USERS_PROPERTY_NAME].map((user) => ({...user, type: 'user'}))];
 
-function formatRawData({accounts, organizations, users, ...entry}, type) {
-	const formattedOrganizations = enrichArrayItemsWithType(
-		organizations,
-		'organization'
-	);
-	const formattedAccounts = enrichArrayItemsWithType(accounts, 'account');
-	const formattedUsers = enrichArrayItemsWithType(users, 'user');
-
-	return {
-		...entry,
-		children: [
-			...formattedOrganizations,
-			...formattedAccounts,
-			...formattedUsers,
-		],
-		type,
-	};
-}
-
-function formatChildren(item) {
-	const children = [];
-
-	if (item.users) {
-		children.push(...item.users.map((user) => ({...user, type: 'user'})));
-	}
-	if (item.accounts) {
-		children.push(
-			...item.accounts.map((account) => ({...account, type: 'account'}))
-		);
-	}
-	if (item.organizations) {
-		children.push(
-			...item.organizations.map((organization) => ({
+	if (type === 'organization') {
+		item.children.push(
+			...item[ACCOUNTS_PROPERTY_NAME].map((account) => ({...account, type: 'account'})),
+			...item[ORGANIZATIONS_PROPERTY_NAME].map((organization) => ({
 				...organization,
-				type: 'account',
+				type: 'organization',
 			}))
 		);
 	}
 
-	return children;
+	return item;
 }
 
 function OrganizationChartApp({
 	accountEndpointURL,
 	organizationEndpointURL,
+	rootOrganizationId,
 	spritemap,
 }) {
 	const [modalParentNode, updateModalParentNode] = useState(false);
 	const [modalEntityType, updateModalEntityType] = useState(null);
+	const [currentView, updateCurrentView] = useState(VIEWS[0])
 	const [expanded, updateExpanded] = useState(false);
-
+	const [nodeMenuData, updateNodeMenuData] = useState(null);
 	const [data, updateData] = useState(null);
+	const clickedMenuButtonRef = useRef(null);
 	const chartSvgRef = useRef(null);
+	const chartInstanceRef = useRef(null);
 	const zoomOutRef = useRef(null);
 	const zoomInRef = useRef(null);
 
-	const getChildren = useCallback(
+	const getData = useCallback(
 		(id, type) => {
 			const endpoint =
 				type === 'organization'
@@ -97,89 +76,95 @@ function OrganizationChartApp({
 
 			return fetch(url)
 				.then((res) => res.json())
-				.then(formatChildren);
+				.then((item) => formatChildren(item, type));
 		},
 		[accountEndpointURL, organizationEndpointURL]
 	);
 
-	const getInitialData = useCallback(() => {
-		const url = new URL(
-			organizationEndpointURL,
-			themeDisplay.getPortalURL()
-		);
-
-		return fetch(url)
-			.then((res) => res.json())
-			.then((jsonResponse) => {
-				const formattedData = jsonResponse.map((item) =>
-					formatRawData(item, 'organization')
-				);
-
-				updateData(formattedData);
-			});
-	}, [organizationEndpointURL]);
-
 	useEffect(() => {
-		getInitialData();
-	}, [getInitialData]);
+		getData(rootOrganizationId, 'organization').then(updateData);
+	}, [getData, rootOrganizationId]);
 
 	useLayoutEffect(() => {
 		if (data && chartSvgRef.current) {
-			new D3OrganizationChart(
+			chartInstanceRef.current = new D3OrganizationChart(
 				data,
 				{
 					svg: chartSvgRef.current,
 					zoomIn: zoomInRef.current,
 					zoomOut: zoomOutRef.current,
 				},
-				getChildren,
+				getData,
 				spritemap,
-				(node, entityType) => {
-					updateModalEntityType(entityType);
-					updateModalParentNode(() => node);
+				{
+					open: (node, entityType) => {
+						updateModalEntityType(entityType);
+						updateModalParentNode(() => node);
+					},
+				},
+				{
+					close: () => {
+						clickedMenuButtonRef.current = null;
+						updateNodeMenuData(null);
+					},
+					open: (target, data) => {
+						clickedMenuButtonRef.current = target;
+						updateNodeMenuData(data);
+					},
 				}
 			);
 		}
-	}, [data, getChildren, spritemap]);
+	}, [data, getData, spritemap]);
 
 	return (
 		<ClayIconSpriteContext.Provider value={spritemap}>
-			<div
-				className={classnames(
-					'org-chart-container',
-					expanded && 'expanded'
-				)}
-			>
-				<svg className="svg-chart" ref={chartSvgRef} />
-				<div className="zoom-controls">
-					<ClayButtonWithIcon
-						displayType="secondary"
-						onClick={() => updateExpanded(!expanded)}
-						small
-						symbol="expand"
-					/>
-					<ClayButton.Group className="ml-3">
+			<ChartContext.Provider value={{
+				currentView,
+				updateChartRoot: (d) => chartInstanceRef.current.updateRoot(d),
+				updateCurrentView,
+			}}>
+				<ManagementBar />
+				<div
+					className={classnames(
+						'org-chart-container',
+						{expanded}
+					)}
+				>
+					<svg className="svg-chart" ref={chartSvgRef} />
+					<div className="zoom-controls">
 						<ClayButtonWithIcon
 							displayType="secondary"
-							ref={zoomOutRef}
+							onClick={() => updateExpanded(!expanded)}
 							small
-							symbol="hr"
+							symbol="expand"
 						/>
-						<ClayButtonWithIcon
-							displayType="secondary"
-							ref={zoomInRef}
-							small
-							symbol="plus"
-						/>
-					</ClayButton.Group>
+						<ClayButton.Group className="ml-3">
+							<ClayButtonWithIcon
+								displayType="secondary"
+								ref={zoomOutRef}
+								small
+								symbol="hr"
+							/>
+							<ClayButtonWithIcon
+								displayType="secondary"
+								ref={zoomInRef}
+								small
+								symbol="plus"
+							/>
+						</ClayButton.Group>
+					</div>
 				</div>
-			</div>
-			<ConnectEntityModal
-				newEntityType={modalEntityType}
-				parentNode={modalParentNode}
-				updateModalEntityType={updateModalEntityType}
-				updateModalParentNode={updateModalParentNode}
-			/>
+				<NodeMenu
+					alignElementRef={clickedMenuButtonRef}
+					data={nodeMenuData}
+				/>
+				<ConnectEntityModal
+					newEntityType={modalEntityType}
+					parentNode={modalParentNode}
+					updateModalEntityType={updateModalEntityType}
+					updateModalParentNode={updateModalParentNode}
+				/>
+			</ChartContext.Provider>
 		</ClayIconSpriteContext.Provider>
 	);
 }

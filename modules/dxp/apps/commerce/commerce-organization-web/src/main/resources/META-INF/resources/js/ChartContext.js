@@ -9,19 +9,8 @@
  * distribution rights of the Software.
  */
 
-import {render} from '@liferay/frontend-js-react-web';
+import { createContext } from 'react';
 
-import OrganizationChart from '../../src/main/resources/META-INF/resources/js/OrganizationChart';
+const ChartContext = createContext();
 
-import '../../src/main/resources/META-INF/resources/style/main.scss';
-
-render(
-	OrganizationChart,
-	{
-		accountEndpointURL: '/get-account',
-		organizationEndpointURL: '/get-organization',
-		rootOrganizationId: 0,
-		spritemap: './assets/clay/icons.svg',
-	},
-	document.getElementById('organizations-chart-root')
-);
+export default ChartContext;

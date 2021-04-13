@@ -9,6 +9,28 @@
  * distribution rights of the Software.
  */
 
+export const USERS_PROPERTY_NAME = 'users';
+export const ACCOUNTS_PROPERTY_NAME = 'accounts';
+export const ORGANIZATIONS_PROPERTY_NAME = 'organizations';
+
+export const VIEWS = [
+	{
+		id: 'chart',
+		label: Liferay.Language.get('chart'),
+		symbol: 'diagram',
+	},
+	{
+		id: 'list',
+		label: Liferay.Language.get('list'),
+		symbol: 'list',
+	},
+	{
+		id: 'map',
+		label: Liferay.Language.get('map'),
+		symbol: 'geolocation'
+	}
+];
+
 export const RECT_SIZES = {
 	account: {
 		height: 64,
@@ -29,7 +51,6 @@ export const RECT_SIZES = {
 };
 
 export const DRAGGING_THRESHOLD = 2;
-
 export const ZOOM_EXTENT = [0.25, 1];
 export const RECT_PADDING = 16;
 export const ICON_RADIUS = 16;
@@ -38,6 +59,9 @@ export const COLUMN_GAP = 60;
 export const MARGIN_LEFT = 40;
 export const DX = 90;
 export const DY = 400;
+
+export const NODE_BUTTON_WIDTH = 28;
+export const NODE_PADDING = 14;
 
 export const SYMBOLS_MAP = {
 	account: 'users',

@@ -9,49 +9,6 @@
  * distribution rights of the Software.
  */
 
-const tree = [
-	{
-		fetched: true,
-		id: 1,
-		name: 'Liferay World',
-		organizations: [
-			{
-				id: 2,
-				name: 'Liferay Italy',
-			},
-			{
-				id: 3,
-				name: 'Liferay Spain',
-			},
-			{
-				id: 4,
-				name: 'Liferay Ireland',
-			},
-		],
-	},
-	{
-		accounts: [
-			{
-				id: 11,
-				name: 'Car Dealer',
-			},
-		],
-		fetched: true,
-		id: 5,
-		name: 'Riuvo',
-		users: [
-			{
-				id: 111,
-				name: 'Fabio Mastrorilli',
-			},
-			{
-				id: 113,
-				name: 'Andrea Censi',
-			},
-		],
-	},
-];
-
 const definitions = {
 	accounts: {
 		11: {
@@ -66,9 +23,47 @@ const definitions = {
 		},
 	},
 	organizations: {
+		0: {
+			accounts: [],
+			id: 0,
+			name: 'Test Root',
+			organizations: [
+				{
+					id: 1,
+					name: 'Liferay World',
+				},
+				{
+					id: 5,
+					name: 'Riuvo',
+				},
+			],
+			users: [],
+		},
+		1: {
+			accounts: [],
+			id: 1,
+			name: 'Liferay World',
+			organizations: [
+				{
+					id: 2,
+					name: 'Liferay Italy',
+				},
+				{
+					id: 3,
+					name: 'Liferay Spain',
+				},
+				{
+					id: 4,
+					name: 'Liferay Ireland',
+				},
+			],
+			users: [],
+		},
 		2: {
+			accounts: [],
 			id: 11,
 			name: 'Liferay Italy',
+			organizations: [],
 			users: [
 				{
 					id: 111,
@@ -81,8 +76,10 @@ const definitions = {
 			],
 		},
 		3: {
+			accounts: [],
 			id: 12,
 			name: 'Liferay Spain',
+			organizations: [],
 			users: [
 				{
 					id: 114,
@@ -91,26 +88,32 @@ const definitions = {
 			],
 		},
 		4: {
+			accounts: [],
 			id: 13,
 			name: 'Liferay Ireland',
+			organizations: [],
+			users: [],
 		},
-	},
-	users: {
-		111: {
-			id: 111,
-			name: 'Fabio Mastrorilli',
-		},
-		112: {
-			id: 112,
-			name: 'Andrea Censi',
-		},
-		113: {
-			id: 113,
-			name: 'Luca Pellizon',
-		},
-		114: {
-			id: 114,
-			name: 'Julien Castelain',
+		5: {
+			accounts: [
+				{
+					id: 11,
+					name: 'Car Dealer',
+				},
+			],
+			id: 5,
+			name: 'Riuvo',
+			organizations: [],
+			users: [
+				{
+					id: 111,
+					name: 'Fabio Mastrorilli',
+				},
+				{
+					id: 113,
+					name: 'Andrea Censi',
+				},
+			],
 		},
 	},
 };
@@ -122,10 +125,6 @@ function defineServerResponses(app) {
 
 	app.get('/get-account/:id', (req, res) => {
 		res.json(definitions.accounts[req.params.id]);
-	});
-
-	app.get('/get-organization/', (_, res) => {
-		res.json(tree);
 	});
 
 	app.get('/get-organization/:id', (req, res) => {

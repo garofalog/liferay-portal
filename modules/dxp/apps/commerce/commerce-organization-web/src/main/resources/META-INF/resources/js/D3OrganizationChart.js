@@ -16,9 +16,7 @@ import {
 	generateAddButtonContent,
 	generateNodeContent,
 	getLinkDiagonal,
-	getLinkId,
 	getMinWidth,
-	getNodeId,
 	hideChildren,
 	insertAddButtons,
 	insertChildrenIntoNode,
@@ -30,21 +28,35 @@ import {handleDnd} from './utils/dnd';
 import {highlight, removeHighlight} from './utils/highlight';
 
 class D3OrganizationChart {
-	constructor(rawData, refs, getChildren, spritemap, openModal) {
+	constructor(
+		rawData,
+		refs,
+		getData,
+		spritemap,
+		modalActions,
+		nodeMenuActions
+	) {
 		this._spritemap = spritemap;
 		this._refs = refs;
-		this._getChildren = getChildren;
+		this._getData = getData;
 		this._handleZoomIn = this._handleZoomIn.bind(this);
 		this._handleZoom = this._handleZoom.bind(this);
 		this._handleZoomOut = this._handleZoomOut.bind(this);
 		this._handleNodeClick = this._handleNodeClick.bind(this);
 		this._handleNodeMouseDown = this._handleNodeMouseDown.bind(this);
 		this._currentScale = 1;
-		this._openModal = openModal;
+		this._nodeMenuActions = nodeMenuActions;
+		this._modalActions = modalActions;
 		this._selectedNodeIds = new Set();
 
 		this._initialiseZoomListeners(this._refs);
-		this._createChart(formatData(rawData));
+		this._createChart();
+		this._initializeData(formatData(rawData));
+		this._update(this.root);
+	}
+
+	updateRoot(root) {
+		this._initializeData(formatData(root))
 	}
 
 	_initialiseZoomListeners() {
@@ -88,22 +100,12 @@ class D3OrganizationChart {
 			.call(this._zoom.scaleTo, this._currentScale);
 	}
 
-	_handleNodeMouseDown(event, d) {
-		event.stopPropagation();
-
-		handleDnd(
-			event,
-			d,
-			this._handleNodeClick,
-			this._selectedNodeIds,
-			this._refs.svg,
-			this.nodesGroup,
-			this._currentScale
-		);
-	}
-
 	_handleNodeClick(event, d) {
 		event.stopPropagation();
+
+		if (d.data.type === 'user') {
+			return this._recenterViewport(d);
+		}
 
 		let expanded = true;
 
@@ -123,7 +125,7 @@ class D3OrganizationChart {
 		}
 
 		if (!d.data.fetched) {
-			return this._getChildren(d.data.id, d.data.type)
+			return this._getData(d.data.id, d.data.type)
 				.then((children) => insertChildrenIntoNode(children, d))
 				.then(() => {
 					d.data.fetched = true;
@@ -142,23 +144,49 @@ class D3OrganizationChart {
 		this._update(d);
 	}
 
-	_createChart(initialData) {
-		this.root = d3.hierarchy(initialData, (d) => d.children);
-		this.root.x0 = DY / 2;
-		this.root.y0 = 0;
-
+	_createChart() {
 		this._zoom = d3
 			.zoom()
 			.scaleExtent(ZOOM_EXTENT)
 			.on('zoom', this._handleZoom);
 
-		this.svg = d3.select(this._refs.svg).call(this._zoom);
+		this.svg = d3
+			.select(this._refs.svg)
+			.on('mousedown', this._nodeMenuActions.close)
+			.call(this._zoom);
+
 		this.zoomHandler = this.svg.append('g');
-		this.dataWrapper = this.zoomHandler.append('g');
+		this.dataWrapper = this.zoomHandler
+			.append('g')
+			.attr('class', 'chart-data-wrapper');
 		this.linksGroup = this.dataWrapper.append('g');
 		this.nodesGroup = this.dataWrapper.append('g');
+	}
 
-		this._update(this.root);
+	_initializeData(initialData) {
+		this.root = d3.hierarchy(initialData, (d) => d.children);
+		this.root.x0 = DY / 2;
+		this.root.y0 = 0;
+	}
+
+	_handleNodeMouseDown(event, d) {
+		event.stopPropagation();
+		this._nodeMenuActions.close();
+
+		if (d.data.type === 'user') {
+			this._recenterViewport(d);
+		}
+		else {
+			handleDnd(
+				event,
+				d,
+				this._handleNodeClick,
+				this._selectedNodeIds,
+				this._refs.svg,
+				this.nodesGroup,
+				this._currentScale
+			);
+		}
 	}
 
 	_update(source) {
@@ -216,7 +244,7 @@ class D3OrganizationChart {
 		const links = this.root.links().filter((d) => d.source.depth);
 		const bindedLinks = this.linksGroup
 			.selectAll('.chart-link')
-			.data(links, getLinkId);
+			.data(links, (d) => d.target.data.chartNodeId);
 
 		this.bindedChartLink = bindedLinks
 			.enter()
@@ -253,7 +281,7 @@ class D3OrganizationChart {
 
 		const bindedNodes = this.nodesGroup
 			.selectAll('.chart-item')
-			.data(dataNodes, getNodeId);
+			.data(dataNodes, (d) => d.data.chartNodeId);
 
 		this.bindedChartItems = bindedNodes
 			.enter()
@@ -272,25 +300,23 @@ class D3OrganizationChart {
 		addButton.attr('transform', (d) => `translate(${d.y},${d.x}) scale(0)`);
 		children.attr('transform', `translate(${source.y0},${source.x0})`);
 
-		generateAddButtonContent(addButton, this._spritemap, this._openModal);
-		generateNodeContent(children, this._spritemap);
+		generateAddButtonContent(
+			addButton,
+			this._spritemap,
+			this._modalActions.open
+		);
+		generateNodeContent(
+			children,
+			this._spritemap,
+			this._nodeMenuActions.open
+		);
 
 		children
 			.on('mouseenter', (_event, d) => {
 				highlight(d, this.nodesGroup, this.linksGroup);
 			})
 			.on('mouseleave', removeHighlight)
-			.on('mousedown', (event, d) => {
-				event.stopPropagation();
-
-				if(d.data.type === 'user') {
-					this._recenterViewport(d);
-				} else {
-					this._handleNodeMouseDown(event, d);
-					// this._handleNodeClick(event, d);
-				}
-			}
-			);
+			.on('mousedown', this._handleNodeMouseDown);
 
 		bindedNodes
 			.merge(this.bindedChartItems)

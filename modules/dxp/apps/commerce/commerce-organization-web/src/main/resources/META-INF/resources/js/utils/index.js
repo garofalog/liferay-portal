@@ -11,7 +11,17 @@
 
 import {hierarchy, linkHorizontal, tree as d3Tree} from 'd3';
 
-import {DRAGGING_THRESHOLD, DX, DY, RECT_SIZES, SYMBOLS_MAP} from './constants';
+import {
+	DRAGGING_THRESHOLD,
+	DX,
+	DY,
+	NODE_BUTTON_WIDTH,
+	NODE_PADDING,
+	RECT_SIZES,
+	SYMBOLS_MAP,
+} from './constants';
+
+let chartNodesCounter = 0;
 
 export function hasPositionChanged(start, end) {
 	if (!end) {
@@ -66,26 +76,6 @@ export const getLinkDiagonal = linkHorizontal()
 		}
 	});
 
-export function getNodeId(node) {
-	const nodePathIds = [];
-
-	function parseNode(node) {
-		if (node.parent) {
-			parseNode(node.parent);
-		}
-
-		nodePathIds.push(node.data.id);
-	}
-
-	parseNode(node);
-
-	return nodePathIds.join('_');
-}
-
-export function getLinkId(link) {
-	return getNodeId(link.target);
-}
-
 export function showChildren(d) {
 	if (d.children && !d._children) {
 		return;
@@ -106,12 +96,13 @@ export function hideChildren(d) {
 	d.data.children = null;
 }
 
-export function insertChildrenIntoNode(children, node) {
-	if (children.length) {
+export function insertChildrenIntoNode(data, node) {
+	if (data.children.length) {
 		node.children = [];
 		node.data.children = [];
 
-		children.forEach((child) => {
+		data.children.forEach((child) => {
+			child.chartNodeId = ++chartNodesCounter;
 			const newNode = hierarchy(child, (node) => node.children);
 
 			newNode.parent = node;
@@ -148,23 +139,6 @@ function removeAddButton(node) {
 	}
 }
 
-function getAllNodes(root) {
-	const nodes = [];
-
-	function parseNode(node) {
-		const children = node.children || node._children;
-		if (children) {
-			children.forEach(parseNode);
-
-			nodes.push(...children);
-		}
-	}
-
-	parseNode(root);
-
-	return nodes;
-}
-
 export function insertAddButtons(root, selectedNodesIds) {
 	if (!selectedNodesIds.size) {
 		return;
@@ -185,6 +159,7 @@ export function insertAddButtons(root, selectedNodesIds) {
 
 			const newNode = hierarchy(
 				{
+					chartNodeId: ++chartNodesCounter,
 					id: Math.random(),
 					type: 'add',
 				},
@@ -206,9 +181,25 @@ export function insertAddButtons(root, selectedNodesIds) {
 export const tree = d3Tree().nodeSize([DX, DY]);
 
 export const formatData = (rawData) => {
+	let children;
+
+	if (Array.isArray(rawData)) {
+		children = rawData;
+	}
+	else {
+		rawData.chartNodeId = ++chartNodesCounter;
+		rawData.fetched = true;
+		children = rawData.children;
+	}
+
+	children.forEach((child) => {
+		child.chartNodeId = ++chartNodesCounter;
+	});
+
 	const dataWithRoot = {
-		children: rawData,
-		id: 0,
+		chartNodeId: ++chartNodesCounter,
+		children: [rawData],
+		id: 'root',
 		name: 'root',
 		type: 'root',
 	};
@@ -248,7 +239,7 @@ export function generateAddButtonContent(nodeEnter, spritemap, openModal) {
 			else {
 				actionsWrapper.node().classList.toggle('menu-open');
 			}
-		})
+		});
 
 	appendCircle(openActionsWrapper, 36, 'action-circle');
 	appendIcon(openActionsWrapper, `${spritemap}#plus`, 18, 'action-icon');
@@ -289,7 +280,7 @@ export function generateAddButtonContent(nodeEnter, spritemap, openModal) {
 	appendIcon(addUserWrapper, `${spritemap}#user`, 16, 'action-icon');
 }
 
-export function generateNodeContent(nodeEnter, spritemap) {
+export function generateNodeContent(nodeEnter, spritemap, openMenu) {
 	nodeEnter
 		.append('rect')
 		.attr('width', (d) => RECT_SIZES[d.data.type].width)
@@ -301,12 +292,12 @@ export function generateNodeContent(nodeEnter, spritemap) {
 		.attr('rx', (d) => RECT_SIZES[d.data.type].height / 2)
 		.attr('class', 'chart-rect');
 
-	const iconWrappers = nodeEnter.append('g').attr('class', 'icon-wrapper');
+	const iconWrapper = nodeEnter.append('g').attr('class', 'icon-wrapper');
 
-	iconWrappers.append('circle').attr('class', 'icon-circle');
+	iconWrapper.append('circle').attr('class', 'icon-circle');
 
 	appendIcon(
-		iconWrappers,
+		iconWrapper,
 		(d) => `${spritemap}#${SYMBOLS_MAP[d.data.type]}`,
 		16,
 		'node-type-icon'
@@ -323,6 +314,27 @@ export function generateNodeContent(nodeEnter, spritemap) {
 		.append('text')
 		.attr('class', 'node-description')
 		.text(formatItemDescription);
+
+	const menuWrapper = nodeEnter
+		.append('g')
+		.attr('class', 'node-menu-wrapper')
+		.attr('transform', (d) => {
+			const x =
+				RECT_SIZES[d.data.type].width -
+				NODE_BUTTON_WIDTH -
+				NODE_PADDING;
+
+			return `translate(${x}, -14)`;
+		})
+		.on('mousedown', (event, d) => {
+			event.stopPropagation();
+
+			openMenu(event.currentTarget, d);
+		});
+
+	menuWrapper.append('rect').attr('class', 'node-menu-btn');
+
+	appendIcon(menuWrapper, `${spritemap}#ellipsis-v`, 16, 'node-menu-icon');
 }
 
 export function getMinWidth(nodes) {

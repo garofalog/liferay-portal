@@ -1,6 +1,7 @@
 @import 'atlas-variables';
 
 $text: $gray-600;
+$btn-size: 28px;
 
 .org-chart-container {
 	position: relative;
@@ -38,12 +39,14 @@ $text: $gray-600;
 	}
 
 	.chart-rect {
+		transition: fill 0.2s ease-in, stroke 0.2s ease-in;
 		fill: white;
 		stroke: $secondary-l2;
 		stroke-width: 1.5;
 	}
 
 	.dnd-handle-content {
+		opacity: 0;
 		transition: transform 0.2s linear;
 		pointer-events: none;
 
@@ -53,7 +56,8 @@ $text: $gray-600;
 	}
 
 	.dnd-handle.dragging .dnd-handle-content {
-		transform: scale(.8);
+		transform: scale(0.8);
+		opacity: 1;
 	}
 
 	.highlighted {
@@ -68,8 +72,50 @@ $text: $gray-600;
 		}
 	}
 
+	.chart-data-wrapper {
+		opacity: 1;
+		transition: opacity 0.5s ease-in;
+
+		&.hidden {
+			opacity: 0;
+			pointer-events: none;
+		}
+	}
+
 	.chart-item {
 		cursor: pointer;
+		transition: opacity 0.1s ease-in;
+
+		&.dark {
+			.chart-rect {
+				fill: $gray-800;
+				stroke: $gray-800;
+			}
+
+			.node-title {
+				fill: $white;
+			}
+
+			.node-description {
+				fill: $gray-400;
+			}
+
+			.node-menu-wrapper {
+				&:hover {
+					.node-menu-btn {
+						fill: $gray-700;
+					}
+
+					.node-menu-icon {
+						fill: $white;
+					}
+				}
+
+				.node-menu-icon {
+					fill: $gray-400;
+				}
+			}
+		}
 	}
 
 	.disabled {
@@ -101,6 +147,7 @@ $text: $gray-600;
 	}
 
 	.node-title {
+		transition: fill 0.2s ease-in;
 		font-size: 14px;
 		font-weight: bold;
 		transform: translate(#{16px * 4}, -3px);
@@ -109,6 +156,7 @@ $text: $gray-600;
 	}
 
 	.node-description {
+		transition: fill 0.2s ease-in;
 		fill: $text;
 		font-size: 14px;
 		transform: translate(#{16px * 4}, 15px);
@@ -181,6 +229,34 @@ $text: $gray-600;
 
 		.open-actions-wrapper {
 			transform: rotate(45deg * 5);
+		}
+	}
+
+	.node-menu-wrapper {
+		&:hover {
+			.node-menu-btn {
+				fill: #f7f8f9;
+			}
+
+			.node-menu-icon {
+				fill: #272833;
+			}
+		}
+
+		.node-menu-btn {
+			transition: fill 0.2s ease-in;
+			fill: transparent;
+			width: $btn-size;
+			height: $btn-size;
+			rx: 5;
+		}
+
+		.node-menu-icon {
+			transition: fill 0.2s ease-in;
+			fill: #6b6c7e;
+			x: 6;
+			y: 6;
+			pointer-events: none;
 		}
 	}
 }
