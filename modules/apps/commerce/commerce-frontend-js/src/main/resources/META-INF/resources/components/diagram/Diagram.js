@@ -15,7 +15,6 @@
 import PropTypes from 'prop-types';
 import React, {useEffect, useState} from 'react';
 
-import AdminTooltip from './AdminTooltip';
 import DiagramFooter from './DiagramFooter';
 import DiagramHeader from './DiagramHeader';
 import ImagePins from './ImagePins';
@@ -42,6 +41,17 @@ const Diagram = ({
 	const [scale, setScale] = useState(1);
 	const [selectedOption, setSelectedOption] = useState(1);
 	const [cPins, setCpins] = useState(pins);
+	const [showTooltip, setShowTooltip] = useState({
+		details: {
+			cx: 0,
+			cy: 0,
+			id: null,
+			linked_to_sku: "sku",
+			quantity: null,
+			sku: ""
+		},
+		tooltip: null
+	});
 
 	const [addNewPinState, setAddNewPinState] = useState({
 		fill: newPinSettings.colorPicker.selectedColor,
@@ -78,8 +88,10 @@ const Diagram = ({
 				setImageState={setImageState}
 				setResetZoom={setResetZoom}
 				setScale={setScale}
+				setShowTooltip={setShowTooltip}
 				setZoomInHandler={setZoomInHandler}
 				setZoomOutHandler={setZoomOutHandler}
+				showTooltip={showTooltip}
 				zoomController={zoomController}
 				zoomInHandler={zoomInHandler}
 				zoomOutHandler={zoomOutHandler}
@@ -97,7 +109,6 @@ const Diagram = ({
 				spritemap={spritemap}
 			/>
 
-			<AdminTooltip />
 		</div>
 	);
 };
@@ -194,6 +205,17 @@ Diagram.propTypes = {
 		defaultRadius: PropTypes.number,
 	}),
 	setPins: PropTypes.func,
+	showTooltip: PropTypes.shape({
+		details: PropTypes.shape({
+			cx: PropTypes.double,
+			cy: PropTypes.double,
+			id: PropTypes.number,
+			linked_to_sku: PropTypes.oneOf(['sku', 'diagram']),
+			quantity: PropTypes.number,
+			sku: PropTypes.string,
+		}),
+		tooltip: PropTypes.bool
+	}),
 	spritemap: PropTypes.string,
 	zoomController: PropTypes.shape({
 		enable: PropTypes.bool,

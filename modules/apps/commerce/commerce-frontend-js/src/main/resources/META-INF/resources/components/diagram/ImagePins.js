@@ -37,8 +37,10 @@ const ImagePins = ({
 	setCpins,
 	setImageState,
 	setResetZoom,
+	setShowTooltip,
 	setZoomInHandler,
 	setZoomOutHandler,
+	showTooltip,
 	spritemap,
 	zoomController,
 	zoomInHandler,
@@ -46,7 +48,8 @@ const ImagePins = ({
 }) => {
 	const [width, setWidth] = useState(0);
 	const containerRef = useRef(null);
-	let svg,
+	let div, 
+		svg,
 		container,
 		position,
 		handleAddPin,
@@ -125,25 +128,11 @@ const ImagePins = ({
 
 	}, [resetZoom]);
 
+
 	useLayoutEffect(() => {
+		div = select('.diagram-pins-container')
 		svg = select('svg');
 		container = select('g#container');
-
-		// .attr("viewBox", [0, 0, completeImageSettings.width, completeImageSettings.height]);
-
-		// const getRandom = (min, max) => {
-		//     min = Math.ceil(min);
-		//     max = Math.floor(max);
-
-		//     return Math.floor(Math.random() * (max - min + 1)) + min;
-		// }
-		// const roundFloat = (value) => value.toFixed(2);
-		// const pins = range(10).map(i => ({
-		//     color: getRandom(0, 9),
-		//     r: getRandom(5, 30),
-		//     x: Math.random() * (completeImageSettings.width - 20 * 2) + 20,
-		//     y: Math.random() * (completeImageSettings.height - 20 * 2) + 20,
-		// }));
 
 		const panZoom = zoom().on('zoom', () => {
 			const t = {
@@ -309,47 +298,33 @@ const ImagePins = ({
 
 		////////////////////////////////////////////////
 
-		const editPin = () => {
-			console.log('sto facendocose');
-		};
+		// const editPin = (d) => {
+
+
+		// 	d.on('click', (el) => {
+		// 		console.log("clicking on", el);
+
+		// 		// const clickedId = d._parents[0].attributes[0].nodeType
+		// 		// console.log(clickedId)
+		// 	})
+		// };
 
 		function dragstarted(d) {
 			const current = select(this);
-			current.raise().attr('stroke', 'red');
 			current.raise().classed("active", true);
-
 		}
 
 		function dragged(d) {
 			const current = select(this);
-
-			// current.attr('cx', event.x).attr('cy', event.y);
-
-			console.log('event', event.x, event.y);
-			console.log('d', d)
 			current.attr("transform", "translate(" + event.x + ',' + event.y + ')');
-
 		}
 
 		function dragended(d) {
 
 			const current = select(this);
-			current.classed("active", false);
-
-			// current.attr("transform", "translate(" + event.cx + ',' + event.cy + ')');
-
 			const newPos = current._groups[0][0].attributes;
-
-			// const newPos = current._groups[0][0].children[0].attributes;
-
-
 			const beSure = [...newPos];
-
-
-			// console.log('event', event);
-			// console.log('d', d)
-			// console.log('current', current)
-
+			
 			const arr = [
 				'cx',
 				'cy',
@@ -357,18 +332,20 @@ const ImagePins = ({
 				'fill',
 				'id',
 				'linked_to_sku',
-				'sku',
 				'quantity',
 				'r',
+				'sku',
 			];
 			const newww = {};
-
+			
 			arr.map((el) => {
 				beSure.filter(d => {
-
+					
 					if (d.name === el) {
-						if (el === 'cx' || el === 'cy') {
-							newww[`${d.name}`] = parseFloat(d.value)
+						if (el === 'cx'){
+							newww[`${d.name}`] = parseFloat(event.x)
+						} else if (el === 'cy') {
+							newww[`${d.name}`] = parseFloat(event.y)
 						} else if (el === 'quantity' || el === 'r' || el === 'id') {
 							newww[`${d.name}`] = parseInt(d.value, 10)
 						} else if (el === 'draggable') {
@@ -379,15 +356,8 @@ const ImagePins = ({
 					}
 				});
 			});
-
-
-
-
-			// console.log('newww', newww);
-
-			// current.attr('cx', current.attributes.filter(e => e.name === 'cx') )
-			// current.attr('cy', current.attributes.filter(e => e.name === 'cy'))
-
+			
+			current.classed("active", false);
 			current.attr('stroke', null);
 			current.attr('fill', event.fill);
 
@@ -400,14 +370,16 @@ const ImagePins = ({
 
 		////////////////////////////
 
-		const editPinHandler = () => {};
+		// const editPinHandler = () => {};
 
 		const dragHandler = drag()
 			.on('start', dragstarted)
 			.on('drag', dragged)
 			.on('end', dragended);
 
-		
+		// const clickHandler = cont.on('click', el => {
+		// 	console.log(el)
+		// })
 
 		/////////////////////////////////////////////////////////////////////
 
@@ -417,9 +389,9 @@ const ImagePins = ({
 					cx: 50,
 					cy: 50,
 					draggable: true,
-					fill: '#' + addNewPinState.fill,
+					fill: '#' + addNewPinState.color,
 					id: cPins.length + 1,
-					linked_to_sku: '',
+					linked_to_sku: "sku",
 					quantity: 1,
 					r: addNewPinState.radius,
 					sku: addNewPinState.sku,
@@ -434,65 +406,80 @@ const ImagePins = ({
 
 		////////////////////////////////////////////////
 
-		// works
-
-		// const pinnn = container
-		// 	.selectAll('circle')
-		//     .data(cPins)
-
-		//     .enter()
-		//     .append('circle')
-		// 	.attr('cx', (d) => d.cx)
-		// 	.attr('cy', (d) => d.cy)
-		// 	.attr('id', (d) => d.id)
-		// 	.attr('linked_to_sku', (d) => d.linked_to_sku)
-		// 	.attr('sku', (d) => d.sku)
-		// 	.attr('quantity', (d) => d.quantity)
-		// 	.attr('fill', (d) => d.fill)
-		// 	.attr('r', (d) => d.r)
-		// 	.attr('id', (d) => d.id)
-
 		const cont = container
 			.selectAll('g')
 			.data(cPins)
 			.enter()
 			.append('g')
 			.attr('transform', d => "translate(" + d.cx + "," + d.cy + ")")
-
-			.attr('cx', (d) => d.cx)
-			.attr('cy', (d) => d.cy)
-
-			.attr('id', (d) => d.id)
-			.attr('linked_to_sku', (d) => d.linked_to_sku)
-			.attr('sku', (d) => d.sku)
-			.attr('quantity', (d) => d.quantity)
-			.attr('fill', (d) => d.fill)
-			.attr('r', (d) => d.r)
-			.attr('id', (d) => d.id)
+			.attr('cx', d => d.cx)
+			.attr('cy', d => d.cy)
+			.attr('id', d => d.id)
+			.attr('linked_to_sku', d => d.linked_to_sku)
+			.attr('quantity', d => d.quantity)
+			.attr('sku', d => d.sku)
+			.attr('id', d => d.id)
+			.attr('class', 'circle_pin')
 			.attr('draggable', (d) => (d.draggable ? true : false))
 			.call(dragHandler)
-			.on('click', (d, i) => {
-				console.log("clicking on", this, d);
-				select(this)
-					.transition()
-					.attr('r', 20);
-			})		 
+			.on('click', (d) => {
+				console.log('event pin', event)
+				event.path.map(el => {
+					if (el.classList && el.classList[0] === 'circle_pin' ) {
+						const id = parseInt(el.id)
+						console.log(cPins[id])
+						setShowTooltip({
+							details: {
+								cx: cPins[id].cx,
+								cy: cPins[id].cy,
+								id: cPins[id].id,
+								linked_to_sku: cPins[id].linked_to_sku,
+								quantity: cPins[id].quantity,
+								sku: cPins[id].sku
+							},
+							tooltip: true
+						})
+					}
+				})
+			})
+
 		
 			cont.append('circle')
-				.attr('r', (d) => d.r)
-				.attr('fill', (d) => d.fill)
-				.attr('r', (d) => d.r)
-				.attr('stroke', () => '#0D62CE')
+				.attr('r', d => d.r)
+				.attr('fill', "#ffffff")
+				.attr('r', d => d.r)
+				.attr('stroke', d => d.fill)
 				.attr('stroke-width', 2)
 		
 			cont.append('text')
 				.text(d => d.id)
-				.attr('font-size', (d) => d.r)
+				.attr('font-size', d => d.r)
 				.attr('text-anchor', 'middle')
-				.attr('fill', '#ffffff')
+				.attr('fill', '#000000')
 				.attr('alignment-baseline', 'central');
 		
 
+
+			
+		// cont.selectAll('.circle_pin').on('click', d => {
+		// 	console.log("clicking on", d.id);
+
+		// 	// setShowTooltip({
+		// 	// 	details: {
+		// 	// 		cx: d.cx,
+		// 	// 		cy: d.cy,
+		// 	// 		id: d.id,
+		// 	// 		linked_to_sku: d.sku,
+		// 	// 		quantity: d.quantity,
+		// 	// 		sku: d.sku
+		// 	// 	},
+		// 	// 	tooltip: true
+		// 	// })
+
+
+		// 	// return tooltip2.style("visibility", "visible")
+
+		// })
 
 		// pinnn.on("click", (d) => {
 		//     console.log('cu')
@@ -509,9 +496,6 @@ const ImagePins = ({
 		//         .style("padding", "10px")
 		//         .html(`<AdminTooltip/>`)
 
-		//     return (
-		//         <AdminTooltip />
-		//     )
 
 		//     // debugger;
 		//     // console.log('sto facendo altre cose')
@@ -624,7 +608,7 @@ const ImagePins = ({
 
 		select('#newPin').on('click', handleAddPin);
 
-		// select('.draggable').on('click', editPin)
+		// select('.circle_pin').on('click', editPin)
 
 		// dragHandler2(container.selectAll('.draggable'));
 		// dragHandler(container.selectAll('.draggable'));
@@ -634,13 +618,14 @@ const ImagePins = ({
 
 		// imageState,
 
-		// cPins,
+		cPins,
 
 		resetZoom,
 		setResetZoom,
 
 		// setCpins,
 
+		showTooltip,
 		width,
 		zoomOutHandler,
 		zoomInHandler,
@@ -675,6 +660,13 @@ const ImagePins = ({
 					></image>
 				</g>
 			</svg>
+
+			{showTooltip.tooltip && (
+				<AdminTooltip 
+					setShowTooltip={setShowTooltip}
+					showTooltip={showTooltip}
+				/>
+			)}
 
 			{navigationController.enable && (
 				<NavigationButtons
@@ -750,8 +742,20 @@ ImagePins.propTypes = {
 	setAddPinHandler: PropTypes.func,
 	setCpins: PropTypes.func,
 	setImageState: PropTypes.func,
+	setShowTooltip: PropTypes.func,
 	setZoomInHandler: PropTypes.func,
 	setZoomOutHandler: PropTypes.func,
+	showTooltip: PropTypes.shape({
+		details: PropTypes.shape({
+			cx: PropTypes.double,
+			cy: PropTypes.double,
+			id: PropTypes.number,
+			linked_to_sku: PropTypes.oneOf(['sku', 'diagram']),
+			quantity: PropTypes.number,
+			sku: PropTypes.string,
+		}),
+		tooltip: PropTypes.bool
+	}),
 
 	// PropTypes.shape({
 	//     k: PropTypes.double,

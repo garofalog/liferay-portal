@@ -90,7 +90,7 @@ launcher('diagram', 'diagram', {
 			cy: 179.06395973801364,
 			draggable: true,
 			fill: '#dc7aa5',
-			id: 7,
+			id: 4,
 			linked_to_sku: 'sku',
 			quantity: 0,			
 			r: 12,

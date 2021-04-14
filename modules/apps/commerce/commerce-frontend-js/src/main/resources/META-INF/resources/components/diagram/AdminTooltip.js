@@ -19,14 +19,17 @@ import {useResource} from '@clayui/data-provider';
 import ClayDropDown from '@clayui/drop-down';
 import ClayForm, {ClayInput, ClayRadio, ClayRadioGroup} from '@clayui/form';
 import PropTypes from 'prop-types';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
-const AdminTooltip = () => {
-	const [linkedValue, setLinkedValue] = useState('sku');
+const AdminTooltip = ({
+	setShowTooltip,
+	showTooltip,
+}) => {
+	const [linkedValue, setLinkedValue] = useState(showTooltip.linked_to_sku);
 
 	// /////////////////////
 
-	const [autoValue, setAutoValue] = useState('');
+	const [autoValue, setAutoValue] = useState(showTooltip.sku);
 	const [networkStatus, setNetworkStatus] = useState(4);
 
 	// ////////////////////////////////
@@ -42,8 +45,21 @@ const AdminTooltip = () => {
 		variables: {name: autoValue},
 	});
 
+	const cardStyle = {
+		left: showTooltip.details.cx,
+		top: showTooltip.details.cy,
+
+	}
+
+	// useEffect(() => {
+	// 	cardStyle =
+		 
+	// }, [showTooltip])
+
 	return (
-		<ClayCard className="admin-tooltip">
+		<ClayCard 
+			className="admin-tooltip"
+			style={cardStyle}>
 			<ClayCard.Body className="row">
 				<ClayForm.Group className="col-12 form-group-sm text-left">
 					<label htmlFor="basicInputText">Position</label>
@@ -51,7 +67,9 @@ const AdminTooltip = () => {
 						id="basicInputText"
 						placeholder="Insert your name here"
 						type="text"
-					/>
+					>
+						{showTooltip.id}
+				</ClayInput>
 				</ClayForm.Group>
 
 				<ClayForm.Group className="col-12 form-group-sm">
@@ -109,12 +127,39 @@ const AdminTooltip = () => {
 				</ClayForm.Group>
 
 				<ClayForm.Group className="col-6 d-flex form-group-sm justify-content-start mt-4">
-					<ClayButton displayType="link">Delete</ClayButton>
+					<ClayButton 
+						displayType="link" 
+
+						// onClick={() => setCpins}
+
+					>
+						Delete
+					</ClayButton>
 				</ClayForm.Group>
 
 				<ClayForm.Group className="col-6 d-flex form-group-sm justify-content-between mt-4">
-					<ClayButton displayType="secondary">Cancel</ClayButton>
-					<ClayButton displayType="primary">Save</ClayButton>
+					<ClayButton 
+						displayType="secondary"
+						onClick={() => setShowTooltip({
+							details: {
+								cx: null,
+								cy: null,
+								id: null,
+								linked_to_sku: "sku",
+								quantity: null,
+								sku: '',
+							},
+							tooltip: false
+						})}
+					>
+						Cancel
+					</ClayButton>
+					<ClayButton 
+						displayType="primary"
+						onClick={() => console.log('save')}
+					>
+						Save
+					</ClayButton>
 				</ClayForm.Group>
 			</ClayCard.Body>
 		</ClayCard>
@@ -123,6 +168,19 @@ const AdminTooltip = () => {
 
 AdminTooltip.defaultProps = {};
 
-AdminTooltip.propTypes = {};
+AdminTooltip.propTypes = {
+	setShowTooltip: PropTypes.func,
+	showTooltip: PropTypes.shape({
+		details: PropTypes.shape({
+			cx: PropTypes.double,
+			cy: PropTypes.double,
+			id: PropTypes.number,
+			linked_to_sku: PropTypes.oneOf(['sku', 'diagram']),
+			quantity: PropTypes.number,
+			sku: PropTypes.string,
+		}),
+		tooltip: PropTypes.bool
+	}),
+};
 
 export default AdminTooltip;
