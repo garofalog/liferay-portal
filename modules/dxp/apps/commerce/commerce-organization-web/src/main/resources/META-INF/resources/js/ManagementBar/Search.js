@@ -10,13 +10,10 @@
  */
 
 import React from 'react';
-import {Autocomplete} from 'commerce-frontend-js';
 
 function Search() {
     return (
-        <Autocomplete 
-            
-        />
+        <div />
     )
 }
 

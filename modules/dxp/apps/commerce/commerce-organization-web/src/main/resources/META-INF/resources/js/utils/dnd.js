@@ -15,7 +15,7 @@ import {disableHighlight, enableHighlight} from './highlight';
 
 let mouseStartPositions = null;
 let dragging = false;
-let disabledNodes;
+let disabledNodeInstances;
 let dragHandle;
 
 function handleMouseDown(event) {
@@ -58,7 +58,8 @@ function handleMouseMove(
 	startingNode,
 	selectedNodeIds,
 	nodesGroup,
-	currentScale
+	currentScale,
+	root
 ) {
 	if (!dragging) {
 		if (
@@ -71,12 +72,30 @@ function handleMouseMove(
 
 			dragging = true;
 
-			disabledNodes = nodesGroup
-				.selectAll('.chart-item')
-				.filter((d) => selectedNodeIds.has(d.data.id));
-			createDragHandle(startingNode, disabledNodes.size(), nodesGroup);
+			const nodesToBeDisabled = new Map();
 
-			disabledNodes.classed('disabled', true);
+			root.each(d => {
+				if(selectedNodeIds.has(d.data.id)) {
+					nodesToBeDisabled.set(d.data.id, d)
+				}
+			})
+
+			for (const parentNodeToBeDisabled of nodesToBeDisabled.values()) {
+				const descendants = parentNodeToBeDisabled.descendants()
+				
+				descendants.forEach((descendant) => {
+					nodesToBeDisabled.set(descendant.data.id, descendant)
+				})
+			}
+
+			disabledNodeInstances = nodesGroup
+				.selectAll('.chart-item')
+				.filter((d) => nodesToBeDisabled.has(d.data.id));
+
+			
+			createDragHandle(startingNode, selectedNodeIds.size, nodesGroup);
+
+			disabledNodeInstances.classed('disabled', true);
 		}
 
 		return;
@@ -107,7 +126,7 @@ function handleMouseUp(initialEvent, d, handleNodeClick) {
 	}
 
 	mouseStartPositions = null;
-	disabledNodes.classed('disabled', false);
+	disabledNodeInstances.classed('disabled', false);
 	dragging = false;
 	dragHandle.remove();
 
@@ -121,7 +140,8 @@ export function handleDnd(
 	selectedNodeIds,
 	svgRef,
 	nodesGroup,
-	currentScale
+	currentScale,
+	root
 ) {
 	handleMouseDown(initialEvent);
 
@@ -135,7 +155,8 @@ export function handleDnd(
 			startingNodeInstance,
 			nodesToBeDragged,
 			nodesGroup,
-			currentScale
+			currentScale,
+			root
 		);
 
 	svgRef.addEventListener('mousemove', _handleMouseMove);

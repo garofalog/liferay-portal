@@ -18,9 +18,7 @@ import '../../src/main/resources/META-INF/resources/style/main.scss';
 render(
 	OrganizationChart,
 	{
-		accountEndpointURL: '/get-account',
-		organizationEndpointURL: '/get-organization',
-		rootOrganizationId: 0,
+		rootOrganizationId: 44031,
 		spritemap: './assets/clay/icons.svg',
 	},
 	document.getElementById('organizations-chart-root')

@@ -9,9 +9,9 @@
  * distribution rights of the Software.
  */
 
-export const USERS_PROPERTY_NAME = 'users';
-export const ACCOUNTS_PROPERTY_NAME = 'accounts';
-export const ORGANIZATIONS_PROPERTY_NAME = 'organizations';
+export const ORGANIZATIONS_PROPERTY_NAME = 'childOrganizations';
+export const ACCOUNTS_PROPERTY_NAME = 'organizationAccounts';
+export const USERS_PROPERTY_NAME = 'userAccounts';
 
 export const VIEWS = [
 	{

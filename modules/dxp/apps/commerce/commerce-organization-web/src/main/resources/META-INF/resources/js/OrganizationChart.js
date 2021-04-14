@@ -12,9 +12,7 @@
 import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
 import {ClayIconSpriteContext} from '@clayui/icon';
 import classnames from 'classnames';
-import {fetch} from 'frontend-js-web';
 import React, {
-	useCallback,
 	useEffect,
 	useLayoutEffect,
 	useRef,
@@ -26,28 +24,11 @@ import ConnectEntityModal from './ConnectEntityModal';
 import D3OrganizationChart from './D3OrganizationChart';
 import ManagementBar from './ManagementBar/ManagementBar';
 import NodeMenu from './NodeMenu';
-import {ACCOUNTS_PROPERTY_NAME, ORGANIZATIONS_PROPERTY_NAME, USERS_PROPERTY_NAME, VIEWS} from './utils/constants'
-
-function formatChildren(item, type) {
-	item.type = type;
-	item.children = [...item[USERS_PROPERTY_NAME].map((user) => ({...user, type: 'user'}))];
-
-	if (type === 'organization') {
-		item.children.push(
-			...item[ACCOUNTS_PROPERTY_NAME].map((account) => ({...account, type: 'account'})),
-			...item[ORGANIZATIONS_PROPERTY_NAME].map((organization) => ({
-				...organization,
-				type: 'organization',
-			}))
-		);
-	}
-
-	return item;
-}
+import { formatItemChildren } from './utils';
+import { VIEWS } from './utils/constants'
+import { getOrganization } from './data/organizations';
 
 function OrganizationChartApp({
-	accountEndpointURL,
-	organizationEndpointURL,
 	rootOrganizationId,
 	spritemap,
 }) {
@@ -63,27 +44,11 @@ function OrganizationChartApp({
 	const zoomOutRef = useRef(null);
 	const zoomInRef = useRef(null);
 
-	const getData = useCallback(
-		(id, type) => {
-			const endpoint =
-				type === 'organization'
-					? organizationEndpointURL
-					: accountEndpointURL;
-			const url = new URL(
-				`${endpoint}/${id}`,
-				themeDisplay.getPortalURL()
-			);
-
-			return fetch(url)
-				.then((res) => res.json())
-				.then((item) => formatChildren(item, type));
-		},
-		[accountEndpointURL, organizationEndpointURL]
-	);
-
 	useEffect(() => {
-		getData(rootOrganizationId, 'organization').then(updateData);
-	}, [getData, rootOrganizationId]);
+		getOrganization(rootOrganizationId)
+			.then(organization => formatItemChildren(organization, 'organization'))
+			.then(updateData)
+	}, [rootOrganizationId]);
 
 	useLayoutEffect(() => {
 		if (data && chartSvgRef.current) {
@@ -94,7 +59,6 @@ function OrganizationChartApp({
 					zoomIn: zoomInRef.current,
 					zoomOut: zoomOutRef.current,
 				},
-				getData,
 				spritemap,
 				{
 					open: (node, entityType) => {
@@ -114,7 +78,7 @@ function OrganizationChartApp({
 				}
 			);
 		}
-	}, [data, getData, spritemap]);
+	}, [data, spritemap]);
 
 	return (
 		<ClayIconSpriteContext.Provider value={spritemap}>

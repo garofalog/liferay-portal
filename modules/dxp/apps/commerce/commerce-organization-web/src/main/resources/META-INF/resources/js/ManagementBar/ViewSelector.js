@@ -12,6 +12,7 @@
 import { ClayButtonWithIcon } from '@clayui/button';
 import { ClayDropDownWithItems } from '@clayui/drop-down';
 import React, { useContext } from 'react'
+
 import ChartContext from '../ChartContext';
 import { VIEWS } from '../utils/constants';
 

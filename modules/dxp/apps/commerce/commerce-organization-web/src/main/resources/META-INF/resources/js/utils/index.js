@@ -12,13 +12,16 @@
 import {hierarchy, linkHorizontal, tree as d3Tree} from 'd3';
 
 import {
+	ACCOUNTS_PROPERTY_NAME,
 	DRAGGING_THRESHOLD,
 	DX,
 	DY,
 	NODE_BUTTON_WIDTH,
 	NODE_PADDING,
+	ORGANIZATIONS_PROPERTY_NAME,
 	RECT_SIZES,
 	SYMBOLS_MAP,
+	USERS_PROPERTY_NAME,
 } from './constants';
 
 let chartNodesCounter = 0;
@@ -31,6 +34,23 @@ export function hasPositionChanged(start, end) {
 	const diff = Math.max(Math.abs(start.x - end.x), Math.abs(start.y - end.y));
 
 	return diff > DRAGGING_THRESHOLD;
+}
+
+export function formatItemChildren(item, type) {
+	item.type = type;
+	item.children = [...item[USERS_PROPERTY_NAME].map((user) => ({...user, type: 'user'}))];
+
+	if (type === 'organization') {
+		item.children.unshift(
+			...item[ORGANIZATIONS_PROPERTY_NAME].map((organization) => ({
+				...organization,
+				type: 'organization',
+			})),
+			...item[ACCOUNTS_PROPERTY_NAME].map((account) => ({...account, type: 'account'})),
+		);
+	}
+
+	return item;
 }
 
 export function appendIcon(node, symbol, size, className) {
@@ -180,30 +200,26 @@ export function insertAddButtons(root, selectedNodesIds) {
 
 export const tree = d3Tree().nodeSize([DX, DY]);
 
-export const formatData = (rawData) => {
-	let children;
-
-	if (Array.isArray(rawData)) {
-		children = rawData;
-	}
-	else {
-		rawData.chartNodeId = ++chartNodesCounter;
-		rawData.fetched = true;
-		children = rawData.children;
-	}
-
-	children.forEach((child) => {
-		child.chartNodeId = ++chartNodesCounter;
-	});
-
+export const formatRootData = (rootData, visible = true) => {
 	const dataWithRoot = {
 		chartNodeId: ++chartNodesCounter,
-		children: [rawData],
 		id: 'root',
 		name: 'root',
 		type: 'root',
 	};
 
+	rootData.children.forEach((child) => {
+		child.chartNodeId = ++chartNodesCounter;
+	});
+
+	if(visible) {
+		rootData.chartNodeId = ++chartNodesCounter;
+		rootData.fetched = true;
+		dataWithRoot.children = [rootData]
+	} else {
+		dataWithRoot.children = rootData.children
+	}
+	
 	return dataWithRoot;
 };
 

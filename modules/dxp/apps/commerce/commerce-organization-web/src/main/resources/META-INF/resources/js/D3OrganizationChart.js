@@ -11,8 +11,11 @@
 
 import * as d3 from 'd3';
 
+import {getAccount} from './data/accounts';
+import {getOrganization } from './data/organizations';
 import {
-	formatData,
+	formatRootData,
+	formatItemChildren,
 	generateAddButtonContent,
 	generateNodeContent,
 	getLinkDiagonal,
@@ -31,14 +34,12 @@ class D3OrganizationChart {
 	constructor(
 		rawData,
 		refs,
-		getData,
 		spritemap,
 		modalActions,
 		nodeMenuActions
 	) {
 		this._spritemap = spritemap;
 		this._refs = refs;
-		this._getData = getData;
 		this._handleZoomIn = this._handleZoomIn.bind(this);
 		this._handleZoom = this._handleZoom.bind(this);
 		this._handleZoomOut = this._handleZoomOut.bind(this);
@@ -51,12 +52,12 @@ class D3OrganizationChart {
 
 		this._initialiseZoomListeners(this._refs);
 		this._createChart();
-		this._initializeData(formatData(rawData));
-		this._update(this.root);
+		this._initializeData(formatRootData(rawData));
+		this._update(this._root);
 	}
 
 	updateRoot(root) {
-		this._initializeData(formatData(root))
+		this._initializeData(formatRootData(root))
 	}
 
 	_initialiseZoomListeners() {
@@ -125,8 +126,11 @@ class D3OrganizationChart {
 		}
 
 		if (!d.data.fetched) {
-			return this._getData(d.data.id, d.data.type)
-				.then((children) => insertChildrenIntoNode(children, d))
+			const getData = d.data.type === 'organization' ? getOrganization : getAccount;
+
+			return getData(d.data.id, d.data.type)
+				.then((rawData) => formatItemChildren(rawData, d.data.type))
+				.then((data) => insertChildrenIntoNode(data, d))
 				.then(() => {
 					d.data.fetched = true;
 
@@ -164,9 +168,9 @@ class D3OrganizationChart {
 	}
 
 	_initializeData(initialData) {
-		this.root = d3.hierarchy(initialData, (d) => d.children);
-		this.root.x0 = DY / 2;
-		this.root.y0 = 0;
+		this._root = d3.hierarchy(initialData, (d) => d.children);
+		this._root.x0 = DY / 2;
+		this._root.y0 = 0;
 	}
 
 	_handleNodeMouseDown(event, d) {
@@ -184,16 +188,17 @@ class D3OrganizationChart {
 				this._selectedNodeIds,
 				this._refs.svg,
 				this.nodesGroup,
-				this._currentScale
+				this._currentScale,
+				this._root
 			);
 		}
 	}
 
 	_update(source) {
-		insertAddButtons(this.root, this._selectedNodeIds);
-		tree(this.root);
+		insertAddButtons(this._root, this._selectedNodeIds);
+		tree(this._root);
 
-		this.root.eachBefore((d) => {
+		this._root.eachBefore((d) => {
 			d.x0 = d.x;
 			d.y0 = d.y;
 		});
@@ -241,7 +246,7 @@ class D3OrganizationChart {
 	}
 
 	_updateLinks(source) {
-		const links = this.root.links().filter((d) => d.source.depth);
+		const links = this._root.links().filter((d) => d.source.depth);
 		const bindedLinks = this.linksGroup
 			.selectAll('.chart-link')
 			.data(links, (d) => d.target.data.chartNodeId);
@@ -274,7 +279,7 @@ class D3OrganizationChart {
 	}
 
 	_updateNodes(source) {
-		const dataNodes = this.root
+		const dataNodes = this._root
 			.descendants()
 			.filter((d) => d.depth !== 0)
 			.reverse();
