@@ -223,17 +223,32 @@ export const formatRootData = (rootData, visible = true) => {
 	return dataWithRoot;
 };
 
+export const formatOrganizationDescription = (d) => {
+	return `${d.data.numberOfOrganizations} ${Liferay.Language.get('org')} | ${d.data.numberOfAccounts} ${Liferay.Language.get('acc')} | ${d.data.numberOfUsers} ${Liferay.Language.get('users')}`
+}
+
+export const formatAccountDescription = (d) => {
+	return `${d.data.numberOfUsers} ${Liferay.Language.get('users')}`
+}
+
+export const formatUserDescription = (d) => {
+	return d.data.jobTitle || Liferay.Language.get('user')
+}
+
+const formatDescriptionMap = {
+	account: formatAccountDescription,
+	organization: formatOrganizationDescription,
+	user: formatUserDescription,
+}
+
+export const formatItemName = (d) => {
+	const name = d.data.name || `${d.data.firstName} ${d.data.lastName}`;
+
+	return name
+}
+
 export const formatItemDescription = (d) => {
-	switch (d.data.type) {
-		case 'organization':
-			return '3 Org. | 4 Acc. | 0 Users';
-		case 'account':
-			return '4 Users';
-		case 'user':
-			return 'User Role';
-		default:
-			break;
-	}
+	return formatDescriptionMap[d.data.type](d);
 };
 
 export function appendCircle(node, size, className) {
@@ -324,7 +339,7 @@ export function generateNodeContent(nodeEnter, spritemap, openMenu) {
 	infos
 		.append('text')
 		.attr('class', 'node-title')
-		.text((d) => d.data.name);
+		.text(formatItemName);
 
 	infos
 		.append('text')

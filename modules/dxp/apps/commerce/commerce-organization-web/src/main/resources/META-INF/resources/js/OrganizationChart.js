@@ -78,6 +78,8 @@ function OrganizationChartApp({
 				}
 			);
 		}
+
+		return () => chartInstanceRef.current?.cleanUp()
 	}, [data, spritemap]);
 
 	return (

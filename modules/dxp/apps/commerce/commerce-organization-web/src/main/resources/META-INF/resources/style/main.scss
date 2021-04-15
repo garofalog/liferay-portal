@@ -26,6 +26,10 @@ $btn-size: 28px;
 	.svg-chart {
 		width: 100%;
 		height: 100%;
+
+		&.dragging {
+			cursor: grabbing;
+		}
 	}
 
 	.chart-link {
@@ -85,41 +89,19 @@ $btn-size: 28px;
 	.chart-item {
 		cursor: pointer;
 		transition: opacity 0.1s ease-in;
+	}
 
-		&.dark {
-			.chart-rect {
-				fill: $gray-800;
-				stroke: $gray-800;
-			}
+	.drop-allowed {
+		cursor: copy;
+	}
 
-			.node-title {
-				fill: $white;
-			}
-
-			.node-description {
-				fill: $gray-400;
-			}
-
-			.node-menu-wrapper {
-				&:hover {
-					.node-menu-btn {
-						fill: $gray-700;
-					}
-
-					.node-menu-icon {
-						fill: $white;
-					}
-				}
-
-				.node-menu-icon {
-					fill: $gray-400;
-				}
-			}
-		}
+	.unselectable {
+		cursor: no-drop;
 	}
 
 	.disabled {
 		opacity: 0.5;
+		cursor: no-drop;
 
 		.chart-rect {
 			stroke: $secondary-l2;
@@ -133,17 +115,19 @@ $btn-size: 28px;
 	.icon-circle {
 		r: 16px;
 		transform: translate(16px * 2, 0);
+		fill: var(--icon-color)
 	}
 
-	.chart-item-organization .icon-circle {
-		fill: #5fc8ff;
+	.chart-item-organization {
+		--icon-color: #5fc8ff;
 	}
 
-	.chart-item-account .icon-circle {
-		fill: #50d2a0;
+	.chart-item-account {
+		--icon-color: #50d2a0;
 	}
-	.chart-item-user .icon-circle {
-		fill: #ffd76e;
+
+	.chart-item-user {
+		--icon-color: #ffd76e;
 	}
 
 	.node-title {

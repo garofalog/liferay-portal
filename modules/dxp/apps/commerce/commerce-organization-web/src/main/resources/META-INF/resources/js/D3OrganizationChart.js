@@ -14,8 +14,8 @@ import * as d3 from 'd3';
 import {getAccount} from './data/accounts';
 import {getOrganization } from './data/organizations';
 import {
-	formatRootData,
 	formatItemChildren,
+	formatRootData,
 	generateAddButtonContent,
 	generateNodeContent,
 	getLinkDiagonal,
@@ -27,7 +27,8 @@ import {
 	tree,
 } from './utils';
 import {DY, RECT_SIZES, ZOOM_EXTENT} from './utils/constants';
-import {handleDnd} from './utils/dnd';
+import handleDnd from './utils/handleDnd';
+import {parseSelectableItem, resetSelectableItem} from './utils/handleMultiSelect';
 import {highlight, removeHighlight} from './utils/highlight';
 
 class D3OrganizationChart {
@@ -45,15 +46,38 @@ class D3OrganizationChart {
 		this._handleZoomOut = this._handleZoomOut.bind(this);
 		this._handleNodeClick = this._handleNodeClick.bind(this);
 		this._handleNodeMouseDown = this._handleNodeMouseDown.bind(this);
+		this._handleShiftKeyDown = this._handleShiftKeyDown.bind(this);
 		this._currentScale = 1;
+		this._isMultiSelecting = false;
 		this._nodeMenuActions = nodeMenuActions;
 		this._modalActions = modalActions;
-		this._selectedNodeIds = new Set();
+		this._selectedNodes = new Map();
 
 		this._initialiseZoomListeners(this._refs);
 		this._createChart();
 		this._initializeData(formatRootData(rawData));
 		this._update(this._root);
+		this._addListeners()
+	}
+
+	_handleShiftKeyDown(event) {
+		if(event.shiftKey){
+			this._isMultiSelecting = true;
+			parseSelectableItem(this._selectedNodes, this._nodesGroup);
+		}
+
+		document.addEventListener('keyup', () => {
+			resetSelectableItem();
+			this._isMultiSelecting = true;
+		}, {once: true})
+	}
+
+	_addListeners() {
+		document.addEventListener('keydown', this._handleShiftKeyDown)
+	}
+
+	cleanUp() {
+		document.removeEventListener('keydown', this._handleShiftKeyDown)
 	}
 
 	updateRoot(root) {
@@ -70,7 +94,7 @@ class D3OrganizationChart {
 	_handleZoom(event) {
 		this._currentScale = event.transform.k;
 
-		this.zoomHandler.attr('transform', event.transform);
+		this._zoomHandler.attr('transform', event.transform);
 	}
 
 	_handleZoomIn() {
@@ -104,25 +128,29 @@ class D3OrganizationChart {
 	_handleNodeClick(event, d) {
 		event.stopPropagation();
 
+		if(event.shiftKey && !d.data.selectable) {
+			return;
+		}
+
 		if (d.data.type === 'user') {
 			return this._recenterViewport(d);
 		}
 
 		let expanded = true;
 
-		if (this._selectedNodeIds.has(d.data.id)) {
+		if (this._selectedNodes.has(d.data.id)) {
 			expanded = false;
 		}
 
 		if (!event.shiftKey) {
-			this._selectedNodeIds.clear();
+			this._selectedNodes.clear();
 		}
 
 		if (expanded) {
-			this._selectedNodeIds.add(d.data.id);
+			this._selectedNodes.set(d.data.id, d);
 		}
 		else {
-			this._selectedNodeIds.delete(d.data.id);
+			this._selectedNodes.delete(d.data.id);
 		}
 
 		if (!d.data.fetched) {
@@ -135,6 +163,10 @@ class D3OrganizationChart {
 					d.data.fetched = true;
 
 					this._update(d);
+
+					if(event.shiftKey) {
+						parseSelectableItem(this._selectedNodes, this._nodesGroup);
+					}
 				});
 		}
 
@@ -146,6 +178,10 @@ class D3OrganizationChart {
 		}
 
 		this._update(d);
+
+		if(event.shiftKey) {
+			parseSelectableItem(this._selectedNodes, this._nodesGroup);
+		}
 	}
 
 	_createChart() {
@@ -159,12 +195,14 @@ class D3OrganizationChart {
 			.on('mousedown', this._nodeMenuActions.close)
 			.call(this._zoom);
 
-		this.zoomHandler = this.svg.append('g');
-		this.dataWrapper = this.zoomHandler
+		this._zoomHandler = this.svg.append('g');
+		
+		const dataWrapper = this._zoomHandler
 			.append('g')
 			.attr('class', 'chart-data-wrapper');
-		this.linksGroup = this.dataWrapper.append('g');
-		this.nodesGroup = this.dataWrapper.append('g');
+		
+		this._linksGroup = dataWrapper.append('g');
+		this._nodesGroup = dataWrapper.append('g');
 	}
 
 	_initializeData(initialData) {
@@ -178,24 +216,29 @@ class D3OrganizationChart {
 		this._nodeMenuActions.close();
 
 		if (d.data.type === 'user') {
-			this._recenterViewport(d);
+			return this._recenterViewport(d);
 		}
-		else {
-			handleDnd(
-				event,
-				d,
-				this._handleNodeClick,
-				this._selectedNodeIds,
-				this._refs.svg,
-				this.nodesGroup,
-				this._currentScale,
-				this._root
-			);
-		}
+		
+		handleDnd(
+			event,
+			d,
+			this._selectedNodes,
+			this._refs.svg,
+			this._nodesGroup,
+			this._currentScale,
+		).then(({target, type}) => {
+			if(type === 'click') {
+				return this._handleNodeClick(event, d)
+			}
+
+			if(target) {
+				return alert(`${target.data.id} - ${target.data.name}`)
+			}
+		})
 	}
 
 	_update(source) {
-		insertAddButtons(this._root, this._selectedNodeIds);
+		insertAddButtons(this._root, this._selectedNodes);
 		tree(this._root);
 
 		this._root.eachBefore((d) => {
@@ -247,7 +290,8 @@ class D3OrganizationChart {
 
 	_updateLinks(source) {
 		const links = this._root.links().filter((d) => d.source.depth);
-		const bindedLinks = this.linksGroup
+
+		const bindedLinks = this._linksGroup
 			.selectAll('.chart-link')
 			.data(links, (d) => d.target.data.chartNodeId);
 
@@ -284,7 +328,7 @@ class D3OrganizationChart {
 			.filter((d) => d.depth !== 0)
 			.reverse();
 
-		const bindedNodes = this.nodesGroup
+		const bindedNodes = this._nodesGroup
 			.selectAll('.chart-item')
 			.data(dataNodes, (d) => d.data.chartNodeId);
 
@@ -318,7 +362,7 @@ class D3OrganizationChart {
 
 		children
 			.on('mouseenter', (_event, d) => {
-				highlight(d, this.nodesGroup, this.linksGroup);
+				highlight(d, this._nodesGroup, this._linksGroup);
 			})
 			.on('mouseleave', removeHighlight)
 			.on('mousedown', this._handleNodeMouseDown);
@@ -334,7 +378,7 @@ class D3OrganizationChart {
 			);
 
 		bindedNodes.classed('selected', (d) =>
-			this._selectedNodeIds.has(d.data.id)
+			this._selectedNodes.has(d.data.id)
 		);
 
 		bindedNodes

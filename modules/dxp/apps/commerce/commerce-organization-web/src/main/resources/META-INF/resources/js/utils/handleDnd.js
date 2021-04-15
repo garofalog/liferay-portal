@@ -15,7 +15,7 @@ import {disableHighlight, enableHighlight} from './highlight';
 
 let mouseStartPositions = null;
 let dragging = false;
-let disabledNodeInstances;
+let chartItems;
 let dragHandle;
 
 function handleMouseDown(event) {
@@ -59,7 +59,7 @@ function handleMouseMove(
 	selectedNodeIds,
 	nodesGroup,
 	currentScale,
-	root
+	svgRef
 ) {
 	if (!dragging) {
 		if (
@@ -74,28 +74,51 @@ function handleMouseMove(
 
 			const nodesToBeDisabled = new Map();
 
-			root.each(d => {
+			/**
+			 * Elements to be disabled while dragging:
+			 * - dragged nodes
+			 * - descendants of dragged nodes
+			 * - all users and accounts nodes
+			 * - all add buttons
+			 * - direct parents
+			 */
+
+			chartItems = nodesGroup.selectAll('.chart-item')
+
+			chartItems.each(d => {
+				if(
+					['user', 'account', 'add'].includes(d.data.type)
+				) {
+					nodesToBeDisabled.set(d.data.id, d)
+				}
+
 				if(selectedNodeIds.has(d.data.id)) {
 					nodesToBeDisabled.set(d.data.id, d)
+
+					if(d.parent) {
+						nodesToBeDisabled.set(d.parent.data.id, d.parent)
+					}
+
+					const descendants = d.descendants();
+
+					descendants.forEach((descendant) => {
+						nodesToBeDisabled.set(descendant.data.id, descendant)
+					})
 				}
 			})
 
-			for (const parentNodeToBeDisabled of nodesToBeDisabled.values()) {
-				const descendants = parentNodeToBeDisabled.descendants()
-				
-				descendants.forEach((descendant) => {
-					nodesToBeDisabled.set(descendant.data.id, descendant)
-				})
-			}
-
-			disabledNodeInstances = nodesGroup
-				.selectAll('.chart-item')
-				.filter((d) => nodesToBeDisabled.has(d.data.id));
-
-			
 			createDragHandle(startingNode, selectedNodeIds.size, nodesGroup);
+			
+			chartItems.each((d, index, nodeInstance) => {
+				if(nodesToBeDisabled.has(d.data.id)){
+					nodeInstance[index].classList.add('disabled')
+				} else {
+					nodeInstance[index].classList.add('drop-allowed')
+				}
+			})
 
-			disabledNodeInstances.classed('disabled', true);
+			svgRef.classList.add('dragging')
+			
 		}
 
 		return;
@@ -120,53 +143,71 @@ function handleMouseMove(
 	).classed('dragging', true);
 }
 
-function handleMouseUp(initialEvent, d, handleNodeClick) {
+function handleMouseUp(mouseDownEvent, mouseUpEvent, d, svgRef, resolve) {
 	if (!dragging) {
-		return handleNodeClick(initialEvent, d);
+		return resolve({
+			d,
+			details: mouseDownEvent,
+			type: 'click',
+		})
 	}
 
 	mouseStartPositions = null;
-	disabledNodeInstances.classed('disabled', false);
+	svgRef.classList.remove('dragging')
 	dragging = false;
+	enableHighlight();
+
+	const target = mouseUpEvent.target.closest('.drop-allowed')
+
+	chartItems.each((_d, index, nodeInstance) => {
+		nodeInstance[index].classList.remove('disabled');
+		nodeInstance[index].classList.remove('drop-allowed');
+	})
+
 	dragHandle.remove();
 
-	enableHighlight();
+	return resolve({
+		d,
+		details: mouseDownEvent,
+		target: target?.__data__,
+		type: 'drop',
+	})
 }
 
-export function handleDnd(
+export default function handleDnd(
 	initialEvent,
 	d,
-	handleNodeClick,
 	selectedNodeIds,
 	svgRef,
 	nodesGroup,
 	currentScale,
-	root
 ) {
-	handleMouseDown(initialEvent);
-
-    const nodesToBeDragged = selectedNodeIds.has(d.data.id) ? selectedNodeIds : new Set([d.data.id])
-	const startingNodeInstance = initialEvent.currentTarget;
-
-	const _handleMouseMove = (event) =>
-		handleMouseMove(
-			event,
-            d,
-			startingNodeInstance,
-			nodesToBeDragged,
-			nodesGroup,
-			currentScale,
-			root
+	return new Promise((resolve) => {
+		handleMouseDown(initialEvent);
+	
+		const nodesToBeDragged = selectedNodeIds.has(d.data.id) ? selectedNodeIds : new Set([d.data.id])
+		const startingNodeInstance = initialEvent.currentTarget;
+	
+		const _handleMouseMove = (event) =>
+			handleMouseMove(
+				event,
+				d,
+				startingNodeInstance,
+				nodesToBeDragged,
+				nodesGroup,
+				currentScale,
+				svgRef
+			);
+	
+		svgRef.addEventListener('mousemove', _handleMouseMove);
+	
+		window.addEventListener(
+			'mouseup',
+			(event) => {
+				svgRef.removeEventListener('mousemove', _handleMouseMove);
+				handleMouseUp(initialEvent, event, d, svgRef, resolve);
+			},
+			{once: true}
 		);
-
-	svgRef.addEventListener('mousemove', _handleMouseMove);
-
-	svgRef.addEventListener(
-		'mouseup',
-		() => {
-			svgRef.removeEventListener('mousemove', _handleMouseMove);
-			handleMouseUp(initialEvent, d, handleNodeClick, svgRef);
-		},
-		{once: true}
-	);
+	})
 }
