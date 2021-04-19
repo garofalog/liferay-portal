@@ -88,7 +88,7 @@ const DiagramHeader = ({
 								spritemap={spritemap}
 								step={1}
 								useNative={newPinSettings.colorPicker.useNative}
-								value={addNewPinState.color}
+								value={addNewPinState.fill}
 							/>
 						</ClayDropDown.Group>
 					</ClayDropDown.ItemList>
@@ -102,7 +102,7 @@ const DiagramHeader = ({
 									key={i}
 									onClick={(event) => {
 										setAddNewPinState({
-											color: addNewPinState.color,
+											fill: addNewPinState.fill,
 											radius: item.value,
 										});
 									}}
@@ -168,7 +168,7 @@ DiagramHeader.defaultProps = {
 
 DiagramHeader.propTypes = {
 	addNewPinState: PropTypes.shape({
-		color: PropTypes.string,
+		fill: PropTypes.string,
 		radius: PropTypes.number,
 	}),
 	newPinSettings: PropTypes.shape({
