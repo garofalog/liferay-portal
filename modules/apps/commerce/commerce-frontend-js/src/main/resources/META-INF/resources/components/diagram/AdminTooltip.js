@@ -21,12 +21,10 @@ import ClayForm, {ClayInput, ClayRadio, ClayRadioGroup} from '@clayui/form';
 import PropTypes from 'prop-types';
 import React, {useEffect, useState} from 'react';
 
-const AdminTooltip = ({
-	removePinHandler,
-	setShowTooltip,
-	showTooltip,
-}) => {
-	const [linkedValue, setLinkedValue] = useState(showTooltip.details.linked_to_sku);
+const AdminTooltip = ({removePinHandler, setShowTooltip, showTooltip}) => {
+	const [linkedValue, setLinkedValue] = useState(
+		showTooltip.details.linked_to_sku
+	);
 
 	// /////////////////////
 
@@ -44,30 +42,27 @@ const AdminTooltip = ({
 		link: 'https://rickandmortyapi.com/api/character/',
 		onNetworkStatusChange: setNetworkStatus,
 		variables: {
-			name: autoValue
+			name: autoValue,
 		},
 	});
 
 	const cardStyle = {
 		left: showTooltip.details.cx,
 		top: showTooltip.details.cy,
-
-	}
+	};
 
 	return (
-		<ClayCard 
-			className="admin-tooltip"
-			style={cardStyle}>
+		<ClayCard className="admin-tooltip" style={cardStyle}>
 			<ClayCard.Body className="row">
 				<ClayForm.Group className="col-12 form-group-sm text-left">
 					<label htmlFor="basicInputText">Position</label>
 					<ClayInput
 						id="basicInputText"
-						onChange={event => console.log(event)}
+						onChange={(event) => console.log(event)}
 						placeholder="Insert your name here"
 						type="text"
-						value={showTooltip.details?.id || ""}
-					/>		
+						value={showTooltip.details?.id || ''}
+					/>
 				</ClayForm.Group>
 
 				<ClayForm.Group className="col-12 form-group-sm">
@@ -121,18 +116,17 @@ const AdminTooltip = ({
 
 				<ClayForm.Group className="col-3 form-group-sm">
 					<label htmlFor="basicInputText">Qty</label>
-					<ClayInput 
-						id="basicInputText" 
-						onChange={event => console.log(event)}
+					<ClayInput
+						id="basicInputText"
+						onChange={(event) => console.log(event)}
 						type="number"
-						value={showTooltip.details?.quantity || ""}
+						value={showTooltip.details?.quantity || ''}
 					/>
 				</ClayForm.Group>
 
 				<ClayForm.Group className="col-6 d-flex form-group-sm justify-content-start mt-4">
-					<ClayButton 
-						displayType="link" 
-
+					<ClayButton
+						displayType="link"
 						onClick={() => removePinHandler(showTooltip.details.id)}
 					>
 						Delete
@@ -140,23 +134,25 @@ const AdminTooltip = ({
 				</ClayForm.Group>
 
 				<ClayForm.Group className="col-6 d-flex form-group-sm justify-content-between mt-4">
-					<ClayButton 
+					<ClayButton
 						displayType="secondary"
-						onClick={() => setShowTooltip({
-							details: {
-								cx: null,
-								cy: null,
-								id: null,
-								linked_to_sku: "sku",
-								quantity: null,
-								sku: '',
-							},
-							tooltip: false
-						})}
+						onClick={() =>
+							setShowTooltip({
+								details: {
+									cx: null,
+									cy: null,
+									id: null,
+									linked_to_sku: 'sku',
+									quantity: null,
+									sku: '',
+								},
+								tooltip: false,
+							})
+						}
 					>
 						Cancel
 					</ClayButton>
-					<ClayButton 
+					<ClayButton
 						displayType="primary"
 						onClick={() => console.log('save')}
 					>
@@ -181,7 +177,7 @@ AdminTooltip.propTypes = {
 			quantity: PropTypes.number,
 			sku: PropTypes.string,
 		}),
-		tooltip: PropTypes.bool
+		tooltip: PropTypes.bool,
 	}),
 };
 

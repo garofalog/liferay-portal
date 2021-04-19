@@ -46,11 +46,11 @@ const Diagram = ({
 			cx: 0,
 			cy: 0,
 			id: null,
-			linked_to_sku: "sku",
+			linked_to_sku: 'sku',
 			quantity: null,
-			sku: ""
+			sku: '',
 		},
-		tooltip: null
+		tooltip: null,
 	});
 
 	const [addNewPinState, setAddNewPinState] = useState({
@@ -108,7 +108,6 @@ const Diagram = ({
 				setZoomOutHandler={setZoomOutHandler}
 				spritemap={spritemap}
 			/>
-
 		</div>
 	);
 };
@@ -176,7 +175,7 @@ Diagram.propTypes = {
 			r: PropTypes.number,
 			sku: PropTypes.string,
 		})
-		),
+	),
 	completeImageSettings: PropTypes.shape({
 		height: PropTypes.string,
 		lastX: PropTypes.number,
@@ -214,7 +213,7 @@ Diagram.propTypes = {
 			quantity: PropTypes.number,
 			sku: PropTypes.string,
 		}),
-		tooltip: PropTypes.bool
+		tooltip: PropTypes.bool,
 	}),
 	spritemap: PropTypes.string,
 	zoomController: PropTypes.shape({

@@ -45,7 +45,7 @@ const ImagePins = ({
 }) => {
 	const [width, setWidth] = useState(0);
 	const containerRef = useRef(null);
-	let div, 
+	let div,
 		svg,
 		container,
 		position,
@@ -57,10 +57,10 @@ const ImagePins = ({
 		handleZoomIn,
 		handleZoomOut;
 
-	const removePinHandler = id => {
-		const poppedState = cPins.filter(el => el.id !== id )
-		setCpins(poppedState)
-	}
+	const removePinHandler = (id) => {
+		const poppedState = cPins.filter((el) => el.id !== id);
+		setCpins(poppedState);
+	};
 
 	// useEffect(() => {
 	//     setImageState({
@@ -130,9 +130,8 @@ const ImagePins = ({
 
 	}, [resetZoom]);
 
-
 	useLayoutEffect(() => {
-		div = select('.diagram-pins-container')
+		div = select('.diagram-pins-container');
 		svg = select('svg');
 		container = select('g#container');
 
@@ -302,20 +301,22 @@ const ImagePins = ({
 
 		function dragstarted(d) {
 			const current = select(this);
-			current.raise().classed("active", true);
+			current.raise().classed('active', true);
 		}
 
 		function dragged(d) {
 			const current = select(this);
-			current.attr("transform", "translate(" + event.x + ',' + event.y + ')');
+			current.attr(
+				'transform',
+				'translate(' + event.x + ',' + event.y + ')'
+			);
 		}
 
 		function dragended(d) {
-
 			const current = select(this);
 			const newPos = current._groups[0][0].attributes;
 			const beSure = [...newPos];
-			
+
 			const arr = [
 				'cx',
 				'cy',
@@ -328,27 +329,34 @@ const ImagePins = ({
 				'sku',
 			];
 			const newww = {};
-			
+
 			arr.map((el) => {
-				beSure.filter(d => {
-					
+				beSure.filter((d) => {
 					if (d.name === el) {
-						if (el === 'cx'){
-							newww[`${d.name}`] = parseFloat(event.x)
-						} else if (el === 'cy') {
-							newww[`${d.name}`] = parseFloat(event.y)
-						} else if (el === 'quantity' || el === 'r' || el === 'id') {
-							newww[`${d.name}`] = parseInt(d.value, 10)
-						} else if (el === 'draggable') {
-							newww[`${d.name}`] = d.value ? true : false
-						} else {
+						if (el === 'cx') {
+							newww[`${d.name}`] = parseFloat(event.x);
+						}
+						else if (el === 'cy') {
+							newww[`${d.name}`] = parseFloat(event.y);
+						}
+						else if (
+							el === 'quantity' ||
+							el === 'r' ||
+							el === 'id'
+						) {
+							newww[`${d.name}`] = parseInt(d.value, 10);
+						}
+						else if (el === 'draggable') {
+							newww[`${d.name}`] = d.value ? true : false;
+						}
+						else {
 							newww[`${d.name}`] = d.value;
 						}
 					}
 				});
 			});
-			
-			current.classed("active", false);
+
+			current.classed('active', false);
 			current.attr('stroke', null);
 			current.attr('fill', event.fill);
 
@@ -376,7 +384,7 @@ const ImagePins = ({
 					draggable: true,
 					fill: '#' + addNewPinState.fill,
 					id: cPins.length,
-					linked_to_sku: "sku",
+					linked_to_sku: 'sku',
 					quantity: 0,
 					r: addNewPinState.radius,
 					sku: addNewPinState.sku,
@@ -396,26 +404,26 @@ const ImagePins = ({
 			.data(cPins)
 			.enter()
 			.append('g')
-			.attr('transform', d => "translate(" + d.cx + "," + d.cy + ")")
-			.attr('cx', d => d.cx)
-			.attr('cy', d => d.cy)
-			.attr('id', d => d.id)
-			.attr('linked_to_sku', d => d.linked_to_sku)
-			.attr('quantity', d => d.quantity)
-			.attr('sku', d => d.sku)
-			.attr('id', d => d.id)
+			.attr('transform', (d) => 'translate(' + d.cx + ',' + d.cy + ')')
+			.attr('cx', (d) => d.cx)
+			.attr('cy', (d) => d.cy)
+			.attr('id', (d) => d.id)
+			.attr('linked_to_sku', (d) => d.linked_to_sku)
+			.attr('quantity', (d) => d.quantity)
+			.attr('sku', (d) => d.sku)
+			.attr('id', (d) => d.id)
 			.attr('class', 'circle_pin')
 			.attr('draggable', (d) => (d.draggable ? true : false))
 			.call(dragHandler)
-			.on('click', d => {
-				console.log('event pin', event)
-				event.path.map(el => {
-					if (el.classList && el.classList[0] === 'circle_pin' ) {
-						const id = parseInt(el.textContent, 10)
+			.on('click', (d) => {
+				console.log('event pin', event);
+				event.path.map((el) => {
+					if (el.classList && el.classList[0] === 'circle_pin') {
+						const id = parseInt(el.textContent, 10);
 
-						console.log('id', cPins[id].id)
-						console.log('cx cy', cPins[id].cx,  cPins[id].cy)
-						console.log('cPins', cPins)
+						console.log('id', cPins[id].id);
+						console.log('cx cy', cPins[id].cx, cPins[id].cy);
+						console.log('cPins', cPins);
 
 						setShowTooltip({
 							details: {
@@ -424,28 +432,27 @@ const ImagePins = ({
 								id: cPins[id].id,
 								linked_to_sku: cPins[id].linked_to_sku,
 								quantity: cPins[id].quantity,
-								sku: cPins[id].sku
+								sku: cPins[id].sku,
 							},
-							tooltip: true
-						})
+							tooltip: true,
+						});
 					}
-				})
-			})
+				});
+			});
 
-		
-			cont.append('circle')
-				.attr('r', d => d.r)
-				.attr('fill', "#ffffff")
-				.attr('r', d => d.r)
-				.attr('stroke', d => d.fill)
-				.attr('stroke-width', 2)
-		
-			cont.append('text')
-				.text(d => d.id)
-				.attr('font-size', d => d.r)
-				.attr('text-anchor', 'middle')
-				.attr('fill', '#000000')
-				.attr('alignment-baseline', 'central');
+		cont.append('circle')
+			.attr('r', (d) => d.r)
+			.attr('fill', '#ffffff')
+			.attr('r', (d) => d.r)
+			.attr('stroke', (d) => d.fill)
+			.attr('stroke-width', 2);
+
+		cont.append('text')
+			.text((d) => d.id)
+			.attr('font-size', (d) => d.r)
+			.attr('text-anchor', 'middle')
+			.attr('fill', '#000000')
+			.attr('alignment-baseline', 'central');
 
 		dragHandler(svg);
 
@@ -492,7 +499,8 @@ const ImagePins = ({
 				ref={containerRef}
 				width={completeImageSettings.width}
 			>
-				<g	id="container"
+				<g
+					id="container"
 					transform={
 						'translate(' +
 						imageState.x +
@@ -511,7 +519,7 @@ const ImagePins = ({
 			</svg>
 
 			{showTooltip.tooltip && (
-				<AdminTooltip 
+				<AdminTooltip
 					removePinHandler={removePinHandler}
 					setShowTooltip={setShowTooltip}
 					showTooltip={showTooltip}
@@ -604,7 +612,7 @@ ImagePins.propTypes = {
 			quantity: PropTypes.number,
 			sku: PropTypes.string,
 		}),
-		tooltip: PropTypes.bool
+		tooltip: PropTypes.bool,
 	}),
 	zoomController: PropTypes.shape({
 		enable: PropTypes.bool,
