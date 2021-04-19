@@ -12,9 +12,6 @@
  * details.
  */
 
-//  import * as d3 from 'd3';
-//  console.log(d3)
-
 import {drag, event, mouse, select, zoom} from 'd3';
 import PropTypes from 'prop-types';
 import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
@@ -59,6 +56,11 @@ const ImagePins = ({
 		handleMoveRight,
 		handleZoomIn,
 		handleZoomOut;
+
+	const removePinHandler = id => {
+		const poppedState = cPins.filter(el => el.id !== id )
+		setCpins(poppedState)
+	}
 
 	// useEffect(() => {
 	//     setImageState({
@@ -298,17 +300,6 @@ const ImagePins = ({
 
 		////////////////////////////////////////////////
 
-		// const editPin = (d) => {
-
-
-		// 	d.on('click', (el) => {
-		// 		console.log("clicking on", el);
-
-		// 		// const clickedId = d._parents[0].attributes[0].nodeType
-		// 		// console.log(clickedId)
-		// 	})
-		// };
-
 		function dragstarted(d) {
 			const current = select(this);
 			current.raise().classed("active", true);
@@ -370,16 +361,10 @@ const ImagePins = ({
 
 		////////////////////////////
 
-		// const editPinHandler = () => {};
-
 		const dragHandler = drag()
 			.on('start', dragstarted)
 			.on('drag', dragged)
 			.on('end', dragended);
-
-		// const clickHandler = cont.on('click', el => {
-		// 	console.log(el)
-		// })
 
 		/////////////////////////////////////////////////////////////////////
 
@@ -389,10 +374,10 @@ const ImagePins = ({
 					cx: 50,
 					cy: 50,
 					draggable: true,
-					fill: '#' + addNewPinState.color,
-					id: cPins.length + 1,
+					fill: '#' + addNewPinState.fill,
+					id: cPins.length,
 					linked_to_sku: "sku",
-					quantity: 1,
+					quantity: 0,
 					r: addNewPinState.radius,
 					sku: addNewPinState.sku,
 				})
@@ -422,12 +407,16 @@ const ImagePins = ({
 			.attr('class', 'circle_pin')
 			.attr('draggable', (d) => (d.draggable ? true : false))
 			.call(dragHandler)
-			.on('click', (d) => {
+			.on('click', d => {
 				console.log('event pin', event)
 				event.path.map(el => {
 					if (el.classList && el.classList[0] === 'circle_pin' ) {
-						const id = parseInt(el.id)
-						console.log(cPins[id])
+						const id = parseInt(el.textContent, 10)
+
+						console.log('id', cPins[id].id)
+						console.log('cx cy', cPins[id].cx,  cPins[id].cy)
+						console.log('cPins', cPins)
+
 						setShowTooltip({
 							details: {
 								cx: cPins[id].cx,
@@ -457,137 +446,6 @@ const ImagePins = ({
 				.attr('text-anchor', 'middle')
 				.attr('fill', '#000000')
 				.attr('alignment-baseline', 'central');
-		
-
-
-			
-		// cont.selectAll('.circle_pin').on('click', d => {
-		// 	console.log("clicking on", d.id);
-
-		// 	// setShowTooltip({
-		// 	// 	details: {
-		// 	// 		cx: d.cx,
-		// 	// 		cy: d.cy,
-		// 	// 		id: d.id,
-		// 	// 		linked_to_sku: d.sku,
-		// 	// 		quantity: d.quantity,
-		// 	// 		sku: d.sku
-		// 	// 	},
-		// 	// 	tooltip: true
-		// 	// })
-
-
-		// 	// return tooltip2.style("visibility", "visible")
-
-		// })
-
-		// pinnn.on("click", (d) => {
-		//     console.log('cu')
-
-		//     // const mouseEV = mouse(this);
-
-		//     container.append("div")
-		//         .style("position", "absolute")
-		//         .style("visibility", "hidden")
-		//         .style("background-color", "white")
-		//         .style("border", "solid")
-		//         .style("border-width", "1px")
-		//         .style("border-radius", "5px")
-		//         .style("padding", "10px")
-		//         .html(`<AdminTooltip/>`)
-
-
-		//     // debugger;
-		//     // console.log('sto facendo altre cose')
-		//     // console.log(d)
-		//     // select(this)
-		//     //     .attr("fill", "rgb(0," + d + ",0)")
-
-		// })
-
-		// container.selectAll("circle")
-		//     .on("click", function (d) {
-		//         console.log('sto facendo altre cose')
-		//         console.log(d)
-		//         select(this)
-		//             .attr("fill", "rgb(0," + d + ",0)")
-		//     })
-
-		//     // .on("mouseover", function () {
-		//     //     select(this)
-		//     //         .style("background-color", "orange");
-
-		//     //     // Get current event info
-
-		//     //     console.log(event);
-
-		//     //     // Get x & y co-ordinates
-
-		//     //     console.log(mouse(this));
-		//     // })
-
-		//     .on("mouseout", () => {
-		//         console.log('mouseout')
-
-		//         // select(this)
-		//         //     .style("background-color", "steelblue")
-		//     });
-
-		// container.on("click", () => {
-		//     pinnn.on("click", () => {
-		//         console.log('stocazzo')
-		//     })
-		// })
-
-
-		// editPinHandler(circleContainer);
-
-		// pinnn._groups[0].forEach((p) => {
-
-		//     p.on("click", () => {
-		//         console.log('sto facendocose')
-
-		//         var tooltip2 = select("#div_customContent")
-		//             .append("div")
-		//             .style("position", "absolute")
-		//             .style("visibility", "hidden")
-		//             .style("background-color", "white")
-		//             .style("border", "solid")
-		//             .style("border-width", "1px")
-		//             .style("border-radius", "5px")
-		//             .style("padding", "10px")
-		//             .html("<p>I'm a tooltip written in HTML</p><img src='https://github.com/holtzy/D3-graph-gallery/blob/master/img/section/ArcSmal.png?raw=true'></img><br>Fancy<br><span style='font-size: 40px;'>Isn't it?</span>");
-
-		//         select("#circleCustomTooltip")
-		//             .on("mouseover", () => { return tooltip2.style("visibility", "visible"); })
-		//             .on("mousemove", () => { return tooltip2.style("top", (event.pageY - 2390) + "px").style("left", (event.pageX - 800) + "px"); })
-		//             .on("mouseout", () => { return tooltip2.style("visibility", "hidden"); });
-
-		//         // var datum = pinnn.datum();
-		//         // if (pinnn.datum().selected) {
-		//         //     console.log('datum selected')
-		//         //     datum.selected = false;
-		//         //     pinnn
-		//         //         .datum(datum)
-		//         //         .transition()
-		//         //         .duration(500)
-		//         //         .attr("stroke", "#039BE5")
-		//         //         .attr("stroke-width", "1px");
-		//         // } else {
-		//         //     console.log('datum')
-		//         //     datum.selected = true;
-		//         //     pinnn
-		//         //         .datum(datum)
-		//         //         .transition()
-		//         //         .duration(500)
-		//         //         .attr("stroke", "#455A64")
-		//         //         .attr("stroke-width", "3px");
-		//         // }
-
-		//         event.stopPropagation();
-		//     });
-
-		// })
 
 		dragHandler(svg);
 
@@ -597,20 +455,14 @@ const ImagePins = ({
 		select('#moveRight').on('click', moveRight);
 		select('#moveUp').on('click', moveUp);
 		select('#moveDown').on('click', moveDown);
-
 		select('.box.left').on('click', handleMoveLeft);
 		select('.box.right').on('click', handleMoveRight);
 		select('.box.top').on('click', handleMoveUp);
 		select('.box.bottom').on('click', handleMoveDown);
-
 		select('.box.hr').on('click', handleZoomOut);
 		select('.box.plus').on('click', handleZoomIn);
-
 		select('#newPin').on('click', handleAddPin);
 
-		// select('.circle_pin').on('click', editPin)
-
-		// dragHandler2(container.selectAll('.draggable'));
 		// dragHandler(container.selectAll('.draggable'));
 
 	}, [
@@ -619,12 +471,9 @@ const ImagePins = ({
 		// imageState,
 
 		cPins,
-
 		resetZoom,
 		setResetZoom,
-
-		// setCpins,
-
+		setCpins,
 		showTooltip,
 		width,
 		zoomOutHandler,
@@ -663,6 +512,7 @@ const ImagePins = ({
 
 			{showTooltip.tooltip && (
 				<AdminTooltip 
+					removePinHandler={removePinHandler}
 					setShowTooltip={setShowTooltip}
 					showTooltip={showTooltip}
 				/>
@@ -756,13 +606,6 @@ ImagePins.propTypes = {
 		}),
 		tooltip: PropTypes.bool
 	}),
-
-	// PropTypes.shape({
-	//     k: PropTypes.double,
-	//     x: PropTypes.double,
-	//     y: PropTypes.double,
-	// }),
-
 	zoomController: PropTypes.shape({
 		enable: PropTypes.bool,
 		position: PropTypes.shape({

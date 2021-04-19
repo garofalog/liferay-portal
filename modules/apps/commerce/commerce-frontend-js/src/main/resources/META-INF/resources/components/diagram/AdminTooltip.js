@@ -22,14 +22,15 @@ import PropTypes from 'prop-types';
 import React, {useEffect, useState} from 'react';
 
 const AdminTooltip = ({
+	removePinHandler,
 	setShowTooltip,
 	showTooltip,
 }) => {
-	const [linkedValue, setLinkedValue] = useState(showTooltip.linked_to_sku);
+	const [linkedValue, setLinkedValue] = useState(showTooltip.details.linked_to_sku);
 
 	// /////////////////////
 
-	const [autoValue, setAutoValue] = useState(showTooltip.sku);
+	const [autoValue, setAutoValue] = useState(showTooltip.details.sku);
 	const [networkStatus, setNetworkStatus] = useState(4);
 
 	// ////////////////////////////////
@@ -42,7 +43,9 @@ const AdminTooltip = ({
 		fetchPolicy: 'cache-first',
 		link: 'https://rickandmortyapi.com/api/character/',
 		onNetworkStatusChange: setNetworkStatus,
-		variables: {name: autoValue},
+		variables: {
+			name: autoValue
+		},
 	});
 
 	const cardStyle = {
@@ -50,11 +53,6 @@ const AdminTooltip = ({
 		top: showTooltip.details.cy,
 
 	}
-
-	// useEffect(() => {
-	// 	cardStyle =
-		 
-	// }, [showTooltip])
 
 	return (
 		<ClayCard 
@@ -65,11 +63,11 @@ const AdminTooltip = ({
 					<label htmlFor="basicInputText">Position</label>
 					<ClayInput
 						id="basicInputText"
+						onChange={event => console.log(event)}
 						placeholder="Insert your name here"
 						type="text"
-					>
-						{showTooltip.id}
-				</ClayInput>
+						value={showTooltip.details?.id || ""}
+					/>		
 				</ClayForm.Group>
 
 				<ClayForm.Group className="col-12 form-group-sm">
@@ -123,15 +121,19 @@ const AdminTooltip = ({
 
 				<ClayForm.Group className="col-3 form-group-sm">
 					<label htmlFor="basicInputText">Qty</label>
-					<ClayInput id="basicInputText" type="number" />
+					<ClayInput 
+						id="basicInputText" 
+						onChange={event => console.log(event)}
+						type="number"
+						value={showTooltip.details?.quantity || ""}
+					/>
 				</ClayForm.Group>
 
 				<ClayForm.Group className="col-6 d-flex form-group-sm justify-content-start mt-4">
 					<ClayButton 
 						displayType="link" 
 
-						// onClick={() => setCpins}
-
+						onClick={() => removePinHandler(showTooltip.details.id)}
 					>
 						Delete
 					</ClayButton>
