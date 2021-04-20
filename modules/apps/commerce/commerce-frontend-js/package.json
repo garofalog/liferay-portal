@@ -23,6 +23,7 @@
 		"@clayui/tooltip": "3.4.5",
 		"@liferay/frontend-js-react-web": "*",
 		"classnames": "2.2.6",
+		"d3": "^5.9.2",
 		"frontend-js-web": "*",
 		"prop-types": "15.7.2"
 	},
