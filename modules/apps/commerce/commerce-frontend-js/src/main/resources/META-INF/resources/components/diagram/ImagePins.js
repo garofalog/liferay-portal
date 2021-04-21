@@ -15,6 +15,19 @@
 import {drag, event, mouse, select, zoom} from 'd3';
 import PropTypes from 'prop-types';
 import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
+import {
+	moveRight,
+	moveLeft,
+	moveUp,
+	moveDown,
+	zoomIn,
+	zoomOut,
+} from './NavigationsUtils'
+import {
+	// addPin,
+	// removePin,
+	updatePin
+} from './PinsUtils'
 
 import AdminTooltip from './AdminTooltip';
 import NavigationButtons from './NavigationButtons';
@@ -29,10 +42,12 @@ const ImagePins = ({
 	image,
 	imageState,
 	navigationController,
+	removePinHandler,
 	resetZoom,
 	setAddPinHandler,
 	setCpins,
 	setImageState,
+	setRemovePinHandler,
 	setResetZoom,
 	setShowTooltip,
 	setZoomInHandler,
@@ -55,34 +70,11 @@ const ImagePins = ({
 		handleMoveLeft,
 		handleMoveRight,
 		handleZoomIn,
-		handleZoomOut;
-
-	const removePinHandler = (id) => {
-		const poppedState = cPins.filter((el) => el.id !== id);
-		setCpins(poppedState);
-	};
-
-	// useEffect(() => {
-	//     setImageState({
-	//         k: imageState.k,
-	//         x: imageState.x,
-	//         y: imageState.y,
-	//     })
-	// }, [imageState])
-
-	// useEffect(() => {
-	//     const updateWidth = () => {
-	//         setWidth(containerRef.current.clientWidth / (data.length + 1));
-	//     }
-	//     const handleResize = debounce(updateWidth, 500);
-	//     updateWidth();
-	//     window.addEventListener('resize', handleResize);
-	//     return () => window.removeEventListener('resize', handleResize);
-	// }, [data.length]);
-
+		handleZoomOut
+	
 	useEffect(() => {
 		let t;
-
+		// debugger;
 		if (!event) {
 			t = {
 				k: imageState.k,
@@ -99,26 +91,10 @@ const ImagePins = ({
 		}
 
 		if (resetZoom) {
-			console.log('reset true');
 			setResetZoom(false);
-			setImageState({
-				k: 1,
-				x: 0,
-				y: 0,
-			});
-
 			container.attr('transform', 'translate(0,0)scale(1)');
 		}
 		else {
-			setImageState(t);
-
-			// if (imageState.x === event.transform.x) {
-			//     console.log("===")
-			//     container.attr("transform", event.transform)
-			//     setImageState(t)
-			// } else {
-			// console.log('!== t ->', t);
-			// console.log('imageState ->', imageState);
 
 			container.attr(
 				'transform',
@@ -126,7 +102,6 @@ const ImagePins = ({
 			);
 		}
 
-		// }
 
 	}, [resetZoom]);
 
@@ -135,77 +110,14 @@ const ImagePins = ({
 		svg = select('svg');
 		container = select('g#container');
 
-		const panZoom = zoom().on('zoom', () => {
-			const t = {
-				k: event.transform.k,
-				x: event.transform.x,
-				y: event.transform.y,
-			};
-			const v = {
-				k: imageState.k,
-				x: imageState.x,
-				y: imageState.y,
-			};
-
-			if (t === v) {
-
-				// console.log("===")
-				// console.log("resetZoom ==", resetZoom)
-
-				container.attr('transform', t);
-				setImageState(t);
-			}
-			else {
-
-				// console.log("!== v ->", v)
-				// console.log("resetZoom !=", resetZoom)
-				// console.log('imageState ->', event.transform)
-
-				setImageState(event.transform);
-				container.attr('transform', event.transform);
-
-				// if (resetZoom) {
-				//     console.log("reset true")
-				//     event.transform = {
-				//         k: imageState.k,
-				//         x: imageState.x,
-				//         y: imageState.y,
-				//     }
-				//     setResetZoom(false)
-				//     setImageState({
-				//         k: 1,
-				//         x: 0,
-				//         y: 0,
-				//     })
-				//     console.log("!== v ->", v)
-				//     console.log("!== t ->", t)
-				//     console.log('imageState ->', imageState)
-				//     container.attr("transform", "translate(0,0)scale(1)");
-				// } else {
-				//     console.log("reset false")
-				//     setImageState(t)
-				//     // if (imageState.x === event.transform.x) {
-				//     //     console.log("===")
-				// setImageState(t)
-				//     // } else {
-
-			}
-		});
+		const panZoom = zoom().on('zoom', () => container.attr('transform', event.transform));
 
 		if (zoomController.enablePanZoom) {
 			svg.call(panZoom);
 		}
 
-		////////////////////////////////////////////////
-
-		const zoomIn = () => {
-			panZoom.scaleBy(container.transition().duration(400), 1.2);
-		};
-		const handleZoomIn = () => zoomIn();
-		const zoomOut = () => {
-			panZoom.scaleBy(container.transition().duration(400), 0.8);
-		};
-		const handleZoomOut = () => zoomOut();
+		handleZoomIn = () => zoomIn(container, panZoom);
+		handleZoomOut = () => zoomOut(container, panZoom);
 
 		if (execZoomIn) {
 			handleZoomIn();
@@ -213,88 +125,25 @@ const ImagePins = ({
 
 		if (zoomOutHandler) {
 			setZoomOutHandler(false);
-			zoomOut();
+			zoomOut(container, panZoom);
 		}
 
 		if (zoomInHandler) {
 			setZoomInHandler(false);
-			zoomIn();
+			zoomIn(container, panZoom);
 		}
 
-		////////////////////////////////////////////////
-
-		const moveRight = () => {
-			position = container.attr('transform');
-			const vai = position.match(/(-?[0-9]+[.,-\s]*)+/g);
-			const co = vai[0].split(',').map((x) => parseInt(x, 10));
-			const s = {
-				k: parseFloat(vai[1]),
-				x: co[0] + navigationController.dragStep,
-				y: co[1],
-			};
-			setImageState(s);
-			container.attr(
-				'transform',
-				`translate(${s.x},${s.y}) scale(${s.k})`
-			);
+		handleMoveUp = () => {
+			moveUp(container, navigationController);
 		};
-		const moveLeft = () => {
-			position = container.attr('transform');
-			const vai = position.match(/(-?[0-9]+[.,-\s]*)+/g);
-			const co = vai[0].split(',').map((x) => parseInt(x, 10));
-			const s = {
-				k: parseFloat(vai[1]),
-				x: co[0] - navigationController.dragStep,
-				y: co[1],
-			};
-			setImageState(s);
-			container.attr(
-				'transform',
-				`translate(${s.x},${s.y}) scale(${s.k})`
-			);
+		handleMoveDown = () => {
+			moveDown(container, navigationController);
 		};
-		const moveUp = () => {
-			position = container.attr('transform');
-			const vai = position.match(/(-?[0-9]+[.,-\s]*)+/g);
-			const co = vai[0].split(',').map((x) => parseInt(x, 10));
-			const s = {
-				k: parseFloat(vai[1]),
-				x: co[0],
-				y: co[1] - navigationController.dragStep,
-			};
-			setImageState(s);
-			container.attr(
-				'transform',
-				`translate(${s.x},${s.y}) scale(${s.k})`
-			);
+		handleMoveLeft = () => {
+			moveLeft(container, navigationController);
 		};
-		const moveDown = () => {
-			position = container.attr('transform');
-			const vai = position.match(/(-?[0-9]+[.,-\s]*)+/g);
-			const co = vai[0].split(',').map((x) => parseInt(x, 10));
-			const s = {
-				k: parseFloat(vai[1]),
-				x: co[0],
-				y: co[1] + navigationController.dragStep,
-			};
-			setImageState(s);
-			container.attr(
-				'transform',
-				`translate(${s.x},${s.y}) scale(${s.k})`
-			);
-		};
-
-		const handleMoveUp = () => {
-			moveUp();
-		};
-		const handleMoveDown = () => {
-			moveDown();
-		};
-		const handleMoveLeft = () => {
-			moveLeft();
-		};
-		const handleMoveRight = () => {
-			moveRight();
+		handleMoveRight = () => {
+			moveRight(container, navigationController);
 		};
 
 		////////////////////////////////////////////////
@@ -367,8 +216,6 @@ const ImagePins = ({
 			setCpins(newState);
 		}
 
-		////////////////////////////
-
 		const dragHandler = drag()
 			.on('start', dragstarted)
 			.on('drag', dragged)
@@ -391,6 +238,20 @@ const ImagePins = ({
 				})
 			);
 		};
+
+		const removePin = (id) => {
+			// const poppedState = cPins.filter((el) => el.id !== id);
+			console.log('clo');
+			setCpins(cPins.filter((el) => el.id !== id));
+		};
+
+		if(removePinHandler.handler) {
+			setRemovePinHandler({
+				handler: false,
+				pin: null
+			})
+			removePin(removePinHandler.pin)
+		}
 
 		if (addPinHandler) {
 			setAddPinHandler(false);
@@ -454,7 +315,6 @@ const ImagePins = ({
 			.attr('fill', '#000000')
 			.attr('alignment-baseline', 'central');
 
-		dragHandler(svg);
 
 		////////////////////// register event //////////////////////////
 
@@ -470,11 +330,9 @@ const ImagePins = ({
 		select('.box.plus').on('click', handleZoomIn);
 		select('#newPin').on('click', handleAddPin);
 
-		// dragHandler(container.selectAll('.draggable'));
-
 	}, [
 		addPinHandler,
-
+		removePinHandler,
 		// imageState,
 
 		cPins,
@@ -521,6 +379,7 @@ const ImagePins = ({
 			{showTooltip.tooltip && (
 				<AdminTooltip
 					removePinHandler={removePinHandler}
+					setRemovePinHandler={setRemovePinHandler}
 					setShowTooltip={setShowTooltip}
 					showTooltip={showTooltip}
 				/>
@@ -556,6 +415,10 @@ ImagePins.default = {
 
 ImagePins.propTypes = {
 	addPinHandler: PropTypes.bool,
+	removePinHandler: PropTypes.shape({
+		handler: PropTypes.bool,
+		pin: PropTypes.number,
+	}),
 	cPins: PropTypes.arrayOf(
 		PropTypes.shape({
 			cx: PropTypes.double,

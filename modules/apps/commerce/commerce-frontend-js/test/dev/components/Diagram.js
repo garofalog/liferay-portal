@@ -42,7 +42,7 @@ launcher('diagram', 'diagram', {
 	},
 	pins: [
 		{
-			cx: 50,
+			cx: 150,
 			cy: 50,
 			draggable: true,
 			fill: '#f90e19',
@@ -137,8 +137,8 @@ launcher('diagram', 'diagram', {
 			id: 8,
 			linked_to_sku: 'sku',
 			quantity: 1,
-			r: 5,
-			sku: 'ca8daaa',
+			r: 13,
+			sku: '',
 		},
 		{
 			cx: 139.69729329671517,

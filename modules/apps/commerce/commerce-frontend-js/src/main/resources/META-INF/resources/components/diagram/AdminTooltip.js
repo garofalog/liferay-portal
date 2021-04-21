@@ -21,7 +21,12 @@ import ClayForm, {ClayInput, ClayRadio, ClayRadioGroup} from '@clayui/form';
 import PropTypes from 'prop-types';
 import React, {useEffect, useState} from 'react';
 
-const AdminTooltip = ({removePinHandler, setShowTooltip, showTooltip}) => {
+const AdminTooltip = ({
+		removePinHandler, 
+		setShowTooltip, 
+		showTooltip,
+		setRemovePinHandler,
+	}) => {
 	const [linkedValue, setLinkedValue] = useState(
 		showTooltip.details.linked_to_sku
 	);
@@ -127,7 +132,10 @@ const AdminTooltip = ({removePinHandler, setShowTooltip, showTooltip}) => {
 				<ClayForm.Group className="col-6 d-flex form-group-sm justify-content-start mt-4">
 					<ClayButton
 						displayType="link"
-						onClick={() => removePinHandler(showTooltip.details.id)}
+						onClick={() => setRemovePinHandler({
+							handler: true, 
+							pin: showTooltip.details.id
+						})}
 					>
 						Delete
 					</ClayButton>

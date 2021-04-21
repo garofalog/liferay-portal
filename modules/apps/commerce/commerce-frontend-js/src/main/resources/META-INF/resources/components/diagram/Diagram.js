@@ -30,6 +30,10 @@ const Diagram = ({
 	zoomController,
 }) => {
 	const [addPinHandler, setAddPinHandler] = useState(false);
+	const [removePinHandler, setRemovePinHandler] = useState({
+		handler: false,
+		pin: null,
+	});
 	const [resetZoom, setResetZoom] = useState(false);
 	const [zoomInHandler, setZoomInHandler] = useState(false);
 	const [zoomOutHandler, setZoomOutHandler] = useState(false);
@@ -81,9 +85,11 @@ const Diagram = ({
 				image={image}
 				imageState={imageState}
 				navigationController={navigationController}
+				removePinHandler={removePinHandler}
 				resetZoom={resetZoom}
 				scale={scale}
 				setAddPinHandler={setAddPinHandler}
+				setRemovePinHandler={setRemovePinHandler}
 				setCpins={setCpins}
 				setImageState={setImageState}
 				setResetZoom={setResetZoom}
@@ -146,7 +152,7 @@ Diagram.defaultProps = {
 				'FD9945',
 				'1A588B',
 			],
-			selectedColor: 'F1A3BB',
+			selectedColor: '0B5FFF',
 			useNative: true,
 		},
 		defaultRadius: 15,

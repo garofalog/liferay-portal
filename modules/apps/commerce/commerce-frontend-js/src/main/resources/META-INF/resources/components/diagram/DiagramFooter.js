@@ -32,10 +32,6 @@ const DiagramFooter = ({
 	spritemap,
 }) => {
 
-	// const [addPinHandler, setAddPinHandler] = useState(false)
-	// const [zoomOutHandler, setZoomOutHandler] = useState(false)
-	// const [zoomInHandler, setZoomInHandler] = useState(false)
-
 	function handleZoomChange(event) {
 		setSelectedOption(event.target.value / 100);
 		setImageState({
@@ -155,17 +151,6 @@ DiagramFooter.propTypes = {
 		ctxStore: PropTypes.any,
 	}),
 	myzoom: PropTypes.func,
-
-	// resetZoom: PropTypes.func,
-	// setAddPinHandler: PropTypes.func,
-
-	// setImageState: PropTypes.func,
-
-	// setResetZoom: PropTypes.func,
-	// setSelectedOption: PropTypes.func,
-	// setZoomInHandler: PropTypes.func,
-	// setZoomOutHandler: PropTypes.func,
-
 };
 
 export default DiagramFooter;
