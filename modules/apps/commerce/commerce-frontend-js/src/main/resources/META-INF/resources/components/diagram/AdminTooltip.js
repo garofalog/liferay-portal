@@ -22,18 +22,16 @@ import PropTypes from 'prop-types';
 import React, {useEffect, useState} from 'react';
 
 const AdminTooltip = ({
-		removePinHandler, 
 		setShowTooltip, 
 		showTooltip,
 		setRemovePinHandler,
 	}) => {
-	const [linkedValue, setLinkedValue] = useState(
-		showTooltip.details.linked_to_sku
-	);
 
-	// /////////////////////
+	const [position, setPosition] = useState(showTooltip.details.label)
+	const [linkedValue, setLinkedValue] = useState(showTooltip.details.linked_to_sku);
+	const [sku, setSku] = useState(showTooltip.details.sku)
+	const [quantity, setQuantity] = useState(showTooltip.details.quantity)
 
-	const [autoValue, setAutoValue] = useState(showTooltip.details.sku);
 	const [networkStatus, setNetworkStatus] = useState(4);
 
 	// ////////////////////////////////
@@ -47,7 +45,7 @@ const AdminTooltip = ({
 		link: 'https://rickandmortyapi.com/api/character/',
 		onNetworkStatusChange: setNetworkStatus,
 		variables: {
-			name: autoValue,
+			name: sku,
 		},
 	});
 
@@ -63,10 +61,10 @@ const AdminTooltip = ({
 					<label htmlFor="basicInputText">Position</label>
 					<ClayInput
 						id="basicInputText"
-						onChange={(event) => console.log(event)}
+						onChange={(event) => setPosition(event.target.value)}
 						placeholder="Insert your name here"
 						type="text"
-						value={showTooltip.details?.id || ''}
+						value={position}
 					/>
 				</ClayForm.Group>
 
@@ -87,14 +85,14 @@ const AdminTooltip = ({
 					<ClayAutocomplete>
 						<ClayAutocomplete.Input
 							onChange={(event) =>
-								setAutoValue(event.target.value)
+								setSku(event.target.value)
 							}
-							placeholder="Type here"
-							value={autoValue}
+							placeholder="Type SKU here"
+							value={sku}
 						/>
 						<ClayAutocomplete.DropDown
 							active={
-								(!!resource && !!autoValue) || initialLoading
+								(!!resource && !!sku) || initialLoading
 							}
 						>
 							<ClayDropDown.ItemList>
@@ -109,7 +107,7 @@ const AdminTooltip = ({
 									resource.results.map((item) => (
 										<ClayAutocomplete.Item
 											key={item.id}
-											match={autoValue}
+											match={sku}
 											value={item.name}
 										/>
 									))}
@@ -123,19 +121,33 @@ const AdminTooltip = ({
 					<label htmlFor="basicInputText">Qty</label>
 					<ClayInput
 						id="basicInputText"
-						onChange={(event) => console.log(event)}
+						onChange={(event) => setQuantity(event.target.value)}
 						type="number"
-						value={showTooltip.details?.quantity || ''}
+						value={quantity}
 					/>
 				</ClayForm.Group>
 
 				<ClayForm.Group className="col-6 d-flex form-group-sm justify-content-start mt-4">
 					<ClayButton
 						displayType="link"
-						onClick={() => setRemovePinHandler({
-							handler: true, 
-							pin: showTooltip.details.id
-						})}
+						onClick={() => {
+							setRemovePinHandler({
+								handler: true, 
+								pin: position
+							})
+							setShowTooltip({
+								details: {
+									cx: null,
+									cy: null,
+									id: null,
+									label: null,
+									linked_to_sku: 'sku',
+									quantity: null,
+									sku: '',
+								},
+								tooltip: false,
+							})
+						}}
 					>
 						Delete
 					</ClayButton>
@@ -150,6 +162,7 @@ const AdminTooltip = ({
 									cx: null,
 									cy: null,
 									id: null,
+									label: null,
 									linked_to_sku: 'sku',
 									quantity: null,
 									sku: '',
@@ -162,7 +175,20 @@ const AdminTooltip = ({
 					</ClayButton>
 					<ClayButton
 						displayType="primary"
-						onClick={() => console.log('save')}
+						onClick={() => {
+							setShowTooltip({
+								details: {
+									cx: showTooltip.details.cx,
+									cy: showTooltip.details.cy,
+									id: showTooltip.details.id,
+									label: position,
+									linked_to_sku: linkedValue,
+									quantity: quantity,
+									sku: sku,
+								},
+								tooltip: false,
+							})
+						}}
 					>
 						Save
 					</ClayButton>
@@ -181,6 +207,7 @@ AdminTooltip.propTypes = {
 			cx: PropTypes.double,
 			cy: PropTypes.double,
 			id: PropTypes.number,
+			label: PropTypes.string,
 			linked_to_sku: PropTypes.oneOf(['sku', 'diagram']),
 			quantity: PropTypes.number,
 			sku: PropTypes.string,

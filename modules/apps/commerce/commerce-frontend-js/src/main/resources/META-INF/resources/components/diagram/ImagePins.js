@@ -23,11 +23,6 @@ import {
 	zoomIn,
 	zoomOut,
 } from './NavigationsUtils'
-import {
-	// addPin,
-	// removePin,
-	updatePin
-} from './PinsUtils'
 
 import AdminTooltip from './AdminTooltip';
 import NavigationButtons from './NavigationButtons';
@@ -59,11 +54,8 @@ const ImagePins = ({
 	zoomOutHandler,
 }) => {
 	const [width, setWidth] = useState(0);
-	const containerRef = useRef(null);
-	let div,
-		svg,
+	let svg,
 		container,
-		position,
 		handleAddPin,
 		handleMoveUp,
 		handleMoveDown,
@@ -74,7 +66,6 @@ const ImagePins = ({
 	
 	useEffect(() => {
 		let t;
-		// debugger;
 		if (!event) {
 			t = {
 				k: imageState.k,
@@ -101,7 +92,6 @@ const ImagePins = ({
 				`translate(${t.x},${t.y}) scale(${t.k})`
 			);
 		}
-
 
 	}, [resetZoom]);
 
@@ -148,72 +138,101 @@ const ImagePins = ({
 
 		////////////////////////////////////////////////
 
+		const clickAction = (updatedPin) => 	
+			setShowTooltip({
+				details: {
+					cx: updatedPin.cx,
+					cy: updatedPin.cy,
+					id: updatedPin.id,
+					label: updatedPin.label,
+					label: updatedPin.label,
+					linked_to_sku: updatedPin.linked_to_sku,
+					quantity: updatedPin.quantity,
+					sku: updatedPin.sku,
+				},
+				tooltip: true,
+			});
+		
+
 		function dragstarted(d) {
-			const current = select(this);
-			current.raise().classed('active', true);
+			select(this).raise().classed('active', true);
 		}
 
 		function dragged(d) {
-			const current = select(this);
-			current.attr(
+			select(this).attr(
 				'transform',
 				'translate(' + event.x + ',' + event.y + ')'
 			);
 		}
 
-		function dragended(d) {
+		function dragended(d) {					
 			const current = select(this);
 			const newPos = current._groups[0][0].attributes;
 			const beSure = [...newPos];
-
+			
+			const updatedPin = {};
+			
 			const arr = [
 				'cx',
 				'cy',
 				'draggable',
 				'fill',
 				'id',
+				'label',
 				'linked_to_sku',
 				'quantity',
 				'r',
 				'sku',
 			];
-			const newww = {};
-
+			
+			select(this).classed("active", false);
 			arr.map((el) => {
 				beSure.filter((d) => {
 					if (d.name === el) {
 						if (el === 'cx') {
-							newww[`${d.name}`] = parseFloat(event.x);
+							updatedPin[`${d.name}`] = parseFloat(event.x);
 						}
 						else if (el === 'cy') {
-							newww[`${d.name}`] = parseFloat(event.y);
+							updatedPin[`${d.name}`] = parseFloat(event.y);
 						}
 						else if (
 							el === 'quantity' ||
 							el === 'r' ||
 							el === 'id'
 						) {
-							newww[`${d.name}`] = parseInt(d.value, 10);
+							updatedPin[`${d.name}`] = parseInt(d.value, 10);
 						}
 						else if (el === 'draggable') {
-							newww[`${d.name}`] = d.value ? true : false;
+							updatedPin[`${d.name}`] = d.value ? true : false;
 						}
 						else {
-							newww[`${d.name}`] = d.value;
+							updatedPin[`${d.name}`] = d.value;
 						}
 					}
 				});
 			});
 
-			current.classed('active', false);
-			current.attr('stroke', null);
-			current.attr('fill', event.fill);
+			const newState = cPins.map((element) => {
+				if (element.id === updatedPin.id) {
+					if (Math.abs(element.cx - updatedPin.cx) < 15 && Math.abs(element.cy - updatedPin.cy) < 15) {
+						console.log('x', element.cx - updatedPin.cx)
+						console.log('y', element.cy - updatedPin.cy)
+						clickAction(updatedPin)
+					}
+					return updatedPin
+				} else {
+					return element
+				}
 
-			const newState = cPins.map((element) =>
-				element.id === newww.id ? newww : element
-			);
-
+				// element.id === updatedPin.id ? Math.abs(element.cx - updatedPin.cx) < 15 && Math.abs(element.cy - updatedPin.cy) < 15 ? clickAction(updatedPin) : updatedPin : element
+				
+				// return element.id === updatedPin.id ? updatedPin : element
+			});
 			setCpins(newState);
+			current.attr("transform", "translate(" + (d.cx = event.x) + ',' + (d.cy = event.y) + ')');
+
+			event.sourceEvent.stopPropagation(); // silence other listeners
+
 		}
 
 		const dragHandler = drag()
@@ -231,6 +250,7 @@ const ImagePins = ({
 					draggable: true,
 					fill: '#' + addNewPinState.fill,
 					id: cPins.length,
+					label: 'new' + cPins.length,
 					linked_to_sku: 'sku',
 					quantity: 0,
 					r: addNewPinState.radius,
@@ -240,19 +260,16 @@ const ImagePins = ({
 		};
 
 		const removePin = (id) => {
-			// const poppedState = cPins.filter((el) => el.id !== id);
-			console.log('clo');
 			setCpins(cPins.filter((el) => el.id !== id));
 		};
 
 		if(removePinHandler.handler) {
+			removePin(removePinHandler.pin)
 			setRemovePinHandler({
 				handler: false,
 				pin: null
 			})
-			removePin(removePinHandler.pin)
 		}
-
 		if (addPinHandler) {
 			setAddPinHandler(false);
 			addPin();
@@ -260,63 +277,47 @@ const ImagePins = ({
 
 		////////////////////////////////////////////////
 
-		const cont = container
-			.selectAll('g')
-			.data(cPins)
-			.enter()
-			.append('g')
-			.attr('transform', (d) => 'translate(' + d.cx + ',' + d.cy + ')')
-			.attr('cx', (d) => d.cx)
-			.attr('cy', (d) => d.cy)
-			.attr('id', (d) => d.id)
-			.attr('linked_to_sku', (d) => d.linked_to_sku)
-			.attr('quantity', (d) => d.quantity)
-			.attr('sku', (d) => d.sku)
-			.attr('id', (d) => d.id)
-			.attr('class', 'circle_pin')
-			.attr('draggable', (d) => (d.draggable ? true : false))
-			.call(dragHandler)
-			.on('click', (d) => {
-				console.log('event pin', event);
-				event.path.map((el) => {
-					if (el.classList && el.classList[0] === 'circle_pin') {
-						const id = parseInt(el.textContent, 10);
+		if (!removePinHandler.handler && !addPinHandler) {
+			try {
+				container.selectAll('g').remove()
+			} catch (err){console.log(err)}
 
-						console.log('id', cPins[id].id);
-						console.log('cx cy', cPins[id].cx, cPins[id].cy);
-						console.log('cPins', cPins);
+			const cont = container
+				.selectAll('g')
+				.data(cPins)
+				.enter()
+				.append('g')
+				.attr('transform', (d) => 'translate(' + d.cx + ',' + d.cy + ')')
+				.attr('cx', (d) => d.cx)
+				.attr('cy', (d) => d.cy)
+				.attr('id', (d) => d.id)
+				.attr('label', (d) => d.label)
+				.attr('fill', (d) => d.fill)
+				.attr('linked_to_sku', (d) => d.linked_to_sku)
+				.attr('quantity', (d) => d.quantity)
+				.attr('r', (d) => d.r)
+				.attr('sku', (d) => d.sku)
+				.attr('id', (d) => d.id)
+				.attr('class', 'circle_pin')
+				.attr('draggable', (d) => (d.draggable ? true : false))
+				.call(dragHandler);
 
-						setShowTooltip({
-							details: {
-								cx: cPins[id].cx,
-								cy: cPins[id].cy,
-								id: cPins[id].id,
-								linked_to_sku: cPins[id].linked_to_sku,
-								quantity: cPins[id].quantity,
-								sku: cPins[id].sku,
-							},
-							tooltip: true,
-						});
-					}
-				});
-			});
+			cont.append('circle')
+				.attr('r', (d) => d.r)
+				.attr('fill', (d) => '#ffffff')
+				.attr('r', (d) => d.r)
+				.attr('stroke', (d) => d.fill)
+				.attr('stroke-width', 2);
 
-		cont.append('circle')
-			.attr('r', (d) => d.r)
-			.attr('fill', '#ffffff')
-			.attr('r', (d) => d.r)
-			.attr('stroke', (d) => d.fill)
-			.attr('stroke-width', 2);
+			cont.append('text')
+				.text((d) => d.label)
+				.attr('font-size', (d) => d.r)
+				.attr('text-anchor', 'middle')
+				.attr('fill', '#000000')
+				.attr('alignment-baseline', 'central');	
+		}
 
-		cont.append('text')
-			.text((d) => d.id)
-			.attr('font-size', (d) => d.r)
-			.attr('text-anchor', 'middle')
-			.attr('fill', '#000000')
-			.attr('alignment-baseline', 'central');
-
-
-		////////////////////// register event //////////////////////////
+		////////////////////// register events //////////////////////////
 
 		select('#moveLeft').on('click', moveLeft);
 		select('#moveRight').on('click', moveRight);
@@ -333,13 +334,14 @@ const ImagePins = ({
 	}, [
 		addPinHandler,
 		removePinHandler,
-		// imageState,
 
+		// imageState,
 		cPins,
+		
 		resetZoom,
 		setResetZoom,
-		setCpins,
-		showTooltip,
+		// setCpins,
+		// showTooltip,
 		width,
 		zoomOutHandler,
 		zoomInHandler,
@@ -354,7 +356,6 @@ const ImagePins = ({
 		<div className="diagram-pins-container" style={diagramStyle}>
 			<svg
 				height={completeImageSettings.height}
-				ref={containerRef}
 				width={completeImageSettings.width}
 			>
 				<g
@@ -426,6 +427,7 @@ ImagePins.propTypes = {
 			draggable: PropTypes.bool,
 			fill: PropTypes.string,
 			id: PropTypes.number,
+			label: PropTypes.string,
 			linked_to_sku: PropTypes.oneOf(['sku', 'diagram']),
 			quantity: PropTypes.number,
 			r: PropTypes.number,
@@ -471,6 +473,7 @@ ImagePins.propTypes = {
 			cx: PropTypes.double,
 			cy: PropTypes.double,
 			id: PropTypes.number,
+			label: PropTypes.string,
 			linked_to_sku: PropTypes.oneOf(['sku', 'diagram']),
 			quantity: PropTypes.number,
 			sku: PropTypes.string,

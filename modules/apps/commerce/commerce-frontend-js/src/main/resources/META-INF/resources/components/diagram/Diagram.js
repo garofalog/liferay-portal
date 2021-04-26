@@ -50,6 +50,7 @@ const Diagram = ({
 			cx: 0,
 			cy: 0,
 			id: null,
+			label: "",
 			linked_to_sku: 'sku',
 			quantity: null,
 			sku: '',
@@ -61,6 +62,34 @@ const Diagram = ({
 		fill: newPinSettings.colorPicker.selectedColor,
 		radius: newPinSettings.defaultRadius,
 	});
+
+	useEffect(() => { 
+		
+		if (!showTooltip.tooltip && showTooltip.details.id) {
+			
+			const myNewState = cPins.map((element) => {
+				
+				if (element.id === showTooltip.details.id) {
+					return {
+						cx: cPins[element.id].cx,
+						cy: cPins[element.id].cy,
+						draggable: cPins[element.id].draggable,
+						fill: cPins[element.id].fill,
+						id: showTooltip.details.id,
+						label: showTooltip.details.label,
+						linked_to_sku: showTooltip.details.linked_to_sku,
+						quantity: showTooltip.details.quantity,
+						r: cPins[element.id].r,
+						sku: showTooltip.details.sku,
+					}
+				} else {
+					return element
+				}
+				
+			})
+			setCpins(myNewState)
+		}
+	}, [showTooltip, setShowTooltip])
 
 	useEffect(() => {
 		setSelectedOption(imageState.k);
@@ -176,6 +205,7 @@ Diagram.propTypes = {
 			draggable: PropTypes.bool,
 			fill: PropTypes.string,
 			id: PropTypes.number,
+			label: PropTypes.string,
 			linked_to_sku: PropTypes.oneOf(['sku', 'diagram']),
 			quantity: PropTypes.number,
 			r: PropTypes.number,
@@ -215,6 +245,7 @@ Diagram.propTypes = {
 			cx: PropTypes.double,
 			cy: PropTypes.double,
 			id: PropTypes.number,
+			label: PropTypes.string,
 			linked_to_sku: PropTypes.oneOf(['sku', 'diagram']),
 			quantity: PropTypes.number,
 			sku: PropTypes.string,
