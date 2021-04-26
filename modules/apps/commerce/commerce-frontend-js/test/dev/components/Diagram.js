@@ -47,7 +47,7 @@ launcher('diagram', 'diagram', {
 			draggable: true,
 			fill: '#f90e19',
 			id: 0,
-			label: "0",
+			label: "zero",
 			linked_to_sku: 'sku',
 			quantity: 0,
 			r: 25,

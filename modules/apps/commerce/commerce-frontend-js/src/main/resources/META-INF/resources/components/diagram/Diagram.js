@@ -70,6 +70,7 @@ const Diagram = ({
 			const myNewState = cPins.map((element) => {
 				
 				if (element.id === showTooltip.details.id) {
+					debugger;
 					return {
 						cx: cPins[element.id].cx,
 						cy: cPins[element.id].cy,

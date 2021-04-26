@@ -133,7 +133,7 @@ const AdminTooltip = ({
 						onClick={() => {
 							setRemovePinHandler({
 								handler: true, 
-								pin: position
+								pin: showTooltip.details.id
 							})
 							setShowTooltip({
 								details: {
@@ -162,7 +162,7 @@ const AdminTooltip = ({
 									cx: null,
 									cy: null,
 									id: null,
-									label: null,
+									label: '',
 									linked_to_sku: 'sku',
 									quantity: null,
 									sku: '',
