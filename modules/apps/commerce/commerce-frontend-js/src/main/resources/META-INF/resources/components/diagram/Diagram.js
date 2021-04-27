@@ -70,7 +70,6 @@ const Diagram = ({
 			const myNewState = cPins.map((element) => {
 				
 				if (element.id === showTooltip.details.id) {
-					debugger;
 					return {
 						cx: cPins[element.id].cx,
 						cy: cPins[element.id].cy,
@@ -79,7 +78,7 @@ const Diagram = ({
 						id: showTooltip.details.id,
 						label: showTooltip.details.label,
 						linked_to_sku: showTooltip.details.linked_to_sku,
-						quantity: showTooltip.details.quantity,
+						quantity: parseInt(showTooltip.details.quantity),
 						r: cPins[element.id].r,
 						sku: showTooltip.details.sku,
 					}
