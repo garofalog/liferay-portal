@@ -121,7 +121,7 @@ const AdminTooltip = ({
 					<label htmlFor="basicInputText">Qty</label>
 					<ClayInput
 						id="basicInputText"
-						onChange={(event) => setQuantity(event.target.value)}
+						onChange={(event) => setQuantity(parseInt(event.target.value))}
 						type="number"
 						value={quantity}
 					/>

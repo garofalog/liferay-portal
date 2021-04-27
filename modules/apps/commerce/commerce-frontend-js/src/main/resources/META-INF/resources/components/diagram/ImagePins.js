@@ -145,7 +145,6 @@ const ImagePins = ({
 					cy: updatedPin.cy,
 					id: updatedPin.id,
 					label: updatedPin.label,
-					label: updatedPin.label,
 					linked_to_sku: updatedPin.linked_to_sku,
 					quantity: updatedPin.quantity,
 					sku: updatedPin.sku,
@@ -214,20 +213,15 @@ const ImagePins = ({
 
 			const newState = cPins.map((element) => {
 				if (element.id === updatedPin.id) {
-					if (Math.abs(element.cx - updatedPin.cx) < 15 && Math.abs(element.cy - updatedPin.cy) < 15) {
-						console.log('x', element.cx - updatedPin.cx)
-						console.log('y', element.cy - updatedPin.cy)
-						clickAction(updatedPin)
-					}
+					Math.abs(element.cx - updatedPin.cx) < 15 && Math.abs(element.cy - updatedPin.cy) < 15 ? clickAction(updatedPin) : null
 					return updatedPin
 				} else {
 					return element
 				}
-
-				// element.id === updatedPin.id ? Math.abs(element.cx - updatedPin.cx) < 15 && Math.abs(element.cy - updatedPin.cy) < 15 ? clickAction(updatedPin) : updatedPin : element
-				
-				// return element.id === updatedPin.id ? updatedPin : element
 			});
+
+			// const newState = cPins.map((element) => element.id === updatedPin.id ? Math.abs(element.cx - updatedPin.cx) < 15 && Math.abs(element.cy - updatedPin.cy) < 15 ? clickAction(updatedPin) && updatedPin : null : element);
+			
 			setCpins(newState);
 			current.attr("transform", "translate(" + (d.cx = event.x) + ',' + (d.cy = event.y) + ')');
 
