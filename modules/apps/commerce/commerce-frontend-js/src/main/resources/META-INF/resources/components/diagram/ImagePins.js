@@ -163,7 +163,7 @@ const ImagePins = ({
 			);
 		}
 
-		function dragended () {
+		function dragended (d) {
 			const current = select(this);
 			const newPos = current._groups[0][0].attributes;
 			const beSure = [...newPos];
