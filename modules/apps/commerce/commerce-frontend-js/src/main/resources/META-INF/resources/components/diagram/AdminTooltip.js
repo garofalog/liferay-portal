@@ -21,16 +21,13 @@ import ClayForm, {ClayInput, ClayRadio, ClayRadioGroup} from '@clayui/form';
 import PropTypes from 'prop-types';
 import React, {useEffect, useState} from 'react';
 
-const AdminTooltip = ({
-		setShowTooltip, 
-		showTooltip,
-		setRemovePinHandler,
-	}) => {
-
-	const [position, setPosition] = useState(showTooltip.details.label)
-	const [linkedValue, setLinkedValue] = useState(showTooltip.details.linked_to_sku);
-	const [sku, setSku] = useState(showTooltip.details.sku)
-	const [quantity, setQuantity] = useState(showTooltip.details.quantity)
+const AdminTooltip = ({setShowTooltip, showTooltip, setRemovePinHandler}) => {
+	const [position, setPosition] = useState(showTooltip.details.label);
+	const [linkedValue, setLinkedValue] = useState(
+		showTooltip.details.linked_to_sku
+	);
+	const [sku, setSku] = useState(showTooltip.details.sku);
+	const [quantity, setQuantity] = useState(showTooltip.details.quantity);
 
 	const [networkStatus, setNetworkStatus] = useState(4);
 
@@ -84,16 +81,12 @@ const AdminTooltip = ({
 					<label htmlFor="basicInputText">Select SKU</label>
 					<ClayAutocomplete>
 						<ClayAutocomplete.Input
-							onChange={(event) =>
-								setSku(event.target.value)
-							}
+							onChange={(event) => setSku(event.target.value)}
 							placeholder="Type SKU here"
 							value={sku}
 						/>
 						<ClayAutocomplete.DropDown
-							active={
-								(!!resource && !!sku) || initialLoading
-							}
+							active={(!!resource && !!sku) || initialLoading}
 						>
 							<ClayDropDown.ItemList>
 								{(error || (resource && resource.error)) && (
@@ -121,7 +114,9 @@ const AdminTooltip = ({
 					<label htmlFor="basicInputText">Qty</label>
 					<ClayInput
 						id="basicInputText"
-						onChange={(event) => setQuantity(parseInt(event.target.value))}
+						onChange={(event) =>
+							setQuantity(parseInt(event.target.value))
+						}
 						type="number"
 						value={quantity}
 					/>
@@ -132,9 +127,9 @@ const AdminTooltip = ({
 						displayType="link"
 						onClick={() => {
 							setRemovePinHandler({
-								handler: true, 
-								pin: showTooltip.details.id
-							})
+								handler: true,
+								pin: showTooltip.details.id,
+							});
 							setShowTooltip({
 								details: {
 									cx: null,
@@ -146,7 +141,7 @@ const AdminTooltip = ({
 									sku: '',
 								},
 								tooltip: false,
-							})
+							});
 						}}
 					>
 						Delete
@@ -187,7 +182,7 @@ const AdminTooltip = ({
 									sku: sku,
 								},
 								tooltip: false,
-							})
+							});
 						}}
 					>
 						Save

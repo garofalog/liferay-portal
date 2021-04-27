@@ -31,7 +31,6 @@ const DiagramFooter = ({
 	setZoomOutHandler,
 	spritemap,
 }) => {
-
 	function handleZoomChange(event) {
 		setSelectedOption(event.target.value / 100);
 		setImageState({

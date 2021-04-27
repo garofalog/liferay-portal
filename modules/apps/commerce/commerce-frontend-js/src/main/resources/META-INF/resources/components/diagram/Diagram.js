@@ -50,7 +50,7 @@ const Diagram = ({
 			cx: 0,
 			cy: 0,
 			id: null,
-			label: "",
+			label: '',
 			linked_to_sku: 'sku',
 			quantity: null,
 			sku: '',
@@ -63,12 +63,9 @@ const Diagram = ({
 		radius: newPinSettings.defaultRadius,
 	});
 
-	useEffect(() => { 
-		
+	useEffect(() => {
 		if (!showTooltip.tooltip && showTooltip.details.id) {
-			
 			const myNewState = cPins.map((element) => {
-				
 				if (element.id === showTooltip.details.id) {
 					return {
 						cx: cPins[element.id].cx,
@@ -81,15 +78,15 @@ const Diagram = ({
 						quantity: showTooltip.details.quantity,
 						r: cPins[element.id].r,
 						sku: showTooltip.details.sku,
-					}
-				} else {
-					return element
+					};
 				}
-				
-			})
-			setCpins(myNewState)
+				else {
+					return element;
+				}
+			});
+			setCpins(myNewState);
 		}
-	}, [showTooltip, setShowTooltip])
+	}, [showTooltip, setShowTooltip]);
 
 	useEffect(() => {
 		setSelectedOption(imageState.k);

@@ -22,7 +22,7 @@ import {
 	moveDown,
 	zoomIn,
 	zoomOut,
-} from './NavigationsUtils'
+} from './NavigationsUtils';
 
 import AdminTooltip from './AdminTooltip';
 import NavigationButtons from './NavigationButtons';
@@ -62,8 +62,8 @@ const ImagePins = ({
 		handleMoveLeft,
 		handleMoveRight,
 		handleZoomIn,
-		handleZoomOut
-	
+		handleZoomOut;
+
 	useEffect(() => {
 		let t;
 		if (!event) {
@@ -86,13 +86,11 @@ const ImagePins = ({
 			container.attr('transform', 'translate(0,0)scale(1)');
 		}
 		else {
-
 			container.attr(
 				'transform',
 				`translate(${t.x},${t.y}) scale(${t.k})`
 			);
 		}
-
 	}, [resetZoom]);
 
 	useLayoutEffect(() => {
@@ -100,7 +98,9 @@ const ImagePins = ({
 		svg = select('svg');
 		container = select('g#container');
 
-		const panZoom = zoom().on('zoom', () => container.attr('transform', event.transform));
+		const panZoom = zoom().on('zoom', () =>
+			container.attr('transform', event.transform)
+		);
 
 		if (zoomController.enablePanZoom) {
 			svg.call(panZoom);
@@ -138,7 +138,7 @@ const ImagePins = ({
 
 		////////////////////////////////////////////////
 
-		const clickAction = (updatedPin) => 	
+		const clickAction = (updatedPin) =>
 			setShowTooltip({
 				details: {
 					cx: updatedPin.cx,
@@ -151,26 +151,23 @@ const ImagePins = ({
 				},
 				tooltip: true,
 			});
-		
 
-		function dragstarted(d) {
+		function dragstarted () {
 			select(this).raise().classed('active', true);
 		}
 
-		function dragged(d) {
+		function dragged () {
 			select(this).attr(
 				'transform',
 				'translate(' + event.x + ',' + event.y + ')'
 			);
 		}
 
-		function dragended(d) {					
+		function dragended () {
 			const current = select(this);
 			const newPos = current._groups[0][0].attributes;
 			const beSure = [...newPos];
-			
 			const updatedPin = {};
-			
 			const arr = [
 				'cx',
 				'cy',
@@ -183,8 +180,8 @@ const ImagePins = ({
 				'r',
 				'sku',
 			];
-			
-			select(this).classed("active", false);
+
+			select(this).classed('active', false);
 			arr.map((el) => {
 				beSure.filter((d) => {
 					if (d.name === el) {
@@ -210,23 +207,23 @@ const ImagePins = ({
 					}
 				});
 			});
-
 			const newState = cPins.map((element) => {
 				if (element.id === updatedPin.id) {
-					Math.abs(element.cx - updatedPin.cx) < 15 && Math.abs(element.cy - updatedPin.cy) < 15 ? clickAction(updatedPin) : null
-					return updatedPin
-				} else {
-					return element
+					Math.abs(element.cx - updatedPin.cx) < 15 &&
+					Math.abs(element.cy - updatedPin.cy) < 15
+						? clickAction(updatedPin)
+						: null;
+					return updatedPin;
+				}
+				else {
+					return element;
 				}
 			});
-
-			// const newState = cPins.map((element) => element.id === updatedPin.id ? Math.abs(element.cx - updatedPin.cx) < 15 && Math.abs(element.cy - updatedPin.cy) < 15 ? clickAction(updatedPin) && updatedPin : null : element);
-			
 			setCpins(newState);
-			current.attr("transform", "translate(" + (d.cx = event.x) + ',' + (d.cy = event.y) + ')');
-
-			event.sourceEvent.stopPropagation(); // silence other listeners
-
+			current.attr(
+				'transform',
+				'translate(' + (d.cx = event.x) + ',' + (d.cy = event.y) + ')'
+			);
 		}
 
 		const dragHandler = drag()
@@ -257,12 +254,12 @@ const ImagePins = ({
 			setCpins(cPins.filter((el) => el.id !== id));
 		};
 
-		if(removePinHandler.handler) {
-			removePin(removePinHandler.pin)
+		if (removePinHandler.handler) {
+			removePin(removePinHandler.pin);
 			setRemovePinHandler({
 				handler: false,
-				pin: null
-			})
+				pin: null,
+			});
 		}
 		if (addPinHandler) {
 			setAddPinHandler(false);
@@ -273,15 +270,21 @@ const ImagePins = ({
 
 		if (!removePinHandler.handler && !addPinHandler) {
 			try {
-				container.selectAll('g').remove()
-			} catch (err){console.log(err)}
+				container.selectAll('g').remove();
+			}
+			catch (err) {
+				console.log(err);
+			}
 
 			const cont = container
 				.selectAll('g')
 				.data(cPins)
 				.enter()
 				.append('g')
-				.attr('transform', (d) => 'translate(' + d.cx + ',' + d.cy + ')')
+				.attr(
+					'transform',
+					(d) => 'translate(' + d.cx + ',' + d.cy + ')'
+				)
 				.attr('cx', (d) => d.cx)
 				.attr('cy', (d) => d.cy)
 				.attr('id', (d) => d.id)
@@ -308,7 +311,7 @@ const ImagePins = ({
 				.attr('font-size', (d) => d.r)
 				.attr('text-anchor', 'middle')
 				.attr('fill', '#000000')
-				.attr('alignment-baseline', 'central');	
+				.attr('alignment-baseline', 'central');
 		}
 
 		////////////////////// register events //////////////////////////
@@ -324,18 +327,12 @@ const ImagePins = ({
 		select('.box.hr').on('click', handleZoomOut);
 		select('.box.plus').on('click', handleZoomIn);
 		select('#newPin').on('click', handleAddPin);
-
 	}, [
 		addPinHandler,
 		removePinHandler,
-
-		// imageState,
 		cPins,
-		
 		resetZoom,
 		setResetZoom,
-		// setCpins,
-		// showTooltip,
 		width,
 		zoomOutHandler,
 		zoomInHandler,
