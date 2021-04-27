@@ -34,6 +34,11 @@ module.exports = [
 		page: 'dataset-display.html',
 	},
 	{
+		entry: 'Diagram',
+		name: 'diagram',
+		page: 'diagram.html',
+	},
+	{
 		entry: 'Dropdown',
 		name: 'Dropdown',
 		page: 'dropdown.html',

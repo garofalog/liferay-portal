@@ -113,13 +113,17 @@ module.exports = {
 		alias: {
 			'@liferay/frontend-js-react-web': path.resolve(
 				__dirname,
-				'../../../node_modules/@liferay/frontend-js-react-web/src/main/resources/META-INF/resources/js/index.es.js'
+				'../../../node_modules/@liferay/frontend-js-react-web/src/main/resources/META-INF/resources/js/index.ts'
+			),
+			'@liferay/frontend-js-state-web': path.resolve(
+				__dirname,
+				'../../../node_modules/@liferay/frontend-js-state-web/src/main/resources/META-INF/resources/index.ts'
 			),
 			'frontend-js-web': path.resolve(
 				__dirname,
 				'../../../node_modules/frontend-js-web/src/main/resources/META-INF/resources/index.es.js'
 			),
 		},
-		extensions: ['.js', '.jsx'],
+		extensions: ['.js', '.jsx', '.ts', '.tsx'],
 	},
 };
