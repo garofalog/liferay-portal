@@ -21,6 +21,7 @@ import ImagePins from './ImagePins';
 
 const Diagram = ({
 	imageSettings,
+	enablePanZoom,
 	enableResetZoom,
 	image,
 	navigationController,
@@ -50,6 +51,8 @@ const Diagram = ({
 			/>
 
 			<ImagePins
+				enablePanZoom={enablePanZoom}
+				enableResetZoom={enableResetZoom}
 				imageSettings={imageSettings}
 				image={image}
 				imageState={imageState}
@@ -85,11 +88,12 @@ Diagram.defaultProps = {
 		height: '300px',
 		width: '100%',
 	}),
+	enablePanZoom: true,
 	enableResetZoom: true,
 	navigationController: {
 		dragStep: 10,
 		enable: true,
-		enableDrag: true,
+		enableDrag: false,
 		position: {
 			bottom: '15px',
 			left: '',
@@ -116,6 +120,7 @@ Diagram.propTypes = {
 		scaleFactor: PropTypes.double,
 		width: PropTypes.string,
 	}),
+	enablePanZoom: PropTypes.true,
 	enableResetZoom: PropTypes.bool,
 	navigationController: PropTypes.shape({
 		dragStep: PropTypes.number,
@@ -131,7 +136,6 @@ Diagram.propTypes = {
 	spritemap: PropTypes.string,
 	zoomController: PropTypes.shape({
 		enable: PropTypes.bool,
-		enablePanZoom: PropTypes.true,
 		position: PropTypes.shape({
 			bottom: PropTypes.string,
 			left: PropTypes.string,

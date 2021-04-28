@@ -27,12 +27,14 @@ launcher('diagram', 'diagram', {
 		width: '100%',
 	},
 	dragStep: 50,
+	enablePanZoom: true,
+	enableResetZoom: true,
 	image:
 		'https://i0.wp.com/detoxicrecenze.com/wp-content/uploads/2018/05/straight-6-engine-diagram-460-ford-engine-diagram-wiring-info-e280a2-of-straight-6-engine-diagram.jpg',
 	navigationController: {
 		dragStep: 10,
 		enable: true,
-		enableDrag: false,
+		enableDrag: true,
 		position: {
 			bottom: '15px',
 			left: '',
@@ -165,7 +167,6 @@ launcher('diagram', 'diagram', {
 	spritemap: './assets/clay/icons.svg',
 	zoomController: {
 		enable: true,
-		enablePanZoom: true,
 		position: {
 			bottom: '0px',
 			left: '',

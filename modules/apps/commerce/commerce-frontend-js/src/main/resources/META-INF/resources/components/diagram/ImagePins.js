@@ -28,6 +28,7 @@ import ZoomController from './ZoomController';
 
 const ImagePins = ({
 	imageSettings,
+	enablePanZoom,
 	execZoomIn,
 	image,
 	imageState,
@@ -90,7 +91,7 @@ const ImagePins = ({
 			container.attr('transform', event.transform)
 		);
 
-		if (zoomController.enablePanZoom) {
+		if (enablePanZoom) {
 			svg.call(panZoom);
 		}
 
