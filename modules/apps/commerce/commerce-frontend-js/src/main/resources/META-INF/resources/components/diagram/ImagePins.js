@@ -12,9 +12,9 @@
  * details.
  */
 
-import {drag, event, mouse, select, zoom} from 'd3';
+import {drag, event, select, zoom} from 'd3';
 import PropTypes from 'prop-types';
-import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {
 	moveRight,
 	moveLeft,
@@ -27,14 +27,12 @@ import NavigationButtons from './NavigationButtons';
 import ZoomController from './ZoomController';
 
 const ImagePins = ({
-	completeImageSettings,
+	imageSettings,
 	execZoomIn,
 	image,
 	imageState,
 	navigationController,
-	removePinHandler,
 	resetZoom,
-	setImageState,
 	setResetZoom,
 	setZoomInHandler,
 	setZoomOutHandler,
@@ -44,9 +42,9 @@ const ImagePins = ({
 	zoomOutHandler,
 }) => {
 	const [width, setWidth] = useState(0);
-	let svg,
+	let div,
+		svg,
 		container,
-		handleAddPin,
 		handleMoveUp,
 		handleMoveDown,
 		handleMoveLeft,
@@ -147,15 +145,15 @@ const ImagePins = ({
 	]);
 
 	const diagramStyle = {
-		height: `${completeImageSettings.height}`,
-		width: `${completeImageSettings.width}`,
+		height: `${imageSettings.height}`,
+		width: `${imageSettings.width}`,
 	};
 
 	return (
 		<div className="diagram-pins-container" style={diagramStyle}>
 			<svg
-				height={completeImageSettings.height}
-				width={completeImageSettings.width}
+				height={imageSettings.height}
+				width={imageSettings.width}
 			>
 				<g
 					id="container"
@@ -170,7 +168,7 @@ const ImagePins = ({
 					}
 				>
 					<image
-						height={completeImageSettings.height}
+						height={imageSettings.height}
 						href={image}
 					></image>
 				</g>
@@ -205,7 +203,7 @@ ImagePins.default = {
 };
 
 ImagePins.propTypes = {
-	completeImageSettings: PropTypes.shape({
+	imageSettings: PropTypes.shape({
 		height: PropTypes.string,
 		lastX: PropTypes.number,
 		lastY: PropTypes.number,

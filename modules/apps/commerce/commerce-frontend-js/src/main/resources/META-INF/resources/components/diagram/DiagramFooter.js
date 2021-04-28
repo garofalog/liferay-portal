@@ -12,13 +12,10 @@
  * details.
  */
 
-import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
+import ClayButton from '@clayui/button';
 import {ClaySelect} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
-import PropTypes from 'prop-types';
 import React from 'react';
-
-import Datalist from '../datalist/Datalist';
 
 const DiagramFooter = ({
 	enableResetZoom,
@@ -116,8 +113,6 @@ const DiagramFooter = ({
 				>
 					+
 				</ClayButton>
-
-				{/* <Datalist items={options} /> */}
 			</div>
 
 			{enableResetZoom && (
@@ -132,17 +127,6 @@ const DiagramFooter = ({
 			)}
 		</div>
 	);
-};
-
-DiagramFooter.defaultProps = {};
-
-DiagramFooter.propTypes = {
-	enableResetZoom: PropTypes.bool,
-	infos: PropTypes.shape({
-		canvas: PropTypes.any,
-		ctxStore: PropTypes.any,
-	}),
-	myzoom: PropTypes.func,
 };
 
 export default DiagramFooter;

@@ -24,23 +24,8 @@ const DiagramHeader = ({
 	spritemap,
 }) => {
 
-	// useEffect(() => {
-
-	//     setAddNewPinState({
-	//         color: addNewPinState.color,
-	//         radius: addNewPinState.radius
-	//     })
-
-	// }, [color, addNewPinState])
-
-	// useEffect(() => {
-	//     setCustoms(newPinSettings.colorPicker.defaultColors)
-	// }, [newPinSettings.colorPicker.defaultColors])
-
 	return (
 		<div className="d-flex diagram diagram-header justify-content-between">
-			
-
 			<ClayButton
 				className="auto-mapping my-auto pull-right"
 				displayType="secondary"
@@ -66,9 +51,6 @@ DiagramHeader.defaultProps = {
 			value: 30,
 		},
 	],
-};
-
-DiagramHeader.propTypes = {
 };
 
 export default DiagramHeader;

@@ -20,7 +20,7 @@ import DiagramHeader from './DiagramHeader';
 import ImagePins from './ImagePins';
 
 const Diagram = ({
-	completeImageSettings,
+	imageSettings,
 	enableResetZoom,
 	image,
 	navigationController,
@@ -50,7 +50,7 @@ const Diagram = ({
 			/>
 
 			<ImagePins
-				completeImageSettings={completeImageSettings}
+				imageSettings={imageSettings}
 				image={image}
 				imageState={imageState}
 				navigationController={navigationController}
@@ -81,7 +81,7 @@ const Diagram = ({
 };
 
 Diagram.defaultProps = {
-	completeImageSettings: PropTypes.shape({
+	imageSettings: PropTypes.shape({
 		height: '300px',
 		width: '100%',
 	}),
@@ -109,7 +109,7 @@ Diagram.defaultProps = {
 };
 
 Diagram.propTypes = {
-	completeImageSettings: PropTypes.shape({
+	imageSettings: PropTypes.shape({
 		height: PropTypes.string,
 		lastX: PropTypes.number,
 		lastY: PropTypes.number,

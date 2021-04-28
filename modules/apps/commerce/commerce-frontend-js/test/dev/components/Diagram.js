@@ -19,7 +19,7 @@ import '../../../src/main/resources/META-INF/resources/styles/main.scss';
 import '../../../src/main/resources/META-INF/resources/components/diagram/_diagram.scss';
 
 launcher('diagram', 'diagram', {
-	completeImageSettings: {
+	imageSettings: {
 		height: '500px',
 		lastX: 250,
 		lastY: 350,
