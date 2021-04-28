@@ -44,8 +44,8 @@ export const moveDown = (container, navigationController) => {
 };
 
 export const zoomIn = (container, panZoom) => {
-	panZoom.scaleBy(container.transition().duration(400), 1.2);
+	panZoom.scaleBy(container.transition().duration(700), 1.2);
 };
 export const zoomOut = (container, panZoom) => {
-	panZoom.scaleBy(container.transition().duration(400), 0.8);
+	panZoom.scaleBy(container.transition().duration(700), 0.8);
 };

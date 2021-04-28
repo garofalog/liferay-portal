@@ -92,7 +92,7 @@ const ImagePins = ({
 		);
 
 		if (enablePanZoom) {
-			svg.call(panZoom);
+			container.call(panZoom);
 		}
 
 		handleZoomIn = () => zoomIn(container, panZoom);
