@@ -19,9 +19,8 @@ import React from 'react';
 
 const DiagramFooter = ({
 	enableResetZoom,
-	imageState,
-	setImageState,
 	setResetZoom,
+	selectedOption,
 	setSelectedOption,
 	setZoomInHandler,
 	setZoomOutHandler,
@@ -29,11 +28,6 @@ const DiagramFooter = ({
 }) => {
 	function handleZoomChange(event) {
 		setSelectedOption(event.target.value / 100);
-		setImageState({
-			k: parseFloat(event.target.value / 100),
-			x: imageState.x,
-			y: imageState.y,
-		});
 	}
 
 	const options = [

@@ -33,6 +33,8 @@ const ImagePins = ({
 	image,
 	navigationController,
 	resetZoom,
+	selectedOption,
+	setSelectedOption,
 	setResetZoom,
 	setZoomInHandler,
 	setZoomOutHandler,
@@ -70,11 +72,15 @@ const ImagePins = ({
 				zoomIdentity,
 				zoomTransform(svg.node()).invert([imageSettings.width, imageSettings.height])
 			);
+			setSelectedOption(1)
 		}
 
 		if (enablePanZoom) {
 			container.call(panZoom);
 		}
+
+		// panZoom.scaleBy(container.transition().duration(700), selectedOption);
+		console.log('e')
 
 		handleZoomIn = () => zoomIn(container, panZoom);
 		handleZoomOut = () => zoomOut(container, panZoom);
@@ -120,6 +126,7 @@ const ImagePins = ({
 		select('.box.plus').on('click', handleZoomIn);
 	}, [
 		resetZoom,
+		selectedOption,
 		setResetZoom,
 		width,
 		zoomOutHandler,
@@ -181,9 +188,6 @@ ImagePins.default = {
 ImagePins.propTypes = {
 	imageSettings: PropTypes.shape({
 		height: PropTypes.string,
-		lastX: PropTypes.number,
-		lastY: PropTypes.number,
-		scaleFactor: PropTypes.double,
 		width: PropTypes.string,
 	}),
 	enableResetZoom: PropTypes.bool,

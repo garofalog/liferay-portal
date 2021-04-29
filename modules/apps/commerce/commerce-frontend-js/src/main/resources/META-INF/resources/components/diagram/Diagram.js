@@ -50,6 +50,8 @@ const Diagram = ({
 				navigationController={navigationController}
  				resetZoom={resetZoom}
 				scale={scale}
+				selectedOption={selectedOption}
+				setSelectedOption={setSelectedOption}
 				setResetZoom={setResetZoom}
 				setScale={setScale}
 				setZoomInHandler={setZoomInHandler}
@@ -61,6 +63,7 @@ const Diagram = ({
 
 			<DiagramFooter
 				enableResetZoom={enableResetZoom}
+				selectedOption={selectedOption}
 				setResetZoom={setResetZoom}
 				setSelectedOption={setSelectedOption}
 				setZoomInHandler={setZoomInHandler}
@@ -103,9 +106,6 @@ Diagram.defaultProps = {
 Diagram.propTypes = {
 	imageSettings: PropTypes.shape({
 		height: PropTypes.string,
-		lastX: PropTypes.number,
-		lastY: PropTypes.number,
-		scaleFactor: PropTypes.double,
 		width: PropTypes.string,
 	}),
 	enablePanZoom: PropTypes.bool,
