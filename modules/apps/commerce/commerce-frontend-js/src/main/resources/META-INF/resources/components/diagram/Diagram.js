@@ -31,22 +31,14 @@ const Diagram = ({
 	const [resetZoom, setResetZoom] = useState(false);
 	const [zoomInHandler, setZoomInHandler] = useState(false);
 	const [zoomOutHandler, setZoomOutHandler] = useState(false);
-	const [imageState, setImageState] = useState({
-		k: 1,
-		x: 0,
-		y: 0,
-	});
+
 	const [scale, setScale] = useState(1);
 	const [selectedOption, setSelectedOption] = useState(1);
 
-	useEffect(() => {
-		setSelectedOption(imageState.k);
-	}, [imageState]);
 
 	return (
 		<div className="diagram mx-auto">
 			<DiagramHeader
-				setImageState={setImageState}
 				setSelectedOption={setSelectedOption}
 			/>
 
@@ -55,11 +47,9 @@ const Diagram = ({
 				enableResetZoom={enableResetZoom}
 				imageSettings={imageSettings}
 				image={image}
-				imageState={imageState}
 				navigationController={navigationController}
  				resetZoom={resetZoom}
 				scale={scale}
-				setImageState={setImageState}
 				setResetZoom={setResetZoom}
 				setScale={setScale}
 				setZoomInHandler={setZoomInHandler}
@@ -71,8 +61,6 @@ const Diagram = ({
 
 			<DiagramFooter
 				enableResetZoom={enableResetZoom}
-				imageState={imageState}
-				setImageState={setImageState}
 				setResetZoom={setResetZoom}
 				setSelectedOption={setSelectedOption}
 				setZoomInHandler={setZoomInHandler}
@@ -120,7 +108,7 @@ Diagram.propTypes = {
 		scaleFactor: PropTypes.double,
 		width: PropTypes.string,
 	}),
-	enablePanZoom: PropTypes.true,
+	enablePanZoom: PropTypes.bool,
 	enableResetZoom: PropTypes.bool,
 	navigationController: PropTypes.shape({
 		dragStep: PropTypes.number,

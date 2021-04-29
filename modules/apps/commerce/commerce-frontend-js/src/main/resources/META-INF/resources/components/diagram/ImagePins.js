@@ -12,7 +12,7 @@
  * details.
  */
 
-import {drag, event, select, zoom} from 'd3';
+import { drag, event, select, zoom, zoomIdentity, zoomTransform} from 'd3';
 import PropTypes from 'prop-types';
 import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {
@@ -31,7 +31,6 @@ const ImagePins = ({
 	enablePanZoom,
 	execZoomIn,
 	image,
-	imageState,
 	navigationController,
 	resetZoom,
 	setResetZoom,
@@ -53,43 +52,25 @@ const ImagePins = ({
 		handleZoomIn,
 		handleZoomOut;
 
-	useEffect(() => {
-		let t;
-		if (!event) {
-			t = {
-				k: imageState.k,
-				x: imageState.x,
-				y: imageState.y,
-			};
-		}
-		else {
-			t = {
-				k: event.transform.k,
-				x: event.transform.x,
-				y: event.transform.y,
-			};
-		}
-
-		if (resetZoom) {
-			setResetZoom(false);
-			container.attr('transform', 'translate(0,0)scale(1)');
-		}
-		else {
-			container.attr(
-				'transform',
-				`translate(${t.x},${t.y}) scale(${t.k})`
-			);
-		}
-	}, [resetZoom]);
-
 	useLayoutEffect(() => {
 		div = select('.diagram-pins-container');
 		svg = select('svg');
 		container = select('g#container');
 
-		const panZoom = zoom().on('zoom', () =>
-			container.attr('transform', event.transform)
+		const panZoom = zoom()
+			.scaleExtent([0.5, 40])
+			.on("zoom", () => container.attr('transform', event.transform)
 		);
+
+		if (resetZoom) {
+			setResetZoom(false);
+			container.transition().duration(750)
+			.call( 
+				panZoom.transform,
+				zoomIdentity,
+				zoomTransform(svg.node()).invert([imageSettings.width, imageSettings.height])
+			);
+		}
 
 		if (enablePanZoom) {
 			container.call(panZoom);
@@ -159,13 +140,7 @@ const ImagePins = ({
 				<g
 					id="container"
 					transform={
-						'translate(' +
-						imageState.x +
-						', ' +
-						imageState.y +
-						') scale(' +
-						imageState.k +
-						')'
+						'translate(0,0) scale(1)'
 					}
 				>
 					<image
@@ -216,11 +191,6 @@ ImagePins.propTypes = {
 	handleZoomIn: PropTypes.func,
 	handleZoomOut: PropTypes.func,
 	image: PropTypes.string,
-	imageState: PropTypes.shape({
-		k: PropTypes.double,
-		x: PropTypes.double,
-		y: PropTypes.double,
-	}),
 	navigationController: PropTypes.shape({
 		dragStep: PropTypes.number,
 		enable: PropTypes.bool,
@@ -232,7 +202,6 @@ ImagePins.propTypes = {
 			top: PropTypes.string,
 		}),
 	}),
-	setImageState: PropTypes.func,
 	setZoomInHandler: PropTypes.func,
 	setZoomOutHandler: PropTypes.func,
 	zoomController: PropTypes.shape({
