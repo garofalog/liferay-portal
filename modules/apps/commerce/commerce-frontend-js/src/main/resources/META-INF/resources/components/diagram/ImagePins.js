@@ -30,6 +30,8 @@ const ImagePins = ({
 	imageSettings,
 	enablePanZoom,
 	execZoomIn,
+	changedScale,
+	setChangedScale,
 	image,
 	navigationController,
 	resetZoom,
@@ -43,7 +45,6 @@ const ImagePins = ({
 	zoomInHandler,
 	zoomOutHandler,
 }) => {
-	const [width, setWidth] = useState(0);
 	let div,
 		svg,
 		container,
@@ -63,6 +64,10 @@ const ImagePins = ({
 			.scaleExtent([0.5, 40])
 			.on('zoom', () => container.attr('transform', event.transform));
 
+		if (enablePanZoom) {
+			container.call(panZoom);
+		}
+
 		if (resetZoom) {
 			setResetZoom(false);
 			container
@@ -79,11 +84,21 @@ const ImagePins = ({
 			setSelectedOption(1);
 		}
 
-		if (enablePanZoom) {
-			container.call(panZoom);
+		if (changedScale) {
+			setChangedScale(false);
+			const imageInfos = container.node().getBBox();
+			container
+				.transition()
+				.duration(700)
+				.attr(
+					'transform',
+					`translate(${imageInfos.width / 2.0},${
+						imageInfos.height / 2.0
+					}) scale(${selectedOption}) translate(-${
+						imageInfos.width / 2.0
+					},-${imageInfos.height / 2.0})`
+				);
 		}
-
-		// panZoom.scaleBy(container.transition().duration(700), selectedOption);
 
 		handleZoomIn = () => zoomIn(container, panZoom);
 		handleZoomOut = () => zoomOut(container, panZoom);
@@ -131,7 +146,7 @@ const ImagePins = ({
 		resetZoom,
 		selectedOption,
 		setResetZoom,
-		width,
+		changedScale,
 		zoomOutHandler,
 		zoomInHandler,
 	]);

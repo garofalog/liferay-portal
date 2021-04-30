@@ -21,6 +21,8 @@ const DiagramFooter = ({
 	enableResetZoom,
 	setResetZoom,
 	selectedOption,
+	changedScale,
+	setChangedScale,
 	setSelectedOption,
 	setZoomInHandler,
 	setZoomOutHandler,
@@ -28,6 +30,7 @@ const DiagramFooter = ({
 }) => {
 	function handleZoomChange(event) {
 		setSelectedOption(event.target.value / 100);
+		setChangedScale(true);
 	}
 
 	const options = [

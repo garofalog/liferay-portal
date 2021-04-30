@@ -31,7 +31,7 @@ const Diagram = ({
 	const [resetZoom, setResetZoom] = useState(false);
 	const [zoomInHandler, setZoomInHandler] = useState(false);
 	const [zoomOutHandler, setZoomOutHandler] = useState(false);
-
+	const [changedScale, setChangedScale] = useState(false);
 	const [scale, setScale] = useState(1);
 	const [selectedOption, setSelectedOption] = useState(1);
 
@@ -44,6 +44,8 @@ const Diagram = ({
 				enableResetZoom={enableResetZoom}
 				imageSettings={imageSettings}
 				image={image}
+				changedScale={changedScale}
+				setChangedScale={setChangedScale}
 				navigationController={navigationController}
 				resetZoom={resetZoom}
 				scale={scale}
@@ -59,6 +61,8 @@ const Diagram = ({
 			/>
 
 			<DiagramFooter
+				changedScale={changedScale}
+				setChangedScale={setChangedScale}
 				enableResetZoom={enableResetZoom}
 				selectedOption={selectedOption}
 				setResetZoom={setResetZoom}
