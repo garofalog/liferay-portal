@@ -35,12 +35,9 @@ const Diagram = ({
 	const [scale, setScale] = useState(1);
 	const [selectedOption, setSelectedOption] = useState(1);
 
-
 	return (
 		<div className="diagram mx-auto">
-			<DiagramHeader
-				setSelectedOption={setSelectedOption}
-			/>
+			<DiagramHeader setSelectedOption={setSelectedOption} />
 
 			<ImagePins
 				enablePanZoom={enablePanZoom}
@@ -48,7 +45,7 @@ const Diagram = ({
 				imageSettings={imageSettings}
 				image={image}
 				navigationController={navigationController}
- 				resetZoom={resetZoom}
+				resetZoom={resetZoom}
 				scale={scale}
 				selectedOption={selectedOption}
 				setSelectedOption={setSelectedOption}

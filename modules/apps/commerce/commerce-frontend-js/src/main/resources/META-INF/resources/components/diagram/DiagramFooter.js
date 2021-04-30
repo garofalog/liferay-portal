@@ -63,7 +63,6 @@ const DiagramFooter = ({
 
 	return (
 		<div className="d-flex diagram-footer justify-content-end mt-3">
-
 			<ClayButton className="mr-3">
 				<span className="inline-item inline-item-before">
 					<ClayIcon spritemap={spritemap} symbol="expand" />

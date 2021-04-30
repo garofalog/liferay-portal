@@ -20,10 +20,7 @@ import ClaySlider from '@clayui/slider';
 import PropTypes from 'prop-types';
 import React, {useEffect, useState} from 'react';
 
-const DiagramHeader = ({
-	spritemap,
-}) => {
-
+const DiagramHeader = ({spritemap}) => {
 	return (
 		<div className="d-flex diagram diagram-header justify-content-between">
 			<ClayButton

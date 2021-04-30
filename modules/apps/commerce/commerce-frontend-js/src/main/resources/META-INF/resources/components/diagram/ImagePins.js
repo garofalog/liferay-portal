@@ -12,7 +12,7 @@
  * details.
  */
 
-import { drag, event, select, zoom, zoomIdentity, zoomTransform} from 'd3';
+import {drag, event, select, zoom, zoomIdentity, zoomTransform} from 'd3';
 import PropTypes from 'prop-types';
 import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {
@@ -61,18 +61,22 @@ const ImagePins = ({
 
 		const panZoom = zoom()
 			.scaleExtent([0.5, 40])
-			.on("zoom", () => container.attr('transform', event.transform)
-		);
+			.on('zoom', () => container.attr('transform', event.transform));
 
 		if (resetZoom) {
 			setResetZoom(false);
-			container.transition().duration(700)
-			.call( 
-				panZoom.transform,
-				zoomIdentity,
-				zoomTransform(svg.node()).invert([imageSettings.width, imageSettings.height])
-			);
-			setSelectedOption(1)
+			container
+				.transition()
+				.duration(700)
+				.call(
+					panZoom.transform,
+					zoomIdentity,
+					zoomTransform(svg.node()).invert([
+						imageSettings.width,
+						imageSettings.height,
+					])
+				);
+			setSelectedOption(1);
 		}
 
 		if (enablePanZoom) {
@@ -110,7 +114,7 @@ const ImagePins = ({
 		handleMoveRight = () => {
 			moveRight(container, navigationController);
 		};
-	
+
 		////////////////////// register events //////////////////////////
 
 		select('#moveLeft').on('click', moveLeft);
@@ -139,20 +143,9 @@ const ImagePins = ({
 
 	return (
 		<div className="diagram-pins-container" style={diagramStyle}>
-			<svg
-				height={imageSettings.height}
-				width={imageSettings.width}
-			>
-				<g
-					id="container"
-					transform={
-						'translate(0,0) scale(1)'
-					}
-				>
-					<image
-						height={imageSettings.height}
-						href={image}
-					></image>
+			<svg height={imageSettings.height} width={imageSettings.width}>
+				<g id="container" transform={'translate(0,0) scale(1)'}>
+					<image height={imageSettings.height} href={image}></image>
 				</g>
 			</svg>
 

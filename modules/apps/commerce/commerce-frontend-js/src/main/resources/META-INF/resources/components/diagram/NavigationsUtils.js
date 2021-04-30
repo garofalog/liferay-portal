@@ -7,7 +7,10 @@ export const moveRight = (container, navigationController) => {
 		x: coordinates[0] + navigationController.dragStep,
 		y: coordinates[1],
 	};
-	container.attr('transform', `translate(${ newPosition.x},${ newPosition.y}) scale(${ newPosition.k})`);
+	container.attr(
+		'transform',
+		`translate(${newPosition.x},${newPosition.y}) scale(${newPosition.k})`
+	);
 };
 export const moveLeft = (container, navigationController) => {
 	const getPosition = container.attr('transform');
@@ -18,7 +21,10 @@ export const moveLeft = (container, navigationController) => {
 		x: coordinates[0] - navigationController.dragStep,
 		y: coordinates[1],
 	};
-	container.attr('transform', `translate(${ newPosition.x},${ newPosition.y}) scale(${ newPosition.k})`);
+	container.attr(
+		'transform',
+		`translate(${newPosition.x},${newPosition.y}) scale(${newPosition.k})`
+	);
 };
 export const moveUp = (container, navigationController) => {
 	const getPosition = container.attr('transform');
@@ -29,7 +35,10 @@ export const moveUp = (container, navigationController) => {
 		x: coordinates[0],
 		y: coordinates[1] - navigationController.dragStep,
 	};
-	container.attr('transform', `translate(${ newPosition.x},${ newPosition.y}) scale(${ newPosition.k})`);
+	container.attr(
+		'transform',
+		`translate(${newPosition.x},${newPosition.y}) scale(${newPosition.k})`
+	);
 };
 export const moveDown = (container, navigationController) => {
 	const getPosition = container.attr('transform');
@@ -40,12 +49,15 @@ export const moveDown = (container, navigationController) => {
 		x: coordinates[0],
 		y: coordinates[1] + navigationController.dragStep,
 	};
-	container.attr('transform', `translate(${ newPosition.x},${ newPosition.y}) scale(${ newPosition.k})`);
+	container.attr(
+		'transform',
+		`translate(${newPosition.x},${newPosition.y}) scale(${newPosition.k})`
+	);
 };
 
 export const zoomIn = (container, panZoom) => {
-	container.transition().duration(700).call(panZoom.scaleBy, 1.2)
+	container.transition().duration(700).call(panZoom.scaleBy, 1.2);
 };
 export const zoomOut = (container, panZoom) => {
-	container.transition().duration(700).call(panZoom.scaleBy, .8)
+	container.transition().duration(700).call(panZoom.scaleBy, 0.8);
 };
