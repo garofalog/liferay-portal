@@ -1,8 +1,6 @@
 .diagram {
 	&-header {
 		height: 58px;
-		.select-diameter {
-		}
 		.auto-mapping {
 			height: 40px;
 		}
@@ -14,14 +12,6 @@
 
 body {
 	background: #eee;
-	margin: 1em;
-	text-align: center;
-}
-canvas {
-	display: block;
-	margin: 1em auto;
-	background: #fff;
-	border: 1px solid #ccc;
 }
 
 .diagram-header-picker {

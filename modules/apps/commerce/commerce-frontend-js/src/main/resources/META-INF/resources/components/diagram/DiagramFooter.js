@@ -20,8 +20,6 @@ import React from 'react';
 const DiagramFooter = ({
 	enableResetZoom,
 	setResetZoom,
-	selectedOption,
-	changedScale,
 	setChangedScale,
 	setSelectedOption,
 	setZoomInHandler,
