@@ -66,7 +66,7 @@ const ImagePins = ({
 
 		if (resetZoom) {
 			setResetZoom(false);
-			container.transition().duration(750)
+			container.transition().duration(700)
 			.call( 
 				panZoom.transform,
 				zoomIdentity,
@@ -80,7 +80,6 @@ const ImagePins = ({
 		}
 
 		// panZoom.scaleBy(container.transition().duration(700), selectedOption);
-		console.log('e')
 
 		handleZoomIn = () => zoomIn(container, panZoom);
 		handleZoomOut = () => zoomOut(container, panZoom);
