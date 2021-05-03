@@ -46,33 +46,35 @@ const ImagePins = ({
 	zoomInHandler,
 	zoomOutHandler,
 }) => {
-	let handleMoveUp,
-		handleMoveDown,
-		handleMoveLeft,
-		handleMoveRight,
-		handleZoomIn,
-		handleZoomOut;
+	const handlers = useRef();
+	const container = useRef();
+	const panZoom = useRef();
 
 	const svg = useRef(null);
 
 	useLayoutEffect(() => {
-		const container = select('g#container');
 
-		const panZoom = zoom()
+		// const container = select('g#container');
+
+		container.current = select('g#container');
+
+		panZoom.current = zoom()
 			.scaleExtent([0.5, 40])
-			.on('zoom', () => container.attr('transform', event.transform));
+			.on('zoom', () =>
+				container.current.attr('transform', event.transform)
+			);
 
 		if (enablePanZoom) {
-			container.call(panZoom);
+			container.current.call(panZoom.current);
 		}
 
 		if (resetZoom) {
 			setResetZoom(false);
-			container
+			container.current
 				.transition()
 				.duration(700)
 				.call(
-					panZoom.transform,
+					panZoom.current.transform,
 					zoomIdentity,
 					zoomTransform(svg.node()).invert([
 						imageSettings.width,
@@ -84,8 +86,8 @@ const ImagePins = ({
 
 		if (changedScale) {
 			setChangedScale(false);
-			const imageInfos = container.node().getBBox();
-			container
+			const imageInfos = container.current.node().getBBox();
+			container.current
 				.transition()
 				.duration(700)
 				.attr(
@@ -98,44 +100,28 @@ const ImagePins = ({
 				);
 		}
 
-		handleZoomIn = () => zoomIn(container, panZoom);
-		handleZoomOut = () => zoomOut(container, panZoom);
-
 		if (execZoomIn) {
-			handleZoomIn();
+			handlers.current?.zoomIn();
 		}
 
 		if (zoomOutHandler) {
 			setZoomOutHandler(false);
-			zoomOut(container, panZoom);
+			zoomOut(container.current, panZoom.current);
 		}
 
 		if (zoomInHandler) {
 			setZoomInHandler(false);
-			zoomIn(container, panZoom);
+			zoomIn(container.current, panZoom.current);
 		}
 
-		handleMoveUp = () => {
-			moveUp(container, navigationController);
+		handlers.current = {
+			moveDown: () => moveDown(container.current, navigationController),
+			moveLeft: () => moveLeft(container.current, navigationController),
+			moveRight: () => moveRight(container.current, navigationController),
+			moveUp: () => moveUp(container.current, navigationController),
+			zoomIn: () => zoomIn(container.current, panZoom.current),
+			zoomOut: () => zoomOut(container.current, panZoom.current),
 		};
-		handleMoveDown = () => {
-			moveDown(container, navigationController);
-		};
-		handleMoveLeft = () => {
-			moveLeft(container, navigationController);
-		};
-		handleMoveRight = () => {
-			moveRight(container, navigationController);
-		};
-
-		////////////////////// register events //////////////////////////
-
-		select('.box.left').on('click', handleMoveLeft);
-		select('.box.right').on('click', handleMoveRight);
-		select('.box.top').on('click', handleMoveUp);
-		select('.box.bottom').on('click', handleMoveDown);
-		select('.box.hr').on('click', handleZoomOut);
-		select('.box.plus').on('click', handleZoomIn);
 	}, [
 		resetZoom,
 		selectedOption,
@@ -164,10 +150,10 @@ const ImagePins = ({
 
 			{navigationController.enable && (
 				<NavigationButtons
-					moveDown={handleMoveDown}
-					moveLeft={handleMoveLeft}
-					moveRight={handleMoveRight}
-					moveUp={handleMoveUp}
+					moveDown={() => handlers.current?.moveDown()}
+					moveLeft={() => handlers.current?.moveLeft()}
+					moveRight={() => handlers.current?.moveRight()}
+					moveUp={() => handlers.current?.moveUp()}
 					position={navigationController.position}
 					spritemap={spritemap}
 				/>
@@ -176,8 +162,8 @@ const ImagePins = ({
 			{zoomController.enable && (
 				<ZoomController
 					position={zoomController.position}
-					zoomIn={handleZoomIn}
-					zoomOut={handleZoomOut}
+					zoomIn={() => handlers.current?.zoomIn()}
+					zoomOut={() => handlers.current?.zoomOut()}
 				/>
 			)}
 		</div>
@@ -193,8 +179,6 @@ ImagePins.default = {
 ImagePins.propTypes = {
 	enableResetZoom: PropTypes.bool,
 	execResetZoom: PropTypes.bool,
-	handleZoomIn: PropTypes.func,
-	handleZoomOut: PropTypes.func,
 	image: PropTypes.string,
 	imageSettings: PropTypes.shape({
 		height: PropTypes.string,

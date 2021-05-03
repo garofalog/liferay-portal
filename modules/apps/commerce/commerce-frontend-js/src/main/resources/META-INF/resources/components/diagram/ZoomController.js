@@ -26,7 +26,7 @@ const ZoomController = ({position, spritemap, zoomIn, zoomOut}) => {
 
 	return (
 		<div id="zoom-controller" style={zoomButtonStyle}>
-			<div className="box plus" onClick={() => zoomIn}>
+			<div className="box plus" onClick={zoomIn}>
 				<ClayIcon
 					className="icon"
 					spritemap={spritemap}
@@ -34,7 +34,7 @@ const ZoomController = ({position, spritemap, zoomIn, zoomOut}) => {
 				/>
 			</div>
 
-			<div className="box hr" onClick={() => zoomOut}>
+			<div className="box hr" onClick={zoomOut}>
 				<ClayIcon className="icon" spritemap={spritemap} symbol="hr" />
 			</div>
 		</div>

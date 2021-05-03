@@ -32,28 +32,28 @@ const NavigationButtons = ({
 
 	return (
 		<div id="move-controller" style={navigationButtonStyle}>
-			<div className="box top" onClick={() => moveUp}>
+			<div className="box top" onClick={moveUp}>
 				<ClayIcon
 					className="icon"
 					spritemap={spritemap}
 					symbol="angle-left"
 				/>
 			</div>
-			<div className="box right" onClick={() => moveRight}>
+			<div className="box right" onClick={moveRight}>
 				<ClayIcon
 					className="icon"
 					spritemap={spritemap}
 					symbol="angle-up"
 				/>
 			</div>
-			<div className="box left" onClick={() => moveLeft}>
+			<div className="box left" onClick={moveLeft}>
 				<ClayIcon
 					className="icon"
 					spritemap={spritemap}
 					symbol="angle-down"
 				/>
 			</div>
-			<div className="bottom box" onClick={() => moveDown}>
+			<div className="bottom box" onClick={moveDown}>
 				<ClayIcon
 					className="icon"
 					spritemap={spritemap}
