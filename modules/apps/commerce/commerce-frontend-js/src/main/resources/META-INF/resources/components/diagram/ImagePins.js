@@ -46,8 +46,7 @@ const ImagePins = ({
 	zoomInHandler,
 	zoomOutHandler,
 }) => {
-	let 
-		handleMoveUp,
+	let handleMoveUp,
 		handleMoveDown,
 		handleMoveLeft,
 		handleMoveRight,
@@ -158,10 +157,7 @@ const ImagePins = ({
 				ref={svg}
 				width={imageSettings.width}
 			>
-				<g
-					id="container"
-					transform="translate(0,0) scale(1)"
-				>
+				<g id="container" transform="translate(0,0) scale(1)">
 					<image height={imageSettings.height} href={image}></image>
 				</g>
 			</svg>
