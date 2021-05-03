@@ -129,6 +129,14 @@ const ImagePins = ({
 		changedScale,
 		zoomOutHandler,
 		zoomInHandler,
+		enablePanZoom,
+		execZoomIn,
+		imageSettings,
+		navigationController,
+		setChangedScale,
+		setSelectedOption,
+		setZoomInHandler,
+		setZoomOutHandler,
 	]);
 
 	const diagramStyle = {
