@@ -15,29 +15,30 @@
 import {drag, event, select, zoom, zoomIdentity, zoomTransform} from 'd3';
 import PropTypes from 'prop-types';
 import React, {useEffect, useLayoutEffect, useState} from 'react';
+
+import NavigationButtons from './NavigationButtons';
 import {
-	moveRight,
-	moveLeft,
-	moveUp,
 	moveDown,
+	moveLeft,
+	moveRight,
+	moveUp,
 	zoomIn,
 	zoomOut,
 } from './NavigationsUtils';
-import NavigationButtons from './NavigationButtons';
 import ZoomController from './ZoomController';
 
 const ImagePins = ({
-	imageSettings,
+	changedScale,
 	enablePanZoom,
 	execZoomIn,
-	changedScale,
-	setChangedScale,
 	image,
+	imageSettings,
 	navigationController,
 	resetZoom,
 	selectedOption,
-	setSelectedOption,
+	setChangedScale,
 	setResetZoom,
+	setSelectedOption,
 	setZoomInHandler,
 	setZoomOutHandler,
 	spritemap,
@@ -159,7 +160,7 @@ const ImagePins = ({
 	return (
 		<div className="diagram-pins-container" style={diagramStyle}>
 			<svg height={imageSettings.height} width={imageSettings.width}>
-				<g id="container" transform={'translate(0,0) scale(1)'}>
+				<g id="container" transform="translate(0,0) scale(1)">
 					<image height={imageSettings.height} href={image}></image>
 				</g>
 			</svg>

@@ -20,10 +20,10 @@ import DiagramHeader from './DiagramHeader';
 import ImagePins from './ImagePins';
 
 const Diagram = ({
-	imageSettings,
 	enablePanZoom,
 	enableResetZoom,
 	image,
+	imageSettings,
 	navigationController,
 	spritemap,
 	zoomController,
@@ -40,19 +40,19 @@ const Diagram = ({
 			<DiagramHeader setSelectedOption={setSelectedOption} />
 
 			<ImagePins
+				changedScale={changedScale}
 				enablePanZoom={enablePanZoom}
 				enableResetZoom={enableResetZoom}
-				imageSettings={imageSettings}
 				image={image}
-				changedScale={changedScale}
-				setChangedScale={setChangedScale}
+				imageSettings={imageSettings}
 				navigationController={navigationController}
 				resetZoom={resetZoom}
 				scale={scale}
 				selectedOption={selectedOption}
-				setSelectedOption={setSelectedOption}
+				setChangedScale={setChangedScale}
 				setResetZoom={setResetZoom}
 				setScale={setScale}
+				setSelectedOption={setSelectedOption}
 				setZoomInHandler={setZoomInHandler}
 				setZoomOutHandler={setZoomOutHandler}
 				zoomController={zoomController}
@@ -62,9 +62,9 @@ const Diagram = ({
 
 			<DiagramFooter
 				changedScale={changedScale}
-				setChangedScale={setChangedScale}
 				enableResetZoom={enableResetZoom}
 				selectedOption={selectedOption}
+				setChangedScale={setChangedScale}
 				setResetZoom={setResetZoom}
 				setSelectedOption={setSelectedOption}
 				setZoomInHandler={setZoomInHandler}

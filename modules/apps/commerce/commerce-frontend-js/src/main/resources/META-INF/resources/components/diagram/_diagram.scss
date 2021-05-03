@@ -21,30 +21,30 @@ body {
 }
 
 #move-controller {
-	position: absolute;
-	width: 100px;
-	height: 100px;
 	display: grid;
+	grid-auto-flow: row;
 	grid-gap: 0;
 	grid-template-columns: repeat(2, auto);
 	grid-template-rows: auto;
-	grid-auto-flow: row;
+	height: 100px;
+	position: absolute;
 	transform: rotate(45deg);
+	width: 100px;
 
 	.box {
 		background-color: #444;
 		color: #fff;
-		justify-content: space-between;
 		color: #000;
+		justify-content: space-between;
 
 		.icon {
-			text-align: center;
-			vertical-align: middle;
-			height: 50px;
-			stroke: black;
 			fill: cyan;
-			transform: rotate(-45deg);
+			height: 50px;
 			margin: 0;
+			stroke: black;
+			text-align: center;
+			transform: rotate(-45deg);
+			vertical-align: middle;
 		}
 
 		&.right {
@@ -71,28 +71,28 @@ body {
 }
 
 #zoom-controller {
-	position: absolute;
-	width: 50px;
-	height: 130px;
 	display: grid;
+	grid-auto-flow: row;
 	grid-gap: 0;
 	grid-template-columns: repeat(1, auto);
 	grid-template-rows: auto;
-	grid-auto-flow: row;
+	height: 130px;
+	position: absolute;
+	width: 50px;
 
 	.box {
+		align-items: flex-end;
 		background-color: #444;
 		color: #fff;
-		justify-content: center;
-		align-items: flex-end;
 		color: #000;
 		display: flex;
+		justify-content: center;
 
 		.icon {
-			vertical-align: middle;
+			fill: cyan;
 			height: 50px;
 			stroke: black;
-			fill: cyan;
+			vertical-align: middle;
 		}
 
 		&.plus {
@@ -108,8 +108,8 @@ body {
 
 .admin-tooltip {
 	background-color: #fff;
-	width: 400px;
 	height: 300px;
 	position: absolute;
+	width: 400px;
 	z-index: 1;
 }
