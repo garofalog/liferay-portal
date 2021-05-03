@@ -13,7 +13,7 @@
  */
 
 import PropTypes from 'prop-types';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 
 import DiagramFooter from './DiagramFooter';
 import DiagramHeader from './DiagramHeader';
@@ -76,12 +76,12 @@ const Diagram = ({
 };
 
 Diagram.defaultProps = {
+	enablePanZoom: true,
+	enableResetZoom: true,
 	imageSettings: PropTypes.shape({
 		height: '300px',
 		width: '100%',
 	}),
-	enablePanZoom: true,
-	enableResetZoom: true,
 	navigationController: {
 		dragStep: 10,
 		enable: true,
@@ -105,12 +105,12 @@ Diagram.defaultProps = {
 };
 
 Diagram.propTypes = {
+	enablePanZoom: PropTypes.bool,
+	enableResetZoom: PropTypes.bool,
 	imageSettings: PropTypes.shape({
 		height: PropTypes.string,
 		width: PropTypes.string,
 	}),
-	enablePanZoom: PropTypes.bool,
-	enableResetZoom: PropTypes.bool,
 	navigationController: PropTypes.shape({
 		dragStep: PropTypes.number,
 		enable: PropTypes.bool,

@@ -13,14 +13,9 @@
  */
 
 import ClayButton from '@clayui/button';
-import ClayColorPicker from '@clayui/color-picker';
-import ClayDropDown from '@clayui/drop-down';
-import {ClaySelect, ClaySelectWithOption} from '@clayui/form';
-import ClaySlider from '@clayui/slider';
-import PropTypes from 'prop-types';
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 
-const DiagramHeader = ({spritemap}) => {
+const DiagramHeader = () => {
 	return (
 		<div className="d-flex diagram diagram-header justify-content-between">
 			<ClayButton

@@ -14,7 +14,7 @@
 
 import ClayIcon from '@clayui/icon';
 import PropTypes from 'prop-types';
-import React, {useLayoutEffect} from 'react';
+import React from 'react';
 
 const NavigationButtons = ({
 	moveDown,
