@@ -19,6 +19,7 @@ import React from 'react';
 
 const DiagramFooter = ({
 	enableResetZoom,
+	selectedOption,
 	setChangedScale,
 	setResetZoom,
 	setSelectedOption,
@@ -27,40 +28,11 @@ const DiagramFooter = ({
 	spritemap,
 }) => {
 	function handleZoomChange(event) {
-		setSelectedOption(event.target.value / 100);
+		setSelectedOption(event.target.value);
 		setChangedScale(true);
 	}
 
-	const options = [
-		{
-			label: '200%',
-			value: '200',
-		},
-		{
-			label: '175%',
-			value: '175',
-		},
-		{
-			label: '150%',
-			value: '150',
-		},
-		{
-			label: '125%',
-			value: '125',
-		},
-		{
-			label: '100%',
-			value: '100',
-		},
-		{
-			label: '75%',
-			value: '75',
-		},
-		{
-			label: '50%',
-			value: '50',
-		},
-	];
+	const options = [2, 1.75, 1.5, 1.25, 1, 0.75, 0.5];
 
 	return (
 		<div className="d-flex diagram-footer justify-content-end mt-3">
@@ -87,13 +59,13 @@ const DiagramFooter = ({
 					className="ml-3 mr-3"
 					id="mySelectId"
 					onChange={handleZoomChange}
+					value={selectedOption}
 				>
-					{options.map((item) => (
+					{options.map((value) => (
 						<ClaySelect.Option
-							key={item.value}
-							label={item.label}
-							selected={item.value === '100' ? true : false}
-							value={item.value}
+							key={value}
+							label={`${value*100}%`}
+							value={value}
 						/>
 					))}
 				</ClaySelect>
