@@ -57,7 +57,7 @@ module.exports = {
 		rules: [
 			{
 				exclude: /node_modules/,
-				test: /\.(js|jsx)$/,
+				test: /\.(js|jsx|ts|tsx)$/,
 				use: [
 					{
 						loader: 'babel-loader',
@@ -90,11 +90,6 @@ module.exports = {
 						},
 					},
 				],
-			},
-			{
-				exclude: /node_modules/,
-				test: /\.tsx?$/,
-				use: 'ts-loader',
 			},
 		],
 	},
