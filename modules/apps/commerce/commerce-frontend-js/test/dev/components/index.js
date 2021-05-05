@@ -35,7 +35,7 @@ module.exports = [
 	},
 	{
 		entry: 'Diagram',
-		name: 'diagram',
+		name: 'Diagram',
 		page: 'diagram.html',
 	},
 	{

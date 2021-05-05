@@ -187,11 +187,6 @@ ImagePins.default = {
 ImagePins.propTypes = {
 	enableResetZoom: PropTypes.bool,
 	execResetZoom: PropTypes.bool,
-	image: PropTypes.string,
-	imageSettings: PropTypes.shape({
-		height: PropTypes.string,
-		width: PropTypes.string,
-	}),
 	navigationController: PropTypes.shape({
 		dragStep: PropTypes.number,
 		enable: PropTypes.bool,

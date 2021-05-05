@@ -78,10 +78,10 @@ const Diagram = ({
 Diagram.defaultProps = {
 	enablePanZoom: true,
 	enableResetZoom: true,
-	imageSettings: PropTypes.shape({
+	imageSettings: {
 		height: '300px',
 		width: '100%',
-	}),
+	},
 	navigationController: {
 		dragStep: 10,
 		enable: true,
@@ -93,6 +93,8 @@ Diagram.defaultProps = {
 			top: '',
 		},
 	},
+	pins: [],
+	spritemap: './assets/clay/icons.svg',
 	zoomController: {
 		enable: true,
 		position: {
