@@ -12,100 +12,93 @@
  * details.
  */
 
-import { act, cleanup, fireEvent, getByAltText, render, wait } from '@testing-library/react';
-import { event, select, zoom, zoomIdentity, zoomTransform } from 'd3';
+import '@testing-library/jest-dom/extend-expect';
+import {cleanup, render} from '@testing-library/react';
 import React from 'react';
 
 import Diagram from '../../../src/main/resources/META-INF/resources/components/Diagram/Diagram';
 
 describe('Diagram 1 of 5 features', () => {
-    const initialProps = {
-        image: 'https://i0.wp.com/detoxicrecenze.com/wp-content/uploads/2018/05/straight-6-engine-diagram-460-ford-engine-diagram-wiring-info-e280a2-of-straight-6-engine-diagram.jpg'
-    }
+	const initialProps = {
+		image:
+			'https://i0.wp.com/detoxicrecenze.com/wp-content/uploads/2018/05/straight-6-engine-diagram-460-ford-engine-diagram-wiring-info-e280a2-of-straight-6-engine-diagram.jpg',
+	};
 
-    beforeEach(() => {
-        jest.resetAllMocks();
+	beforeEach(() => {
+		jest.resetAllMocks();
+	});
 
-        const onUpdateSpy = jest.fn();
-    });
+	afterEach(() => {
+		cleanup();
+	});
 
-    afterEach(() => {
-        cleanup();
-    });
+	it('Diagram image loads', () => {
+		const {container} = render(<Diagram {...initialProps} />);
+		const image = container.querySelector('image');
+		expect(image.href).toBe(initialProps.href);
+	});
 
-    it('Diagram image loads', () => {
-        const { container } = render(<Diagram {...initialProps} />);
-        const image = container.querySelector('image')
-        expect(image.href).toBe(initialProps.href)
-    });
+	it('If Zoom Controller is enabled, will render the component', () => {
+		const {container} = render(
+			<Diagram
+				{...initialProps}
+				zoomController={{
+					enable: true,
+					position: {
+						bottom: '0px',
+						left: '',
+						right: '200px',
+						top: '',
+					},
+				}}
+			/>
+		);
 
-    it('If Zoom Controller is enabled, will render the component', () => {
-        const { container } = render(<Diagram {...initialProps} zoomController={{
-            enable: true,
-            position: {
-                bottom: '0px',
-                left: '',
-                right: '200px',
-                top: '',
-            }}} />);
+		const controller = container.querySelector('#zoom-controller');
 
-        const controller = container.querySelector('#zoom-controller')
+		expect(controller).toBeTruthy();
+	});
 
-        expect(controller).toBeTruthy();
-    });
+	it("If Zoom Controller is disabled, it won't be rendered", () => {
+		const {container} = render(
+			<Diagram {...initialProps} zoomController={{enable: false}} />
+		);
 
+		const controller = container.querySelector('#zoom-controller');
 
-    it('If Zoom Controller is disabled, it won\'t be rendered', () => {
-        const { container } = render(<Diagram {...initialProps} zoomController={{ enable: false}} />);
+		expect(controller).toBeFalsy();
+	});
 
-        const controller = container.querySelector('#zoom-controller')
-        
-        expect(controller).toBeFalsy();
-    });
+	it('If Navigation Controller is enabled, will render the component', () => {
+		const {container} = render(
+			<Diagram
+				{...initialProps}
+				navigationController={{
+					dragStep: 10,
+					enable: true,
+					enableDrag: false,
+					position: {
+						bottom: '15px',
+						left: '',
+						right: '50px',
+						top: '',
+					},
+				}}
+			/>
+		);
 
-    it('If Navigation Controller is enabled, will render the component', () => {
-        const { container } = render(<Diagram {...initialProps} navigationController={{
-            dragStep: 10,
-            enable: true,
-            enableDrag: false,
-            position: {
-                bottom: '15px',
-                left: '',
-                right: '50px',
-                top: '',
-            },
-        }} />);
+		const controller = container.querySelector('#move-controller');
 
-        const controller = container.querySelector('#move-controller')
+		expect(controller).toBeTruthy();
+	});
 
-        expect(controller).toBeTruthy();
-    });
+	it("If Navigation Controller is disabled, it won't be rendered", () => {
+		const {container} = render(
+			<Diagram {...initialProps} navigationController={{enable: false}} />
+		);
 
-    it('If Navigation Controller is disabled, it won\'t be rendered', () => {
-        const { container } = render(<Diagram {...initialProps} navigationController={{enable: false}} />);
+		const controller = container.querySelector('#move-controller');
 
-        const controller = container.querySelector('#move-controller')
-
-        expect(controller).toBeFalsy();
-    });
-
-    // it('Diagram image moves right if <Move-Right-Button> is clicked', () => {
-        
-    // });
-
-    // it('Diagram image zooms in if <Zoom-In-Button> is clicked', () => {
-
-    // });
-
-    // it('Diagram image moves if enableDrag property is enabled', () => {
-
-    // });
-
-    // it('Diagram zooms changing value on zoom <select>', () => {
-
-    // });
-
-    it('On <Reset-Button> click, the diagram image scale to 1', () => {
-
-    });
+		expect(controller).toBeFalsy();
+	});
 });

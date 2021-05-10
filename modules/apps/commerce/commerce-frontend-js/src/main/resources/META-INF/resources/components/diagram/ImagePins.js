@@ -76,11 +76,12 @@ const ImagePins = ({
 				.call(
 					panZoom.current.transform,
 					zoomIdentity,
-					zoomTransform(svg.node()).invert([
+					zoomTransform(container.current.node()).invert([
 						imageSettings.width,
 						imageSettings.height,
 					])
 				);
+
 			setSelectedOption(1);
 		}
 
@@ -151,7 +152,11 @@ const ImagePins = ({
 				ref={svg}
 				width={imageSettings.width}
 			>
-				<g id="container" transform="translate(0,0) scale(1)">
+				<g
+					data-testid="container"
+					id="container"
+					transform="translate(0,0) scale(1)"
+				>
 					<image height={imageSettings.height} href={image}></image>
 				</g>
 			</svg>

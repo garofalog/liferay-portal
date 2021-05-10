@@ -64,7 +64,7 @@ const DiagramFooter = ({
 					{options.map((value) => (
 						<ClaySelect.Option
 							key={value}
-							label={`${value*100}%`}
+							label={`${value * 100}%`}
 							value={value}
 						/>
 					))}
