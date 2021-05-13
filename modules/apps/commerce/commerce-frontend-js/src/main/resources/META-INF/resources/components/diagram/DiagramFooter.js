@@ -12,14 +12,16 @@
  * details.
  */
 
-import ClayButton from '@clayui/button';
+import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
 import {ClaySelect} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 const DiagramFooter = ({
 	enableResetZoom,
 	selectedOption,
+	setAddPinHandler,
 	setChangedScale,
 	setResetZoom,
 	setSelectedOption,
@@ -27,7 +29,7 @@ const DiagramFooter = ({
 	setZoomOutHandler,
 	spritemap,
 }) => {
-	function handleZoomChange(event) {
+	const handleZoomChange = (event) => {
 		setSelectedOption(event.target.value);
 		setChangedScale(true);
 	}
@@ -36,6 +38,13 @@ const DiagramFooter = ({
 
 	return (
 		<div className="d-flex diagram-footer justify-content-end mt-3">
+			<ClayButton className="mr-3" onClick={() => setAddPinHandler(true)}>
+				<span className="inline-item inline-item-before">
+					<ClayIcon spritemap={spritemap} symbol="pin" />
+				</span>
+				Add Pin
+			</ClayButton>
+
 			<ClayButton className="mr-3">
 				<span className="inline-item inline-item-before">
 					<ClayIcon spritemap={spritemap} symbol="expand" />
