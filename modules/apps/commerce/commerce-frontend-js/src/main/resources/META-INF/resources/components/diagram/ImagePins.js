@@ -12,9 +12,9 @@
  * details.
  */
 
-import { drag, event, select, zoom, zoomIdentity, zoomTransform} from 'd3';
+import {drag, event, select, zoom, zoomIdentity, zoomTransform} from 'd3';
 import PropTypes from 'prop-types';
-import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
+import React, {useLayoutEffect, useRef, useState} from 'react';
 
 import AdminTooltip from './AdminTooltip';
 import NavigationButtons from './NavigationButtons';
@@ -60,15 +60,9 @@ const ImagePins = ({
 	const container = useRef();
 	const panZoom = useRef();
 	const [width, setWidth] = useState(0);
-	
+
 	let svg,
-		handleAddPin,
-		handleMoveUp,
-		handleMoveDown,
-		handleMoveLeft,
-		handleMoveRight,
-		handleZoomIn,
-		handleZoomOut;
+		handleAddPin;
 
 	useLayoutEffect(() => {
 		container.current = select('g#container');
@@ -109,12 +103,21 @@ const ImagePins = ({
 				.attr(
 					'transform',
 					`translate(${imageInfos.width / 2.0},${
-					imageInfos.height / 2.0
+						imageInfos.height / 2.0
 					}) scale(${selectedOption}) translate(-${
-					imageInfos.width / 2.0
+						imageInfos.width / 2.0
 					},-${imageInfos.height / 2.0})`
 				);
 		}
+
+		handlers.current = {
+			moveDown: () => moveDown(container.current, navigationController),
+			moveLeft: () => moveLeft(container.current, navigationController),
+			moveRight: () => moveRight(container.current, navigationController),
+			moveUp: () => moveUp(container.current, navigationController),
+			zoomIn: () => zoomIn(container.current, panZoom.current),
+			zoomOut: () => zoomOut(container.current, panZoom.current),
+		};
 
 		if (execZoomIn) {
 			handlers.current?.zoomIn();
@@ -130,44 +133,17 @@ const ImagePins = ({
 			zoomIn(container.current, panZoom.current);
 		}
 
-		handlers.current = {
-			moveDown: () => moveDown(container.current, navigationController),
-			moveLeft: () => moveLeft(container.current, navigationController),
-			moveRight: () => moveRight(container.current, navigationController),
-			moveUp: () => moveUp(container.current, navigationController),
-			zoomIn: () => zoomIn(container.current, panZoom.current),
-			zoomOut: () => zoomOut(container.current, panZoom.current),
-		};
+		
 
-		handleZoomIn = () => zoomIn(container, panZoom);
-		handleZoomOut = () => zoomOut(container, panZoom);
+		// if (zoomOutHandler) {
+		// 	setZoomOutHandler(false);
+		// 	handlers.current?.zoomOut();
+		// }
 
-		if (execZoomIn) {
-			handleZoomIn();
-		}
-
-		if (zoomOutHandler) {
-			setZoomOutHandler(false);
-			zoomOut(container, panZoom);
-		}
-
-		if (zoomInHandler) {
-			setZoomInHandler(false);
-			zoomIn(container, panZoom);
-		}
-
-		handleMoveUp = () => {
-			moveUp(container, navigationController);
-		};
-		handleMoveDown = () => {
-			moveDown(container, navigationController);
-		};
-		handleMoveLeft = () => {
-			moveLeft(container, navigationController);
-		};
-		handleMoveRight = () => {
-			moveRight(container, navigationController);
-		};
+		// if (zoomInHandler) {
+		// 	setZoomInHandler(false);
+		// 	handlers.current?.zoomIn();
+		// }
 
 		////////////////////////////////////////////////
 
@@ -242,11 +218,10 @@ const ImagePins = ({
 			});
 			const newState = cPins.map((element) => {
 				if (element.id === updatedPin.id) {
-					Math.abs(element.cx - updatedPin.cx) < 15 &&
-					Math.abs(element.cy - updatedPin.cy) < 15
-						? clickAction(updatedPin)
-						: null;
-
+					if (Math.abs(element.cx - updatedPin.cx) < 15 && Math.abs(element.cy - updatedPin.cy) < 15) {
+						clickAction(updatedPin)
+					}
+ 
 					return updatedPin;
 				}
 				else {
@@ -254,10 +229,11 @@ const ImagePins = ({
 				}
 			});
 			setCpins(newState);
-			current.attr(
-				'transform',
-				'translate(' + (d.cx = event.x) + ',' + (d.cy = event.y) + ')'
-			);
+
+			// current.attr(
+			// 	'transform',
+			// 	'translate(' + (d.cx = event.x) + ',' + (d.cy = event.y) + ')'
+			// );
 		}
 
 		const dragHandler = drag()
@@ -304,13 +280,13 @@ const ImagePins = ({
 
 		if (!removePinHandler.handler && !addPinHandler) {
 			try {
-				container.selectAll('g').remove();
+				container.current.selectAll('.circle_pin').remove();
 			}
 			catch (err) {
 				console.log(err);
 			}
 
-			const cont = container
+			const cont = container.current
 				.selectAll('g')
 				.data(cPins)
 				.enter()
@@ -348,39 +324,20 @@ const ImagePins = ({
 				.attr('alignment-baseline', 'central');
 		}
 
-		////////////////////// register events //////////////////////////
-
-		select('#moveLeft').on('click', moveLeft);
-		select('#moveRight').on('click', moveRight);
-		select('#moveUp').on('click', moveUp);
-		select('#moveDown').on('click', moveDown);
-		select('.box.left').on('click', handleMoveLeft);
-		select('.box.right').on('click', handleMoveRight);
-		select('.box.top').on('click', handleMoveUp);
-		select('.box.bottom').on('click', handleMoveDown);
-		select('.box.hr').on('click', handleZoomOut);
-		select('.box.plus').on('click', handleZoomIn);
 		select('#newPin').on('click', handleAddPin);
 	}, [
 		addPinHandler,
 		removePinHandler,
-		changedScale,
-		cPins,
-		resetZoom,
-		selectedOption,
-		setResetZoom,
-		width,
+		changedScale, 
+		cPins, 
+		resetZoom, 
+		selectedOption, 
+		setResetZoom, 
 		zoomOutHandler,
-		zoomInHandler,
-		enablePanZoom,
-		execZoomIn,
-		imageSettings,
-		navigationController,
-		setChangedScale,
-		setSelectedOption,
-		setZoomInHandler,
-		setZoomOutHandler,
-	]);
+		zoomInHandler, 
+		enablePanZoom, 
+		imageSettings, 
+		navigationController, setChangedScale, setSelectedOption, setZoomInHandler, setZoomOutHandler, width, handleAddPin, setShowTooltip, setCpins, addNewPinState, setRemovePinHandler, setAddPinHandler]);
 
 	const diagramStyle = {
 		height: `${imageSettings.height}`,
@@ -455,41 +412,33 @@ ImagePins.propTypes = {
 			r: PropTypes.number,
 			sku: PropTypes.string,
 		})
-		),
-		completeImageSettings: PropTypes.shape({
-			height: PropTypes.string,
-			lastX: PropTypes.number,
-			lastY: PropTypes.number,
-			scaleFactor: PropTypes.double,
-			width: PropTypes.string,
+	),
+	enableResetZoom: PropTypes.bool,
+	execResetZoom: PropTypes.bool,
+	handleZoomIn: PropTypes.func,
+	handleZoomOut: PropTypes.func,
+	image: PropTypes.string,
+	imageSettings: PropTypes.shape({
+		height: PropTypes.string,
+		width: PropTypes.string,
+	}),
+	navigationController: PropTypes.shape({
+		dragStep: PropTypes.number,
+		enable: PropTypes.bool,
+		enableDrag: PropTypes.bool,
+		position: PropTypes.shape({
+			bottom: PropTypes.string,
+			left: PropTypes.string,
+			right: PropTypes.string,
+			top: PropTypes.string,
 		}),
-		enableResetZoom: PropTypes.bool,
-		execResetZoom: PropTypes.bool,
-		handleZoomIn: PropTypes.func,
-		handleZoomOut: PropTypes.func,
-		image: PropTypes.string,
-		imageState: PropTypes.shape({
-			k: PropTypes.double,
-			x: PropTypes.double,
-			y: PropTypes.double,
-		}),
-		navigationController: PropTypes.shape({
-			dragStep: PropTypes.number,
-			enable: PropTypes.bool,
-			enableDrag: PropTypes.bool,
-			position: PropTypes.shape({
-				bottom: PropTypes.string,
-				left: PropTypes.string,
-				right: PropTypes.string,
-				top: PropTypes.string,
-			}),
-		}),
-		removePinHandler: PropTypes.shape({
-			handler: PropTypes.bool,
-			pin: PropTypes.number,
-		}),
-		setAddPinHandler: PropTypes.func,
-		setCpins: PropTypes.func,
+	}),
+	removePinHandler: PropTypes.shape({
+		handler: PropTypes.bool,
+		pin: PropTypes.number,
+	}),
+	setAddPinHandler: PropTypes.func,
+	setCpins: PropTypes.func,
 	setImageState: PropTypes.func,
 	setShowTooltip: PropTypes.func,
 	setZoomInHandler: PropTypes.func,

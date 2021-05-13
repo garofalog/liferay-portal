@@ -19,9 +19,9 @@ import {useResource} from '@clayui/data-provider';
 import ClayDropDown from '@clayui/drop-down';
 import ClayForm, {ClayInput, ClayRadio, ClayRadioGroup} from '@clayui/form';
 import PropTypes from 'prop-types';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 
-const AdminTooltip = ({setShowTooltip, showTooltip, setRemovePinHandler}) => {
+const AdminTooltip = ({setRemovePinHandler, setShowTooltip, showTooltip}) => {
 	const [position, setPosition] = useState(showTooltip.details.label);
 	const [linkedValue, setLinkedValue] = useState(
 		showTooltip.details.linked_to_sku
@@ -30,8 +30,6 @@ const AdminTooltip = ({setShowTooltip, showTooltip, setRemovePinHandler}) => {
 	const [quantity, setQuantity] = useState(showTooltip.details.quantity);
 
 	const [networkStatus, setNetworkStatus] = useState(4);
-
-	// ////////////////////////////////
 
 	const initialLoading = networkStatus === 1;
 	const loadingAd = networkStatus < 4;
@@ -115,7 +113,7 @@ const AdminTooltip = ({setShowTooltip, showTooltip, setRemovePinHandler}) => {
 					<ClayInput
 						id="basicInputText"
 						onChange={(event) =>
-							setQuantity(parseInt(event.target.value))
+							setQuantity(parseInt(event.target.value,10))
 						}
 						type="number"
 						value={quantity}
@@ -178,8 +176,8 @@ const AdminTooltip = ({setShowTooltip, showTooltip, setRemovePinHandler}) => {
 									id: showTooltip.details.id,
 									label: position,
 									linked_to_sku: linkedValue,
-									quantity: quantity,
-									sku: sku,
+									quantity,
+									sku,
 								},
 								tooltip: false,
 							});

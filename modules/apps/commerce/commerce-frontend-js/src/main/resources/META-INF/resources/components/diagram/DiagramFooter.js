@@ -32,7 +32,7 @@ const DiagramFooter = ({
 	const handleZoomChange = (event) => {
 		setSelectedOption(event.target.value);
 		setChangedScale(true);
-	}
+	};
 
 	const options = [2, 1.75, 1.5, 1.25, 1, 0.75, 0.5];
 
