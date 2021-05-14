@@ -130,6 +130,49 @@ const Diagram = ({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [showTooltip, setShowTooltip]);
 
+	const [cPins, setCpins] = useState(pins);
+	const [showTooltip, setShowTooltip] = useState({
+		details: {
+			cx: 0,
+			cy: 0,
+			id: null,
+			label: '',
+			linked_to_sku: 'sku',
+			quantity: null,
+			sku: '',
+		},
+		tooltip: null,
+	});
+	const [addNewPinState, setAddNewPinState] = useState({
+		fill: newPinSettings.colorPicker.selectedColor,
+		radius: newPinSettings.defaultRadius,
+	});
+
+	useEffect(() => {
+		if (!showTooltip.tooltip && showTooltip.details.id) {
+			const myNewState = cPins.map((element) => {
+				if (element.id === showTooltip.details.id) {
+					return {
+						cx: cPins[element.id].cx,
+						cy: cPins[element.id].cy,
+						draggable: cPins[element.id].draggable,
+						fill: cPins[element.id].fill,
+						id: showTooltip.details.id,
+						label: showTooltip.details.label,
+						linked_to_sku: showTooltip.details.linked_to_sku,
+						quantity: showTooltip.details.quantity,
+						r: cPins[element.id].r,
+						sku: showTooltip.details.sku,
+					};
+				}
+				else {
+					return element;
+				}
+			});
+			setCpins(myNewState);
+		}
+	}, [showTooltip, setShowTooltip]);
+
 	return (
 		<div className="diagram mx-auto">
 			<ClayIconSpriteContext.Provider value={spritemap}>
@@ -190,6 +233,7 @@ const Diagram = ({
 };
 
 Diagram.defaultProps = {
+	cPins: [],
 	enablePanZoom: true,
 	enableResetZoom: true,
 	imageSettings: {

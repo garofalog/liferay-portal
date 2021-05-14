@@ -11,11 +11,13 @@
 
 import {drag, event, select, zoom, zoomIdentity, zoomTransform} from 'd3';
 import PropTypes from 'prop-types';
-import React, {useLayoutEffect, useRef} from 'react';
+import React, { useLayoutEffect, useRef, useState} from 'react';
 
 import NavigationButtons from './NavigationButtons';
 import {moveController, zoomIn, zoomOut} from './NavigationsUtils';
 import ZoomController from './ZoomController';
+import AdminTooltip from './AdminTooltip';
+import NavigationButtons from './NavigationButtons';
 
 const PIN_ATTRIBUTES = [
 	'cx',
@@ -54,6 +56,7 @@ const ImagePins = ({
 	setShowTooltip,
 	setZoomInHandler,
 	setZoomOutHandler,
+	showTooltip,
 	zoomController,
 	zoomInHandler,
 	zoomOutHandler,
@@ -353,6 +356,15 @@ const ImagePins = ({
 					></image>
 				</g>
 			</svg>
+
+			{showTooltip.tooltip && (
+				<AdminTooltip
+					removePinHandler={removePinHandler}
+					setRemovePinHandler={setRemovePinHandler}
+					setShowTooltip={setShowTooltip}
+					showTooltip={showTooltip}
+				/>
+			)}
 
 			{navigationController.enable && (
 				<NavigationButtons
