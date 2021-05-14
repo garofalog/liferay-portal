@@ -1,30 +1,38 @@
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
- * The contents of this file are subject to the terms of the Liferay Enterprise
- * Subscription License ("License"). You may not use this file except in
- * compliance with the License. You can obtain a copy of the License by
- * contacting Liferay, Inc. See the License for the specific language governing
- * permissions and limitations under the License, including but not limited to
- * distribution rights of the Software.
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
  */
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 const webpack = require('webpack');
 
-const {defineServerResponses} = require('./test/dev/fakeServerUtilities');
+// const components = require('./test/dev/components/index');
+// const { defineServerResponses } = require('./test/dev/fakeServerUtilities');
 
 const outputPath = path.resolve(__dirname, './dev/public');
 
+// function getComponentPath(entry) {
+// 	return path.join(__dirname, 'test', 'dev', 'components', entry);
+// }
+
+// eslint-disable-next-line no-undef
 module.exports = {
 	devServer: {
-		before(app) {
-			defineServerResponses(app);
-		},
+		// before(app) {
+		// 	defineServerResponses(app);
+		// },
 		compress: false,
 		contentBase: './test/dev/public',
-		disableHostCheck: true,
 		open: true,
 		openPage: 'index.html',
 		port: 9000,
@@ -40,12 +48,13 @@ module.exports = {
 	},
 	devtool: 'inline-source-map',
 	entry: path.resolve(__dirname, 'test/dev/entry.js'),
+
 	mode: 'development',
 	module: {
 		rules: [
 			{
 				exclude: /node_modules/,
-				test: /\.(js|jsx)$/,
+				test: /\.(js|jsx|ts|tsx)$/,
 				use: [
 					{
 						loader: 'babel-loader',
@@ -55,8 +64,8 @@ module.exports = {
 			{
 				test: /\.(scss|css)$/,
 				use: [
-					{loader: 'style-loader'},
-					{loader: 'css-loader'},
+					{ loader: 'style-loader' },
+					{ loader: 'css-loader' },
 					{
 						loader: 'sass-loader',
 						options: {
@@ -66,23 +75,18 @@ module.exports = {
 										done({
 											file: path.resolve(
 												__dirname,
-												'../../../../node_modules/@clayui/css/src/scss/atlas-variables.scss'
+												'../../../node_modules/@clayui/css/src/scss/atlas-variables.scss'
 											),
 										});
 									}
 									else {
-										done({file: url});
+										done({ file: url });
 									}
 								},
 							},
 						},
 					},
 				],
-			},
-			{
-				exclude: /node_modules/,
-				test: /\.tsx?$/,
-				use: 'ts-loader',
 			},
 		],
 	},
@@ -101,15 +105,15 @@ module.exports = {
 		alias: {
 			'@liferay/frontend-js-react-web': path.resolve(
 				__dirname,
-				'../../../../node_modules/@liferay/frontend-js-react-web/src/main/resources/META-INF/resources/js/index.ts'
+				'../../../../../node_modules/@liferay/frontend-js-react-web/src/main/resources/META-INF/resources/js/index.ts'
 			),
 			'@liferay/frontend-js-state-web': path.resolve(
 				__dirname,
-				'../../../../node_modules/@liferay/frontend-js-state-web/src/main/resources/META-INF/resources/index.ts'
+				'../../../../../node_modules/@liferay/frontend-js-state-web/src/main/resources/META-INF/resources/index.ts'
 			),
 			'frontend-js-web': path.resolve(
 				__dirname,
-				'../../../../node_modules/frontend-js-web/src/main/resources/META-INF/resources/index.es.js'
+				'../../../../../node_modules/frontend-js-web/src/main/resources/META-INF/resources/index.es.js'
 			),
 		},
 		extensions: ['.js', '.jsx', '.ts', '.tsx'],
