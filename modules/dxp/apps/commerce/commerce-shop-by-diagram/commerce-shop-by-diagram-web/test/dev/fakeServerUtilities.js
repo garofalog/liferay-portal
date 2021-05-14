@@ -164,5 +164,5 @@ const definitions = {
 };
 
 module.exports = {
-	defineServerResponses,
+	definitions,
 };

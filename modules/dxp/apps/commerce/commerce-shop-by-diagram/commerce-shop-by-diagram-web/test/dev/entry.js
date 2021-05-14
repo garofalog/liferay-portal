@@ -13,12 +13,11 @@ import {render} from '@liferay/frontend-js-react-web';
 
 import Diagram from '../../src/main/resources/META-INF/resources/js/Diagram';
 
-import '../../src/main/resources/META-INF/resources/style/main.scss';
+import '../../src/main/resources/META-INF/resources/style/_diagram.scss';
 
 render(
 	Diagram,
 	{
-		rootOrganizationId: 44031,
 		spritemap: './assets/clay/icons.svg',
 	},
 	document.getElementById('shop-by-diagram')
