@@ -1,0 +1,32 @@
+{
+	"dependencies": {
+		"@clayui/autocomplete": "^3.27.0",
+		"@clayui/button": "^3.6.0",
+		"@clayui/color-picker": "3.27.0",
+		"@clayui/data-provider": "^3.3.10",
+		"@clayui/drop-down": "^3.27.0",
+		"@clayui/icon": "^3.1.0",
+		"@clayui/modal": "^3.8.5",
+		"@clayui/form": "^3.27.0",
+		"@clayui/slider": "^3.25.1",
+		"@liferay/frontend-js-react-web": "*",
+		"classnames": "2.2.6",
+		"d3": "^6.6.2",
+		"frontend-js-web": "*",
+		"commerce-frontend-js": "*",
+		"prop-types": "15.7.2",
+		"react": "16.12.0",
+		"react-dom": "16.12.0"
+	},
+	"name": "commerce-shop-by-diagram-web",
+	"private": true,
+	"scripts": {
+		"build": "liferay-npm-scripts build",
+		"checkFormat": "liferay-npm-scripts check",
+		"format": "liferay-npm-scripts format",
+		"test:watch": "env TZ=utc liferay-npm-scripts test --watch",
+		"test_DISABLED": "env TZ=utc liferay-npm-scripts test",
+		"watch": "liferay-npm-scripts webpack --watch"
+	},
+	"version": "5.0.2"
+}
