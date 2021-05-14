@@ -18,14 +18,29 @@
 		"react": "16.12.0",
 		"react-dom": "16.12.0"
 	},
+	"devDependencies": {
+		"clay-css": "^2.16.2",
+		"faker": "^5.1.0"
+	},
+	"jest": {
+		"collectCoverageFrom": [
+			"!<rootDir>/node_modules/",
+			"<rootDir>/src/**/components/**/*.js",
+			"<rootDir>/src/**/utilities/**/*.js"
+		],
+		"testPathIgnorePatterns": [
+			"<rootDir>/test/dev/",
+			"<rootDir>/test/utils/"
+		]
+	},
 	"name": "commerce-shop-by-diagram-web",
 	"private": true,
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",
+		"coverage": "liferay-npm-scripts test --coverage --silent --verbose",
 		"format": "liferay-npm-scripts format",
-		"test:watch": "env TZ=utc liferay-npm-scripts test --watch",
-		"test_DISABLED": "env TZ=utc liferay-npm-scripts test",
+		"test": "liferay-npm-scripts test",
 		"watch": "liferay-npm-scripts webpack --watch"
 	},
 	"version": "5.0.2"
