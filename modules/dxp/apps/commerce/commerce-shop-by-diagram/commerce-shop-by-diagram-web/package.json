@@ -13,10 +13,7 @@
 		"classnames": "2.2.6",
 		"d3": "^6.6.2",
 		"frontend-js-web": "*",
-		"commerce-frontend-js": "*",
-		"prop-types": "15.7.2",
-		"react": "16.12.0",
-		"react-dom": "16.12.0"
+		"prop-types": "15.7.2"
 	},
 	"devDependencies": {
 		"clay-css": "^2.16.2",
