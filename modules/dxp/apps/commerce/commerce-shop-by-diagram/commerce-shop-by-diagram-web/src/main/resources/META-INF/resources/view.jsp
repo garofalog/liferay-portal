@@ -1,4 +1,4 @@
-<%--
+<%@ page import="com.liferay.portal.kernel.json.JSONFactoryUtil" %><%--
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
