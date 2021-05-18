@@ -13,6 +13,7 @@ import {ClayIconSpriteContext} from '@clayui/icon';
 import PropTypes from 'prop-types';
 import React, {useEffect, useState} from 'react';
 
+import '../style/diagram.scss';
 import DiagramFooter from './DiagramFooter';
 import DiagramHeader from './DiagramHeader';
 import ImagePins from './ImagePins';
@@ -42,6 +43,7 @@ const Diagram = ({
 	const [changedScale, setChangedScale] = useState(false);
 	const [scale, setScale] = useState(1);
 	const [selectedOption, setSelectedOption] = useState(1);
+
 	const [cPins, setCpins] = useState(pins);
 	const [showTooltip, setShowTooltip] = useState({
 		details: {
@@ -85,7 +87,6 @@ const Diagram = ({
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [showTooltip, setShowTooltip]);
-
 	const [cPins, setCpins] = useState(pins);
 	const [showTooltip, setShowTooltip] = useState({
 		details: {
@@ -189,7 +190,6 @@ const Diagram = ({
 };
 
 Diagram.defaultProps = {
-	cPins: [],
 	enablePanZoom: true,
 	enableResetZoom: true,
 	imageSettings: {

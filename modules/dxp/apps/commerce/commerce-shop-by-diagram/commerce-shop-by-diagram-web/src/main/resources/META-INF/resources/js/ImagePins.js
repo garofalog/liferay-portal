@@ -17,7 +17,6 @@ import NavigationButtons from './NavigationButtons';
 import {moveController, zoomIn, zoomOut} from './NavigationsUtils';
 import ZoomController from './ZoomController';
 import AdminTooltip from './AdminTooltip';
-import NavigationButtons from './NavigationButtons';
 
 const PIN_ATTRIBUTES = [
 	'cx',
