@@ -15,6 +15,7 @@
 import PropTypes from 'prop-types';
 import React, {useEffect, useState} from 'react';
 
+import '../style/diagram.scss';
 import DiagramFooter from './DiagramFooter';
 import DiagramHeader from './DiagramHeader';
 import ImagePins from './ImagePins';
@@ -30,123 +31,117 @@ const Diagram = ({
 	spritemap,
 	zoomController,
 }) => {
-	// const [test] = useState('test')
+	const [addPinHandler, setAddPinHandler] = useState(false);
+	const [removePinHandler, setRemovePinHandler] = useState({
+		handler: false,
+		pin: null,
+	});
+	const [resetZoom, setResetZoom] = useState(false);
+	const [zoomInHandler, setZoomInHandler] = useState(false);
+	const [zoomOutHandler, setZoomOutHandler] = useState(false);
+	const [changedScale, setChangedScale] = useState(false);
+	const [scale, setScale] = useState(1);
+	const [selectedOption, setSelectedOption] = useState(1);
+	const [cPins, setCpins] = useState(pins);
+	const [showTooltip, setShowTooltip] = useState({
+		details: {
+			cx: 0,
+			cy: 0,
+			id: null,
+			label: '',
+			linked_to_sku: 'sku',
+			quantity: null,
+			sku: '',
+		},
+		tooltip: null,
+	});
+	const [addNewPinState, setAddNewPinState] = useState({
+		fill: newPinSettings.colorPicker.selectedColor,
+		radius: newPinSettings.defaultRadius,
+	});
 
-	return (<p>cicczo</p>)
+	useEffect(() => {
+		if (!showTooltip.tooltip && showTooltip.details.id) {
+			const myNewState = cPins.map((element) => {
+				if (element.id === showTooltip.details.id) {
+					return {
+						cx: cPins[element.id].cx,
+						cy: cPins[element.id].cy,
+						draggable: cPins[element.id].draggable,
+						fill: cPins[element.id].fill,
+						id: showTooltip.details.id,
+						label: showTooltip.details.label,
+						linked_to_sku: showTooltip.details.linked_to_sku,
+						quantity: showTooltip.details.quantity,
+						r: cPins[element.id].r,
+						sku: showTooltip.details.sku,
+					};
+				}
+				else {
+					return element;
+				}
+			});
+			setCpins(myNewState);
+		}
+	}, [showTooltip, setShowTooltip]);
 
+	return (
+		<div className="diagram mx-auto">
+			<DiagramHeader
+				addNewPinState={addNewPinState}
+				newPinSettings={newPinSettings}
+				setAddNewPinState={setAddNewPinState}
+				setAddPinHandler={setAddPinHandler}
+				setSelectedOption={setSelectedOption}
+			/>
 
-	// const [addPinHandler, setAddPinHandler] = useState(false);
-	// const [removePinHandler, setRemovePinHandler] = useState({
-	// 	handler: false,
-	// 	pin: null,
-	// });
-	// const [resetZoom, setResetZoom] = useState(false);
-	// const [zoomInHandler, setZoomInHandler] = useState(false);
-	// const [zoomOutHandler, setZoomOutHandler] = useState(false);
-	// const [changedScale, setChangedScale] = useState(false);
-	// const [scale, setScale] = useState(1);
-	// const [selectedOption, setSelectedOption] = useState(1);
-	// const [cPins, setCpins] = useState(pins);
-	// const [showTooltip, setShowTooltip] = useState({
-	// 	details: {
-	// 		cx: 0,
-	// 		cy: 0,
-	// 		id: null,
-	// 		label: '',
-	// 		linked_to_sku: 'sku',
-	// 		quantity: null,
-	// 		sku: '',
-	// 	},
-	// 	tooltip: null,
-	// });
-	// const [addNewPinState, setAddNewPinState] = useState({
-	// 	fill: newPinSettings.colorPicker.selectedColor,
-	// 	radius: newPinSettings.defaultRadius,
-	// });
-	//
-	// useEffect(() => {
-	// 	if (!showTooltip.tooltip && showTooltip.details.id) {
-	// 		const myNewState = cPins.map((element) => {
-	// 			if (element.id === showTooltip.details.id) {
-	// 				return {
-	// 					cx: cPins[element.id].cx,
-	// 					cy: cPins[element.id].cy,
-	// 					draggable: cPins[element.id].draggable,
-	// 					fill: cPins[element.id].fill,
-	// 					id: showTooltip.details.id,
-	// 					label: showTooltip.details.label,
-	// 					linked_to_sku: showTooltip.details.linked_to_sku,
-	// 					quantity: showTooltip.details.quantity,
-	// 					r: cPins[element.id].r,
-	// 					sku: showTooltip.details.sku,
-	// 				};
-	// 			}
-	// 			else {
-	// 				return element;
-	// 			}
-	// 		});
-	// 		setCpins(myNewState);
-	// 	}
-	// }, [showTooltip, setShowTooltip]);
-	//
-	// return (
-	// 	<div className="diagram mx-auto">
-	// 		<DiagramHeader
-	// 			addNewPinState={addNewPinState}
-	// 			newPinSettings={newPinSettings}
-	// 			setAddNewPinState={setAddNewPinState}
-	// 			setAddPinHandler={setAddPinHandler}
-	// 			setSelectedOption={setSelectedOption}
-	// 		/>
-	//
-	// 		<ImagePins
-	// 			addNewPinState={addNewPinState}
-	// 			addPinHandler={addPinHandler}
-	// 			cPins={cPins}
-	// 			changedScale={changedScale}
-	// 			enablePanZoom={enablePanZoom}
-	// 			enableResetZoom={enableResetZoom}
-	// 			image={image}
-	// 			imageSettings={imageSettings}
-	// 			navigationController={navigationController}
-	// 			removePinHandler={removePinHandler}
-	// 			resetZoom={resetZoom}
-	// 			scale={scale}
-	// 			selectedOption={selectedOption}
-	// 			setAddPinHandler={setAddPinHandler}
-	// 			setChangedScale={setChangedScale}
-	// 			setCpins={setCpins}
-	// 			setRemovePinHandler={setRemovePinHandler}
-	// 			setResetZoom={setResetZoom}
-	// 			setScale={setScale}
-	// 			setSelectedOption={setSelectedOption}
-	// 			setShowTooltip={setShowTooltip}
-	// 			setZoomInHandler={setZoomInHandler}
-	// 			setZoomOutHandler={setZoomOutHandler}
-	// 			showTooltip={showTooltip}
-	// 			zoomController={zoomController}
-	// 			zoomInHandler={zoomInHandler}
-	// 			zoomOutHandler={zoomOutHandler}
-	// 		/>
-	//
-	// 		<DiagramFooter
-	// 			changedScale={changedScale}
-	// 			enableResetZoom={enableResetZoom}
-	// 			selectedOption={selectedOption}
-	// 			setAddPinHandler={setAddPinHandler}
-	// 			setChangedScale={setChangedScale}
-	// 			setResetZoom={setResetZoom}
-	// 			setSelectedOption={setSelectedOption}
-	// 			setZoomInHandler={setZoomInHandler}
-	// 			setZoomOutHandler={setZoomOutHandler}
-	// 			spritemap={spritemap}
-	// 		/>
-	// 	</div>
-	// );
+			<ImagePins
+				addNewPinState={addNewPinState}
+				addPinHandler={addPinHandler}
+				cPins={cPins}
+				changedScale={changedScale}
+				enablePanZoom={enablePanZoom}
+				enableResetZoom={enableResetZoom}
+				image={image}
+				imageSettings={imageSettings}
+				navigationController={navigationController}
+				removePinHandler={removePinHandler}
+				resetZoom={resetZoom}
+				scale={scale}
+				selectedOption={selectedOption}
+				setAddPinHandler={setAddPinHandler}
+				setChangedScale={setChangedScale}
+				setCpins={setCpins}
+				setRemovePinHandler={setRemovePinHandler}
+				setResetZoom={setResetZoom}
+				setScale={setScale}
+				setSelectedOption={setSelectedOption}
+				setShowTooltip={setShowTooltip}
+				setZoomInHandler={setZoomInHandler}
+				setZoomOutHandler={setZoomOutHandler}
+				showTooltip={showTooltip}
+				zoomController={zoomController}
+				zoomInHandler={zoomInHandler}
+				zoomOutHandler={zoomOutHandler}
+			/>
+
+			<DiagramFooter
+				changedScale={changedScale}
+				enableResetZoom={enableResetZoom}
+				selectedOption={selectedOption}
+				setAddPinHandler={setAddPinHandler}
+				setChangedScale={setChangedScale}
+				setResetZoom={setResetZoom}
+				setSelectedOption={setSelectedOption}
+				setZoomInHandler={setZoomInHandler}
+				setZoomOutHandler={setZoomOutHandler}
+				spritemap={spritemap}
+			/>
+		</div>
+	);
 };
 
 Diagram.defaultProps = {
-	cPins: [],
 	enablePanZoom: true,
 	enableResetZoom: true,
 	imageSettings: {
@@ -185,6 +180,7 @@ Diagram.defaultProps = {
 		},
 		defaultRadius: 15,
 	},
+	pins: [],
 	zoomController: {
 		enable: true,
 		position: {

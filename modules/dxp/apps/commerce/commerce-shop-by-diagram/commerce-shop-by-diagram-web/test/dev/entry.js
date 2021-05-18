@@ -11,12 +11,12 @@
 
 import {render} from '@liferay/frontend-js-react-web';
 
-import Diagram from '../../src/main/resources/META-INF/resources/js/Diagram';
+import DiagramEs from '../../src/main/resources/META-INF/resources/js/Diagram';
 
 import '../../src/main/resources/META-INF/resources/style/_diagram.scss';
 
 render(
-	Diagram,
+	DiagramEs,
 	{
 		spritemap: './assets/clay/icons.svg',
 	},
