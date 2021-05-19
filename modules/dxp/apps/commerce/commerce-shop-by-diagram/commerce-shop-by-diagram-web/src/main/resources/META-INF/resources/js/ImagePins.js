@@ -95,9 +95,9 @@ const ImagePins = ({
 				.attr(
 					'transform',
 					`translate(${imageInfos.width / 2.0},${
-						imageInfos.height / 2.0
+					imageInfos.height / 2.0
 					}) scale(${selectedOption}) translate(-${
-						imageInfos.width / 2.0
+					imageInfos.width / 2.0
 					},-${imageInfos.height / 2.0})`
 				);
 		}
