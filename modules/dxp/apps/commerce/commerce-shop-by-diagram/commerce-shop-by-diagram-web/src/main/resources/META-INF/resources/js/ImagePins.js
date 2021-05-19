@@ -14,7 +14,7 @@
 
 import {event, select, zoom, zoomIdentity, zoomTransform} from 'd3';
 import PropTypes from 'prop-types';
-import React, {useLayoutEffect, useRef, useState} from 'react';
+import React, {useLayoutEffect, useRef} from 'react';
 
 import NavigationButtons from './NavigationButtons';
 import {
@@ -49,18 +49,16 @@ const ImagePins = ({
 	const handlers = useRef();
 	const container = useRef();
 	const panZoom = useRef();
-	const [width, setWidth] = useState(0);
-
-
 	const svg = useRef(null);
 
 	useLayoutEffect(() => {
+
 		container.current = select('g#container');
 
 		panZoom.current = zoom()
 			.scaleExtent([0.5, 40])
 			.on('zoom', () =>
-				container.current.attr('transform', event.transform)
+				container.current._groups[0].attr('transform', event.transform)
 			);
 
 		if (enablePanZoom) {
@@ -93,21 +91,12 @@ const ImagePins = ({
 				.attr(
 					'transform',
 					`translate(${imageInfos.width / 2.0},${
-						imageInfos.height / 2.0
+					imageInfos.height / 2.0
 					}) scale(${selectedOption}) translate(-${
-						imageInfos.width / 2.0
+					imageInfos.width / 2.0
 					},-${imageInfos.height / 2.0})`
 				);
 		}
-
-		handlers.current = {
-			moveDown: () => moveDown(container.current, navigationController),
-			moveLeft: () => moveLeft(container.current, navigationController),
-			moveRight: () => moveRight(container.current, navigationController),
-			moveUp: () => moveUp(container.current, navigationController),
-			zoomIn: () => zoomIn(container.current, panZoom.current),
-			zoomOut: () => zoomOut(container.current, panZoom.current),
-		};
 
 		if (execZoomIn) {
 			handlers.current?.zoomIn();
@@ -122,6 +111,15 @@ const ImagePins = ({
 			setZoomInHandler(false);
 			zoomIn(container.current, panZoom.current);
 		}
+
+		handlers.current = {
+			moveDown: () => moveDown(container.current, navigationController),
+			moveLeft: () => moveLeft(container.current, navigationController),
+			moveRight: () => moveRight(container.current, navigationController),
+			moveUp: () => moveUp(container.current, navigationController),
+			zoomIn: () => zoomIn(container.current, panZoom.current),
+			zoomOut: () => zoomOut(container.current, panZoom.current),
+		};
 
 	}, [
 		resetZoom,
