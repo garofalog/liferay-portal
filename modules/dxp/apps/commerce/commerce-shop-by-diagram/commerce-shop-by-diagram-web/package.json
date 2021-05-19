@@ -1,19 +1,19 @@
 {
 	"dependencies": {
-		"@clayui/autocomplete": "^3.27.0",
-		"@clayui/button": "^3.6.0",
+		"@clayui/autocomplete": "3.27.0",
+		"@clayui/button": "3.6.0",
 		"@clayui/color-picker": "3.27.0",
-		"@clayui/data-provider": "^3.3.10",
-		"@clayui/drop-down": "^3.27.0",
-		"@clayui/icon": "^3.1.0",
-		"@clayui/modal": "^3.8.5",
-		"@clayui/form": "^3.27.0",
-		"@clayui/slider": "^3.25.1",
+		"@clayui/data-provider": "3.27.0",
+		"@clayui/drop-down": "3.27.0",
+		"@clayui/form": "3.27.0",
+		"@clayui/icon": "3.1.0",
+		"@clayui/modal": "3.27.0",
+		"@clayui/slider": "3.25.1",
 		"@liferay/frontend-js-react-web": "*",
 		"classnames": "2.2.6",
+		"commerce-frontend-js": "*",
 		"d3": "^6.6.2",
 		"frontend-js-web": "*",
-		"commerce-frontend-js": "*",
 		"prop-types": "15.7.2"
 	},
 	"devDependencies": {
@@ -37,7 +37,7 @@
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",
 		"coverage": "liferay-npm-scripts test --coverage --silent --verbose",
-		"format": "liferay-npm-scripts format",
+		"format": "liferay-npm-scripts format --fix",
 		"test": "liferay-npm-scripts test",
 		"watch": "liferay-npm-scripts webpack --watch"
 	},
