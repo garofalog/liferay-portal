@@ -11,14 +11,9 @@
 		"@clayui/slider": "3.25.1",
 		"@liferay/frontend-js-react-web": "*",
 		"classnames": "2.2.6",
-		"commerce-frontend-js": "*",
-		"d3": "^6.6.2",
+		"d3": "5.9.3",
 		"frontend-js-web": "*",
 		"prop-types": "15.7.2"
-	},
-	"devDependencies": {
-		"clay-css": "^2.16.2",
-		"faker": "^5.1.0"
 	},
 	"jest": {
 		"collectCoverageFrom": [
