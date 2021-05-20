@@ -9,7 +9,7 @@
  * distribution rights of the Software.
  */
 
-import {event, select, zoom, zoomIdentity, zoomTransform} from 'd3';
+import {select, zoom, zoomIdentity, zoomTransform} from 'd3';
 import PropTypes from 'prop-types';
 import React, {useLayoutEffect, useRef} from 'react';
 
@@ -95,9 +95,9 @@ const ImagePins = ({
 				.attr(
 					'transform',
 					`translate(${imageInfos.width / 2.0},${
-					imageInfos.height / 2.0
+						imageInfos.height / 2.0
 					}) scale(${selectedOption}) translate(-${
-					imageInfos.width / 2.0
+						imageInfos.width / 2.0
 					},-${imageInfos.height / 2.0})`
 				);
 		}

@@ -58,8 +58,8 @@ module.exports = {
 			{
 				test: /\.(scss|css)$/,
 				use: [
-					{ loader: 'style-loader' },
-					{ loader: 'css-loader' },
+					{loader: 'style-loader'},
+					{loader: 'css-loader'},
 					{
 						loader: 'sass-loader',
 						options: {
@@ -74,7 +74,7 @@ module.exports = {
 										});
 									}
 									else {
-										done({ file: url });
+										done({file: url});
 									}
 								},
 							},

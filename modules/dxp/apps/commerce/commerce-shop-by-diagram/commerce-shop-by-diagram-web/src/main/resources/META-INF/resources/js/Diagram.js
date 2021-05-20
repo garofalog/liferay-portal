@@ -142,7 +142,8 @@ const Diagram = ({
 Diagram.defaultProps = {
 	enablePanZoom: true,
 	enableResetZoom: true,
-	image: "https://i0.wp.com/detoxicrecenze.com/wp-content/uploads/2018/05/straight-6-engine-diagram-460-ford-engine-diagram-wiring-info-e280a2-of-straight-6-engine-diagram.jpg",
+	image:
+		'https://i0.wp.com/detoxicrecenze.com/wp-content/uploads/2018/05/straight-6-engine-diagram-460-ford-engine-diagram-wiring-info-e280a2-of-straight-6-engine-diagram.jpg',
 	imageSettings: {
 		height: '300px',
 		width: '100%',
