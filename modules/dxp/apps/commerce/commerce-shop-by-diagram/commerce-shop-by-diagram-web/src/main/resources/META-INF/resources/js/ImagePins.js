@@ -150,7 +150,6 @@ const ImagePins = ({
 			const newPos = current._groups[0][0].attributes;
 			const beSure = [...newPos];
 			const updatedPin = {};
-
 			select(this).classed('active', false);
 			PIN_ATTRIBUTES.map((element) => {
 				beSure.filter((attr) => {
