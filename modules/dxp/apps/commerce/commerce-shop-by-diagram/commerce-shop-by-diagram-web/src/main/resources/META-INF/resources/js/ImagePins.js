@@ -12,7 +12,7 @@
  * details.
  */
 
-import {event, select, zoom, zoomIdentity, zoomTransform} from 'd3';
+import {select, zoom, zoomIdentity, zoomTransform} from 'd3';
 import PropTypes from 'prop-types';
 import React, {useLayoutEffect, useRef} from 'react';
 
@@ -49,16 +49,15 @@ const ImagePins = ({
 	const handlers = useRef();
 	const container = useRef();
 	const panZoom = useRef();
+
 	const svg = useRef(null);
 
 	useLayoutEffect(() => {
-
 		container.current = select('g#container');
-
 		panZoom.current = zoom()
 			.scaleExtent([0.5, 40])
-			.on('zoom', () =>
-				container.current._groups[0].attr('transform', event.transform)
+			.on('zoom', (event, d) =>
+				container.current.attr('transform', event.transform)
 			);
 
 		if (enablePanZoom) {
@@ -91,9 +90,9 @@ const ImagePins = ({
 				.attr(
 					'transform',
 					`translate(${imageInfos.width / 2.0},${
-					imageInfos.height / 2.0
+						imageInfos.height / 2.0
 					}) scale(${selectedOption}) translate(-${
-					imageInfos.width / 2.0
+						imageInfos.width / 2.0
 					},-${imageInfos.height / 2.0})`
 				);
 		}
@@ -120,7 +119,6 @@ const ImagePins = ({
 			zoomIn: () => zoomIn(container.current, panZoom.current),
 			zoomOut: () => zoomOut(container.current, panZoom.current),
 		};
-
 	}, [
 		resetZoom,
 		selectedOption,
