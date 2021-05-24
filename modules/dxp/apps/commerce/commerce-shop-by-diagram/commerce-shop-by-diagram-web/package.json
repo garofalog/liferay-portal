@@ -26,13 +26,13 @@
 			"<rootDir>/test/utils/"
 		]
 	},
-	"name": "commerce-shop-by-diagram-web",
+	"name": "@liferay/commerce-shop-by-diagram-web",
 	"private": true,
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",
 		"coverage": "liferay-npm-scripts test --coverage --silent --verbose",
-		"format": "liferay-npm-scripts format --fix",
+		"format": "liferay-npm-scripts fix",
 		"test": "liferay-npm-scripts test",
 		"watch": "liferay-npm-scripts webpack --watch"
 	},
