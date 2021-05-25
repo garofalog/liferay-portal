@@ -10,7 +10,7 @@
  */
 
 import ClayButton from '@clayui/button';
-import {ClaySelect} from '@clayui/form';
+import { ClaySelect } from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import React from 'react';
 
@@ -19,6 +19,7 @@ const OPTIONS = [2, 1.75, 1.5, 1.25, 1, 0.75, 0.5];
 const DiagramFooter = ({
 	enableResetZoom,
 	selectedOption,
+	setAddPinHandler,
 	setChangedScale,
 	setResetZoom,
 	setSelectedOption,

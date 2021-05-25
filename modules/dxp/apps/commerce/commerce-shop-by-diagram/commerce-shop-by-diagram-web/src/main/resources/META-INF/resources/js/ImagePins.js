@@ -9,10 +9,11 @@
  * distribution rights of the Software.
  */
 
-import {event, select, zoom, zoomIdentity, zoomTransform} from 'd3';
+import { drag, event, select, zoom, zoomIdentity, zoomTransform } from 'd3';
 import PropTypes from 'prop-types';
-import React, {useLayoutEffect, useRef} from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 
+import AdminTooltip from './AdminTooltip';
 import NavigationButtons from './NavigationButtons';
 import {moveController, zoomIn, zoomOut} from './NavigationsUtils';
 import ZoomController from './ZoomController';
@@ -31,6 +32,9 @@ const PIN_ATTRIBUTES = [
 ];
 
 const ImagePins = ({
+	addNewPinState,
+	addPinHandler,
+	cPins,
 	changedScale,
 	enablePanZoom,
 	execZoomIn,
@@ -39,11 +43,16 @@ const ImagePins = ({
 	imageURL,
 	namespace,
 	navigationController,
+	removePinHandler,
 	resetZoom,
 	selectedOption,
+	setAddPinHandler,
 	setChangedScale,
+	setCpins,
+	setRemovePinHandler,
 	setResetZoom,
 	setSelectedOption,
+	setShowTooltip,
 	setZoomInHandler,
 	setZoomOutHandler,
 	showTooltip,
@@ -95,9 +104,9 @@ const ImagePins = ({
 				.attr(
 					'transform',
 					`translate(${imageInfos.width / 2.0},${
-						imageInfos.height / 2.0
+					imageInfos.height / 2.0
 					}) scale(${selectedOption}) translate(-${
-						imageInfos.width / 2.0
+					imageInfos.width / 2.0
 					},-${imageInfos.height / 2.0})`
 				);
 		}
@@ -398,6 +407,21 @@ ImagePins.default = {
 };
 
 ImagePins.propTypes = {
+	addPinHandler: PropTypes.bool,
+	cPins: PropTypes.arrayOf(
+		PropTypes.shape({
+			cx: PropTypes.double,
+			cy: PropTypes.double,
+			draggable: PropTypes.bool,
+			fill: PropTypes.string,
+			id: PropTypes.number,
+			label: PropTypes.string,
+			linked_to_sku: PropTypes.oneOf(['sku', 'diagram']),
+			quantity: PropTypes.number,
+			r: PropTypes.number,
+			sku: PropTypes.string,
+		})
+	),
 	enableResetZoom: PropTypes.bool,
 	execResetZoom: PropTypes.bool,
 	handleZoomIn: PropTypes.func,
@@ -419,8 +443,28 @@ ImagePins.propTypes = {
 			top: PropTypes.string,
 		}),
 	}),
+	removePinHandler: PropTypes.shape({
+		handler: PropTypes.bool,
+		pin: PropTypes.number,
+	}),
+	setAddPinHandler: PropTypes.func,
+	setCpins: PropTypes.func,
+	setImageState: PropTypes.func,
+	setShowTooltip: PropTypes.func,
 	setZoomInHandler: PropTypes.func,
 	setZoomOutHandler: PropTypes.func,
+	showTooltip: PropTypes.shape({
+		details: PropTypes.shape({
+			cx: PropTypes.double,
+			cy: PropTypes.double,
+			id: PropTypes.number,
+			label: PropTypes.string,
+			linked_to_sku: PropTypes.oneOf(['sku', 'diagram']),
+			quantity: PropTypes.number,
+			sku: PropTypes.string,
+		}),
+		tooltip: PropTypes.bool,
+	}),
 	zoomController: PropTypes.shape({
 		enable: PropTypes.bool,
 		position: PropTypes.shape({
