@@ -10,7 +10,7 @@
  */
 
 import ClayButton from '@clayui/button';
-import { ClaySelect } from '@clayui/form';
+import {ClaySelect} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import React from 'react';
 

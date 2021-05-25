@@ -9,9 +9,9 @@
  * distribution rights of the Software.
  */
 
-import { drag, event, select, zoom, zoomIdentity, zoomTransform } from 'd3';
+import {drag, event, select, zoom, zoomIdentity, zoomTransform} from 'd3';
 import PropTypes from 'prop-types';
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import React, {useLayoutEffect, useRef} from 'react';
 
 import AdminTooltip from './AdminTooltip';
 import NavigationButtons from './NavigationButtons';
@@ -104,9 +104,9 @@ const ImagePins = ({
 				.attr(
 					'transform',
 					`translate(${imageInfos.width / 2.0},${
-					imageInfos.height / 2.0
+						imageInfos.height / 2.0
 					}) scale(${selectedOption}) translate(-${
-					imageInfos.width / 2.0
+						imageInfos.width / 2.0
 					},-${imageInfos.height / 2.0})`
 				);
 		}
@@ -166,7 +166,6 @@ const ImagePins = ({
 			const newPos = current._groups[0][0].attributes;
 			const beSure = [...newPos];
 			const updatedPin = {};
-
 			select(this).classed('active', false);
 			PIN_ATTRIBUTES.map((element) => {
 				beSure.filter((attr) => {
@@ -321,7 +320,6 @@ const ImagePins = ({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [
 		addPinHandler,
-		removePinHandler,
 		changedScale,
 		cPins,
 		execZoomIn,

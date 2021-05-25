@@ -11,7 +11,7 @@
 
 import {ClayIconSpriteContext} from '@clayui/icon';
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 
 import '../style/diagram.scss';
 import DiagramFooter from './DiagramFooter';
