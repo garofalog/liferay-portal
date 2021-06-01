@@ -32,7 +32,7 @@ const DiagramFooter = ({
 	};
 
 	return (
-		<div className="d-flex diagram-footer justify-content-end mt-3">
+		<div className="row diagram-footer justify-content-end mt-3">
 			<ClayButton className="mr-3" onClick={() => setAddPinHandler(true)}>
 				<span className="inline-item inline-item-before">
 					<ClayIcon symbol="pin" />

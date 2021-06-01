@@ -16,7 +16,10 @@ import React, {useEffect, useState} from 'react';
 import '../style/diagram.scss';
 import DiagramFooter from './DiagramFooter';
 import DiagramHeader from './DiagramHeader';
+import PinsList from './PinsList';
 import ImagePins from './ImagePins';
+import DiagramSearchBy from './DiagramSearchBy';
+import { ClaySelect } from '@clayui/form';
 
 import '../css/diagram.scss';
 
@@ -145,6 +148,7 @@ const Diagram = ({
 		</div>
 	);
 };
+
 
 Diagram.defaultProps = {
 	enablePanZoom: true,
