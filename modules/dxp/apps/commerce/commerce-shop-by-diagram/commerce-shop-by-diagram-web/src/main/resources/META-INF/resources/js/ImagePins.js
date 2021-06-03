@@ -9,14 +9,16 @@
  * distribution rights of the Software.
  */
 
+import {ClaySelect} from '@clayui/form';
+import classnames from 'classnames';
 import {drag, event, select, zoom, zoomIdentity, zoomTransform} from 'd3';
 import PropTypes from 'prop-types';
-import React, {useLayoutEffect, useRef} from 'react';
-import classnames from 'classnames';
-import { ClaySelect } from '@clayui/form';
+import DiagramFooter from './DiagramFooter';
 
+import React, {useLayoutEffect, useRef} from 'react';
 
 import AdminTooltip from './AdminTooltip';
+import DiagramHeader from './DiagramHeader';
 import NavigationButtons from './NavigationButtons';
 import {moveController, zoomIn, zoomOut} from './NavigationsUtils';
 import ZoomController from './ZoomController';
@@ -55,8 +57,11 @@ const ImagePins = ({
 	setRemovePinHandler,
 	setResetZoom,
 	setSelectedOption,
+	enableResetZoom,
 	setShowTooltip,
 	setZoomInHandler,
+	newPinSettings,
+	setAddNewPinState,
 	setZoomOutHandler,
 	showTooltip,
 	zoomController,
@@ -342,7 +347,7 @@ const ImagePins = ({
 		setShowTooltip,
 		setCpins,
 		addNewPinState,
-		setRemovePinHandler,  
+		setRemovePinHandler,
 		setAddPinHandler,
 	]);
 

@@ -14,12 +14,12 @@ import PropTypes from 'prop-types';
 import React, {useEffect, useState} from 'react';
 
 import '../style/diagram.scss';
-import DiagramFooter from './DiagramFooter';
-import DiagramHeader from './DiagramHeader';
-import PinsList from './PinsList';
-import ImagePins from './ImagePins';
+
+import {ClaySelect} from '@clayui/form';
+
 import DiagramSearchBy from './DiagramSearchBy';
-import { ClaySelect } from '@clayui/form';
+import ImagePins from './ImagePins';
+import PinsList from './PinsList';
 
 import '../css/diagram.scss';
 
@@ -105,6 +105,9 @@ const Diagram = ({
 				<ImagePins
 					addNewPinState={addNewPinState}
 					addPinHandler={addPinHandler}
+					newPinSettings={newPinSettings}
+					setAddNewPinState={setAddNewPinState}
+					spritemap={spritemap}
 					cPins={cPins}
 					changedScale={changedScale}
 					enablePanZoom={enablePanZoom}
@@ -148,7 +151,6 @@ const Diagram = ({
 		</div>
 	);
 };
-
 
 Diagram.defaultProps = {
 	enablePanZoom: true,

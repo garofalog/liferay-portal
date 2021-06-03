@@ -55,6 +55,7 @@ const DiagramFooter = ({
 				>
 					-
 				</ClayButton>
+			</div>
 
 				<ClaySelect
 					aria-label="Select Label"
@@ -71,16 +72,18 @@ const DiagramFooter = ({
 					))}
 				</ClaySelect>
 
-				<ClayButton
-					className=""
-					displayType="secondary"
-					onClick={() => {
-						setZoomInHandler(true);
-					}}
-				>
-					+
-				</ClayButton>
 			</div>
+			<div className="col-3 col-lg-2">
+				{enableResetZoom && (
+					<ClayButton
+						className="ml-3 reset-zoom"
+						displayType="secondary"
+						id="reset"
+						onClick={() => setResetZoom(true)}
+					>
+						Reset Zoom
+					</ClayButton>
+				)}
 
 			{enableResetZoom && (
 				<ClayButton
