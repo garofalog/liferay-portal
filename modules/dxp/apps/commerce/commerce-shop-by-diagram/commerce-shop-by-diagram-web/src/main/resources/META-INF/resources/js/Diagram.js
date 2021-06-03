@@ -94,62 +94,74 @@ const Diagram = ({
 	return (
 		<div className="diagram mx-auto">
 			<ClayIconSpriteContext.Provider value={spritemap}>
-				<DiagramHeader
-					addNewPinState={addNewPinState}
-					namespace={namespace}
-					newPinSettings={newPinSettings}
-					setAddNewPinState={setAddNewPinState}
-					setAddPinHandler={setAddPinHandler}
-					setSelectedOption={setSelectedOption}
-				/>
 
-				<ImagePins
-					addNewPinState={addNewPinState}
-					addPinHandler={addPinHandler}
-					newPinSettings={newPinSettings}
-					setAddNewPinState={setAddNewPinState}
-					spritemap={spritemap}
-					cPins={cPins}
-					changedScale={changedScale}
-					enablePanZoom={enablePanZoom}
-					enableResetZoom={enableResetZoom}
-					imageSettings={imageSettings}
-					imageURL={imageURL}
-					namespace={namespace}
-					navigationController={navigationController}
-					removePinHandler={removePinHandler}
-					resetZoom={resetZoom}
-					scale={scale}
-					selectedOption={selectedOption}
-					setAddPinHandler={setAddPinHandler}
-					setChangedScale={setChangedScale}
-					setCpins={setCpins}
-					setRemovePinHandler={setRemovePinHandler}
-					setResetZoom={setResetZoom}
-					setScale={setScale}
-					setSelectedOption={setSelectedOption}
-					setShowTooltip={setShowTooltip}
-					setZoomInHandler={setZoomInHandler}
-					setZoomOutHandler={setZoomOutHandler}
-					showTooltip={showTooltip}
-					zoomController={zoomController}
-					zoomInHandler={zoomInHandler}
-					zoomOutHandler={zoomOutHandler}
-				/>
+				<DiagramSearchBy />
 
-				<DiagramFooter
-					changedScale={changedScale}
-					enableResetZoom={enableResetZoom}
-					selectedOption={selectedOption}
-					setAddPinHandler={setAddPinHandler}
-					setChangedScale={setChangedScale}
-					setResetZoom={setResetZoom}
-					setSelectedOption={setSelectedOption}
-					setZoomInHandler={setZoomInHandler}
-					setZoomOutHandler={setZoomOutHandler}
-				/>
+				<div className="align-items-center d-flex diagram-container justify-content-center row">
+
+					<DiagramHeader
+						addNewPinState={addNewPinState}
+						namespace={namespace}
+						newPinSettings={newPinSettings}
+						setAddNewPinState={setAddNewPinState}
+						setAddPinHandler={setAddPinHandler}
+						setSelectedOption={setSelectedOption}
+					/>
+
+					<ImagePins
+						addNewPinState={addNewPinState}
+						addPinHandler={addPinHandler}
+						newPinSettings={newPinSettings}
+						setAddNewPinState={setAddNewPinState}
+						spritemap={spritemap}
+						cPins={cPins}
+						changedScale={changedScale}
+						enablePanZoom={enablePanZoom}
+						enableResetZoom={enableResetZoom}
+						imageSettings={imageSettings}
+						imageURL={imageURL}
+						namespace={namespace}
+						navigationController={navigationController}
+						removePinHandler={removePinHandler}
+						resetZoom={resetZoom}
+						scale={scale}
+						selectedOption={selectedOption}
+						setAddPinHandler={setAddPinHandler}
+						setChangedScale={setChangedScale}
+						setCpins={setCpins}
+						setRemovePinHandler={setRemovePinHandler}
+						setResetZoom={setResetZoom}
+						setScale={setScale}
+						setSelectedOption={setSelectedOption}
+						setShowTooltip={setShowTooltip}
+						setZoomInHandler={setZoomInHandler}
+						setZoomOutHandler={setZoomOutHandler}
+						showTooltip={showTooltip}
+						zoomController={zoomController}
+						zoomInHandler={zoomInHandler}
+						zoomOutHandler={zoomOutHandler}
+					/>
+
+					<DiagramFooter
+						changedScale={changedScale}
+						enableResetZoom={enableResetZoom}
+						selectedOption={selectedOption}
+						setAddPinHandler={setAddPinHandler}
+						setChangedScale={setChangedScale}
+						setResetZoom={setResetZoom}
+						setSelectedOption={setSelectedOption}
+						setZoomInHandler={setZoomInHandler}
+						setZoomOutHandler={setZoomOutHandler}
+					/>
+					
+				</div>
+
+				<PinsList cPins={cPins} imageSettings={imageSettings} />
+
 			</ClayIconSpriteContext.Provider>
+
 		</div>
+
 	);
 };
 

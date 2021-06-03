@@ -9,11 +9,10 @@
  * distribution rights of the Software.
  */
 
-import ClayInput from '@clayui/form';
 import ClayCard from '@clayui/card';
 import ClayButton, { ClayButtonWithIcon } from '@clayui/button';
-
 import ClayDropDown from '@clayui/drop-down';
+import ClayInput from '@clayui/form';
 import ClaySelect from '@clayui/form';
 import ClayTable from '@clayui/table';
 import classnames from 'classnames';
@@ -24,7 +23,6 @@ const PinsList = ({
 		cPins, 
 		imageSettings,
 		side,
-		spritemap
 	}) => {
 	const [value, setValue] = useState('one');
 	const [active, setActive] = useState(false);
@@ -48,7 +46,6 @@ const PinsList = ({
 				imageSettings.listWidth,
 				'pins-list col col-lg-4'
 			)}
-			// style={diagramStyle}
 		>
 			<ClayCard>
 				<h3 className="card-header">Products</h3>

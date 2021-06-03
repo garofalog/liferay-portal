@@ -32,30 +32,38 @@ const DiagramFooter = ({
 	};
 
 	return (
-		<div className="row diagram-footer justify-content-end mt-3">
-			<ClayButton className="mr-3" onClick={() => setAddPinHandler(true)}>
-				<span className="inline-item inline-item-before">
-					<ClayIcon symbol="pin" />
-				</span>
-				{Liferay.Language.get('add-pin')}
-			</ClayButton>
-			<ClayButton className="mr-3">
-				<span className="inline-item inline-item-before">
-					<ClayIcon symbol="expand" />
-				</span>
-				{Liferay.Language.get('expand')}
-			</ClayButton>
 
-			<div className="d-flex">
-				<ClayButton
-					displayType="secondary"
-					onClick={() => {
-						setZoomOutHandler(true);
-					}}
-				>
-					-
+		<div className="bg-white row diagram-footer justify-content-end mt-3 p-2 d-flex">
+			
+			<div className="col-3 my-auto">
+				<ClayButton className="mr-3" onClick={() => setAddPinHandler(true)}>
+					<span className="inline-item inline-item-before">
+						<ClayIcon symbol="pin" />
+					</span>
+					{Liferay.Language.get('add-pin')}
 				</ClayButton>
 			</div>
+
+			<div className="col-3 my-auto">
+				<ClayButton className="mr-3">
+					<span className="inline-item inline-item-before">
+						<ClayIcon symbol="expand" />
+					</span>
+					{Liferay.Language.get('expand')}
+				</ClayButton>
+			</div>
+
+			<div className="col-3 col-lg-4 my-auto">
+				<div className="d-flex">
+					<ClayButton
+						displayType="secondary"
+						onClick={() => {
+							setZoomOutHandler(true);
+						}}
+					>
+						-
+					</ClayButton>
+				</div>
 
 				<ClaySelect
 					aria-label="Select Label"
@@ -71,29 +79,54 @@ const DiagramFooter = ({
 						/>
 					))}
 				</ClaySelect>
-
 			</div>
+
+			<div className="d-flex">
+				<ClayButton
+					displayType="secondary"
+					onClick={() => {
+						setZoomOutHandler(true);
+					}}
+				>
+					-
+				</ClayButton>
+				<ClaySelect
+					aria-label="Select Label"
+					className="ml-3 mr-3"
+					onChange={handleZoomChange}
+					value={selectedOption}
+				>
+					{OPTIONS.map((value) => (
+						<ClaySelect.Option
+							key={value}
+							label={`${value * 100}%`}
+							value={value}
+						/>
+					))}
+				</ClaySelect>
+				<ClayButton
+					className=""
+					displayType="secondary"
+					onClick={() => {
+						setZoomInHandler(true);
+					}}
+				>
+					+
+				</ClayButton>
+			</div>
+
 			<div className="col-3 col-lg-2">
 				{enableResetZoom && (
 					<ClayButton
 						className="ml-3 reset-zoom"
 						displayType="secondary"
-						id="reset"
 						onClick={() => setResetZoom(true)}
 					>
-						Reset Zoom
+						{Liferay.Language.get('reset-zoom')}
 					</ClayButton>
 				)}
+			</div>
 
-			{enableResetZoom && (
-				<ClayButton
-					className="ml-3 reset-zoom"
-					displayType="secondary"
-					onClick={() => setResetZoom(true)}
-				>
-					{Liferay.Language.get('reset-zoom')}
-				</ClayButton>
-			)}
 		</div>
 	);
 };

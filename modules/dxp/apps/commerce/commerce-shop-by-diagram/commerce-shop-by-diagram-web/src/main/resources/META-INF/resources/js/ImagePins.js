@@ -353,55 +353,80 @@ const ImagePins = ({
 
 	return (
 		<div
-			className="diagram-pins-container"
-			style={{
-				height: `${imageSettings.height}`,
-				width: `${imageSettings.width}`,
-			}}
+			className={classnames(
+				imageSettings.diagramWidth,
+				'diagram-pins-container col-12 col-lg-8 mb-4'
+			)}
+			style={`width: ${imageSettings.width}`}
 		>
-			<svg
-				height={imageSettings.height}
-				ref={svgRef}
-				width={imageSettings.width}
-			>
-				<g
-					data-testid={`${namespace}container`}
-					id={`${namespace}container`}
-					transform="translate(0,0) scale(1)"
-				>
-					<image
+			<div className="bg-white plusborder row">
+				
+				<div className="align-items-center align-middle col-12 d-flex title">
+					<h3>Diagram</h3>
+				</div>
+
+				<div className="align-items-center align-middle col-4 col-xs-12 d-flex select-part">
+					<DiagramHeader
+						addNewPinState={addNewPinState}
+						newPinSettings={newPinSettings}
+						setAddNewPinState={setAddNewPinState}
+						setAddPinHandler={setAddPinHandler}
+						setSelectedOption={setSelectedOption}
+					/>
+
+				</div>
+			</div>
+
+			<div className="bg-white row">
+
+				<div className="col-12">
+
+					<svg
 						height={imageSettings.height}
-						href={imageURL}
-					></image>
-				</g>
-			</svg>
+						ref={svgRef}
+						width={imageSettings.width}
+					>
+						<g
+							data-testid={`${namespace}container`}
+							id={`${namespace}container`}
+							transform="translate(0,0) scale(1)"
+						>
+							<image
+								height={imageSettings.height}
+								href={imageURL}
+							></image>
+						</g>
+					</svg>
 
-			{showTooltip.tooltip && (
-				<AdminTooltip
-					namespace={namespace}
-					removePinHandler={removePinHandler}
-					setRemovePinHandler={setRemovePinHandler}
-					setShowTooltip={setShowTooltip}
-					showTooltip={showTooltip}
-				/>
-			)}
+					{showTooltip.tooltip && (
+						<AdminTooltip
+							namespace={namespace}
+							removePinHandler={removePinHandler}
+							setRemovePinHandler={setRemovePinHandler}
+							setShowTooltip={setShowTooltip}
+							showTooltip={showTooltip}
+						/>
+					)}
 
-			{navigationController.enable && (
-				<NavigationButtons
-					moveController={(where) =>
-						handlers.current?.moveController(where)
-					}
-					position={navigationController.position}
-				/>
-			)}
+					{navigationController.enable && (
+						<NavigationButtons
+							moveController={(where) =>
+								handlers.current?.moveController(where)
+							}
+							position={navigationController.position}
+						/>
+					)}
 
-			{zoomController.enable && (
-				<ZoomController
-					position={zoomController.position}
-					zoomIn={() => handlers.current?.zoomIn()}
-					zoomOut={() => handlers.current?.zoomOut()}
-				/>
-			)}
+					{zoomController.enable && (
+						<ZoomController
+							position={zoomController.position}
+							zoomIn={() => handlers.current?.zoomIn()}
+							zoomOut={() => handlers.current?.zoomOut()}
+						/>
+					)}
+				</div>
+			</div>
+
 		</div>
 	);
 };
