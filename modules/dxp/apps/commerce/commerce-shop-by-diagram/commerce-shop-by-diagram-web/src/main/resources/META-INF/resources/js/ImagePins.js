@@ -355,13 +355,12 @@ const ImagePins = ({
 		<div
 			className={classnames(
 				imageSettings.diagramWidth,
-				'diagram-pins-container col-12 col-lg-8 mb-4'
+				'diagram-pins-container col col-lg-8 mb-4'
 			)}
 			style={`width: ${imageSettings.width}`}
 		>
 			<div className="bg-white plusborder row">
-				
-				<div className="align-items-center align-middle col-12 d-flex title">
+				<div className="align-items-center align-middle col d-flex title">
 					<h3>Diagram</h3>
 				</div>
 
@@ -378,8 +377,8 @@ const ImagePins = ({
 			</div>
 
 			<div className="bg-white row">
-
-				<div className="col-12">
+				
+				<div className="col">
 
 					<svg
 						height={imageSettings.height}

@@ -153,10 +153,13 @@ const Diagram = ({
 						setZoomInHandler={setZoomInHandler}
 						setZoomOutHandler={setZoomOutHandler}
 					/>
-					
+
 				</div>
 
-				<PinsList cPins={cPins} imageSettings={imageSettings} />
+				<PinsList
+					cPins={cPins}
+					imageSettings={imageSettings}
+					side={side} />
 
 			</ClayIconSpriteContext.Provider>
 
