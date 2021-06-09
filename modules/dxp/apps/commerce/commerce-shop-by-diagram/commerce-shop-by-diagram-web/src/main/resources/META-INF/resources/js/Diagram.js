@@ -32,6 +32,7 @@ const Diagram = ({
 	navigationController,
 	newPinSettings,
 	pins,
+	side,
 	spritemap,
 	zoomController,
 }) => {
@@ -194,6 +195,7 @@ Diagram.defaultProps = {
 		defaultRadius: 15,
 	},
 	pins: [],
+	side: 'SBD',
 	spritemap: './assets/clay/icons.svg',
 	zoomController: {
 		enable: true,
@@ -261,6 +263,7 @@ Diagram.propTypes = {
 		}),
 		tooltip: PropTypes.bool,
 	}),
+	side: PropTypes.oneOf(['SE','SBD']),
 	spritemap: PropTypes.string,
 	zoomController: PropTypes.shape({
 		enable: PropTypes.bool,

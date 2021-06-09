@@ -49,7 +49,7 @@ const AdminTooltip = ({setRemovePinHandler, setShowTooltip, showTooltip}) => {
 	return (
 		<ClayCard className="admin-tooltip" style={cardStyle}>
 			<ClayCard.Body className="row">
-				<ClayForm.Group className="col-12 form-group-sm text-left">
+				<ClayForm.Group className="col form-group-sm text-left">
 					<label htmlFor="basicInputText">Position</label>
 					<ClayInput
 						id="basicInputText"
@@ -60,7 +60,7 @@ const AdminTooltip = ({setRemovePinHandler, setShowTooltip, showTooltip}) => {
 					/>
 				</ClayForm.Group>
 
-				<ClayForm.Group className="col-12 form-group-sm">
+				<ClayForm.Group className="col form-group-sm">
 					<ClayRadioGroup
 						className="d-flex justify-content-start mt-4"
 						inline

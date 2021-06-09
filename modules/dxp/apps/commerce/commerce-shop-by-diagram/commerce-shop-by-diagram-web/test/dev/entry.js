@@ -192,6 +192,7 @@ render(
 				discounted_price: 0,
 			},
 		],
+		side: 'SBD',
 		spritemap: './assets/clay/icons.svg',
 		zoomController: {
 			enable: true,
