@@ -32,6 +32,19 @@ const PIN_ATTRIBUTES = [
 	'sku',
 ];
 
+const PIN_ATTRIBUTES = [
+	'cx',
+	'cy',
+	'draggable',
+	'fill',
+	'id',
+	'label',
+	'linked_to_sku',
+	'quantity',
+	'r',
+	'sku',
+];
+
 const ImagePins = ({
 	addNewPinState,
 	addPinHandler,
