@@ -11,11 +11,12 @@
 
 import {drag, event, select, zoom, zoomIdentity, zoomTransform} from 'd3';
 import PropTypes from 'prop-types';
-import React, { useLayoutEffect, useRef, useState} from 'react';
+import React, {useLayoutEffect, useRef, useState} from 'react';
+
+import AdminTooltip from './AdminTooltip';
 import NavigationButtons from './NavigationButtons';
 import {moveController, zoomIn, zoomOut} from './NavigationsUtils';
 import ZoomController from './ZoomController';
-import AdminTooltip from './AdminTooltip';
 
 const PIN_ATTRIBUTES = [
 	'cx',
@@ -185,7 +186,7 @@ const ImagePins = ({
 						Math.abs(element.cx - updatedPin.cx) < 15 &&
 						Math.abs(element.cy - updatedPin.cy) < 15
 					) {
-						return;
+						clickAction(updatedPin);
 					}
 
 					return updatedPin;
