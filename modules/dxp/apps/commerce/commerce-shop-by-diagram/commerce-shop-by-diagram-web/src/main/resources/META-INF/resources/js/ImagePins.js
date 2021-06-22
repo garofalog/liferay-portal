@@ -11,7 +11,7 @@
 
 import {drag, event, select, zoom, zoomIdentity, zoomTransform} from 'd3';
 import PropTypes from 'prop-types';
-import React, {useLayoutEffect, useRef, useState} from 'react';
+import React, {useLayoutEffect, useRef} from 'react';
 
 import AdminTooltip from './AdminTooltip';
 import NavigationButtons from './NavigationButtons';
