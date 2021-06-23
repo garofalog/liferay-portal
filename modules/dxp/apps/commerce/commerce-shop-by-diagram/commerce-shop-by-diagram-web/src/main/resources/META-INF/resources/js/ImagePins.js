@@ -13,24 +13,10 @@ import {drag, event, select, zoom, zoomIdentity, zoomTransform} from 'd3';
 import PropTypes from 'prop-types';
 import React, { useLayoutEffect, useRef, useState} from 'react';
 
-import NavigationButtons from './NavigationButtons';
 import {moveController, zoomIn, zoomOut} from './NavigationsUtils';
 import ZoomController from './ZoomController';
 import AdminTooltip from './AdminTooltip';
 import NavigationButtons from './NavigationButtons';
-
-const PIN_ATTRIBUTES = [
-	'cx',
-	'cy',
-	'draggable',
-	'fill',
-	'id',
-	'label',
-	'linked_to_sku',
-	'quantity',
-	'r',
-	'sku',
-];
 
 const PIN_ATTRIBUTES = [
 	'cx',
@@ -235,9 +221,8 @@ const ImagePins = ({
 		};
 
 		const removePin = (id) => {
-			const currentPins = cPins.filter((element) => element.id !== id);
-
-			const newState = currentPins.map((pin, i) => {
+			const removePinState = cPins.filter((element) => element.id !== id);
+			const newState = removePinState.map((pin, i) => {
 				return {
 					cx: pin.cx,
 					cy: pin.cy,
@@ -251,7 +236,6 @@ const ImagePins = ({
 					sku: pin.sku,
 				};
 			});
-
 			setCpins(newState);
 		};
 
