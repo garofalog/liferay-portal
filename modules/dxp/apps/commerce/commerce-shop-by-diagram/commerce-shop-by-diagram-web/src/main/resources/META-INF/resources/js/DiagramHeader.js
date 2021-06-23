@@ -28,9 +28,6 @@ const DiagramHeader = ({
 	const [customColors, setCustoms] = useState(
 		newPinSettings.colorPicker.defaultColors
 	);
-	const [color, setColor] = useState(
-		newPinSettings.colorPicker.selectedColor
-	);
 
 const DiagramHeader = () => {
 	return (
@@ -55,22 +52,24 @@ const DiagramHeader = () => {
 					}
 				>
 					<ClayDropDown.ItemList className="diagram-header-picker">
-						<ClayDropDown.Group header="SELECT COLOR">
+						<ClayDropDown.Group
+							header={Liferay.Language.get('select-color')}
+						>
 							<ClayColorPicker
 								colors={customColors}
-								label="Custom Colors"
+								label={Liferay.Language.get('custom-colors')}
 								max={100}
-								name="diagram-color-picker"
+								name={namespace + 'diagram-color-picker'}
 								onColorsChange={setCustoms}
 								onValueChange={(item) => {
-									setColor(item.replace('#', ''));
 									setAddNewPinState({
-										color: item.replace('#', ''),
+										fill: item.replace('#', ''),
 										radius: addNewPinState.radius,
 									});
 								}}
 								showHex={true}
 								step={1}
+								title={Liferay.Language.get('custom-colors')}
 								useNative={newPinSettings.colorPicker.useNative}
 								value={addNewPinState.fill}
 							/>
@@ -80,7 +79,9 @@ const DiagramHeader = () => {
 					<ClayDropDown.Divider />
 
 					<ClayDropDown.ItemList>
-						<ClayDropDown.Group header="STANDARD">
+						<ClayDropDown.Group
+							header={Liferay.Language.get('select-radius')}
+						>
 							{radiusChoice.map((item, i) => (
 								<ClayDropDown.Item
 									key={i}
@@ -101,13 +102,13 @@ const DiagramHeader = () => {
 					<ClayDropDown.Caption>
 						<div className="form-group">
 							<label htmlFor="slider">
-								{Liferay.get.language('custom-radius')}
+								{Liferay.Language.get('custom-radius')}
 							</label>
 							<ClaySlider
 								id={namespace + 'custom-radius'}
 								onValueChange={(item) =>
 									setAddNewPinState({
-										color,
+										fill: addNewPinState.fill,
 										radius: item,
 									})
 								}
