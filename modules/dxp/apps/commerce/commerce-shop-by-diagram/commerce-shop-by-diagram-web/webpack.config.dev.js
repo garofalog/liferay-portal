@@ -13,12 +13,12 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 const webpack = require('webpack');
 
-const outputPath = path.resolve(__dirname, './dev/public');
+const outputPath = path.resolve(__dirname, './test/dev/public');
 
 module.exports = {
 	devServer: {
 		compress: false,
-		contentBase: './dev/public',
+		contentBase: './test/dev/public',
 		open: true,
 		openPage: 'index.html',
 		port: 9000,
@@ -84,7 +84,7 @@ module.exports = {
 		new webpack.optimize.ModuleConcatenationPlugin(),
 		new HtmlWebpackPlugin({
 			inject: false,
-			template: path.resolve(__dirname, './dev/public/index.html'),
+			template: path.resolve(__dirname, './test/dev/public/index.html'),
 		}),
 	],
 	resolve: {

@@ -14,7 +14,7 @@ const path = require('path');
 
 const {defineServerResponses} = require('./dev/fakeServerUtilities');
 
-const outputPath = path.resolve(__dirname, './dev/public');
+const outputPath = path.resolve(__dirname, './test/dev/public');
 
 module.exports = {
 	devServer: {
@@ -22,7 +22,7 @@ module.exports = {
 			defineServerResponses(app);
 		},
 		compress: false,
-		contentBase: './dev/public',
+		contentBase: './test/dev/public',
 		filename: path.join(outputPath, '/bundle.js'),
 		historyApiFallback: true,
 		hot: true,
@@ -63,7 +63,7 @@ module.exports = {
 	plugins: [
 		new HtmlWebpackPlugin({
 			inject: false,
-			template: path.resolve(__dirname, './dev/public/index.html'),
+			template: path.resolve(__dirname, './test/dev/public/index.html'),
 		}),
 	],
 	resolve: {
