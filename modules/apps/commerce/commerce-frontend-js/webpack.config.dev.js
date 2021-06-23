@@ -19,7 +19,7 @@ const webpack = require('webpack');
 const components = require('./test/dev/components/index');
 const {defineServerResponses} = require('./test/dev/fakeServerUtilities');
 
-const outputPath = path.resolve(__dirname, './dev/public');
+const outputPath = path.resolve(__dirname, './test/dev/public');
 
 function getComponentPath(entry) {
 	return path.join(__dirname, 'test', 'dev', 'components', entry);
