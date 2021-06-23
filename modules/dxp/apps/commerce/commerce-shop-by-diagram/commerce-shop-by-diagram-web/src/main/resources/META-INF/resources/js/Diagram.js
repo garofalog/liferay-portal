@@ -106,7 +106,7 @@ const Diagram = ({
 	});
 
 	useEffect(() => {
-		if (!showTooltip.tooltip && showTooltip.details.id) {
+		if (!showTooltip.tooltip) {
 			const myNewState = cPins.map((element) => {
 				if (element.id === showTooltip.details.id) {
 					return {

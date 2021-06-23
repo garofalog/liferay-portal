@@ -29,9 +29,6 @@ const DiagramHeader = ({
 	const [customColors, setCustomColors] = useState(
 		newPinSettings.colorPicker.defaultColors
 	);
-	const [color, setColor] = useState(
-		newPinSettings.colorPicker.selectedColor
-	);
 
 	return (
 		<div className="d-flex diagram diagram-header justify-content-between">
@@ -55,6 +52,7 @@ const DiagramHeader = ({
 							{Liferay.Language.get('default-diameter')}
 						</ClayButton>
 					}
+					x
 				>
 					<ClayDropDown.ItemList className="diagram-header-picker">
 						<ClayDropDown.Group

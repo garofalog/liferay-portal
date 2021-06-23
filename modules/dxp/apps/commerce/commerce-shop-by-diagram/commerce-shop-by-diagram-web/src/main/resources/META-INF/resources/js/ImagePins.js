@@ -221,9 +221,8 @@ const ImagePins = ({
 		};
 
 		const removePin = (id) => {
-			const currentPins = cPins.filter((element) => element.id !== id);
-
-			const newState = currentPins.map((pin, i) => {
+			const removePinState = cPins.filter((element) => element.id !== id);
+			const newState = removePinState.map((pin, i) => {
 				return {
 					cx: pin.cx,
 					cy: pin.cy,
@@ -237,7 +236,6 @@ const ImagePins = ({
 					sku: pin.sku,
 				};
 			});
-
 			setCpins(newState);
 		};
 
