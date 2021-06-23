@@ -354,6 +354,7 @@ const ImagePins = ({
 
 			{showTooltip.tooltip && (
 				<AdminTooltip
+					namespace={namespace}
 					removePinHandler={removePinHandler}
 					setRemovePinHandler={setRemovePinHandler}
 					setShowTooltip={setShowTooltip}
