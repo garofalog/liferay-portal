@@ -52,7 +52,6 @@ const DiagramHeader = ({
 							{Liferay.Language.get('default-diameter')}
 						</ClayButton>
 					}
-					x
 				>
 					<ClayDropDown.ItemList className="diagram-header-picker">
 						<ClayDropDown.Group
