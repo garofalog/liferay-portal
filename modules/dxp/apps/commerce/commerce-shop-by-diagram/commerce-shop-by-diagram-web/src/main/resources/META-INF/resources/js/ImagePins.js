@@ -136,7 +136,21 @@ const ImagePins = ({
 			zoomIn(containerRef.current, panZoomRef.current);
 		}
 
-		function dragstarted() {
+		const clickAction = (updatedPin) =>
+			setShowTooltip({
+				details: {
+					cx: updatedPin.cx,
+					cy: updatedPin.cy,
+					id: updatedPin.id,
+					label: updatedPin.label,
+					linked_to_sku: updatedPin.linked_to_sku,
+					quantity: updatedPin.quantity,
+					sku: updatedPin.sku,
+				},
+				tooltip: true,
+			});
+
+		function dragStarted() {
 			select(this).raise().classed('active', true);
 		}
 
@@ -144,7 +158,7 @@ const ImagePins = ({
 			select(this).attr('transform', `translate(${event.x},${event.y})`);
 		}
 
-		function dragended() {
+		function dragEnded() {
 			const current = select(this);
 			const newPos = current._groups[0][0].attributes;
 			const beSure = [...newPos];
@@ -200,9 +214,9 @@ const ImagePins = ({
 		}
 
 		const dragHandler = drag()
-			.on('start', dragstarted)
+			.on('start', dragStarted)
 			.on('drag', dragged)
-			.on('end', dragended);
+			.on('end', dragEnded);
 
 		const addPin = () => {
 			setCpins(
