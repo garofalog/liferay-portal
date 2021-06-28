@@ -24,6 +24,7 @@ const Diagram = ({
 	enableResetZoom,
 	imageSettings,
 	imageURL,
+	isAdmin,
 	namespace,
 	navigationController,
 	newPinSettings,
@@ -36,6 +37,7 @@ const Diagram = ({
 		handler: false,
 		pin: null,
 	});
+	const [diagramSizes, setDiagramSizes] = useState({ k: 1, x: 0, y:0})
 	const [resetZoom, setResetZoom] = useState(false);
 	const [zoomInHandler, setZoomInHandler] = useState(false);
 	const [zoomOutHandler, setZoomOutHandler] = useState(false);
@@ -130,24 +132,6 @@ const Diagram = ({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [showTooltip, setShowTooltip]);
 
-	const [cPins, setCpins] = useState(pins);
-	const [showTooltip, setShowTooltip] = useState({
-		details: {
-			cx: 0,
-			cy: 0,
-			id: null,
-			label: '',
-			linked_to_sku: 'sku',
-			quantity: null,
-			sku: '',
-		},
-		tooltip: null,
-	});
-	const [addNewPinState, setAddNewPinState] = useState({
-		fill: newPinSettings.colorPicker.selectedColor,
-		radius: newPinSettings.defaultRadius,
-	});
-
 	useEffect(() => {
 		if (!showTooltip.tooltip && showTooltip.details.id) {
 			const myNewState = cPins.map((element) => {
@@ -179,6 +163,7 @@ const Diagram = ({
 			<ClayIconSpriteContext.Provider value={spritemap}>
 				<DiagramHeader
 					addNewPinState={addNewPinState}
+					isAdmin={isAdmin}
 					namespace={namespace}
 					newPinSettings={newPinSettings}
 					setAddNewPinState={setAddNewPinState}
@@ -195,11 +180,14 @@ const Diagram = ({
 					enableResetZoom={enableResetZoom}
 					imageSettings={imageSettings}
 					imageURL={imageURL}
+					isAdmin={isAdmin}
 					namespace={namespace}
 					navigationController={navigationController}
 					removePinHandler={removePinHandler}
 					resetZoom={resetZoom}
 					scale={scale}
+					diagramSizes={diagramSizes}
+					setDiagramSizes={setDiagramSizes}
 					selectedOption={selectedOption}
 					setAddPinHandler={setAddPinHandler}
 					setChangedScale={setChangedScale}
@@ -220,6 +208,7 @@ const Diagram = ({
 				<DiagramFooter
 					changedScale={changedScale}
 					enableResetZoom={enableResetZoom}
+					isAdmin={isAdmin}
 					selectedOption={selectedOption}
 					setAddPinHandler={setAddPinHandler}
 					setChangedScale={setChangedScale}
@@ -308,6 +297,7 @@ Diagram.propTypes = {
 		width: PropTypes.string,
 	}),
 	imageURL: PropTypes.string.isRequired,
+	isAdmin: PropTypes.bool.isRequired,
 	namespace: PropTypes.string.isRequired,
 	navigationController: PropTypes.shape({
 		dragStep: PropTypes.number,
