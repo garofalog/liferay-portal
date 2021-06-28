@@ -24,6 +24,7 @@ const Diagram = ({
 	enableResetZoom,
 	imageSettings,
 	imageURL,
+	isAdmin,
 	namespace,
 	navigationController,
 	newPinSettings,
@@ -135,6 +136,7 @@ const Diagram = ({
 			<ClayIconSpriteContext.Provider value={spritemap}>
 				<DiagramHeader
 					addNewPinState={addNewPinState}
+					isAdmin={isAdmin}
 					namespace={namespace}
 					newPinSettings={newPinSettings}
 					setAddNewPinState={setAddNewPinState}
@@ -151,6 +153,7 @@ const Diagram = ({
 					enableResetZoom={enableResetZoom}
 					imageSettings={imageSettings}
 					imageURL={imageURL}
+					isAdmin={isAdmin}
 					namespace={namespace}
 					navigationController={navigationController}
 					removePinHandler={removePinHandler}
@@ -176,6 +179,7 @@ const Diagram = ({
 				<DiagramFooter
 					changedScale={changedScale}
 					enableResetZoom={enableResetZoom}
+					isAdmin={isAdmin}
 					selectedOption={selectedOption}
 					setAddPinHandler={setAddPinHandler}
 					setChangedScale={setChangedScale}
@@ -264,6 +268,7 @@ Diagram.propTypes = {
 		width: PropTypes.string,
 	}),
 	imageURL: PropTypes.string.isRequired,
+	isAdmin: PropTypes.bool.isRequired,
 	namespace: PropTypes.string.isRequired,
 	navigationController: PropTypes.shape({
 		dragStep: PropTypes.number,
