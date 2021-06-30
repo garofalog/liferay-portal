@@ -13,7 +13,6 @@ import {drag, event, select, zoom, zoomIdentity, zoomTransform} from 'd3';
 import PropTypes from 'prop-types';
 import React, {useLayoutEffect, useRef} from 'react';
 
-import AdminTooltip from './AdminTooltip';
 import NavigationButtons from './NavigationButtons';
 import {moveController, zoomIn, zoomOut} from './NavigationsUtils';
 import ZoomController from './ZoomController';
@@ -136,20 +135,6 @@ const ImagePins = ({
 			zoomIn(containerRef.current, panZoomRef.current);
 		}
 
-		const clickAction = (updatedPin) =>
-			setShowTooltip({
-				details: {
-					cx: updatedPin.cx,
-					cy: updatedPin.cy,
-					id: updatedPin.id,
-					label: updatedPin.label,
-					linked_to_sku: updatedPin.linked_to_sku,
-					quantity: updatedPin.quantity,
-					sku: updatedPin.sku,
-				},
-				tooltip: true,
-			});
-
 		function dragstarted() {
 			select(this).raise().classed('active', true);
 		}
@@ -204,7 +189,8 @@ const ImagePins = ({
 						Math.abs(element.cx - updatedPin.cx) < 15 &&
 						Math.abs(element.cy - updatedPin.cy) < 15
 					) {
-						clickAction(updatedPin);
+						/* eslint no-console: "error" */
+						console.log(updatedPin);
 					}
 
 					return updatedPin;
@@ -369,16 +355,6 @@ const ImagePins = ({
 					></image>
 				</g>
 			</svg>
-
-			{showTooltip.tooltip && (
-				<AdminTooltip
-					namespace={namespace}
-					removePinHandler={removePinHandler}
-					setRemovePinHandler={setRemovePinHandler}
-					setShowTooltip={setShowTooltip}
-					showTooltip={showTooltip}
-				/>
-			)}
 
 			{navigationController.enable && (
 				<NavigationButtons
