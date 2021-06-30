@@ -31,6 +31,7 @@ const AdminTooltip = ({
 	const [sku, setSku] = useState(showTooltip.details.sku);
 	const [quantity, setQuantity] = useState(showTooltip.details.quantity);
 	const [networkStatus, setNetworkStatus] = useState(4);
+
 	const initialLoading = networkStatus === 1;
 	const loadingAd = networkStatus < 4;
 	const error = networkStatus === 5;
@@ -56,6 +57,7 @@ const AdminTooltip = ({
 					<label htmlFor={`${namespace}pin-position`}>
 						{Liferay.Language.get('position')}
 					</label>
+
 					<ClayInput
 						id={`${namespace}pin-position`}
 						onChange={(event) => setPinLabel(event.target.value)}
@@ -75,6 +77,7 @@ const AdminTooltip = ({
 						selectedValue={linkedValue}
 					>
 						<ClayRadio label="Linked to SKU" value="sku" />
+
 						<ClayRadio label="Linked to Diagram" value="diagram" />
 					</ClayRadioGroup>
 				</ClayForm.Group>
