@@ -54,7 +54,6 @@ const ImagePins = ({
 	setShowTooltip,
 	setZoomInHandler,
 	setZoomOutHandler,
-	showTooltip,
 	zoomController,
 	zoomInHandler,
 	zoomOutHandler,
@@ -185,7 +184,7 @@ const ImagePins = ({
 						Math.abs(element.cx - updatedPin.cx) < 15 &&
 						Math.abs(element.cy - updatedPin.cy) < 15
 					) {
-						/* eslint no-console: "error" */
+						/* eslint-disable no-console */
 						console.log(updatedPin);
 					}
 
