@@ -139,10 +139,7 @@ const ImagePins = ({
 		}
 
 		function dragged() {
-			select(this).attr(
-				'transform',
-				'translate(' + event.x + ',' + event.y + ')'
-			);
+			select(this).attr('transform', `translate(${event.x},${event.y})`);
 		}
 
 		function dragended() {
@@ -188,8 +185,7 @@ const ImagePins = ({
 						Math.abs(element.cx - updatedPin.cx) < 15 &&
 						Math.abs(element.cy - updatedPin.cy) < 15
 					) {
-						/* eslint-disable no-console */
-						console.log(updatedPin);
+						return;
 					}
 
 					return updatedPin;
