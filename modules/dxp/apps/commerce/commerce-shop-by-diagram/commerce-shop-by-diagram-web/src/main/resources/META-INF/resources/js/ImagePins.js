@@ -9,9 +9,10 @@
  * distribution rights of the Software.
  */
 
-import { drag, event, select, zoom, zoomIdentity, rebind, zoomTransform} from 'd3';
+import {drag, event, select, zoom, zoomIdentity, zoomTransform} from 'd3';
 import PropTypes from 'prop-types';
 import React, {useLayoutEffect, useRef} from 'react';
+
 import AdminTooltip from './AdminTooltip';
 import NavigationButtons from './NavigationButtons';
 import {moveController, zoomIn, zoomOut} from './NavigationsUtils';
@@ -39,9 +40,9 @@ const ImagePins = ({
 	handleAddPin,
 	imageSettings,
 	imageURL,
+	isAdmin,
 	namespace,
 	navigationController,
-	isAdmin,
 	removePinHandler,
 	resetZoom,
 	selectedOption,
@@ -62,37 +63,42 @@ const ImagePins = ({
 	const handlers = useRef();
 	const containerRef = useRef();
 	const panZoomRef = useRef();
-	let timeout = null;
 	const svgRef = useRef(null);
 
 	useLayoutEffect(() => {
 		containerRef.current = select(`#${namespace}container`);
 		panZoomRef.current = zoom()
 			.scaleExtent([0.5, 40])
-			.on('zoom', () => containerRef.current.attr('transform', event.transform));
+			.on('zoom', () =>
+				containerRef.current.attr('transform', event.transform)
+			);
 
 		if (enablePanZoom) {
 			containerRef.current.call(panZoomRef.current);
 		}
 
-		containerRef.current.on("dblclick.zoom", () => {
-	
-			const diagramBackgroundImagePosition = containerRef.current.attr('transform');
+		containerRef.current.on('dblclick.zoom', () => {
+			const diagramBackgroundImagePosition = containerRef.current.attr(
+				'transform'
+			);
 
 			// this regex takes a string value from inline html to make the image zoom/translations working
-			const imageInformations = diagramBackgroundImagePosition.match(/(-?[0-9]+[.,-\s]*)+/g);
-			
-			const scale = parseFloat(imageInformations[1])
-			console.log(scale)
-			const coordinates = imageInformations[0].split(',').map((x) => parseFloat(x));
-			console.log(coordinates[0], coordinates[1])
-			console.log({event})
-			let ccx = event.layerX - (Math.abs(coordinates[0]))
+
+			const imageInformations = diagramBackgroundImagePosition.match(
+				/(-?[0-9]+[.,-\s]*)+/g
+			);
+
+			const coordinates = imageInformations[0]
+				.split(',')
+				.map((x) => parseFloat(x));
+
+			const ccx = event.layerX - Math.abs(coordinates[0]);
+
 			// let ccx = ccx1 * scale
-			console.log(ccx)
-			let ccy = event.layerY - Math.abs(coordinates[1])
+
+			const ccy = event.layerY - Math.abs(coordinates[1]);
+
 			// let ccy = ccy1 * scale
-			console.log(ccy)
 
 			setCpins(
 				cPins.concat({
@@ -108,8 +114,7 @@ const ImagePins = ({
 					sku: addNewPinState.sku,
 				})
 			);
-
-		})
+		});
 
 		if (resetZoom) {
 			setResetZoom(false);
@@ -169,19 +174,19 @@ const ImagePins = ({
 			zoomIn(containerRef.current, panZoomRef.current);
 		}
 
-		const clickAction = (updatedPin) =>
-			setShowTooltip({
-				details: {
-					cx: updatedPin.cx,
-					cy: updatedPin.cy,
-					id: updatedPin.id,
-					label: updatedPin.label,
-					linked_to_sku: updatedPin.linked_to_sku,
-					quantity: updatedPin.quantity,
-					sku: updatedPin.sku,
-				},
-				tooltip: true,
-			});
+		// const clickAction = (updatedPin) =>
+		// 	setShowTooltip({
+		// 		details: {
+		// 			cx: updatedPin.cx,
+		// 			cy: updatedPin.cy,
+		// 			id: updatedPin.id,
+		// 			label: updatedPin.label,
+		// 			linked_to_sku: updatedPin.linked_to_sku,
+		// 			quantity: updatedPin.quantity,
+		// 			sku: updatedPin.sku,
+		// 		},
+		// 		tooltip: true,
+		// 	});
 
 		function dragStarted() {
 			select(this).raise().classed('active', true);
@@ -245,13 +250,13 @@ const ImagePins = ({
 			setCpins(newState);
 		}
 
-		const dragHandler = isAdmin ? 
-			drag()
-			.on('start', dragStarted)
-			.on('drag', dragged)
-			.on('end', dragEnded)
-		: drag()
-		
+		const dragHandler = isAdmin
+			? drag()
+					.on('start', dragStarted)
+					.on('drag', dragged)
+					.on('end', dragEnded)
+			: drag();
+
 		const addPin = () => {
 			setCpins(
 				cPins.concat({
