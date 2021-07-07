@@ -9,7 +9,7 @@
  * distribution rights of the Software.
  */
 
-import {drag, event, select, zoom, zoomIdentity, zoomTransform} from 'd3';
+import {drag, event as d3event, select, zoom as d3zoom, zoomIdentity} from 'd3';
 import PropTypes from 'prop-types';
 import React, {useLayoutEffect, useRef} from 'react';
 
@@ -17,6 +17,7 @@ import AdminTooltip from './AdminTooltip';
 import NavigationButtons from './NavigationButtons';
 import {moveController, zoomIn, zoomOut} from './NavigationsUtils';
 import ZoomController from './ZoomController';
+
 const PIN_ATTRIBUTES = [
 	'cx',
 	'cy',
@@ -62,48 +63,30 @@ const ImagePins = ({
 }) => {
 	const handlers = useRef();
 	const containerRef = useRef();
-	const panZoomRef = useRef();
 	const svgRef = useRef(null);
+	const transform = useRef({k: 1, x: 0, y: 0})
 
 	useLayoutEffect(() => {
-		containerRef.current = select(`#${namespace}container`);
-		panZoomRef.current = zoom()
+		const container = select(containerRef.current);
+		const svg = select(svgRef.current);
+
+		const zoom = d3zoom()
 			.scaleExtent([0.5, 40])
-			.on('zoom', () =>
-				containerRef.current.attr('transform', event.transform)
-			);
+			.on('zoom', () => {
+				transform.current = d3event.transform
+				container.attr('transform', transform.current)
+			});
 
-		if (enablePanZoom) {
-			containerRef.current.call(panZoomRef.current);
-		}
+		svg.call(zoom);
 
-		containerRef.current.on('dblclick.zoom', () => {
-			const diagramBackgroundImagePosition = containerRef.current.attr(
-				'transform'
-			);
-
-			// this regex takes a string value from inline html to make the image zoom/translations working
-
-			const imageInformations = diagramBackgroundImagePosition.match(
-				/(-?[0-9]+[.,-\s]*)+/g
-			);
-
-			const coordinates = imageInformations[0]
-				.split(',')
-				.map((x) => parseFloat(x));
-
-			const ccx = event.layerX - Math.abs(coordinates[0]);
-
-			// let ccx = ccx1 * scale
-
-			const ccy = event.layerY - Math.abs(coordinates[1]);
-
-			// let ccy = ccy1 * scale
-
+		svg.on('dblclick.zoom', () => {
+			const x = (d3event.offsetX - transform.current.x) / transform.current.k;
+			const y = (d3event.offsetY - transform.current.y) / transform.current.k;
+			
 			setCpins(
 				cPins.concat({
-					cx: ccx,
-					cy: ccy,
+					cx: x,
+					cy: y,
 					draggable: true,
 					fill: '#' + addNewPinState.fill,
 					id: cPins.length,
@@ -118,25 +101,22 @@ const ImagePins = ({
 
 		if (resetZoom) {
 			setResetZoom(false);
-			containerRef.current
+
+			svg
 				.transition()
 				.duration(700)
 				.call(
-					panZoomRef.current.transform,
-					zoomIdentity,
-					zoomTransform(containerRef.current.node()).invert([
-						imageSettings.width,
-						imageSettings.height,
-					])
+					zoom.transform,
+					zoomIdentity
 				);
-
-			setSelectedOption(1);
 		}
 
 		if (changedScale) {
 			setChangedScale(false);
-			const imageInfos = containerRef.current.node().getBBox();
-			containerRef.current
+
+			const imageInfos = container.node().getBBox();
+			
+			container
 				.transition()
 				.duration(700)
 				.attr(
@@ -150,14 +130,15 @@ const ImagePins = ({
 		}
 
 		handlers.current = {
-			moveController: (where) =>
+			moveController: (direction) =>
 				moveController(
-					containerRef.current,
+					svg,
 					navigationController,
-					where
+					direction,
+					zoom
 				),
-			zoomIn: () => zoomIn(containerRef.current, panZoomRef.current),
-			zoomOut: () => zoomOut(containerRef.current, panZoomRef.current),
+			zoomIn: () => zoomIn(svg, zoom),
+			zoomOut: () => zoomOut(svg, zoom),
 		};
 
 		if (execZoomIn) {
@@ -166,34 +147,34 @@ const ImagePins = ({
 
 		if (zoomOutHandler) {
 			setZoomOutHandler(false);
-			zoomOut(containerRef.current, panZoomRef.current);
+			zoomOut(container, zoom);
 		}
 
 		if (zoomInHandler) {
 			setZoomInHandler(false);
-			zoomIn(containerRef.current, panZoomRef.current);
+			zoomIn(container, zoom);
 		}
 
-		// const clickAction = (updatedPin) =>
-		// 	setShowTooltip({
-		// 		details: {
-		// 			cx: updatedPin.cx,
-		// 			cy: updatedPin.cy,
-		// 			id: updatedPin.id,
-		// 			label: updatedPin.label,
-		// 			linked_to_sku: updatedPin.linked_to_sku,
-		// 			quantity: updatedPin.quantity,
-		// 			sku: updatedPin.sku,
-		// 		},
-		// 		tooltip: true,
-		// 	});
+		const clickAction = (updatedPin) =>
+			setShowTooltip({
+				details: {
+					cx: updatedPin.cx,
+					cy: updatedPin.cy,
+					id: updatedPin.id,
+					label: updatedPin.label,
+					linked_to_sku: updatedPin.linked_to_sku,
+					quantity: updatedPin.quantity,
+					sku: updatedPin.sku,
+				},
+				tooltip: true,
+			});
 
 		function dragStarted() {
 			select(this).raise().classed('active', true);
 		}
 
 		function dragged() {
-			select(this).attr('transform', `translate(${event.x},${event.y})`);
+			select(this).attr('transform', `translate(${d3event.x},${d3event.y})`);
 		}
 
 		function dragEnded() {
@@ -202,14 +183,15 @@ const ImagePins = ({
 			const beSure = [...newPos];
 			const updatedPin = {};
 			select(this).classed('active', false);
+
 			PIN_ATTRIBUTES.map((element) => {
 				beSure.filter((attr) => {
 					if (attr.name === element) {
 						if (element === 'cx') {
-							updatedPin[`${attr.name}`] = parseFloat(event.x);
+							updatedPin[`${attr.name}`] = parseFloat(d3event.x);
 						}
 						else if (element === 'cy') {
-							updatedPin[`${attr.name}`] = parseFloat(event.y);
+							updatedPin[`${attr.name}`] = parseFloat(d3event.y);
 						}
 						else if (
 							element === 'quantity' ||
@@ -232,6 +214,7 @@ const ImagePins = ({
 					}
 				});
 			});
+
 			const newState = cPins.map((element) => {
 				if (element.id === updatedPin.id) {
 					if (
@@ -247,6 +230,7 @@ const ImagePins = ({
 					return element;
 				}
 			});
+
 			setCpins(newState);
 		}
 
@@ -300,6 +284,7 @@ const ImagePins = ({
 				pin: null,
 			});
 		}
+
 		if (addPinHandler) {
 			setAddPinHandler(false);
 			addPin();
@@ -307,13 +292,13 @@ const ImagePins = ({
 
 		if (!removePinHandler.handler && !addPinHandler) {
 			try {
-				containerRef.current.selectAll('.circle_pin').remove();
+				container.selectAll('.circle_pin').remove();
 			}
 			catch (error) {
 				return;
 			}
 
-			const cont = containerRef.current
+			const cont = container
 				.selectAll('g')
 				.data(cPins)
 				.enter()
@@ -396,8 +381,7 @@ const ImagePins = ({
 			>
 				<g
 					data-testid={`${namespace}container`}
-					id={`${namespace}container`}
-					transform="translate(0,0) scale(1)"
+					ref={containerRef}
 				>
 					<image
 						height={imageSettings.height}
