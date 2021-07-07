@@ -9,7 +9,7 @@
  * distribution rights of the Software.
  */
 
-import { drag, event, select, zoom, zoomIdentity, zoomTransform } from 'd3';
+import {drag, event, select, zoom, zoomIdentity, zoomTransform} from 'd3';
 import PropTypes from 'prop-types';
 import React, {useLayoutEffect, useRef} from 'react';
 
