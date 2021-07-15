@@ -325,6 +325,7 @@ const ImagePins = ({
 		selectedOption,
 		isAdmin,
 		enablePanZoom,
+		execZoomIn,
 		imageSettings,
 		navigationController,
 		removePinHandler,
