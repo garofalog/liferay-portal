@@ -18,6 +18,45 @@ import DiagramHeader from './DiagramHeader';
 import ImagePins from './ImagePins';
 
 import '../css/diagram.scss';
+const [state, dispatch] = useReducer(reducer, initialState)
+
+const INITIAL_STATE = [{
+	addPinHandler: false,
+	removePinHandler:false,
+	zoomInHandler: false,
+	zoomOutHandler: false
+}]
+
+const ADD_PIN = 'ADD_PIN' //: false,
+const REMOVE_PIN = 'REMOVE_PIN' //: false,
+const ZOOM_IN = 'ZOOM_IN ' //: false,
+const ZOOM_OUT = 'ZOOM_OUT' // : false
+
+const DiagramReducer = (state, action) => {
+	switch (action.type) {
+		case ADD_PIN:
+			return [
+				action.payload,
+				...state,
+			]
+			
+			break;
+	
+		default:
+			break;
+	}
+	return state;
+}
+
+const add_pin = ({pin, action}) => {
+	dispatch({
+		types: ADD_PIN,
+		payload: {
+			pin,
+			actions,
+		}
+	})
+}
 
 const Diagram = ({
 	enablePanZoom,
@@ -32,6 +71,8 @@ const Diagram = ({
 	spritemap,
 	zoomController,
 }) => {
+	const [state, dispatch] = useReducer(DiagramReducer, INITIAL_STATE);
+
 	const [addPinHandler, setAddPinHandler] = useState(false);
 	const [removePinHandler, setRemovePinHandler] = useState({
 		handler: false,
