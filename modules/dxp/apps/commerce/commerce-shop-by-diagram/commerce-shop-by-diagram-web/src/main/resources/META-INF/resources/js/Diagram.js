@@ -12,12 +12,15 @@
 import {ClayIconSpriteContext} from '@clayui/icon';
 import PropTypes from 'prop-types';
 import React, {useEffect, useState} from 'react';
+import GlobalState from './context/GlobalState';
 
-import DiagramFooter from './DiagramFooter';
-import DiagramHeader from './DiagramHeader';
-import ImagePins from './ImagePins';
+
+import DiagramFooter from './DiagramComponents/DiagramFooter';
+import DiagramHeader from './DiagramComponents/DiagramHeader';
+import ImagePins from './DiagramComponents/ImagePins';
 
 import '../css/diagram.scss';
+const [state, dispatch] = useReducer(reducer, initialState)
 
 const Diagram = ({
 	enablePanZoom,
@@ -31,6 +34,8 @@ const Diagram = ({
 	spritemap,
 	zoomController,
 }) => {
+	const [state, dispatch] = useReducer(DiagramReducer, INITIAL_STATE);
+
 	const [addPinHandler, setAddPinHandler] = useState(false);
 	const [removePinHandler, setRemovePinHandler] = useState({
 		handler: false,
@@ -87,61 +92,63 @@ const Diagram = ({
 	}, [showTooltip, setShowTooltip]);
 
 	return (
-		<div className="diagram mx-auto">
-			<ClayIconSpriteContext.Provider value={spritemap}>
-				<DiagramHeader
-					addNewPinState={addNewPinState}
-					namespace={namespace}
-					newPinSettings={newPinSettings}
-					setAddNewPinState={setAddNewPinState}
-					setAddPinHandler={setAddPinHandler}
-					setSelectedOption={setSelectedOption}
-				/>
+		<GlobalState>
+			<div className="diagram mx-auto">
+				<ClayIconSpriteContext.Provider value={spritemap}>
+					<DiagramHeader
+						addNewPinState={addNewPinState}
+						namespace={namespace}
+						newPinSettings={newPinSettings}
+						setAddNewPinState={setAddNewPinState}
+						setAddPinHandler={setAddPinHandler}
+						setSelectedOption={setSelectedOption}
+					/>
 
-				<ImagePins
-					addNewPinState={addNewPinState}
-					addPinHandler={addPinHandler}
-					cPins={cPins}
-					changedScale={changedScale}
-					enablePanZoom={enablePanZoom}
-					enableResetZoom={enableResetZoom}
-					imageSettings={imageSettings}
-					imageURL={imageURL}
-					namespace={namespace}
-					navigationController={navigationController}
-					removePinHandler={removePinHandler}
-					resetZoom={resetZoom}
-					scale={scale}
-					selectedOption={selectedOption}
-					setAddPinHandler={setAddPinHandler}
-					setChangedScale={setChangedScale}
-					setCpins={setCpins}
-					setRemovePinHandler={setRemovePinHandler}
-					setResetZoom={setResetZoom}
-					setScale={setScale}
-					setSelectedOption={setSelectedOption}
-					setShowTooltip={setShowTooltip}
-					setZoomInHandler={setZoomInHandler}
-					setZoomOutHandler={setZoomOutHandler}
-					showTooltip={showTooltip}
-					zoomController={zoomController}
-					zoomInHandler={zoomInHandler}
-					zoomOutHandler={zoomOutHandler}
-				/>
+					<ImagePins
+						addNewPinState={addNewPinState}
+						addPinHandler={addPinHandler}
+						cPins={cPins}
+						changedScale={changedScale}
+						enablePanZoom={enablePanZoom}
+						enableResetZoom={enableResetZoom}
+						imageSettings={imageSettings}
+						imageURL={imageURL}
+						namespace={namespace}
+						navigationController={navigationController}
+						removePinHandler={removePinHandler}
+						resetZoom={resetZoom}
+						scale={scale}
+						selectedOption={selectedOption}
+						setAddPinHandler={setAddPinHandler}
+						setChangedScale={setChangedScale}
+						setCpins={setCpins}
+						setRemovePinHandler={setRemovePinHandler}
+						setResetZoom={setResetZoom}
+						setScale={setScale}
+						setSelectedOption={setSelectedOption}
+						setShowTooltip={setShowTooltip}
+						setZoomInHandler={setZoomInHandler}
+						setZoomOutHandler={setZoomOutHandler}
+						showTooltip={showTooltip}
+						zoomController={zoomController}
+						zoomInHandler={zoomInHandler}
+						zoomOutHandler={zoomOutHandler}
+					/>
 
-				<DiagramFooter
-					changedScale={changedScale}
-					enableResetZoom={enableResetZoom}
-					selectedOption={selectedOption}
-					setAddPinHandler={setAddPinHandler}
-					setChangedScale={setChangedScale}
-					setResetZoom={setResetZoom}
-					setSelectedOption={setSelectedOption}
-					setZoomInHandler={setZoomInHandler}
-					setZoomOutHandler={setZoomOutHandler}
-				/>
-			</ClayIconSpriteContext.Provider>
-		</div>
+					<DiagramFooter
+						changedScale={changedScale}
+						enableResetZoom={enableResetZoom}
+						selectedOption={selectedOption}
+						setAddPinHandler={setAddPinHandler}
+						setChangedScale={setChangedScale}
+						setResetZoom={setResetZoom}
+						setSelectedOption={setSelectedOption}
+						setZoomInHandler={setZoomInHandler}
+						setZoomOutHandler={setZoomOutHandler}
+					/>
+				</ClayIconSpriteContext.Provider>
+			</div>
+		</GlobalState>
 	);
 };
 

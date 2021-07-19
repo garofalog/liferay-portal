@@ -12,6 +12,8 @@
 import {drag, event, select, zoom, zoomIdentity, zoomTransform} from 'd3';
 import PropTypes from 'prop-types';
 import React, {useLayoutEffect, useRef} from 'react';
+import { addPinToDiagram } from './store/actions';
+
 
 import NavigationButtons from './NavigationButtons';
 import {moveController, zoomIn, zoomOut} from './NavigationsUtils';
@@ -298,7 +300,7 @@ const ImagePins = ({
 				.attr('alignment-baseline', 'central');
 		}
 
-		select('#newPin').on('click', handleAddPin);
+		select('#newPin').on('click', addPinToDiagram(this. pins));
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [
 		addPinHandler,
