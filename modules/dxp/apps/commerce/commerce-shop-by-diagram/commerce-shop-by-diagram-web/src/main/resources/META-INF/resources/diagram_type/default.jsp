@@ -16,6 +16,16 @@
 
 <%@ include file="/init.jsp" %>
 
+<%
+CPDefinitionDiagramSettingDisplayContext cpDefinitionDiagramSettingDisplayContext = (CPDefinitionDiagramSettingDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
+
+CPDefinition cpDefinition = cpDefinitionDiagramSettingDisplayContext.getCPDefinition();
+
+CPDefinitionDiagramSetting cpDefinitionDiagramSetting = cpDefinitionDiagramSettingDisplayContext.fetchCPDefinitionDiagramSetting();
+
+String imageURL = CommerceMediaResolverUtil.getDownloadURL(CommerceAccountConstants.ACCOUNT_ID_GUEST, cpDefinitionDiagramSetting.getCPAttachmentFileEntryId());
+%>
+
 <div id="shop-by-diagram" />
 
 <react:component
@@ -33,7 +43,11 @@
 				"width", "100%"
 			)
 		).put(
-			"imageURL", StringPool.BLANK
+			"imageURL", imageURL
+		).put(
+			"pinsEndpoint", "/o/headless-commerce-admin-catalog/v1.0/products/" + cpDefinition.getCProductId() + "/pins"
+		).put(
+			"productId", cpDefinition.getCProductId()
 		).build()
 	%>'
 />
