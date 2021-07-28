@@ -23,6 +23,7 @@ import com.liferay.commerce.product.model.CPAttachmentFileEntry;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.permission.CommerceProductViewPermission;
 import com.liferay.commerce.product.service.CPAttachmentFileEntryLocalService;
+import com.liferay.commerce.shop.by.diagram.constants.CPDefinitionDiagramSettingsConstants;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -149,7 +150,7 @@ public class DefaultCommerceMediaResolver implements CommerceMediaResolver {
 		sb.append(commerceAccountId);
 
 		if (cpAttachmentFileEntry.getType() ==
-				CPAttachmentFileEntryConstants.TYPE_IMAGE) {
+				CPAttachmentFileEntryConstants.TYPE_IMAGE || cpAttachmentFileEntry.getType() == CPDefinitionDiagramSettingsConstants.TYPE_DIAGRAM) {
 
 			sb.append("/images/");
 		}
