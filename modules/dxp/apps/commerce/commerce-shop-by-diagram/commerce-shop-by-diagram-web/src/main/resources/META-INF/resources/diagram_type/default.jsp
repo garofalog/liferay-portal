@@ -21,9 +21,7 @@ CPDefinitionDiagramSettingDisplayContext cpDefinitionDiagramSettingDisplayContex
 
 CPDefinition cpDefinition = cpDefinitionDiagramSettingDisplayContext.getCPDefinition();
 
-CPDefinitionDiagramSetting cpDefinitionDiagramSetting = cpDefinitionDiagramSettingDisplayContext.fetchCPDefinitionDiagramSetting();
-
-String imageURL = CommerceMediaResolverUtil.getDownloadURL(CommerceAccountConstants.ACCOUNT_ID_GUEST, cpDefinitionDiagramSetting.getCPAttachmentFileEntryId());
+String imageURL = cpDefinitionDiagramSettingDisplayContext.getImageURL();
 %>
 
 <div id="shop-by-diagram" />
