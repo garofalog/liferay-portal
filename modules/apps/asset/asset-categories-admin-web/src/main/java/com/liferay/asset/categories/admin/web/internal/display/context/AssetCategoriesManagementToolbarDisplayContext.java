@@ -163,25 +163,27 @@ public class AssetCategoriesManagementToolbarDisplayContext
 	public CreationMenu getCreationMenu() {
 		return CreationMenuBuilder.addPrimaryDropdownItem(
 			dropdownItem -> {
-				PortletURL addCategoryURL = PortletURLBuilder.createRenderURL(
-					liferayPortletResponse
-				).setMVCPath(
-					"/edit_category.jsp"
-				).buildPortletURL();
-
-				if (_assetCategoriesDisplayContext.getCategoryId() > 0) {
-					addCategoryURL.setParameter(
+				dropdownItem.setHref(
+					PortletURLBuilder.createRenderURL(
+						liferayPortletResponse
+					).setMVCPath(
+						"/edit_category.jsp"
+					).setParameter(
 						"parentCategoryId",
-						String.valueOf(
-							_assetCategoriesDisplayContext.getCategoryId()));
-				}
+						() -> {
+							if (_assetCategoriesDisplayContext.getCategoryId() >
+									0) {
 
-				addCategoryURL.setParameter(
-					"vocabularyId",
-					String.valueOf(
-						_assetCategoriesDisplayContext.getVocabularyId()));
+								return _assetCategoriesDisplayContext.
+									getCategoryId();
+							}
 
-				dropdownItem.setHref(addCategoryURL);
+							return null;
+						}
+					).setParameter(
+						"vocabularyId",
+						_assetCategoriesDisplayContext.getVocabularyId()
+					).buildPortletURL());
 
 				String label = "add-category";
 

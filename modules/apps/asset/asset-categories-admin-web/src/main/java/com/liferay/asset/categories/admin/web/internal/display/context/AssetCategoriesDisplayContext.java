@@ -111,35 +111,45 @@ public class AssetCategoriesDisplayContext {
 	}
 
 	public String getAddCategoryRedirect() throws PortalException {
-		PortletURL addCategoryURL = PortletURLBuilder.createRenderURL(
+		return PortletURLBuilder.createRenderURL(
 			_renderResponse
 		).setMVCPath(
 			"/edit_category.jsp"
-		).buildPortletURL();
+		).setParameter(
+			"itemSelectorEventName",
+			() -> {
+				String itemSelectorEventName = getItemSelectorEventName();
 
-		long parentCategoryId = BeanParamUtil.getLong(
-			getCategory(), _httpServletRequest, "parentCategoryId");
+				if (Validator.isNotNull(itemSelectorEventName)) {
+					return itemSelectorEventName;
+				}
 
-		if (parentCategoryId > 0) {
-			addCategoryURL.setParameter(
-				"parentCategoryId", String.valueOf(parentCategoryId));
-		}
+				return null;
+			}
+		).setParameter(
+			"parentCategoryId",
+			() -> {
+				long parentCategoryId = BeanParamUtil.getLong(
+					getCategory(), _httpServletRequest, "parentCategoryId");
 
-		long vocabularyId = getVocabularyId();
+				if (parentCategoryId > 0) {
+					return parentCategoryId;
+				}
 
-		if (vocabularyId > 0) {
-			addCategoryURL.setParameter(
-				"vocabularyId", String.valueOf(vocabularyId));
-		}
+				return null;
+			}
+		).setParameter(
+			"vocabularyId",
+			() -> {
+				long vocabularyId = getVocabularyId();
 
-		String itemSelectorEventName = getItemSelectorEventName();
+				if (vocabularyId > 0) {
+					return vocabularyId;
+				}
 
-		if (Validator.isNotNull(itemSelectorEventName)) {
-			addCategoryURL.setParameter(
-				"itemSelectorEventName", itemSelectorEventName);
-		}
-
-		return addCategoryURL.toString();
+				return null;
+			}
+		).buildString();
 	}
 
 	public String getAssetType(AssetVocabulary vocabulary)
@@ -425,26 +435,32 @@ public class AssetCategoriesDisplayContext {
 	}
 
 	public String getEditCategoryRedirect() throws PortalException {
-		long parentCategoryId = BeanParamUtil.getLong(
-			getCategory(), _httpServletRequest, "parentCategoryId");
-
-		PortletURL backURL = PortletURLBuilder.createRenderURL(
+		return PortletURLBuilder.createRenderURL(
 			_renderResponse
 		).setMVCPath(
 			"/view.jsp"
-		).buildPortletURL();
+		).setParameter(
+			"categoryId",
+			() -> {
+				long parentCategoryId = BeanParamUtil.getLong(
+					getCategory(), _httpServletRequest, "parentCategoryId");
 
-		if (parentCategoryId > 0) {
-			backURL.setParameter(
-				"categoryId", String.valueOf(parentCategoryId));
-		}
+				if (parentCategoryId > 0) {
+					return parentCategoryId;
+				}
 
-		if (getVocabularyId() > 0) {
-			backURL.setParameter(
-				"vocabularyId", String.valueOf(getVocabularyId()));
-		}
+				return null;
+			}
+		).setParameter(
+			"vocabularyId",
+			() -> {
+				if (getVocabularyId() > 0) {
+					return getVocabularyId();
+				}
 
-		return backURL.toString();
+				return null;
+			}
+		).buildString();
 	}
 
 	public PortletURL getEditVocabularyURL() {
@@ -875,27 +891,30 @@ public class AssetCategoriesDisplayContext {
 		PortletURL currentURL = PortletURLUtil.getCurrent(
 			_renderRequest, _renderResponse);
 
-		PortletURL iteratorURL = PortletURLBuilder.createRenderURL(
+		return PortletURLBuilder.createRenderURL(
 			_renderResponse
 		).setMVCPath(
 			"/view.jsp"
 		).setRedirect(
 			currentURL
+		).setKeywords(
+			_getKeywords()
 		).setNavigation(
 			getNavigation()
+		).setParameter(
+			"categoryId",
+			() -> {
+				if (!isFlattenedNavigationAllowed()) {
+					return getCategoryId();
+				}
+
+				return null;
+			}
+		).setParameter(
+			"displayStyle", getDisplayStyle()
+		).setParameter(
+			"vocabularyId", getVocabularyId()
 		).buildPortletURL();
-
-		if (!isFlattenedNavigationAllowed()) {
-			iteratorURL.setParameter(
-				"categoryId", String.valueOf(getCategoryId()));
-		}
-
-		iteratorURL.setParameter(
-			"vocabularyId", String.valueOf(getVocabularyId()));
-		iteratorURL.setParameter("displayStyle", getDisplayStyle());
-		iteratorURL.setParameter("keywords", _getKeywords());
-
-		return iteratorURL;
 	}
 
 	private String _getKeywords() {

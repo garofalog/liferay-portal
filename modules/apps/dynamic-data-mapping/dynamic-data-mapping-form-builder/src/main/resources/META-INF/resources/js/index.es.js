@@ -12,8 +12,6 @@
  * details.
  */
 
-export * as FieldUtil from './components/LayoutProvider/util/fields.es';
-export * as RulesUtil from './components/LayoutProvider/util/rules.es';
 export * as SettingsContext from './components/LayoutProvider/util/settingsContext.es';
 export {Token} from './expressions/Token.es';
 export {Tokenizer} from './expressions/Tokenizer.es';

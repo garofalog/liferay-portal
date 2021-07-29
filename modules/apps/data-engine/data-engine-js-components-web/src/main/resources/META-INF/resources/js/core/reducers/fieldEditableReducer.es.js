@@ -12,18 +12,19 @@
  * details.
  */
 
-import {
-	FieldSupport,
-	FieldUtil,
-	RulesUtil,
-	SettingsContext,
-} from 'dynamic-data-mapping-form-builder';
+import {FieldSupport, SettingsContext} from 'dynamic-data-mapping-form-builder';
 
 import * as FormSupport from '../../utils/FormSupport.es';
 import {formatRules} from '../../utils/rulesSupport';
 import {PagesVisitor} from '../../utils/visitors.es';
 import {EVENT_TYPES} from '../actions/eventTypes.es';
+import {
+	createDuplicatedField,
+	findInvalidFieldReference,
+} from '../utils/fields';
+import {updateRulesReferences} from '../utils/rules';
 import sectionAdded from '../utils/sectionAddedHandler';
+import {enableSubmitButton} from '../utils/submitButtonController.es';
 
 export const deleteField = ({
 	clean = false,
@@ -80,11 +81,7 @@ const updateFieldProperty = ({
 	) {
 		focusedField = SettingsContext.updateFieldReference(
 			focusedField,
-			FieldUtil.findInvalidFieldReference(
-				focusedField,
-				pages,
-				propertyValue
-			),
+			findInvalidFieldReference(focusedField, pages, propertyValue),
 			false
 		);
 	}
@@ -183,7 +180,7 @@ export default (state, action, config) => {
 				Object.keys(focusedField).length &&
 				propertyName === 'fieldReference' &&
 				(propertyValue === '' ||
-					FieldUtil.findInvalidFieldReference(
+					findInvalidFieldReference(
 						focusedField,
 						state.pages,
 						propertyValue
@@ -301,7 +298,7 @@ export default (state, action, config) => {
 					true,
 					true
 				),
-				rules: RulesUtil.updateRulesReferences(
+				rules: updateRulesReferences(
 					rules || [],
 					focusedField,
 					newFocusedField
@@ -367,7 +364,7 @@ export default (state, action, config) => {
 				)
 			);
 
-			const newField = FieldUtil.createDuplicatedField(originalField, {
+			const newField = createDuplicatedField(originalField, {
 				availableLanguageIds,
 				defaultLanguageId,
 				editingLanguageId,
@@ -474,6 +471,7 @@ export default (state, action, config) => {
 			const {
 				generateFieldNameUsingFieldLabel,
 				getFieldNameGenerator,
+				submitButtonId,
 			} = config;
 
 			const fieldName = FieldSupport.getField(
@@ -533,10 +531,12 @@ export default (state, action, config) => {
 				true
 			);
 
+			enableSubmitButton(submitButtonId);
+
 			return {
 				focusedField: newFocusedField,
 				pages: newPages,
-				rules: RulesUtil.updateRulesReferences(
+				rules: updateRulesReferences(
 					rules || [],
 					focusedField,
 					newFocusedField

@@ -630,7 +630,7 @@ definition {
 
 	test EditApplicationScopesAndViewLanguageKeys {
 		property liferay.dependency.jars = "com.liferay.oauth2.provider.scope.sample.qa.jar";
-		property osgi.module.configuration.file.names = "com.liferay.oauth2.provider.scope.internal.configuration.ConfigurableScopeMapperConfiguration-default.config";
+		property osgi.module.configuration.file.names = "com.liferay.oauth2.provider.scope.internal.configuration.ConfigurableScopeMapperConfiguration~default.config";
 		property osgi.module.configurations = "mapping=[&quot;example-scope-1,example-scope-2\=everything&quot;]${line.separator}osgi.jaxrs.name=&quot;liferay-oauth2-scope-sample-qa-app&quot;${line.separator}passthrough=&quot;true&quot;";
 		property portal.upstream = "quarantine";
 		property test.name.skip.portal.instance = "OAuth2#EditApplicationScopesAndViewLanguageKeys";
@@ -964,6 +964,172 @@ definition {
 			locator1 = "OAuth2#USER_CONNECTED_APP_TABLE_NAME");
 	}
 
+	@description = "This is a use case for LPS-129397 TC-1: Revoke multiple authorization via new kebab menu option in OAuth2 application's row."
+	@priority = "5"
+	test RevokeAuthorizationViaKebabMenu {
+		property test.name.skip.portal.instance = "OAuth2#RevokeAuthorizationViaKebabMenu";
+
+		OAuth2.addAndEditExternalApplication(
+			applicationName = "My application",
+			callbackURI = '''http://martamedio.com/oauth2-tester/?url=${portalURL}&client_id=default''',
+			clientId = "default",
+			clientProfile = "Web Application",
+			clientSecret = "defaultsecret",
+			websiteURL = "http://localhost:8080");
+
+		OAuth2.openOAuth2Admin();
+
+		AssertTextEquals(
+			key_columnName = "lfr-authorizations",
+			key_tableEntry = "My application",
+			locator1 = "LexiconTable#TABLE_ENTRY_INFO",
+			value1 = "0");
+
+		LexiconEntry.viewNoEntryMenuItem(
+			menuItem = "Revoke Authorizations",
+			rowEntry = "My application");
+
+		// Authorize the application
+
+		OAuth2.authorizeMyApplication(
+			clientId = "default",
+			clientSecret = "defaultsecret");
+
+		OAuth2.launchRequest();
+
+		OAuth2.openOAuth2Admin();
+
+		// Test starts here
+
+		// Verify that the Authorization number is correct and the Revoke Authorization button is present
+
+		AssertTextEquals(
+			key_columnName = "lfr-authorizations",
+			key_tableEntry = "My application",
+			locator1 = "LexiconTable#TABLE_ENTRY_INFO",
+			value1 = "1");
+
+		// Revoke authorizations via kebab menu
+
+		OAuth2.revokeApplicationAuthorization(applicationName = "My application");
+
+		// Assert that the Authorization list is empty under the Authorization page in the application settings
+
+		OAuth2.assertApplicationHasNoAuthorization(applicationName = "My application");
+	}
+
+	@description = "This is a use case for LPS-129397 TC-3: Revoke multiple authorization via new kebab menu option in OAuth2 application's row when the device is remembered."
+	@priority = "3"
+	test RevokeAuthorizationViaKebabMenuWithRememberDevice {
+		property test.name.skip.portal.instance = "OAuth2#RevokeAuthorizationViaKebabMenuWithRememberDevice";
+
+		OAuth2.addAndEditExternalApplication(
+			applicationName = "My Application",
+			callbackURI = '''http://martamedio.com/oauth2-tester/?url=${portalURL}&client_id=default''',
+			checkboxCheckList = "Remember Device",
+			clientId = "default",
+			clientProfile = "Web Application",
+			clientSecret = "defaultsecret",
+			websiteURL = "http://localhost:8080");
+
+		OAuth2.openOAuth2Admin();
+
+		AssertTextEquals(
+			key_columnName = "lfr-authorizations",
+			key_tableEntry = "My Application",
+			locator1 = "LexiconTable#TABLE_ENTRY_INFO",
+			value1 = "0");
+
+		LexiconEntry.viewNoEntryMenuItem(
+			menuItem = "Revoke Authorizations",
+			rowEntry = "My Application");
+
+		// Authorize the application
+
+		OAuth2.authorizeMyApplication(
+			clientId = "default",
+			clientSecret = "defaultsecret",
+			rememberDevice = "true");
+
+		OAuth2.launchRequest();
+
+		OAuth2.openOAuth2Admin();
+
+		// Test starts here
+
+		// Verify that the Authorization number is correct and the Revoke Authorization button is present
+
+		AssertTextEquals(
+			key_columnName = "lfr-authorizations",
+			key_tableEntry = "My Application",
+			locator1 = "LexiconTable#TABLE_ENTRY_INFO",
+			value1 = "1");
+
+		// Revoke authorizations via kebab menu
+
+		OAuth2.revokeApplicationAuthorization(applicationName = "My Application");
+
+		// Assert that the Authorization list is empty under the Authorization page in the application settings
+
+		OAuth2.assertApplicationHasNoAuthorization(applicationName = "My Application");
+	}
+
+	@description = "This is a use case for LPS-129397 TC-2: Revoke multiple authorization via new kebab menu option in OAuth2 application's row when application is trusted."
+	@priority = "3"
+	test RevokeAuthorizationViaKebabMenuwithTrustedDevice {
+		property test.name.skip.portal.instance = "OAuth2#RevokeAuthorizationViaKebabMenuwithTrustedDevice";
+
+		OAuth2.addAndEditExternalApplication(
+			applicationName = "My Application",
+			callbackURI = '''http://martamedio.com/oauth2-tester/?url=${portalURL}&client_id=default''',
+			checkboxCheckList = "Trusted Application",
+			clientId = "default",
+			clientProfile = "Web Application",
+			clientSecret = "defaultsecret",
+			websiteURL = "http://localhost:8080");
+
+		OAuth2.openOAuth2Admin();
+
+		AssertTextEquals(
+			key_columnName = "lfr-authorizations",
+			key_tableEntry = "My Application",
+			locator1 = "LexiconTable#TABLE_ENTRY_INFO",
+			value1 = "0");
+
+		LexiconEntry.viewNoEntryMenuItem(
+			menuItem = "Revoke Authorizations",
+			rowEntry = "My Application");
+
+		// Test starts here
+
+		// Authorize application
+
+		OAuth2.authorizeMyApplication(
+			clientId = "default",
+			clientSecret = "defaultsecret",
+			noAuthorize = "true");
+
+		OAuth2.launchRequest();
+
+		OAuth2.openOAuth2Admin();
+
+		// Verify that the Authorization number is correct and the Revoke Authorization button is present
+
+		AssertTextEquals(
+			key_columnName = "lfr-authorizations",
+			key_tableEntry = "My Application",
+			locator1 = "LexiconTable#TABLE_ENTRY_INFO",
+			value1 = "1");
+
+		// Revoke authorizations via kebab menu
+
+		OAuth2.revokeApplicationAuthorization(applicationName = "My Application");
+
+		// Assert that the Authorization list is empty under the Authorization page in the application settings
+
+		OAuth2.assertApplicationHasNoAuthorization(applicationName = "My Application");
+	}
+
 	@description = "This is a use case for LPS-105158."
 	@priority = "4"
 	test ScopesDisplayAsListOnInstanceLevel {
@@ -1079,7 +1245,7 @@ definition {
 
 	test UpdateScopeMappings {
 		property liferay.dependency.jars = "com.liferay.oauth2.provider.scope.sample.qa.jar";
-		property osgi.module.configuration.file.names = "com.liferay.oauth2.provider.scope.internal.configuration.ConfigurableScopeMapperConfiguration-liferay-oauth2-scope-sample-qa-app.config";
+		property osgi.module.configuration.file.names = "com.liferay.oauth2.provider.scope.internal.configuration.ConfigurableScopeMapperConfiguration~liferay~oauth2~scope~sample~qa~app.config";
 		property osgi.module.configurations = "mapping=[&quot;example-scope-1,example-scope-2\=everything.read,everything.write&quot;]${line.separator}osgi.jaxrs.name=&quot;liferay-oauth2-scope-sample-qa-app&quot;${line.separator}passthrough=&quot;false&quot;";
 		property test.name.skip.portal.instance = "OAuth2#UpdateScopeMappings";
 
@@ -1190,7 +1356,7 @@ definition {
 
 	test ViewAuthPromptRequestedScopes {
 		property custom.properties = "virtual.hosts.default.site.name=Guest";
-		property osgi.module.configuration.file.names = "com.liferay.oauth2.provider.scope.internal.configuration.BundlePrefixHandlerFactoryConfiguration-default.config";
+		property osgi.module.configuration.file.names = "com.liferay.oauth2.provider.scope.internal.configuration.BundlePrefixHandlerFactoryConfiguration~default.config";
 		property osgi.module.configurations = "include.bundle.symbolic.name=&quot;false&quot;${line.separator}osgi.jaxrs.name=&quot;Default&quot;${line.separator}separator=&quot;&quot;${line.separator}service.properties=&quot;&quot;";
 		property portal.upstream = "quarantine";
 		property test.name.skip.portal.instance = "OAuth2#ViewAuthPromptRequestedScopes";

@@ -41,6 +41,8 @@ import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -183,6 +185,13 @@ public class LayoutReportsDataMVCResourceCommand
 
 	private String _getConfigureGooglePageSpeedURL(
 		PortletRequest portletRequest) {
+
+		ThemeDisplay themeDisplay = (ThemeDisplay)portletRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		if (!_isGroupAdmin(themeDisplay.getScopeGroupId())) {
+			return null;
+		}
 
 		return PortletURLBuilder.create(
 			_portal.getControlPanelPortletURL(
@@ -342,6 +351,13 @@ public class LayoutReportsDataMVCResourceCommand
 		}
 
 		return StringPool.BLANK;
+	}
+
+	private boolean _isGroupAdmin(long groupId) {
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		return permissionChecker.isGroupAdmin(groupId);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

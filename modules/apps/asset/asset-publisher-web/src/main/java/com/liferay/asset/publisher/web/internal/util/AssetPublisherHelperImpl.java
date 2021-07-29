@@ -553,23 +553,27 @@ public class AssetPublisherHelperImpl implements AssetPublisherHelper {
 		AssetRenderer<?> assetRenderer, AssetEntry assetEntry,
 		boolean viewInContext) {
 
-		int delta = ParamUtil.getInteger(liferayPortletRequest, "delta");
-		boolean resetCur = ParamUtil.getBoolean(
-			liferayPortletRequest, "resetCur");
-
 		PortletURL redirectURL = PortletURLBuilder.createRenderURL(
 			liferayPortletResponse
 		).setParameter(
+			"assetEntryId", assetEntry.getEntryId()
+		).setParameter(
 			"cur", ParamUtil.getInteger(liferayPortletRequest, "cur")
+		).setParameter(
+			"delta",
+			() -> {
+				int delta = ParamUtil.getInteger(
+					liferayPortletRequest, "delta");
+
+				if (delta > 0) {
+					return delta;
+				}
+
+				return null;
+			}
+		).setParameter(
+			"resetCur", ParamUtil.getBoolean(liferayPortletRequest, "resetCur")
 		).buildPortletURL();
-
-		if (delta > 0) {
-			redirectURL.setParameter("delta", String.valueOf(delta));
-		}
-
-		redirectURL.setParameter("resetCur", String.valueOf(resetCur));
-		redirectURL.setParameter(
-			"assetEntryId", String.valueOf(assetEntry.getEntryId()));
 
 		PortletURL viewFullContentURL = PortletURLBuilder.create(
 			getBaseAssetViewURL(

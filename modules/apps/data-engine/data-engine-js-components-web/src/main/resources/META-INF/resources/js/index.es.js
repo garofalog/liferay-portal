@@ -31,7 +31,7 @@ export {
 export * as RulesSupport from './utils/rulesSupport';
 export {default as setDataRecord} from './utils/setDataRecord.es';
 export * as StringUtils from './utils/strings';
-export {PagesVisitor, RulesVisitor} from './utils/visitors.es';
+export {PagesVisitor} from './utils/visitors.es';
 
 // Form/Data Engine Core
 
@@ -47,7 +47,9 @@ export {FormProvider, useForm, useFormState} from './core/hooks/useForm.es';
 export {PageProvider, usePage} from './core/hooks/usePage.es';
 export {useFieldTypesResource} from './core/hooks/useResource.es';
 export {elementSetAdded} from './core/thunks/elementSetAdded.es';
+export * as FieldUtil from './core/utils/fields';
 export {default as sectionAdded} from './core/utils/sectionAddedHandler';
+export {enableSubmitButton} from './core/utils/submitButtonController.es';
 
 // Custom Form
 

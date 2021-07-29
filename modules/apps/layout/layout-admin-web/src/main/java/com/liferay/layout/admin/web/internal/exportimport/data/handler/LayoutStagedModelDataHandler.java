@@ -1211,8 +1211,7 @@ public class LayoutStagedModelDataHandler
 		}
 
 		if (exportThemeSettings &&
-			!portletDataContext.isPerformDirectBinaryImport() &&
-			!layout.isInheritLookAndFeel()) {
+			!portletDataContext.isPerformDirectBinaryImport()) {
 
 			String css =
 				_dlReferencesExportImportContentProcessor.
@@ -1222,14 +1221,35 @@ public class LayoutStagedModelDataHandler
 
 			layout.setCss(css);
 
-			StagedTheme stagedTheme = new StagedThemeImpl(layout.getTheme());
+			UnicodeProperties typeSettingsUnicodeProperties =
+				layout.getTypeSettingsProperties();
 
-			Element layoutElement = portletDataContext.getExportDataElement(
-				layout);
+			String javascript = GetterUtil.getString(
+				typeSettingsUnicodeProperties.getProperty(
+					"javascript", StringPool.BLANK));
 
-			portletDataContext.addReferenceElement(
-				layout, layoutElement, stagedTheme,
-				PortletDataContext.REFERENCE_TYPE_DEPENDENCY, true);
+			if (Validator.isNotNull(javascript)) {
+				typeSettingsUnicodeProperties.setProperty(
+					"javascript",
+					_dlReferencesExportImportContentProcessor.
+						replaceExportContentReferences(
+							portletDataContext, layout, javascript, true,
+							false));
+
+				layout.setTypeSettingsProperties(typeSettingsUnicodeProperties);
+			}
+
+			if (!layout.isInheritLookAndFeel()) {
+				StagedTheme stagedTheme = new StagedThemeImpl(
+					layout.getTheme());
+
+				Element layoutElement = portletDataContext.getExportDataElement(
+					layout);
+
+				portletDataContext.addReferenceElement(
+					layout, layoutElement, stagedTheme,
+					PortletDataContext.REFERENCE_TYPE_DEPENDENCY, true);
+			}
 		}
 	}
 
@@ -1974,6 +1994,30 @@ public class LayoutStagedModelDataHandler
 						portletDataContext, layout, layout.getCss());
 
 			importedLayout.setCss(css);
+
+			UnicodeProperties typeSettingsUnicodeProperties =
+				layout.getTypeSettingsProperties();
+
+			String javascript = GetterUtil.getString(
+				typeSettingsUnicodeProperties.getProperty(
+					"javascript", StringPool.BLANK));
+
+			if (Validator.isNotNull(javascript)) {
+				typeSettingsUnicodeProperties.setProperty(
+					"javascript",
+					_dlReferencesExportImportContentProcessor.
+						replaceImportContentReferences(
+							portletDataContext, layout, javascript));
+
+				importedLayout.setTypeSettingsProperties(
+					typeSettingsUnicodeProperties);
+
+				_layoutLocalService.updateLayout(
+					importedLayout.getGroupId(),
+					importedLayout.isPrivateLayout(),
+					importedLayout.getLayoutId(),
+					importedLayout.getTypeSettings());
+			}
 
 			_layoutLocalService.updateLookAndFeel(
 				importedLayout.getGroupId(), importedLayout.isPrivateLayout(),
