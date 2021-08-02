@@ -10,6 +10,8 @@
  */
 
 import {ClayIconSpriteContext} from '@clayui/icon';
+import ClayLoadingIndicator from '@clayui/loading-indicator';
+import {fetch} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React, {useEffect, useState} from 'react';
 
@@ -28,7 +30,8 @@ const Diagram = ({
 	namespace,
 	navigationController,
 	newPinSettings,
-	pins,
+	pinsEndpoint,
+	productId,
 	spritemap,
 	zoomController,
 }) => {
@@ -44,7 +47,7 @@ const Diagram = ({
 	const [changedScale, setChangedScale] = useState(false);
 	const [scale, setScale] = useState(1);
 	const [selectedOption, setSelectedOption] = useState(1);
-	const [cPins, setCpins] = useState(pins);
+	const [cPins, setCpins] = useState([]);
 	const [showTooltip, setShowTooltip] = useState({
 		details: {
 			cx: 0,
@@ -63,12 +66,43 @@ const Diagram = ({
 	});
 
 	useEffect(() => {
-		if (!showTooltip.tooltip) {
+		fetch(`${pinsEndpoint}${productId}/pins`)
+			.then((response) => response.json())
+			.then((jsonResponse) => {
+				const loadedPins = jsonResponse.items.map((item) => ({
+					cx: item.positionX,
+					cy: item.positionY,
+					id: item.id,
+					label: item.number,
+				}));
+
+				setCpins(loadedPins);
+			});
+	}, [pinsEndpoint, productId]);
+
+	const pinClickAction = (updatedPin) => {
+		console.log('in pinClickAction')
+		setShowTooltip({
+			details: {
+				cx: updatedPin.cx,
+				cy: updatedPin.cy,
+				id: updatedPin.id,
+				label: updatedPin.label,
+				linked_to_sku: updatedPin.linked_to_sku,
+				quantity: updatedPin.quantity,
+				sku: updatedPin.sku,
+			},
+			tooltip: true,
+		});
+	}
+
+	useLayoutEffect(() => {
+		if (showTooltip.tooltip) {
 			const newCPinState = cPins.map((element) => {
 				if (element.id === showTooltip.details.id) {
 					return {
 						cx: cPins[element.id].cx,
-						cy: cPins[element.id].cy,
+						cy: cPins[egit lement.id].cy,
 						draggable: cPins[element.id].draggable,
 						fill: cPins[element.id].fill,
 						id: showTooltip.details.id,
@@ -88,7 +122,7 @@ const Diagram = ({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [showTooltip, setShowTooltip]);
 
-	return (
+	return cPins.length !== 0 ? (
 		<div className="diagram mx-auto">
 			<ClayIconSpriteContext.Provider value={spritemap}>
 				<DiagramHeader
@@ -149,6 +183,8 @@ const Diagram = ({
 				/>
 			</ClayIconSpriteContext.Provider>
 		</div>
+	) : (
+		<ClayLoadingIndicator />
 	);
 };
 
@@ -159,6 +195,7 @@ Diagram.defaultProps = {
 		height: '300px',
 		width: '100%',
 	},
+	isAdmin: true,
 	navigationController: {
 		dragStep: 10,
 		enable: true,
