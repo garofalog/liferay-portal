@@ -43,7 +43,7 @@ String imageURL = cpDefinitionDiagramSettingDisplayContext.getImageURL();
 		).put(
 			"imageURL", imageURL
 		).put(
-			"pinsEndpoint", "/o/headless-commerce-admin-catalog/v1.0/products/"
+			"pinsEndpoint", "/o/headless-commerce-admin-catalog/v1.0/"
 		).put(
 			"productId", cpDefinition.getCProductId()
 		).build()

@@ -35,6 +35,7 @@ const ImagePins = ({
 	addPinHandler,
 	cPins,
 	changedScale,
+	children,
 	enablePanZoom,
 	execZoomIn,
 	handleAddPin,
@@ -43,6 +44,7 @@ const ImagePins = ({
 	isAdmin,
 	namespace,
 	navigationController,
+	pinClickAction,
 	removePinHandler,
 	resetZoom,
 	selectedOption,
@@ -196,10 +198,10 @@ const ImagePins = ({
 			const newState = cPins.map((element) => {
 				if (element.id === updatedPin.id) {
 					if (
-						Math.abs(element.cx - updatedPin.cx) < 15 &&
-						Math.abs(element.cy - updatedPin.cy) < 15
+						Math.abs(element.cx - updatedPin.cx) < 10 &&
+						Math.abs(element.cy - updatedPin.cy) < 10
 					) {
-						return;
+						pinClickAction(updatedPin);
 					}
 
 					return updatedPin;
@@ -340,6 +342,7 @@ const ImagePins = ({
 		setZoomOutHandler,
 		zoomOutHandler,
 		zoomInHandler,
+		pinClickAction,
 	]);
 
 	return (
@@ -362,6 +365,8 @@ const ImagePins = ({
 					></image>
 				</g>
 			</svg>
+
+			{children}
 
 			{navigationController.enable && (
 				<NavigationButtons
