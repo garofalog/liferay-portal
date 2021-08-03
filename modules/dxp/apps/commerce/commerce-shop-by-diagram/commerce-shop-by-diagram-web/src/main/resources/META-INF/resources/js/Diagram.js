@@ -102,7 +102,7 @@ const Diagram = ({
 				if (element.id === showTooltip.details.id) {
 					return {
 						cx: cPins[element.id].cx,
-						cy: cPins[egit lement.id].cy,
+						cy: cPins[element.id].cy,
 						draggable: cPins[element.id].draggable,
 						fill: cPins[element.id].fill,
 						id: showTooltip.details.id,
