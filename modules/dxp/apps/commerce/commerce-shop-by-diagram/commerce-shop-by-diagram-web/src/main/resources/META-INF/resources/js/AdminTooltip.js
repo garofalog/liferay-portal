@@ -9,11 +9,8 @@
  * distribution rights of the Software.
  */
 
-import ClayAutocomplete from '@clayui/autocomplete';
 import ClayButton from '@clayui/button';
 import ClayCard from '@clayui/card';
-import {useResource} from '@clayui/data-provider';
-import ClayDropDown from '@clayui/drop-down';
 import ClayForm, {ClayInput, ClayRadio, ClayRadioGroup} from '@clayui/form';
 import PropTypes from 'prop-types';
 import React, {useLayoutEffect, useState} from 'react';
@@ -29,25 +26,11 @@ const AdminTooltip = ({
 	const [linkedValue, setLinkedValue] = useState(
 		showTooltip.details.linked_to_sku
 	);
-	const [sku, setSku] = useState(showTooltip.details.sku);
+
 	const [quantity, setQuantity] = useState(showTooltip.details.quantity);
-	const [networkStatus, setNetworkStatus] = useState(4);
-
-	const initialLoading = networkStatus === 1;
-	const loadingAd = networkStatus < 4;
-	const error = networkStatus === 5;
-
-	const {resource} = useResource({
-		fetchPolicy: 'cache-first',
-		link: 'https://rickandmortyapi.com/api/character/',
-		onNetworkStatusChange: setNetworkStatus,
-		variables: {
-			name: sku,
-		},
-	});
 
 	useLayoutEffect(() => {
-		setSku(showTooltip.details.sku);
+
 		setQuantity(showTooltip.details.quantity);
 		setPinLabel(showTooltip.details.label);
 	}, [showTooltip]);
@@ -90,41 +73,7 @@ const AdminTooltip = ({
 					</ClayRadioGroup>
 				</ClayForm.Group>
 
-				<ClayForm.Group className="col-9 form-group-sm text-left">
-					<label htmlFor={`${namespace}pin-sku`}>
-						{Liferay.Language.get('select-sku')}
-					</label>
-					<ClayAutocomplete>
-						<ClayAutocomplete.Input
-							id={`${namespace}pin-sku`}
-							onChange={(event) => setSku(event.target.value)}
-							placeholder={Liferay.Language.get('select-sku')}
-							value={sku}
-						/>
-						<ClayAutocomplete.DropDown
-							active={(!!resource && !!sku) || initialLoading}
-						>
-							<ClayDropDown.ItemList>
-								{(error || (resource && resource.error)) && (
-									<ClayDropDown.Item className="disabled">
-										No Results Found
-									</ClayDropDown.Item>
-								)}
-								{!error &&
-									resource &&
-									resource.results &&
-									resource.results.map((item) => (
-										<ClayAutocomplete.Item
-											key={item.id}
-											match={sku}
-											value={item.name}
-										/>
-									))}
-							</ClayDropDown.ItemList>
-						</ClayAutocomplete.DropDown>
-						{loadingAd && <ClayAutocomplete.LoadingIndicator />}
-					</ClayAutocomplete>
-				</ClayForm.Group>
+
 
 				<ClayForm.Group className="col-3 form-group-sm">
 					<label htmlFor={`${namespace}pin-quantity`}>
@@ -156,7 +105,7 @@ const AdminTooltip = ({
 									label: null,
 									linked_to_sku: 'sku',
 									quantity: null,
-									sku: '',
+
 								},
 								tooltip: false,
 							});
@@ -178,7 +127,7 @@ const AdminTooltip = ({
 									label: '',
 									linked_to_sku: 'sku',
 									quantity: null,
-									sku: '',
+
 								},
 								tooltip: false,
 							})
@@ -196,7 +145,7 @@ const AdminTooltip = ({
 								label: pinLabel,
 								linked_to_sku: linkedValue,
 								quantity,
-								sku,
+
 							});
 							setShowTooltip({
 								details: {
@@ -206,7 +155,7 @@ const AdminTooltip = ({
 									label: pinLabel,
 									linked_to_sku: linkedValue,
 									quantity,
-									sku,
+
 								},
 								tooltip: false,
 							});
@@ -230,7 +179,7 @@ AdminTooltip.propTypes = {
 			label: PropTypes.string,
 			linked_to_sku: PropTypes.oneOf(['sku', 'diagram']),
 			quantity: PropTypes.number,
-			sku: PropTypes.string,
+
 		}),
 		tooltip: PropTypes.bool,
 	}),

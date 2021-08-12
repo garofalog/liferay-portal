@@ -59,7 +59,7 @@ const Diagram = ({
 			label: '',
 			linked_to_sku: 'sku',
 			quantity: null,
-			sku: '',
+
 		},
 		tooltip: null,
 	});
@@ -111,36 +111,28 @@ const Diagram = ({
 				label: updatedPin.label || '',
 				linked_to_sku: updatedPin.linked_to_sku || '',
 				quantity: updatedPin.quantity || 0,
-				sku: updatedPin.sku,
+
 			},
 			tooltip: true,
 		});
 	};
 
 	useLayoutEffect(() => {
-		if (showTooltip?.tooltip && cPins) {
-			const newCPinState = cPins.map((element, i) => {
-				if (element.id === showTooltip.details.id) {
-					return {
-						cx: cPins[i].cx,
-						cy: cPins[i].cy,
-						draggable: cPins[i].draggable || true,
-						fill: cPins[i].fill || '#000000',
-						id: showTooltip.details.id,
-						label: showTooltip.details.label,
-						linked_to_sku: showTooltip.details.linked_to_sku,
-						quantity: showTooltip.details.quantity,
-						r: cPins[i].r || 15,
-						sku: showTooltip.details.sku || '',
-					};
-				}
-				else {
-					return element;
-				}
-			});
-			setCpins(newCPinState);
+		if (showTooltip?.tooltip) {
+			return {
+				cx: showTooltip.cx,
+				cy: showTooltip.cy,
+				draggable: true,
+				fill: '#000000',
+				id: showTooltip.details.id,
+				label: showTooltip.details.label,
+				linked_to_sku: showTooltip.details.linked_to_sku,
+				quantity: showTooltip.details.quantity,
+				r: 15
+
+			};
 		}
-	}, [showTooltip, cPins]);
+	}, [showTooltip]);
 
 	return imageURL !== '' ? (
 		<div className="diagram mx-auto">
@@ -291,7 +283,7 @@ Diagram.propTypes = {
 			linked_to_sku: PropTypes.oneOf(['sku', 'diagram']),
 			quantity: PropTypes.number,
 			r: PropTypes.number,
-			sku: PropTypes.string,
+
 		})
 	),
 	enablePanZoom: PropTypes.bool,
@@ -333,7 +325,7 @@ Diagram.propTypes = {
 			label: PropTypes.string,
 			linked_to_sku: PropTypes.oneOf(['sku', 'diagram']),
 			quantity: PropTypes.number,
-			sku: PropTypes.string,
+
 		}),
 		tooltip: PropTypes.bool,
 	}),
