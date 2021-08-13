@@ -83,23 +83,42 @@ const Diagram = ({
 	}, [pinsEndpoint, productId]);
 
 	const updatePin = (node) => {
-		const body = {
-			id: node.id,
-			number: node.label || '',
-			positionX: node.cx,
-			positionY: node.cy,
-		};
+		console.log(node.id);
+		if(node.id !== 1){
+			const body = {
+				id: node.id,
+				number: node.label || '',
+				positionX: node.cx,
+				positionY: node.cy,
+			};
+			fetch(`${pinsEndpoint}${PINS}/${node.id}`, {
+				body: JSON.stringify(body),
+				headers: new Headers({
+					Accept: 'application/json',
+					'Content-Type': 'application/json',
+				}),
+				method: 'PATCH',
+			}).then((response) => {
+				response.json();
+			});
+		}else{
+			const body = {
+				number: node.label || '',
+				positionX: node.cx,
+				positionY: node.cy,
+			};
+			fetch(`${pinsEndpoint}/${PRODUCTS}/${productId}/${PINS}`, {
+				body: JSON.stringify(body),
+				headers: new Headers({
+					Accept: 'application/json',
+					'Content-Type': 'application/json',
+				}),
+				method: 'POST',
+			}).then((response) => {
+				response.json();
+			});
+		}
 
-		fetch(`${pinsEndpoint}${PINS}/${node.id}`, {
-			body: JSON.stringify(body),
-			headers: new Headers({
-				Accept: 'application/json',
-				'Content-Type': 'application/json',
-			}),
-			method: 'PATCH',
-		}).then((response) => {
-			response.json();
-		});
 	};
 
 	const pinClickAction = (updatedPin) => {
