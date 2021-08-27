@@ -40,7 +40,6 @@ const Diagram = ({
 	pinsEndpoint,
 	productId,
 	spritemap,
-	type,
 	zoomController,
 }) => {
 	const [pinImport, setPinImport] = useState([]);
@@ -78,26 +77,29 @@ const Diagram = ({
 		radius: newPinSettings.defaultRadius,
 	});
 
-	const importPinSchema = () => {
+	const importPinSchema = (svg) => {
 		const textDatas = [];
 		const pinDatas = [];
 		const parser = new DOMParser();
-		const xmlImage = parser.parseFromString(svgString, 'image/svg+xml');
+
+		const xmlImage = parser.parseFromString(svg, 'image/svg+xml');
+
 		const rootLevel = xmlImage.getElementById('Livello_Testi');
+
 		if (rootLevel) {
 			const rects = rootLevel.getElementsByTagName('rect');
-			const text = rootLevel.getElementsByTagName('text');
+			const texts = rootLevel.getElementsByTagName('text');
 
-			Array.from(text).map((t) => {
+			Array.from(texts).map((text) => {
 				textDatas.push({
-					label: t.textContent,
+					label: text.textContent,
 				});
 			});
 
-			Array.from(rects).map((r, i) => {
+			Array.from(rects).map((rect, i) => {
 				pinDatas.push({
-					cx: r.attributes.x.value / 2.78,
-					cy: r.attributes.y.value / 2.78,
+					cx: rect.attributes.x.value / 2.78,
+					cy: rect.attributes.y.value / 2.78,
 					id: i,
 					label: textDatas[i].label,
 				});
@@ -106,6 +108,10 @@ const Diagram = ({
 			setPinImport(pinDatas);
 		}
 	};
+
+	useCallback(() => {
+		importPinSchema(svgString);
+	}, [svgString]);
 
 	useEffect(() => {
 		setCpins(pinImport);
@@ -222,14 +228,12 @@ const Diagram = ({
 			<ClayIconSpriteContext.Provider value={spritemap}>
 				<DiagramHeader
 					addNewPinState={addNewPinState}
-					importPinSchema={importPinSchema}
 					isAdmin={isAdmin}
 					namespace={namespace}
 					newPinSettings={newPinSettings}
 					setAddNewPinState={setAddNewPinState}
 					setAddPinHandler={setAddPinHandler}
 					setSelectedOption={setSelectedOption}
-					type={type}
 				/>
 
 				<ImagePins
@@ -300,7 +304,6 @@ const Diagram = ({
 					setZoomOutHandler={setZoomOutHandler}
 				/>
 			</ClayIconSpriteContext.Provider>
-			<div id="culo"></div>
 		</div>
 	) : (
 		<div className="border-0 pt-0 sheet taglib-empty-result-message">
@@ -355,7 +358,6 @@ Diagram.defaultProps = {
 	pins: [],
 	pinsEndpoint:
 		'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/',
-	productId: 44206,
 	showTooltip: {
 		details: {
 			cx: null,
@@ -442,7 +444,6 @@ Diagram.propTypes = {
 		tooltip: PropTypes.bool,
 	}),
 	spritemap: PropTypes.string,
-	type: PropTypes.oneOf(['diagram.type.svg', 'diagram.type.default']),
 	updatePin: PropTypes.func,
 	zoomController: PropTypes.shape({
 		enable: PropTypes.bool,
