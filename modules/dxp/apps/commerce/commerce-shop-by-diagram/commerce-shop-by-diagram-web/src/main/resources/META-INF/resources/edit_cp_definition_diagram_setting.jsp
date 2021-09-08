@@ -28,6 +28,8 @@ String type = BeanParamUtil.getString(cpDefinitionDiagramSetting, renderRequest,
 CPDefinitionDiagramType cpDefinitionDiagramType = cpDefinitionDiagramSettingDisplayContext.getCPDefinitionDiagramType(type);
 %>
 
+<link href="<%= PortalUtil.getStaticResourceURL(request, PortalUtil.getPathModule() + "/commerce-shop-by-diagram-web/css/main.css") %>" rel="stylesheet" />
+
 <div class="pt-4">
 	<portlet:actionURL name="/cp_definitions/edit_cp_definition_diagram_setting" var="editProductDefinitionDiagramSettingActionURL" />
 
@@ -39,7 +41,7 @@ CPDefinitionDiagramType cpDefinitionDiagramType = cpDefinitionDiagramSettingDisp
 		<liferay-ui:error exception="<%= NoSuchCPAttachmentFileEntryException.class %>" message="please-select-an-existing-file" />
 		<liferay-ui:error exception="<%= NoSuchFileEntryException.class %>" message="please-select-an-existing-file" />
 
-		<div class="row">
+		<div class="diagram-fixed-row row">
 			<div class="col-lg-8">
 				<commerce-ui:panel
 					title='<%= LanguageUtil.get(resourceBundle, "diagram-settings") %>'
@@ -58,16 +60,6 @@ CPDefinitionDiagramType cpDefinitionDiagramType = cpDefinitionDiagramSettingDisp
 						%>
 
 					</aui:select>
-				</commerce-ui:panel>
-
-				<commerce-ui:panel
-					title='<%= LanguageUtil.get(resourceBundle, "diagram-mapping") %>'
-				>
-
-					<%
-					cpDefinitionDiagramType.render(cpDefinitionDiagramSetting, request, PipingServletResponseFactory.createPipingServletResponse(pageContext));
-					%>
-
 				</commerce-ui:panel>
 			</div>
 
@@ -98,22 +90,40 @@ CPDefinitionDiagramType cpDefinitionDiagramType = cpDefinitionDiagramSettingDisp
 						/>
 					</div>
 				</commerce-ui:panel>
+			</div>
+		</div>
 
-				<commerce-ui:panel
-					elementClasses="flex-fill"
-					title='<%= LanguageUtil.get(resourceBundle, "mapped-products") %>'
-				>
-					<clay:headless-data-set-display
-						apiURL="<%= cpDefinitionDiagramSettingDisplayContext.getCPDefinitionDiagramEntriesAPIURL() %>"
-						formId="fm"
-						id="<%= CSDiagramDataSetConstants.CS_DIAGRAM_MAPPED_PRODUCTS_DATA_SET_KEY %>"
-						itemsPerPage="<%= 10 %>"
-						namespace="<%= liferayPortletResponse.getNamespace() %>"
-						pageNumber="<%= 1 %>"
-						portletURL="<%= cpDefinitionDiagramSettingDisplayContext.getPortletURL() %>"
-						style="stacked"
-					/>
-				</commerce-ui:panel>
+		<div class="row">
+			<div class="col-lg-8">
+
+					<commerce-ui:panel
+						title='<%= LanguageUtil.get(resourceBundle, "diagram-mapping") %>'
+					>
+
+						<%
+						cpDefinitionDiagramType.render(cpDefinitionDiagramSetting, request, PipingServletResponseFactory.createPipingServletResponse(pageContext));
+						%>
+
+					</commerce-ui:panel>
+				</div>
+
+				<div class="col-lg-4">
+					<commerce-ui:panel
+						elementClasses="flex-fill"
+						title='<%= LanguageUtil.get(resourceBundle, "mapped-products") %>'
+					>
+						<clay:headless-data-set-display
+							apiURL="<%= cpDefinitionDiagramSettingDisplayContext.getCPDefinitionDiagramEntriesAPIURL() %>"
+							formId="fm"
+							id="<%= CSDiagramDataSetConstants.CS_DIAGRAM_MAPPED_PRODUCTS_DATA_SET_KEY %>"
+							itemsPerPage="<%= 10 %>"
+							namespace="<%= liferayPortletResponse.getNamespace() %>"
+							pageNumber="<%= 1 %>"
+							portletURL="<%= cpDefinitionDiagramSettingDisplayContext.getPortletURL() %>"
+							style="stacked"
+						/>
+					</commerce-ui:panel>
+				</div>
 			</div>
 		</div>
 	</aui:form>
