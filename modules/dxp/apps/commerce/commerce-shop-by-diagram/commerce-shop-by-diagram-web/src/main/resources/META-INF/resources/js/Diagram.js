@@ -11,7 +11,7 @@
 
 import {ClayIconSpriteContext} from '@clayui/icon';
 import {fetch} from 'frontend-js-web';
-import {UPDATE_DATASET_DISPLAY} from 'frontend-taglib-clay/data_set_display/utils/eventsDefinitions';
+// import {UPDATE_DATASET_DISPLAY} from 'frontend-taglib-clay/data_set_display/utils/eventsDefinitions';
 import PropTypes from 'prop-types';
 import React, {useCallback, useEffect, useState} from 'react';
 
@@ -45,7 +45,7 @@ const Diagram = ({
 	type,
 	zoomController,
 }) => {
-	const [pinImport, setPinImport] = useState([]);
+	const [pinImport] = useState([]);
 	const [svgString, setSvgString] = useState('');
 	const [imageState] = useState(imageURL);
 	const [pinClickHandler, setPinClickHandler] = useState(false);
@@ -206,6 +206,11 @@ const Diagram = ({
 		}
 	};
 
+	// useEffect(() => {
+	// 	const parser = new DOMParser();
+	// 	const xmlImage = parser.parseFromString(svgString, 'image/svg+xml')
+	// },[])
+
 	const pinClickAction = (updatedPin) => {
 		setShowTooltip({
 			details: {
@@ -275,6 +280,7 @@ const Diagram = ({
 					setZoomInHandler={setZoomInHandler}
 					setZoomOutHandler={setZoomOutHandler}
 					showTooltip={showTooltip}
+					svgString={svgString}
 					zoomController={zoomController}
 					zoomInHandler={zoomInHandler}
 					zoomOutHandler={zoomOutHandler}
