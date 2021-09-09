@@ -11,7 +11,9 @@
 
 import {ClayIconSpriteContext} from '@clayui/icon';
 import {fetch} from 'frontend-js-web';
+
 // import {UPDATE_DATASET_DISPLAY} from 'frontend-taglib-clay/data_set_display/utils/eventsDefinitions';
+
 import PropTypes from 'prop-types';
 import React, {useCallback, useEffect, useState} from 'react';
 
@@ -70,8 +72,9 @@ const Diagram = ({
 			id: null,
 			label: '',
 			linked_to_sku: 'sku',
-			quantity: null,
+			quantity: 0,
 			sku: '',
+			transform: '',
 		},
 		tooltip: null,
 	});
@@ -211,6 +214,10 @@ const Diagram = ({
 	// 	const xmlImage = parser.parseFromString(svgString, 'image/svg+xml')
 	// },[])
 
+	// useEffect(() => {
+	// 	pinClickAction(showTooltip,)
+	// },[showTooltip])
+
 	const pinClickAction = (updatedPin) => {
 		setShowTooltip({
 			details: {
@@ -218,9 +225,10 @@ const Diagram = ({
 				cy: updatedPin.cy,
 				id: updatedPin.id,
 				label: updatedPin.label || '',
-				linked_to_sku: updatedPin.linked_to_sku || '',
+				linked_to_sku: updatedPin.linked_to_sku || 'sku',
 				quantity: updatedPin.quantity || 1,
 				sku: updatedPin.sku,
+				transform: updatedPin.transform,
 			},
 			tooltip: true,
 		});
@@ -277,6 +285,7 @@ const Diagram = ({
 					setResetZoom={setResetZoom}
 					setScale={setScale}
 					setSelectedOption={setSelectedOption}
+					setShowTooltip={setShowTooltip}
 					setZoomInHandler={setZoomInHandler}
 					setZoomOutHandler={setZoomOutHandler}
 					showTooltip={showTooltip}
@@ -372,10 +381,11 @@ Diagram.defaultProps = {
 	productId: 44206,
 	showTooltip: {
 		details: {
-			cx: null,
-			cy: null,
-			id: null,
-			label: null,
+			cx: 0,
+			cy: 0,
+			transform: '',
+			id: '',
+			label: 'null',
 			linked_to_sku: 'sku',
 			quantity: 1,
 			sku: '',
@@ -445,6 +455,7 @@ Diagram.propTypes = {
 		details: PropTypes.shape({
 			cx: PropTypes.double,
 			cy: PropTypes.double,
+			transform: PropTypes.string,
 			id: PropTypes.number,
 			label: PropTypes.string,
 			linked_to_sku: PropTypes.oneOf(['sku', 'diagram']),

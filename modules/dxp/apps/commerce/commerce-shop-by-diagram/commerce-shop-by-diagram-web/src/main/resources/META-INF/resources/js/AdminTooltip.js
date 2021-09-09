@@ -28,7 +28,7 @@ const AdminTooltip = ({
 	updatePin,
 }) => {
 	const [pinPositionLabel, setPinPositionLabel] = useState(
-		showTooltip.details.label
+		showTooltip.details.label || ''
 	);
 	const [linkedValue, setLinkedValue] = useState(
 		showTooltip.details.linked_to_sku
@@ -36,18 +36,21 @@ const AdminTooltip = ({
 	const [sku, setSku] = useState(showTooltip.details.sku);
 	const [quantity, setQuantity] = useState(showTooltip.details.quantity);
 
-	useEffect(() => {
-		if (!sku) {
-			searchSkus(sku, linkedValue);
-		}
-	}, [sku, searchSkus, linkedValue]);
+	// useEffect(() => {
+	// 	if (!sku) {
+	// 		searchSkus(sku, linkedValue);
+	// 	}
+	// }, [sku, searchSkus, linkedValue]);
 
 	return (
 		<ClayCard
 			className="admin-tooltip p-1"
 			style={{
-				left: showTooltip.details.cx,
-				top: showTooltip.details.cy,
+				// transform: showTooltip.details.transform,
+
+				left: 50,
+				top: 50,
+
 			}}
 		>
 			<ClayCard.Body className="row">
@@ -87,45 +90,6 @@ const AdminTooltip = ({
 						/>
 					</ClayRadioGroup>
 				</ClayForm.Group>
-
-				<ClayForm.Group className="col-9 text-left" small>
-					<label htmlFor={`${namespace}pin-sku`}>
-						{Liferay.Language.get('select-sku')}
-					</label>
-					<ClayAutocomplete>
-						<ClayAutocomplete.Input
-							onChange={(event) => setSku(event.target.value)}
-							value={sku}
-						/>
-						<ClayAutocomplete.DropDown
-							active={skus}
-							onSetActive={(event) => {
-								setSku(
-									event.target.innerText.match(/^[\S]*/g)[0]
-								);
-							}}
-						>
-							<ClayDropDown.ItemList>
-								{skus?.length && (
-									<ClayDropDown.Item disabled>
-										{Liferay.Language.get(
-											'no-results-found'
-										)}
-									</ClayDropDown.Item>
-								)}
-								{skus?.length &&
-									skus.map((item) => (
-										<ClayAutocomplete.Item
-											key={item.id}
-											match={sku}
-											value={`${item.sku} - ${item.productName.en_US}`}
-										/>
-									))}
-							</ClayDropDown.ItemList>
-						</ClayAutocomplete.DropDown>
-					</ClayAutocomplete>
-				</ClayForm.Group>
-
 				<ClayForm.Group className="col-3" small>
 					<label htmlFor={`${namespace}pin-quantity`}>
 						{Liferay.Language.get('quantity')}
@@ -160,13 +124,14 @@ const AdminTooltip = ({
 							});
 							setShowTooltip({
 								details: {
-									cx: null,
-									cy: null,
-									id: null,
-									label: null,
+									cx: 0,
+									cy: 0,
+									id: '',
+									label: '',
 									linked_to_sku: 'sku',
-									quantity: null,
+									quantity: '',
 									sku: '',
+									transform: '',
 								},
 								tooltip: false,
 							});
@@ -185,13 +150,14 @@ const AdminTooltip = ({
 						onClick={() => {
 							setShowTooltip({
 								details: {
-									cx: null,
-									cy: null,
-									id: null,
+									cx: '',
+									cy: '',
+									id: '',
 									label: '',
 									linked_to_sku: 'sku',
-									quantity: null,
+									quantity: '',
 									sku: '',
+									transform: '',
 								},
 								tooltip: false,
 							});
@@ -217,6 +183,7 @@ const AdminTooltip = ({
 									linked_to_sku: linkedValue,
 									quantity,
 									sku,
+									transform: details.transform || '',
 								},
 								tooltip: false,
 							});
