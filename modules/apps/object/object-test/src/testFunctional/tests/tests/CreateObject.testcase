@@ -79,12 +79,29 @@ definition {
 	}
 
 	@description = "LPS-135549 - Verify it is possible to create a Date field"
-	@ignore = "Test Stub"
 	@priority = "4"
 	test CanCreateDateField {
+		ObjectAdmin.addObjectViaAPI(
+			labelName = "Custom Object",
+			objectName = "CustomObject",
+			pluralLabelName = "Custom Objects");
 
-		// TODO LPS-138819 CanCreateDateField pending implementation
+		ObjectAdmin.openObjectAdmin();
 
+		ObjectPortlet.selectCustomObject(name = "CustomObject");
+
+		ObjectAdmin.goToFieldsTab();
+
+		ObjectAdmin.addObjectFieldViaUI(
+			fieldLabel = "Custom Field",
+			fieldType = "Date",
+			isMandatory = "false");
+
+		Refresh();
+
+		ObjectAdmin.assertObjectField(
+			fieldName = "customField",
+			fieldType = "Date");
 	}
 
 	@description = "LPS-135549 - Verify it is possible to create a Double field"
@@ -106,22 +123,57 @@ definition {
 	}
 
 	@description = "LPS-135549 - Verify it is possible to create a Long field"
-	@ignore = "Test Stub"
 	@priority = "4"
 	test CanCreateLongField {
+		ObjectAdmin.addObjectViaAPI(
+			labelName = "Custom Object",
+			objectName = "CustomObject",
+			pluralLabelName = "Custom Objects");
 
-		// TODO LPS-138822 CanCreateLongField pending implementation
+		Navigator.openURL();
 
+		ObjectAdmin.openObjectAdmin();
+
+		ObjectPortlet.selectCustomObject(name = "CustomObject");
+
+		ObjectAdmin.goToFieldsTab();
+
+		ObjectAdmin.addObjectFieldViaUI(
+			fieldLabel = "Custom Field",
+			fieldType = "Long",
+			isMandatory = "false");
+
+		ObjectAdmin.assertObjectField(
+			fieldName = "customField",
+			fieldType = "Long");
 	}
 
 	@description = "LPS-135549 - Verify it is possible to create a String field"
-	@ignore = "Test Stub"
 	@priority = "5"
 	test CanCreateStringField {
 		property portal.acceptance = "true";
 
-		// TODO LPS-138823 CanCreateStringField pending implementation
+		ObjectAdmin.addObjectViaAPI(
+			labelName = "Custom Object",
+			objectName = "CustomObject",
+			pluralLabelName = "Custom Objects");
 
+		ObjectAdmin.openObjectAdmin();
+
+		ObjectPortlet.selectCustomObject(name = "CustomObject");
+
+		ObjectAdmin.goToFieldsTab();
+
+		ObjectAdmin.addObjectFieldViaUI(
+			fieldLabel = "Custom Field",
+			fieldType = "String",
+			isMandatory = "false");
+
+		Refresh();
+
+		ObjectAdmin.assertObjectField(
+			fieldName = "customField",
+			fieldType = "String");
 	}
 
 	@description = "LPS-135549 - Verify that it is not possible to create a Object with a duplicated Object Name"
@@ -188,12 +240,28 @@ definition {
 	}
 
 	@description = "LPS-135549 - Verify it is not possible to save with special characters for the Field Name"
-	@ignore = "Test Stub"
 	@priority = "4"
 	test CannotSaveSpecialCharacterFieldName {
+		ObjectAdmin.addObjectViaAPI(
+			labelName = "Custom Object",
+			objectName = "CustomObject",
+			pluralLabelName = "Custom Objects");
 
-		// TODO LPS-138826 CannotSaveSpecialCharacterFieldName pending implementation
+		Navigator.openURL();
 
+		ObjectAdmin.openObjectAdmin();
+
+		ObjectPortlet.selectCustomObject(name = "CustomObject");
+
+		ObjectAdmin.goToFieldsTab();
+
+		ObjectAdmin.addObjectFieldViaUI(
+			fieldLabel = "Custom Field",
+			fieldName = "customField#$%",
+			fieldType = "Long",
+			isMandatory = "false");
+
+		ObjectAdmin.viewFieldErrorMessage(message = "Name must only contain letters and digits");
 	}
 
 	@description = "LPS-135549 - Verify it is not possible to save with the first character of the Field Name in upper case"
@@ -271,12 +339,31 @@ definition {
 	}
 
 	@description = "LPS-135635 - Verify it is not possible to update the Searchable section after the Object is published"
-	@ignore = "Test Stub"
 	@priority = "4"
 	test CannotUpdateSearchableSectionAfterPublished {
+		ObjectAdmin.addObjectViaAPI(
+			labelName = "Custom Object",
+			objectName = "CustomObject",
+			pluralLabelName = "Custom Objects");
 
-		// TODO LPS-138858 CannotUpdateSearchableSectionAfterPublished pending implementation
+		ObjectAdmin.addObjectFieldViaAPI(
+			fieldLabelName = "Text",
+			fieldName = "customObjectField",
+			fieldType = "String",
+			isRequired = "false",
+			objectName = "CustomObject");
 
+		ObjectAdmin.publishObjectViaAPI(objectName = "CustomObject");
+
+		ObjectAdmin.openObjectAdmin();
+
+		ObjectPortlet.selectCustomObject(name = "CustomObject");
+
+		ObjectAdmin.goToFieldsTab();
+
+		ObjectAdmin.goToFieldsDetails(fieldName = "customObjectField");
+
+		AssertElementPresent(locator1 = "ObjectAdmin#VIEW_SEARCHABLE_SECTION_DISABLED");
 	}
 
 	@description = "LPS-135549 - Verify it is possible to Publish a Custom Object"
@@ -383,31 +470,76 @@ definition {
 	}
 
 	@description = "LPS-135635 - Verify it is possible to update the Object label after it is published"
-	@ignore = "Test Stub"
 	@priority = "4"
-	test CanUpdateObjectLabelAfter Published {
+	test CanUpdateObjectLabelAfterPublished {
+		ObjectAdmin.addObjectViaAPI(
+			labelName = "Custom Object",
+			objectName = "CustomObject",
+			pluralLabelName = "Custom Objects");
 
-		// TODO LPS-138842 CanUpdateObjectLabelAfter Published pending implementation
+		ObjectAdmin.publishObjectViaAPI(objectName = "CustomObject");
 
+		ObjectAdmin.openObjectAdmin();
+
+		CreateObject.viewObject(labelName = "CustomObject");
+
+		CreateObject.editLabel(labelName = "Update Custom Object");
+
+		CreateObject.saveObject();
+
+		ObjectAdmin.openObjectAdmin();
+
+		CreateObject.viewObject(labelName = "CustomObject");
+
+		CreateObject.assertObjectLabel(labelName = "Update Custom Object");
 	}
 
 	@description = "LPS-135635 - Verify it is possible to update the Object label before it is published"
-	@ignore = "Test Stub"
 	@priority = "5"
 	test CanUpdateObjectLabelBeforePublished {
 		property portal.acceptance = "true";
 
-		// TODO LPS-138837 CanUpdateObjectLabelBeforePublished pending implementation
+		ObjectAdmin.addObjectViaAPI(
+			labelName = "Custom Object",
+			objectName = "CustomObject",
+			pluralLabelName = "Custom Objects");
 
+		ObjectAdmin.openObjectAdmin();
+
+		CreateObject.viewObject(labelName = "CustomObject");
+
+		CreateObject.editLabel(labelName = "Update Custom Object");
+
+		CreateObject.saveObject();
+
+		ObjectAdmin.openObjectAdmin();
+
+		CreateObject.viewObject(labelName = "CustomObject");
+
+		CreateObject.assertObjectLabel(labelName = "Update Custom Object");
 	}
 
 	@description = "LPS-135635 - Verify it is possible to update the Object name before it is published"
-	@ignore = "Test Stub"
 	@priority = "4"
 	test CanUpdateObjectNameBeforePublished {
+		ObjectAdmin.addObjectViaAPI(
+			labelName = "Custom Object",
+			objectName = "CustomObject",
+			pluralLabelName = "Custom Objects");
 
-		// TODO LPS-138836 CanUpdateObjectNameBeforePublished pending implementation
+		ObjectAdmin.openObjectAdmin();
 
+		ObjectPortlet.selectCustomObject(name = "CustomObject");
+
+		ObjectAdmin.editCustomObject(fieldName = "CustomObject2");
+
+		Navigator.gotoBack();
+
+		ObjectPortlet.selectCustomObject(name = "CustomObject");
+
+		AssertTextEquals(
+			locator1 = "ObjectAdmin#DETAILS_NAME_CUSTOM_OBJECT",
+			value1 = "CustomObject2");
 	}
 
 	@description = "LPS-135635 - Verify it is possible to update the Object panel category key before it is published"
@@ -429,21 +561,51 @@ definition {
 	}
 
 	@description = "LPS-135635 - Verify it is possible to update the Object plural label after it is published"
-	@ignore = "Test Stub"
 	@priority = "4"
 	test CanUpdateObjectPluralLabelAfterPublished {
+		ObjectAdmin.addObjectViaAPI(
+			labelName = "Custom Object",
+			objectName = "CustomObject",
+			pluralLabelName = "Custom Objects");
 
-		// TODO LPS-138843 CanUpdateObjectPluralLabelAfterPublished pending implementation
+		ObjectAdmin.publishObjectViaAPI(objectName = "CustomObject");
 
+		ObjectAdmin.openObjectAdmin();
+
+		CreateObject.viewObject(labelName = "CustomObject");
+
+		CreateObject.editPluralLabel(pluralLabelName = "Update Plural Label Custom Object");
+
+		CreateObject.saveObject();
+
+		ObjectAdmin.openObjectAdmin();
+
+		CreateObject.viewObject(labelName = "CustomObject");
+
+		CreateObject.assertObjectPluralLabel(pluralLabelName = "Update Plural Label Custom Object");
 	}
 
 	@description = "LPS-135635 - Verify it is possible to update the Object plural label before it is published"
-	@ignore = "Test Stub"
 	@priority = "4"
 	test CanUpdateObjectPluralLabelBeforePublished {
+		ObjectAdmin.addObjectViaAPI(
+			labelName = "Custom Object",
+			objectName = "CustomObject",
+			pluralLabelName = "Custom Objects");
 
-		// TODO LPS-138838 CanUpdateObjectPluralLabelBeforePublished pending implementation
+		ObjectAdmin.openObjectAdmin();
 
+		CreateObject.viewObject(labelName = "CustomObject");
+
+		CreateObject.editPluralLabel(pluralLabelName = "Update Plural Label Custom Object");
+
+		CreateObject.saveObject();
+
+		ObjectAdmin.openObjectAdmin();
+
+		CreateObject.viewObject(labelName = "CustomObject");
+
+		CreateObject.assertObjectPluralLabel(pluralLabelName = "Update Plural Label Custom Object");
 	}
 
 	@description = "LPS-135635 - Verify it is possible to update the Object scope before it is published"
@@ -456,12 +618,31 @@ definition {
 	}
 
 	@description = "LPS-135549 - Verify it is possible to view the Details of a Field by clicking on the eye icon"
-	@ignore = "Test Stub"
 	@priority = "4"
 	test CanViewFieldsDetailsByClickingEyeIcon {
+		ObjectAdmin.addObjectViaAPI(
+			labelName = "Custom Object",
+			objectName = "CustomObject",
+			pluralLabelName = "Custom Objects");
 
-		// TODO LPS-138833 CanViewFieldsDetailsByClickingEyeIcon pending implementation
+		ObjectAdmin.addObjectFieldViaAPI(
+			fieldLabelName = "Custom Field",
+			fieldName = "customField",
+			fieldType = "String",
+			isRequired = "false",
+			objectName = "CustomObject");
 
+		Navigator.openURL();
+
+		ObjectAdmin.openObjectAdmin();
+
+		ObjectPortlet.selectCustomObject(name = "CustomObject");
+
+		ObjectAdmin.goToFieldsTab();
+
+		ObjectAdmin.selectCustomObjectFieldKebabMenuOption(kebabOption = "View");
+
+		ObjectAdmin.viewFieldDetails();
 	}
 
 	@description = "LPS-135549 - Verify it is possible to view the Details of a Field by clicking on its name"
@@ -546,12 +727,33 @@ definition {
 	}
 
 	@description = "LPS-135549 - Verify that the field with String type has the option Language when the Text option is selected under the Searchable section"
-	@ignore = "Test Stub"
 	@priority = "4"
 	test LanguageDisplayedForTextOption {
+		ObjectAdmin.addObjectViaAPI(
+			labelName = "Custom Object",
+			objectName = "CustomObject",
+			pluralLabelName = "Custom Objects");
 
-		// TODO LPS-138835 LanguageDisplayedForTextOption pending implementation
+		ObjectAdmin.addObjectFieldViaAPI(
+			fieldLabelName = "Custom Field",
+			fieldName = "customField",
+			fieldType = "String",
+			isRequired = "false",
+			objectName = "CustomObject");
 
+		Navigator.openURL();
+
+		ObjectAdmin.openObjectAdmin();
+
+		ObjectPortlet.selectCustomObject(name = "CustomObject");
+
+		ObjectAdmin.goToFieldsTab();
+
+		ObjectAdmin.goToFieldsDetails(fieldName = "customField");
+
+		ObjectAdmin.clickFieldsSearchableSectionRadioOption(radioOption = "Text");
+
+		ObjectAdmin.viewFieldSearchableSectionLanguage();
 	}
 
 	@description = "LPS-135549 - Verify that the Object Name is autofilled when Label is filled"

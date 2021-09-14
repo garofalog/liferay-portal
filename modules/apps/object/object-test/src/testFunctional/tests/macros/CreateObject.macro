@@ -1,0 +1,37 @@
+definition {
+
+	macro assertObjectLabel {
+		AssertTextEquals(
+			locator1 = "CreateObject#OBJECT_LABEL",
+			value1 = "${labelName}");
+	}
+
+	macro assertObjectPluralLabel {
+		AssertTextEquals(
+			locator1 = "CreateObject#OBJECT_PLURAL_LABEL",
+			value1 = "${pluralLabelName}");
+	}
+
+	macro editLabel {
+		Type(
+			locator1 = "CreateObject#OBJECT_LABEL",
+			value1 = "${labelName}");
+	}
+
+	macro editPluralLabel {
+		Type(
+			locator1 = "CreateObject#OBJECT_PLURAL_LABEL",
+			value1 = "${pluralLabelName}");
+	}
+
+	macro saveObject {
+		Click(locator1 = "CreateObject#SAVE_BUTTON");
+	}
+
+	macro viewObject {
+		Click(
+			key_labelName = "${labelName}",
+			locator1 = "CreateObject#VIEW_OBJECT");
+	}
+
+}
