@@ -284,7 +284,7 @@ AdminTooltip.propTypes = {
 		details: PropTypes.shape({
 			cx: PropTypes.double,
 			cy: PropTypes.double,
-			id: PropTypes.number,
+			id: PropTypes.string,
 			label: PropTypes.string,
 			linkedToSku: PropTypes.oneOf([SKU, DIAGRAM]),
 			quantity: PropTypes.number,

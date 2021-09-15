@@ -14,7 +14,10 @@ import {fetch} from 'frontend-js-web';
 // import {UPDATE_DATASET_DISPLAY} from 'frontend-taglib-clay/data_set_display/utils/eventsDefinitions';
 import ClayButton from '@clayui/button';
 import ClayModal, { useModal } from '@clayui/modal';
-import { searchSkus} from './utilities/utilities'
+import { 
+	searchSkus, 
+	// importPinSchema 
+} from './utilities/utilities'
 
 import PropTypes from 'prop-types';
 import React, {useCallback, useEffect, useState} from 'react';
@@ -89,7 +92,7 @@ const Diagram = ({
 	});
 
 
-	const importPinSchema = () => {
+	const importPinSchema = (svgString) => {
 		const textDatas = [];
 		const pinDatas = [];
 		const parser = new DOMParser();
@@ -115,6 +118,7 @@ const Diagram = ({
 			});
 
 			setPinImport(pinDatas);
+			return pinDatas;
 		}
 	};
 
@@ -122,11 +126,7 @@ const Diagram = ({
 		setCpins(pinImport);
 	}, [pinImport]);
 
-	useEffect(() => {
-		fetch(imageState)
-			.then((response) => response.text())
-			.then((text) => setSvgString(text));
-	}, [imageState]);
+	
 
 	const loadPins = useCallback(
 		() =>
@@ -193,9 +193,28 @@ const Diagram = ({
 		});
 	};
 
+	// useEffect(() => {
+	// 	if (type === 'diagram.type.svg') {
+	// 		const schema = importPinSchema(svgString)
+	// 		console.log(schema)
+	// 	} else if (type === 'diagram.type.default') {
+	// 		loadPins();
+	// 	}
+	// }, [pinsEndpoint, productId, loadPins, type]);
+
 	useEffect(() => {
-		loadPins();
-	}, [pinsEndpoint, productId, loadPins]);
+		fetch(imageState)
+			.then((response) => response.text())
+			.then((text) => {
+				setSvgString(text)
+				if (type === 'diagram.type.svg') {
+					const schema = importPinSchema(text)
+					setCpins(schema)
+				} else if (type === 'diagram.type.default') {
+					loadPins();
+				}
+			})
+	}, [imageState, pinsEndpoint, productId, loadPins, type]);
 
 	return imageState ? (
 		<div className="diagram mx-auto">
@@ -242,7 +261,6 @@ const Diagram = ({
 					setCpins={setCpins}
 					setDiagramSizes={setDiagramSizes}
 					setPinClickHandler={setPinClickHandler}
-					setRemovePinHandler={setRemovePinHandler}
 					setResetZoom={setResetZoom}
 					setScale={setScale}
 					setSelectedOption={setSelectedOption}
@@ -270,7 +288,6 @@ const Diagram = ({
 									pinsEndpoint={pinsEndpoint}
 									removePinHandler={removePinHandler}
 									searchSkus={searchSkus}
-									setRemovePinHandler={setRemovePinHandler}
 									setShowTooltip={setShowTooltip}
 									setSkus={setSkus}
 									showTooltip={showTooltip}
@@ -290,10 +307,7 @@ const Diagram = ({
 													positionY: showTooltip.details.cy,
 													sequence: showTooltip.details.label,
 												});
-												setRemovePinHandler({
-													handler: true,
-													pin: showTooltip.details.id,
-												});
+										
 												setShowTooltip({
 													details: {
 														cx: null,
@@ -307,6 +321,7 @@ const Diagram = ({
 													},
 													tooltip: false,
 												});
+
 												onClose();
 											}}
 										>

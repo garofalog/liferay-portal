@@ -12,6 +12,7 @@
 import {drag, event as d3event, select, zoom as d3zoom, zoomIdentity} from 'd3';
 import PropTypes from 'prop-types';
 import React, {useLayoutEffect, useRef} from 'react';
+// import {importPinSchema} from './utilities/utilities'
 
 import {moveController, zoomIn, zoomOut} from './NavigationsUtils';
 
@@ -54,7 +55,6 @@ const ImagePins = ({
 	setChangedScale,
 	setCpins,
 	setPinClickHandler,
-	setRemovePinHandler,
 	setResetZoom,
 	setSelectedOption,
 	setShowTooltip,
@@ -259,13 +259,13 @@ const ImagePins = ({
 			setCpins(newState);
 		};
 
-		if (removePinHandler.handler) {
-			removePin(removePinHandler.pin);
-			setRemovePinHandler({
-				handler: false,
-				pin: null,
-			});
-		}
+		// if (removePinHandler.handler) {
+		// 	removePin(removePinHandler.pin);
+		// 	setRemovePinHandler({
+		// 		handler: false,
+		// 		pin: null,
+		// 	});
+		// }
 
 		if (addPinHandler) {
 			setAddPinHandler(false);
@@ -282,53 +282,11 @@ const ImagePins = ({
 				return;
 			}
 
-			if (isAdmin) {
+			if (isAdmin ) {
 				container
-					.attr('height', imageSettings.height)
-					.attr('width', imageSettings.width)
 					.attr('id', 'sbdtest')
-					.html(svgString);
-
-				const rootLevel = document.getElementById('Livello_Testi');
-
-				if (rootLevel) {
-					const textDatas = [];
-					const pinDatas = [];
-					const rects = rootLevel.getElementsByTagName('rect');
-					const texts = rootLevel.getElementsByTagName('text');
-
-					Array.from(rects).map((rect, i) => {
-						rect.addEventListener('click', () =>
-							console.log(`ciao ${i}`)
-						);
-					});
-					Array.from(texts).map((text, i) => {
-						textDatas.push({
-							label: text.textContent,
-						});
-						text.addEventListener('click', () => {
-							setVisible(true)
-							const test1 = {
-								details: {
-									cx: null,
-									cy: null,
-									id: null,
-									label: textDatas[i].label,
-									linkedToSku: 'sku',
-									quantity: null,
-									sku: '',
-									transform:
-										'matrix(0.9999 0.0165 -0.0165 0.9999 86.0798 171.5356)',
-								},
-								tooltip: true,
-							}
-							pinClickAction(test1);
-							console.log(test1);
-							setVisible(true)
-							setShowTooltip(test1);
-						});
-					});
-				}
+					.html(svgString)
+				container.select('svg').attr('height', '1000px')
 
 				container
 					.selectAll('g')
@@ -443,7 +401,7 @@ const ImagePins = ({
 		setCpins,
 		setPinClickHandler,
 		setResetZoom,
-		setRemovePinHandler,
+		// setRemovePinHandler,
 		setSelectedOption,
 		setZoomInHandler,
 		setZoomOutHandler,
@@ -464,18 +422,18 @@ const ImagePins = ({
 				width: `${imageSettings.width}`,
 			}}
 		>
-			{/* <svg
+			<svg
 				height={imageSettings.height}
 				ref={svgRef}
 				width={imageSettings.width}
-			> */}
+			>
 			<g data-testid={`${namespace}container`}>
-				{/* <image
+				<image
 						height={imageSettings.height}
 						href={imageURL}
-					></image> */}
+					></image>
 			</g>
-			{/* </svg> */}
+			</svg>
 
 			{children}
 		</div>
