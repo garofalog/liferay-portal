@@ -32,6 +32,7 @@ class AutomappingHandler {
 		this._pinBackground = null;
 		this._updateZoomState = updateZoomState;
 		this._zoomWrapper = zoomWrapper;
+		console.log(zoomWrapper);
 		this._handleZoom = this._handleZoom.bind(this);
 		this.rendered = false;
 
