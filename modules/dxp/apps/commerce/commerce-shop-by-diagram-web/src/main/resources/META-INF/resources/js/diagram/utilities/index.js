@@ -9,7 +9,7 @@
  * distribution rights of the Software.
  */
 
-export function calculateTooltipStyle(source, containerRef) {
+ export function calculateTooltipStyleFromSource(source, containerRef) {
 	const {
 		height: sourceHeight,
 		left: sourceLeft,
@@ -44,6 +44,39 @@ export function calculateTooltipStyle(source, containerRef) {
 	}
 	else {
 		style.bottom = sourceBottom - containerBottom + sourceHeight;
+	}
+
+	return style;
+}
+
+export function calculateTooltipStyleFromCoordinates(sourceLeft, sourceTop, containerRef) {
+	const sourceRight = window.innerWidth - sourceLeft;
+	const sourceBottom = window.innerHeight - sourceTop;
+
+	const {
+		height: containerHeight,
+		left: containerLeft,
+		top: containerTop,
+		width: containerWidth,
+	} = containerRef.current.getBoundingClientRect();
+
+	const containerRight = window.innerWidth - containerLeft - containerWidth;
+	const containerBottom = window.innerHeight - containerTop - containerHeight;
+
+	const style = {};
+
+	if (sourceLeft < window.innerWidth / 2) {
+		style.left = sourceLeft - containerLeft;
+	}
+	else {
+		style.right = sourceRight - containerRight;
+	}
+
+	if (sourceTop < window.innerHeight / 2) {
+		style.top = sourceTop - containerTop;
+	}
+	else {
+		style.bottom = sourceBottom - containerBottom;
 	}
 
 	return style;

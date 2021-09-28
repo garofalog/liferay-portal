@@ -10,41 +10,45 @@
  */
 
 import {event as d3event, select as d3select, zoom as d3zoom} from 'd3';
-import {fetch} from 'frontend-js-web';
 
 import {ZOOM_VALUES} from './utilities/constants';
 
-class AutomappingHandler {
+class DiagramHandler {
 	constructor(
 		diagramWrapper,
 		zoomWrapper,
 		imageURL,
-		pinsCSSSelectors,
-		updateLabels,
-		updateZoomState
+		updateHtmlPins,
+		updateZoomState,
+		openTooltip,
 	) {
 		this._currentScale = 1;
 		this._diagramWrapper = diagramWrapper;
 		this._d3diagramWrapper = d3select(diagramWrapper);
 		this._d3zoomWrapper = d3select(zoomWrapper);
 		this._imageURL = imageURL;
-		this._updateLabels = updateLabels;
+		this._updateHtmlPins = updateHtmlPins;
 		this._pinBackground = null;
+		this._openTooltip = openTooltip;
 		this._updateZoomState = updateZoomState;
 		this._zoomWrapper = zoomWrapper;
 		this._handleZoom = this._handleZoom.bind(this);
-		this.rendered = false;
 
-		this._printSVGImage().then(() => {
-			this.rendered = true;
-			this._texts = this._diagramWrapper.querySelectorAll(
-				pinsCSSSelectors.join(',')
-			);
+		this._printImage();
+		this._addZoom();
+		this._addListeners();
+	}
 
-			this._updatePinsState();
-			this._addZoom();
-			this._updateLabels(this._texts);
-		});
+	_addListeners() {
+		this._d3diagramWrapper.on('click', () => {
+			const {offsetX: clickX, offsetY: clickY} = d3event;
+			const {height: SVGHeight, width: SVGWidth} = this._diagramWrapper.getBoundingClientRect();
+
+			const pinX = clickX * 100 / SVGWidth;
+			const pinY = clickY * 100 / SVGHeight;
+
+			this._openTooltip(pinX, pinY)
+		})
 	}
 
 	_addZoom() {
@@ -91,42 +95,44 @@ class AutomappingHandler {
 			.call(this._zoom.scaleTo, this._currentScale);
 	}
 
-	_printSVGImage() {
-		return fetch(this._imageURL)
-			.then((response) => response.text())
-			.then((svgContent) => {
-				this._d3zoomWrapper.html(svgContent);
-			});
+	_printImage() {
+		this._d3zoomWrapper
+			.append('image')
+			.attr('href', this._imageURL)
+			.attr('width', '100%')
+			.attr('x', 0)
+			.attr('y', 0)
+
 	}
 
 	updatePins(pins) {
 		this._pins = pins;
 
-		if (this.rendered) {
-			this._updatePinsState();
-		}
+		this._printPins();
 	}
 
-	_updatePinsState() {
-		if (this._pins) {
-			const sequences = new Set(this._pins.map((pin) => pin.sequence));
+	_printPins() {
+		const pinsGroups = this._d3diagramWrapper
+			.selectAll('g')
+			.data(this._pins)
+			.enter()
+			.append('g')
+			.attr('class', 'pin-node')
+			.attr('transform', (attr) => {
 
-			this._texts.forEach((text) => {
-				text.classList.add('pin');
-
-				if (sequences.has(text.textContent)) {
-					text.classList.add('mapped');
-
-					text._mapped = true;
-				}
-				else {
-					text.classList.remove('mapped');
-
-					text._mapped = false;
-				}
+				return `translate(${attr.cx},${attr.cy})`
 			});
-		}
+
+		pinsGroups
+			.append('circle')
+			.attr('class', 'pin-node-background')
+			.attr('r', 15);
+
+		pinsGroups
+			.append('text')
+			.attr('class', 'pin-node-text')
+			.text((d) => d.sequence);
 	}
 }
 
-export default AutomappingHandler;
+export default DiagramHandler;

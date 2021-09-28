@@ -47,6 +47,15 @@ export const HEADERS = new Headers({
 	'Content-Type': 'application/json',
 });
 
+
+export const PINS_RADIUS_OPTIONS = {
+	large: 30,
+	medium: 20,
+	small: 10
+}
+
+export const DEFAULT_PINS_RADIUS = PINS_RADIUS_OPTIONS.medium;
+
 export const DEFAULT_LINK_OPTION = 'sku';
 
 export const LINKING_OPTIONS = {

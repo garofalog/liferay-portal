@@ -92,6 +92,10 @@
 	}
 }
 
+.slider-wrapper.disabled {
+	opacity: .5;
+}
+
 @keyframes zoomIn {
 	from {
 		opacity: 0.4;
@@ -110,4 +114,15 @@
 	to {
 		transform: scale(1);
 	}
+}
+
+.pin-node-background {
+	fill: #ffffff;
+	stroke-width: red;
+	stroke: .5;
+}
+.pin-node-text {
+	text-anchor:
+	font-
+
 }
