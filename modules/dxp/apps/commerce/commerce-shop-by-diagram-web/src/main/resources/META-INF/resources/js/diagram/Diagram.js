@@ -83,16 +83,27 @@ function Diagram({imageURL, productId}) {
 	}, [imageURL]);
 
 	return (
-		<div className={classNames('shop-by-diagram', {expanded})} ref={wrapperRef}>
+		<div className={classNames('shop-by-diagram', {expanded})}>
 			<DiagramHeader
 				pinsRadius={pinsRadius}
 				updatePinsRadius={updatePinsRadius}
 			/>
 
-			<div className="bg-white border-bottom border-top view-wrapper">
+			<div className="bg-white border-bottom border-top view-wrapper" ref={wrapperRef}>
 				<svg className="svg-wrapper" ref={svgRef}>
 					<g className="zoom-handler" ref={zoomHandlerRef} />
 				</svg>
+				
+				{tooltipData && (
+					<Tooltip
+						closeTooltip={() => setTooltipData(null)}
+						containerRef={wrapperRef}
+						expanded={expanded}
+						productId={productId}
+						updatePins={updatePins}
+						{...tooltipData}
+					/>
+				)}
 			</div>
 
 			<DiagramFooter
@@ -102,23 +113,6 @@ function Diagram({imageURL, productId}) {
 				updateCurrentZoom={updateCurrentZoom}
 				updateExpanded={updateExpanded}
 			/>
-
-			{highlightedText && (
-				<Sequence highlighted={true} source={highlightedText} />
-			)}
-
-			{selectedText && <Sequence source={selectedText} />}
-
-			{tooltipData && (
-				<Tooltip
-					closeTooltip={() => setTooltipData(null)}
-					containerRef={wrapperRef}
-					expanded={expanded}
-					productId={productId}
-					updatePins={updatePins}
-					{...tooltipData}
-				/>
-			)}
 		</div>
 	);
 }

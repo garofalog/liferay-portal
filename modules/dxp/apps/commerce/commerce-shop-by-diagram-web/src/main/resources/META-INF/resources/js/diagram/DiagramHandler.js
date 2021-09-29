@@ -117,12 +117,14 @@ class DiagramHandler {
 				this._diagramWrapper.style.height = `${height}px`;
 			})
 			.on('click', () => {
-				const [x, y] = getPercentagePositions(
+				const [x, y] = getAbsolutePositions(
 					d3event.offsetX,
 					d3event.offsetY,
 					d3event.target,
 					this._diagramWrapper
 				);
+
+				console.log('x ,y', x, y)
 				
 				this._openTooltip(x, y, d3event);
 			})

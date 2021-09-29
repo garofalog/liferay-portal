@@ -61,8 +61,6 @@ function Tooltip({
 			: calculateTooltipStyleFromEvent(sourceEvent, containerRef)
 
 		updateTooltipStyle(style);
-
-		console.log({style})
 	}, [source, sourceEvent, containerRef]);
 
 	useEffect(() => {

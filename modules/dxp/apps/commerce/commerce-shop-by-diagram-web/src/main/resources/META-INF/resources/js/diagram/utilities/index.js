@@ -50,7 +50,29 @@
 }
 
 export function calculateTooltipStyleFromEvent(event, containerRef) {
-	return {};
+	const {x: clickX, y: clickY} = event;
+	const {left: containerLeft, top: containerTop} = containerRef.current.getBoundingClientRect();
+
+	const clickRelativePosition = {
+		x: clickX - containerLeft,
+		y: clickY - containerTop
+	};
+
+	const style = {}
+
+	if(clickX < window.innerWidth / 2) {
+		style.left = `${clickRelativePosition.x}px`
+	} else {
+		style.right = '0px'
+	}
+	
+	if(clickY < window.innerHeight / 2) {
+		style.top = `${clickRelativePosition.y}px`
+	} else {
+		style.bottom = '0px'
+	}
+	
+	return style;
 }
 
 export function formatMappedProduct(type, quantity, sequence, selectedProduct) {

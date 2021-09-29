@@ -103,14 +103,35 @@ function DiagramWithAutomapping({imageURL, pinsCSSSelectors, productId}) {
 	}, [imageURL, pinsCSSSelectors]);
 
 	return (
-		<div
-			className={classNames('shop-by-diagram', {expanded})}
-			ref={wrapperRef}
-		>
-			<div className="bg-white border-bottom border-top view-wrapper">
+		<div className={classNames('shop-by-diagram', {expanded})}>
+			<div className="bg-white border-bottom border-top view-wrapper" ref={wrapperRef} >
 				<svg className="svg-wrapper" ref={svgRef}>
 					<g className="zoom-handler" ref={zoomHandlerRef} />
 				</svg>
+
+				{highlightedText && (
+					<Sequence
+						containerRef={wrapperRef}
+						highlighted={true}
+						source={highlightedText}
+					/>
+				)}
+
+				{selectedText && (
+					<Sequence containerRef={wrapperRef} source={selectedText} />
+				)}
+
+				{tooltipData && (
+					<Tooltip
+						closeTooltip={() => setTooltipData(null)}
+						containerRef={wrapperRef}
+						expanded={expanded}
+						productId={productId}
+						readOnlySequence={true}
+						updatePins={updatePins}
+						{...tooltipData}
+					/>
+				)}
 			</div>
 
 			<DiagramFooter
@@ -120,30 +141,6 @@ function DiagramWithAutomapping({imageURL, pinsCSSSelectors, productId}) {
 				updateCurrentZoom={updateCurrentZoom}
 				updateExpanded={updateExpanded}
 			/>
-
-			{highlightedText && (
-				<Sequence
-					containerRef={wrapperRef}
-					highlighted={true}
-					source={highlightedText}
-				/>
-			)}
-
-			{selectedText && (
-				<Sequence containerRef={wrapperRef} source={selectedText} />
-			)}
-
-			{tooltipData && (
-				<Tooltip
-					closeTooltip={() => setTooltipData(null)}
-					containerRef={wrapperRef}
-					expanded={expanded}
-					productId={productId}
-					readOnlySequence={true}
-					updatePins={updatePins}
-					{...tooltipData}
-				/>
-			)}
 		</div>
 	);
 }

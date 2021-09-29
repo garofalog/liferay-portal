@@ -20,6 +20,7 @@ export default function Sequence({containerRef, highlighted, source}) {
 			x: sequenceX,
 			y: sequenceY,
 		} = source.getBoundingClientRect();
+
 		const {
 			x: parentX,
 			y: parentY,
