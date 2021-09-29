@@ -34,6 +34,7 @@ class DiagramHandler {
 		this._updateZoomState = updateZoomState;
 		this._zoomWrapper = zoomWrapper;
 		this._handleZoom = this._handleZoom.bind(this);
+		this._handleWindowResize = this._handleWindowResize.bind(this);
 		this._pinsRadius = DEFAULT_PINS_RADIUS;
 
 		this._printImage();
@@ -41,12 +42,16 @@ class DiagramHandler {
 		this._addListeners();
 	}
 
+	_handleWindowResize() {
+		if(this._imageHeightRatio) {
+			const {width} = this._diagramWrapper.getBoundingClientRect();
+
+			this._diagramWrapper.style.height = `${width * this._imageHeightRatio}px`;
+		}
+	}
+
 	_addListeners() {
-		this._d3diagramWrapper.on('click', () => {
-			const [x, y] = getPercentagePositions(d3event.offsetX, d3event.offsetY, this._diagramWrapper)
-			
-			this._openTooltip(x, y)
-		})
+		window.addEventListener('resize', this._handleWindowResize)
 	}
 
 	_addZoom() {
@@ -69,6 +74,10 @@ class DiagramHandler {
 		}
 
 		this._d3zoomWrapper.attr('transform', d3event.transform);
+	}
+
+	cleanUp() {
+		window.removeEventListener('resize', this._handleWindowResize);
 	}
 
 	updateZoom(scale) {
@@ -94,19 +103,30 @@ class DiagramHandler {
 	}
 
 	_printImage() {
-		const image = this._d3zoomWrapper
+		this._image = this._d3zoomWrapper
 			.append('image')
 			.attr('href', this._imageURL)
 			.attr('width', '100%')
 			.attr('x', 0)
 			.attr('y', 0)
 			.on('load', (_d, index, nodes) => {
-				const imageHeight = nodes[index].getBoundingClientRect().height;
+				const {height, width} = nodes[index].getBoundingClientRect();
 				
-				this._diagramWrapper.style.height = `${imageHeight}px`;
+				this._imageHeightRatio = height / width;
+
+				this._diagramWrapper.style.height = `${height}px`;
+			})
+			.on('click', () => {
+				const [x, y] = getPercentagePositions(
+					d3event.offsetX,
+					d3event.offsetY,
+					d3event.target,
+					this._diagramWrapper
+				);
+				
+				this._openTooltip(x, y, d3event);
 			})
 			
-		this._imageNode = image.node();
 	}
 
 	updatePins(pins) {

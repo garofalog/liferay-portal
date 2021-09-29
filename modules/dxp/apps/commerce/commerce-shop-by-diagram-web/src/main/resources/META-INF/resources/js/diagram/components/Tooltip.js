@@ -24,7 +24,7 @@ import React, {
 
 import {DEFAULT_LINK_OPTION, LINKING_OPTIONS} from '../utilities/constants';
 import {deletePin, savePin} from '../utilities/data';
-import {calculateTooltipStyleFromCoordinates, calculateTooltipStyleFromSource, formatMappedProduct} from '../utilities/index';
+import {calculateTooltipStyleFromEvent, calculateTooltipStyleFromSource, formatMappedProduct} from '../utilities/index';
 
 function Tooltip({
 	closeTooltip,
@@ -34,6 +34,7 @@ function Tooltip({
 	selectedPin,
 	sequence: initialSequence,
 	source,
+	sourceEvent,
 	updatePins,
 	x,
 	y,
@@ -57,10 +58,12 @@ function Tooltip({
 	useLayoutEffect(() => {
 		const style = source 
 			? calculateTooltipStyleFromSource(source, containerRef)
-			: calculateTooltipStyleFromCoordinates(x, y, containerRef)
+			: calculateTooltipStyleFromEvent(sourceEvent, containerRef)
 
 		updateTooltipStyle(style);
-	}, [x, y, source, containerRef]);
+
+		console.log({style})
+	}, [source, sourceEvent, containerRef]);
 
 	useEffect(() => {
 		updateQuantity(selectedPin?.mappedProduct.quantity || 1);

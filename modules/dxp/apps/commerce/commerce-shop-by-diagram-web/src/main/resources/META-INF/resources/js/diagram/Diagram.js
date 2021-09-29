@@ -58,42 +58,7 @@ function Diagram({imageURL, productId}) {
 	}, [tooltipData]);
 
 	useEffect(() => {
-		function handleClickOnLabel(event) {
-			const sequence = event.target.textContent;
-
-			const selectedPin = pins.find((pin) => pin.sequence === sequence);
-
-			setTooltipData({selectedPin, sequence, x: event.x, y: event.y});
-			updateSelectedText(event.target);
-		}
-
-		function handleMouseEnterOnLabel(event) {
-			updateHighlightedText(event.target);
-		}
-
-		function handleMouseLeaveOnLabel() {
-			updateHighlightedText(null);
-		}
-
-		pinsNodes.forEach((label) => {
-			label.addEventListener('click', handleClickOnLabel);
-			label.addEventListener('mouseenter', handleMouseEnterOnLabel);
-			label.addEventListener('mouseleave', handleMouseLeaveOnLabel);
-		});
-
-		return () => {
-			pinsNodes.forEach((label) => {
-				label.removeEventListener('click', handleClickOnLabel);
-				label.removeEventListener(
-					'mouseenter',
-					handleMouseEnterOnLabel
-				);
-				label.removeEventListener(
-					'mouseleave',
-					handleMouseLeaveOnLabel
-				);
-			});
-		};
+		return () => {};
 	}, [pinsNodes]);
 
 	useLayoutEffect(() => {
@@ -107,10 +72,14 @@ function Diagram({imageURL, productId}) {
 
 				updateCurrentZoom(scale);
 			},
-			(x, y) => {
-				setTooltipData({x, y});
+			(x, y, sourceEvent) => {
+				setTooltipData({sourceEvent, x, y});
 			} 
 		);
+
+		return () => {
+			chartInstance.current.cleanUp();
+		}
 	}, [imageURL]);
 
 	return (
