@@ -110,3 +110,21 @@ export function formatMappedProduct(type, quantity, sequence, selectedProduct) {
 			throw new Error(`Type ${type} not supported`);
 	}
 }
+
+export function getAbsolutePositions(x, y, wrapper) {
+	const {height, width} = wrapper.getBoundingClientRect();
+
+	return [
+		x / 100 * width,
+		y / 100 * height,
+	]
+}
+
+export function getPercentagePositions(x, y, wrapper) {
+	const {height, width} = wrapper.getBoundingClientRect();
+
+	return [
+		x * 100 / width,
+		y * 100 / height
+	]
+}

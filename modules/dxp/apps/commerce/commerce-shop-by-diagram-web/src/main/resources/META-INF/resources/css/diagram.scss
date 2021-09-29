@@ -13,12 +13,8 @@
 	}
 
 	.svg-wrapper {
-		height: 100%;
-		width: 100%;
-	}
-
-	.view-wrapper {
 		height: 600px;
+		width: 100%;
 	}
 
 	&.expanded {
@@ -35,6 +31,10 @@
 			flex-grow: 1;
 			height: auto;
 		}
+	}
+	
+	.pin-radius-handler {
+		transition: transform .1s linear;
 	}
 }
 

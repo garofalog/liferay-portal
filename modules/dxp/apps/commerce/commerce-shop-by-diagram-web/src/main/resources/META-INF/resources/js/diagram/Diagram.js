@@ -48,6 +48,10 @@ function Diagram({imageURL, productId}) {
 	}, [pins]);
 
 	useEffect(() => {
+		chartInstance.current?.updatePinsRadius(pinsRadius);
+	}, [pinsRadius])
+
+	useEffect(() => {
 		if (!tooltipData) {
 			updateSelectedText(null);
 		}
@@ -116,7 +120,7 @@ function Diagram({imageURL, productId}) {
 				updatePinsRadius={updatePinsRadius}
 			/>
 
-			<div className="bg-white border-bottom border-top p-2 view-wrapper">
+			<div className="bg-white border-bottom border-top view-wrapper">
 				<svg className="svg-wrapper" ref={svgRef}>
 					<g className="zoom-handler" ref={zoomHandlerRef} />
 				</svg>

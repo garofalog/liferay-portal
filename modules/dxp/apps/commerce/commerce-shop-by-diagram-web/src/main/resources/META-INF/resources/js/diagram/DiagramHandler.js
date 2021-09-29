@@ -10,8 +10,9 @@
  */
 
 import {event as d3event, select as d3select, zoom as d3zoom} from 'd3';
+import { getAbsolutePositions, getPercentagePositions } from './utilities';
 
-import {ZOOM_VALUES} from './utilities/constants';
+import {DEFAULT_PINS_RADIUS, PINS_CIRCLE_RADIUS, ZOOM_VALUES} from './utilities/constants';
 
 class DiagramHandler {
 	constructor(
@@ -33,6 +34,7 @@ class DiagramHandler {
 		this._updateZoomState = updateZoomState;
 		this._zoomWrapper = zoomWrapper;
 		this._handleZoom = this._handleZoom.bind(this);
+		this._pinsRadius = DEFAULT_PINS_RADIUS;
 
 		this._printImage();
 		this._addZoom();
@@ -41,13 +43,9 @@ class DiagramHandler {
 
 	_addListeners() {
 		this._d3diagramWrapper.on('click', () => {
-			const {offsetX: clickX, offsetY: clickY} = d3event;
-			const {height: SVGHeight, width: SVGWidth} = this._diagramWrapper.getBoundingClientRect();
-
-			const pinX = clickX * 100 / SVGWidth;
-			const pinY = clickY * 100 / SVGHeight;
-
-			this._openTooltip(pinX, pinY)
+			const [x, y] = getPercentagePositions(d3event.offsetX, d3event.offsetY, this._diagramWrapper)
+			
+			this._openTooltip(x, y)
 		})
 	}
 
@@ -96,40 +94,61 @@ class DiagramHandler {
 	}
 
 	_printImage() {
-		this._d3zoomWrapper
+		const image = this._d3zoomWrapper
 			.append('image')
 			.attr('href', this._imageURL)
 			.attr('width', '100%')
 			.attr('x', 0)
 			.attr('y', 0)
-
+			.on('load', (_d, index, nodes) => {
+				const imageHeight = nodes[index].getBoundingClientRect().height;
+				
+				this._diagramWrapper.style.height = `${imageHeight}px`;
+			})
+			
+		this._imageNode = image.node();
 	}
 
 	updatePins(pins) {
 		this._pins = pins;
 
-		this._printPins();
+		this._updatePrintedPins();
 	}
 
-	_printPins() {
-		const pinsGroups = this._d3diagramWrapper
+	updatePinsRadius(pinsRadius) {
+		this._pinsRadius = pinsRadius;
+
+		if(this._radiusHandlers) {
+			this._radiusHandlers
+				.attr('transform', `translate(${PINS_CIRCLE_RADIUS / 2}) scale(${this._pinsRadius})`);
+		}
+	}
+
+	_updatePrintedPins() {
+		this._pinsGroups = this._d3zoomWrapper
 			.selectAll('g')
-			.data(this._pins)
+			.data(this._pins, (d) => d.id)
 			.enter()
 			.append('g')
 			.attr('class', 'pin-node')
-			.attr('transform', (attr) => {
+			.attr('transform', (d) => 
+				`translate(${getAbsolutePositions(d.positionX, d.positionY, this._diagramWrapper)})`
+			);
 
-				return `translate(${attr.cx},${attr.cy})`
-			});
+		this._radiusHandlers = this._pinsGroups
+			.append('g')
+			.attr('class', 'pin-radius-handler')
+			.attr('transform', `translate(${PINS_CIRCLE_RADIUS / 2}) scale(${this._pinsRadius})`);
 
-		pinsGroups
+		this._radiusHandlers
 			.append('circle')
 			.attr('class', 'pin-node-background')
-			.attr('r', 15);
+			.attr('r', PINS_CIRCLE_RADIUS);
 
-		pinsGroups
+		this._radiusHandlers
 			.append('text')
+			.attr('y', 5)
+			.attr('text-anchor', 'middle')
 			.attr('class', 'pin-node-text')
 			.text((d) => d.sequence);
 	}

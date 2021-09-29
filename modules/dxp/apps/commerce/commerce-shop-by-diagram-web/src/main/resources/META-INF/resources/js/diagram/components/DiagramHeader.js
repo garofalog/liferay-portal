@@ -16,7 +16,7 @@ import ClaySlider from '@clayui/slider';
 import classNames from 'classnames';
 import React, {useState} from 'react';
 
-import { PINS_RADIUS_OPTIONS } from '../utilities/constants';
+import { PINS_RADIUS_MAX, PINS_RADIUS_MIN, PINS_RADIUS_OPTIONS, PINS_RADIUS_STEP } from '../utilities/constants';
 
 function DiagramHeader({pinsRadius, updatePinsRadius}) {
 	const [active, setActive] = useState(false);
@@ -72,11 +72,11 @@ function DiagramHeader({pinsRadius, updatePinsRadius}) {
 										<div className={classNames('slider-wrapper', {disabled: smallActive || mediumActive || largeActive})}>
 											<ClaySlider
 												id="custom-radius-slider"
-												max={100}
-												min={10}
+												max={PINS_RADIUS_MAX}
+												min={PINS_RADIUS_MIN}
 												onValueChange={updatePinsRadius}
 												showTooltip={false}
-												step={10}
+												step={PINS_RADIUS_STEP}
 												value={pinsRadius}
 											/>
 										</div>

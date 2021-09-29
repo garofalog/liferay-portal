@@ -107,7 +107,7 @@ function DiagramWithAutomapping({imageURL, pinsCSSSelectors, productId}) {
 			className={classNames('shop-by-diagram', {expanded})}
 			ref={wrapperRef}
 		>
-			<div className="bg-white border-bottom border-top p-2 view-wrapper">
+			<div className="bg-white border-bottom border-top view-wrapper">
 				<svg className="svg-wrapper" ref={svgRef}>
 					<g className="zoom-handler" ref={zoomHandlerRef} />
 				</svg>
