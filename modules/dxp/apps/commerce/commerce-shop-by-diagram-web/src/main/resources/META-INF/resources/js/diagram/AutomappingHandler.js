@@ -116,12 +116,10 @@ class AutomappingHandler {
 
 				if (sequences.has(text.textContent)) {
 					text.classList.add('mapped');
-
 					text._mapped = true;
 				}
 				else {
 					text.classList.remove('mapped');
-
 					text._mapped = false;
 				}
 			});

@@ -16,7 +16,6 @@ import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import DiagramHandler from './DiagramHandler';
 import DiagramFooter from './components/DiagramFooter';
 import DiagramHeader from './components/DiagramHeader';
-import Sequence from './components/Sequence';
 import Tooltip from './components/Tooltip';
 import { DEFAULT_PINS_RADIUS } from './utilities/constants';
 import {loadPins} from './utilities/data';
@@ -34,7 +33,6 @@ function Diagram({imageURL, productId}) {
 	const [tooltipData, setTooltipData] = useState(false);
 	const [currentZoom, updateCurrentZoom] = useState(1);
 	const [expanded, updateExpanded] = useState(false);
-	const [selectedText, updateSelectedText] = useState(null);
 	const [highlightedText, updateHighlightedText] = useState(null);
 
 	useEffect(() => {
@@ -52,12 +50,6 @@ function Diagram({imageURL, productId}) {
 	}, [pinsRadius])
 
 	useEffect(() => {
-		if (!tooltipData) {
-			updateSelectedText(null);
-		}
-	}, [tooltipData]);
-
-	useEffect(() => {
 		return () => {};
 	}, [pinsNodes]);
 
@@ -72,9 +64,9 @@ function Diagram({imageURL, productId}) {
 
 				updateCurrentZoom(scale);
 			},
-			(x, y, sourceEvent) => {
-				setTooltipData({sourceEvent, x, y});
-			} 
+			(sourceEvent, pinData) => {
+				setTooltipData({sourceEvent, ...pinData});
+			}
 		);
 
 		return () => {
@@ -98,8 +90,9 @@ function Diagram({imageURL, productId}) {
 					<Tooltip
 						closeTooltip={() => setTooltipData(null)}
 						containerRef={wrapperRef}
-						expanded={expanded}
+						pins={pins}
 						productId={productId}
+						readOnlySequence={false}
 						updatePins={updatePins}
 						{...tooltipData}
 					/>

@@ -9,6 +9,8 @@
  * distribution rights of the Software.
  */
 
+import { DRAG_AND_DROP_THRESHOLD } from "./constants";
+
  export function calculateTooltipStyleFromSource(source, containerRef) {
 	const {
 		height: sourceHeight,
@@ -51,7 +53,12 @@
 
 export function calculateTooltipStyleFromEvent(event, containerRef) {
 	const {x: clickX, y: clickY} = event;
-	const {left: containerLeft, top: containerTop} = containerRef.current.getBoundingClientRect();
+	const {
+		height: containerHeight,
+		left: containerLeft,
+		top: containerTop,
+		width: containerWidth
+	} = containerRef.current.getBoundingClientRect();
 
 	const clickRelativePosition = {
 		x: clickX - containerLeft,
@@ -63,13 +70,13 @@ export function calculateTooltipStyleFromEvent(event, containerRef) {
 	if(clickX < window.innerWidth / 2) {
 		style.left = `${clickRelativePosition.x}px`
 	} else {
-		style.right = '0px'
+		style.right = `${containerWidth - clickRelativePosition.x}px`
 	}
 	
 	if(clickY < window.innerHeight / 2) {
 		style.top = `${clickRelativePosition.y}px`
 	} else {
-		style.bottom = '0px'
+		style.bottom = `${containerHeight - clickRelativePosition.y}px`
 	}
 	
 	return style;
@@ -114,10 +121,28 @@ export function getAbsolutePositions(x, y, wrapper) {
 }
 
 export function getPercentagePositions(x, y, wrapper) {
-	const {height, width} = wrapper.getBoundingClientRect();
+	const {
+		height: wrapperHeight,
+		width: wrapperWidth,
+		x: wrapperX,
+		y: wrapperY
+	} = wrapper.getBoundingClientRect();
 
-	return [
-		x * 100 / width,
-		y * 100 / height
+	const percentagePositions = [
+		(x - wrapperX) / wrapperWidth * 100,
+		(y - wrapperY) / wrapperHeight * 100 
 	]
+
+	return percentagePositions
+}
+
+export function isPinMoving(startX, startY, currentX, currentY) {
+	if(
+		(Math.abs(startX - currentX) > DRAG_AND_DROP_THRESHOLD) ||
+		(Math.abs(startY - currentY) > DRAG_AND_DROP_THRESHOLD) 
+	) {
+		return true
+	}
+
+	return false
 }

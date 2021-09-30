@@ -9,10 +9,12 @@
  * distribution rights of the Software.
  */
 
-import {event as d3event, select as d3select, zoom as d3zoom} from 'd3';
-import { getAbsolutePositions, getPercentagePositions } from './utilities';
+import {drag as d3drag, event as d3event, select as d3select, zoom as d3zoom} from 'd3';
 
-import {DEFAULT_PINS_RADIUS, PINS_CIRCLE_RADIUS, ZOOM_VALUES} from './utilities/constants';
+import { getAbsolutePositions, getPercentagePositions, isPinMoving } from './utilities';
+import { DEFAULT_PINS_RADIUS, PINS_CIRCLE_RADIUS, ZOOM_VALUES} from './utilities/constants';
+import { savePin } from './utilities/data';
+import {openToast} from 'frontend-js-web';
 
 class DiagramHandler {
 	constructor(
@@ -35,6 +37,10 @@ class DiagramHandler {
 		this._zoomWrapper = zoomWrapper;
 		this._handleZoom = this._handleZoom.bind(this);
 		this._handleWindowResize = this._handleWindowResize.bind(this);
+		this._handleDragStarted = this._handleDragStarted.bind(this);
+		this._handleDragging = this._handleDragging.bind(this);
+		this._handleDragEnded = this._handleDragEnded.bind(this);
+
 		this._pinsRadius = DEFAULT_PINS_RADIUS;
 
 		this._printImage();
@@ -117,16 +123,13 @@ class DiagramHandler {
 				this._diagramWrapper.style.height = `${height}px`;
 			})
 			.on('click', () => {
-				const [x, y] = getAbsolutePositions(
-					d3event.offsetX,
-					d3event.offsetY,
-					d3event.target,
-					this._diagramWrapper
+				const [x, y] = getPercentagePositions(
+					d3event.x,
+					d3event.y,
+					d3event.target
 				);
 
-				console.log('x ,y', x, y)
-				
-				this._openTooltip(x, y, d3event);
+				this._openTooltip(d3event, {x, y});
 			})
 			
 	}
@@ -155,7 +158,16 @@ class DiagramHandler {
 			.attr('class', 'pin-node')
 			.attr('transform', (d) => 
 				`translate(${getAbsolutePositions(d.positionX, d.positionY, this._diagramWrapper)})`
-			);
+			)
+			.call(
+				d3drag()
+					.on('start', this._handleDragStarted)
+					.on('drag', this._handleDragging)
+					.on('end', this._handleDragEnded)
+			)
+			.on('click', (d) => {
+				this._openTooltip(d3event, {id: d.id})
+			})
 
 		this._radiusHandlers = this._pinsGroups
 			.append('g')
@@ -173,6 +185,69 @@ class DiagramHandler {
 			.attr('text-anchor', 'middle')
 			.attr('class', 'pin-node-text')
 			.text((d) => d.sequence);
+	}
+
+	_handleDragStarted(_d, index, nodes) {
+		const selectedPin = nodes[index];
+
+		this._dragDetails = {
+			startTransform: selectedPin.getAttribute('transform'),
+			startX: d3event.x,
+			startY: d3event.y
+		};
+
+		selectedPin.classList.add('drag-started');
+	}
+
+	_handleDragging(_d, index, nodes) {
+		const selectedPin = nodes[index];
+
+		if(isPinMoving(d3event.x, d3event.y, this._dragDetails.startX, this._dragDetails.startY)) {
+			selectedPin.classList.add('dragging');
+			this._dragDetails.moved = true;
+			
+			d3select(selectedPin).attr(
+				'transform',
+				`translate(${d3event.x},${d3event.y})`
+			);
+		} else {
+			selectedPin.classList.remove('dragging');
+			this._dragDetails.moved = false;
+
+			d3select(selectedPin).attr(
+				'transform',
+				this._dragDetails.startTransform
+			);	
+		}
+
+	}
+
+	_handleDragEnded(d, index, nodes) {
+		const selectedPin = nodes[index];
+
+		selectedPin.classList.remove('dragging', 'drag-started');
+
+		if(this._dragDetails.moved) {
+			const [x, y] = getPercentagePositions(
+				d3event.sourceEvent.x,
+				d3event.sourceEvent.y,
+				this._image.node()
+			);
+
+			savePin(d.id, null, null, x, y)
+				.then(() => {
+					openToast({
+						message: Liferay.Language.get('pin-position-updated'),
+						type: 'success',
+					});
+				})
+				.catch(() => {
+					openToast({
+						message: Liferay.Language.get('pin-position-failed-to-be-updated'),
+						type: 'danger',
+					});
+				})
+		}
 	}
 }
 

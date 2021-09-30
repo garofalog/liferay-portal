@@ -29,6 +29,7 @@ import {calculateTooltipStyleFromEvent, calculateTooltipStyleFromSource, formatM
 function Tooltip({
 	closeTooltip,
 	containerRef,
+	pins,
 	productId,
 	readOnlySequence,
 	selectedPin,
@@ -103,12 +104,12 @@ function Tooltip({
 		updateSaving(true);
 
 		savePin(
-			productId,
 			update ? selectedPin.id : null,
 			mappedProduct,
 			sequence,
 			x,
-			y
+			y,
+			productId
 		)
 			.then((newPin) => {
 				if (!isMounted()) {

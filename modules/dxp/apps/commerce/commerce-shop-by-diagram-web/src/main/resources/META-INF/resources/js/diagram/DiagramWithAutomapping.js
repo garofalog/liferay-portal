@@ -125,7 +125,6 @@ function DiagramWithAutomapping({imageURL, pinsCSSSelectors, productId}) {
 					<Tooltip
 						closeTooltip={() => setTooltipData(null)}
 						containerRef={wrapperRef}
-						expanded={expanded}
 						productId={productId}
 						readOnlySequence={true}
 						updatePins={updatePins}
