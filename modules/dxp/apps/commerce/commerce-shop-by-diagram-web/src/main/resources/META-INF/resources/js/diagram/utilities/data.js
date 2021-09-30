@@ -87,10 +87,6 @@ export const updateGlobalPinsRadius = (diagramId, radius, namespace) => {
 		headers: HEADERS,
 		method: 'PATCH',
 	}).then(() => {
-		const radiusInput = document.getElementById(`${namespace}radius`);
-
-		if (radiusInput) {
-			radiusInput.value = radius;
-		}
+		document.getElementById(`${namespace}radius`).value = radius;
 	});
 };

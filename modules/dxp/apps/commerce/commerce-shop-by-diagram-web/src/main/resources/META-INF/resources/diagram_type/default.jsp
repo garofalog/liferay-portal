@@ -30,19 +30,17 @@ CSDiagramSetting csDiagramSetting = csDiagramSettingDisplayContext.fetchCSDiagra
 		module="js/diagram/Diagram"
 		props='<%=
 			HashMapBuilder.<String, Object>put(
-				"datasetDisplayId", CSDiagramDataSetConstants.CS_DIAGRAM_MAPPED_PRODUCTS_DATA_SET_KEY
-			).put(
-				"diagramId", csDiagramSetting.getCSDiagramSettingId()
+				"diagramId", (csDiagramSetting != null) ? csDiagramSetting.getCSDiagramSettingId() : 0
 			).put(
 				"imageURL", csDiagramSettingDisplayContext.getImageURL()
 			).put(
 				"isAdmin", true
 			).put(
-				"namespace", liferayPortletResponse.getNamespace()
-			).put(
-				"pinsRadius", csDiagramSetting.getRadius()
+				 "namespace", liferayPortletResponse.getNamespace()
 			).put(
 				"productId", cpDefinition.getCProductId()
+			).put(
+				"pinsRadius", (csDiagramSetting != null) ? csDiagramSetting.getRadius() : csDiagramSettingDisplayContext.getRadius()
 			).build()
 		%>'
 	/>

@@ -28,7 +28,6 @@ import {
 	getPercentagePositions,
 	isPinMoving,
 } from './utilities/index';
-
 class DiagramHandler {
 	constructor(
 		diagramWrapper,

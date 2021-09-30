@@ -27,7 +27,6 @@ import '../../css/diagram.scss';
 const debouncedUpdatePinsRadius = debounce(updateGlobalPinsRadius, 800);
 
 function Diagram({
-	datasetDisplayId,
 	diagramId,
 	imageURL,
 	namespace,
@@ -43,16 +42,16 @@ function Diagram({
 	const [tooltipData, setTooltipData] = useState(false);
 	const [currentZoom, updateCurrentZoom] = useState(1);
 	const [expanded, updateExpanded] = useState(false);
-	const pinsRadiusInitialized = useRef(false);
+	const didMountRef = useRef(false);
 
 	useEffect(() => {
-		if (pinsRadiusInitialized.current) {
+		if (didMountRef.current) {
 			debouncedUpdatePinsRadius(diagramId, pinsRadius, namespace);
 		}
 		else {
-			pinsRadiusInitialized.current = true;
+			didMountRef.current = true;
 		}
-	}, [pinsRadius, diagramId, namespace]);
+	}, [diagramId, namespace, pinsRadius]);
 
 	useEffect(() => {
 		loadPins(productId).then(updatePins);
@@ -103,7 +102,6 @@ function Diagram({
 					<Tooltip
 						closeTooltip={() => setTooltipData(null)}
 						containerRef={wrapperRef}
-						datasetDisplayId={datasetDisplayId}
 						productId={productId}
 						readOnlySequence={false}
 						updatePins={updatePins}
