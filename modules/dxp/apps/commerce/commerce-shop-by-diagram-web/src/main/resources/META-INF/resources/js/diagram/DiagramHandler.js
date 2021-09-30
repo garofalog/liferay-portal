@@ -23,7 +23,7 @@ class DiagramHandler {
 		imageURL,
 		updateHtmlPins,
 		updateZoomState,
-		openTooltip,
+		setTooltipData,
 	) {
 		this._currentScale = 1;
 		this._diagramWrapper = diagramWrapper;
@@ -32,7 +32,7 @@ class DiagramHandler {
 		this._imageURL = imageURL;
 		this._updateHtmlPins = updateHtmlPins;
 		this._pinBackground = null;
-		this._openTooltip = openTooltip;
+		this._setTooltipData = setTooltipData;
 		this._updateZoomState = updateZoomState;
 		this._zoomWrapper = zoomWrapper;
 		this._handleZoom = this._handleZoom.bind(this);
@@ -40,7 +40,6 @@ class DiagramHandler {
 		this._handleDragStarted = this._handleDragStarted.bind(this);
 		this._handleDragging = this._handleDragging.bind(this);
 		this._handleDragEnded = this._handleDragEnded.bind(this);
-
 		this._pinsRadius = DEFAULT_PINS_RADIUS;
 
 		this._printImage();
@@ -129,7 +128,7 @@ class DiagramHandler {
 					d3event.target
 				);
 
-				this._openTooltip(d3event, {x, y});
+				this._setTooltipData({sourceEvent: d3event, x, y});
 			})
 			
 	}
@@ -165,8 +164,14 @@ class DiagramHandler {
 					.on('drag', this._handleDragging)
 					.on('end', this._handleDragEnded)
 			)
-			.on('click', (d) => {
-				this._openTooltip(d3event, {id: d.id})
+			.on('click', (d, index, nodes) => {
+				const source = nodes[index];
+				
+				this._setTooltipData({
+					selectedPin: d,
+					sequence: d.sequence,
+					source
+				})
 			})
 
 		this._radiusHandlers = this._pinsGroups

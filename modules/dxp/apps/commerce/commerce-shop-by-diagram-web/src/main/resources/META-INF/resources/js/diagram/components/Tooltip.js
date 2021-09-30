@@ -29,7 +29,6 @@ import {calculateTooltipStyleFromEvent, calculateTooltipStyleFromSource, formatM
 function Tooltip({
 	closeTooltip,
 	containerRef,
-	pins,
 	productId,
 	readOnlySequence,
 	selectedPin,

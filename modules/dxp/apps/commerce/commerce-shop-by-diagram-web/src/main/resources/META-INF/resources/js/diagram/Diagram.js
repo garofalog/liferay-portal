@@ -36,6 +36,10 @@ function Diagram({imageURL, productId}) {
 	const [highlightedText, updateHighlightedText] = useState(null);
 
 	useEffect(() => {
+		//call debounced radius update;
+	}, [pinsRadius])
+
+	useEffect(() => {
 		loadPins(productId).then(updatePins);
 	}, [productId]);
 
@@ -64,9 +68,7 @@ function Diagram({imageURL, productId}) {
 
 				updateCurrentZoom(scale);
 			},
-			(sourceEvent, pinData) => {
-				setTooltipData({sourceEvent, ...pinData});
-			}
+			setTooltipData
 		);
 
 		return () => {
@@ -90,7 +92,6 @@ function Diagram({imageURL, productId}) {
 					<Tooltip
 						closeTooltip={() => setTooltipData(null)}
 						containerRef={wrapperRef}
-						pins={pins}
 						productId={productId}
 						readOnlySequence={false}
 						updatePins={updatePins}
