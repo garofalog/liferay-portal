@@ -51,7 +51,7 @@ function Diagram({
 		else {
 			didMountRef.current = true;
 		}
-	}, [diagramId, namespace, pinsRadius]);
+	}, [pinsRadius, diagramId, namespace]);
 
 	useEffect(() => {
 		loadPins(productId).then(updatePins);

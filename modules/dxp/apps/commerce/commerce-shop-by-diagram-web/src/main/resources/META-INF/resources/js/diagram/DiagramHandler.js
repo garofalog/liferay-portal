@@ -175,7 +175,7 @@ class DiagramHandler {
 
 		this._newPinPlaceholder = this._d3zoomWrapper
 			.append('g')
-			.attr('class', 'empty-pin-node')
+			.attr('class', 'pin-node empty')
 			.attr(
 				'transform',
 				`translate(${getAbsolutePositions(

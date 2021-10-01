@@ -210,6 +210,12 @@
 		}
 	}
 
+	&.empty {
+		.pin-node-background {
+			fill: $primary;
+		}
+	}
+
 	.pin-node-text {
 		fill: $primary;
 		paint-order: stroke;

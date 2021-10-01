@@ -36,11 +36,11 @@ CSDiagramSetting csDiagramSetting = csDiagramSettingDisplayContext.fetchCSDiagra
 			).put(
 				"isAdmin", true
 			).put(
-				 "namespace", liferayPortletResponse.getNamespace()
-			).put(
-				"productId", cpDefinition.getCProductId()
+				"namespace", liferayPortletResponse.getNamespace()
 			).put(
 				"pinsRadius", (csDiagramSetting != null) ? csDiagramSetting.getRadius() : csDiagramSettingDisplayContext.getRadius()
+			).put(
+				"productId", cpDefinition.getCProductId()
 			).build()
 		%>'
 	/>
