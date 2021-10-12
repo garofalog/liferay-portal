@@ -144,3 +144,7 @@ CSDiagramType csDiagramType = csDiagramSettingDisplayContext.getCSDiagramType(ty
 	%>'
 	module="js/edit_cp_definition_diagram_setting"
 />
+
+<liferay-frontend:component
+	module="js/autosave_after_upload_media.ts"
+/>
