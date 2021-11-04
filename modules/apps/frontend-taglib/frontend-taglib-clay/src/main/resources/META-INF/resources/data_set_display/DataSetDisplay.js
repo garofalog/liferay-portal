@@ -392,6 +392,13 @@ function DataSetDisplay({
 					activePage={pageNumber}
 					deltas={pagination.deltas}
 					ellipsisBuffer={3}
+					labels={{
+						paginationResults: Liferay.Language.get(
+							'showing-x-to-x-of-x-entries'
+						),
+						perPageItems: Liferay.Language.get('x-items'),
+						selectPerPageItems: Liferay.Language.get('x-items'),
+					}}
 					onDeltaChange={(deltaVal) => {
 						setPageNumber(1);
 						setDelta(deltaVal);
