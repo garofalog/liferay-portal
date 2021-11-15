@@ -22,6 +22,7 @@ import com.liferay.commerce.product.service.CommerceChannelService;
 import com.liferay.commerce.warehouse.web.internal.display.context.CommerceInventoryWarehousesDisplayContext;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.service.CountryService;
+import com.liferay.portal.kernel.service.RegionService;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 
@@ -75,7 +76,8 @@ public class CommerceInventoryWarehousePortlet extends MVCPortlet {
 					_commerceChannelRelService, _commerceChannelService,
 					_commerceCountryManager, _commerceInventoryWarehouseService,
 					_countryService,
-					_portal.getHttpServletRequest(renderRequest));
+					_portal.getHttpServletRequest(renderRequest),
+					_regionService);
 
 		renderRequest.setAttribute(
 			WebKeys.PORTLET_DISPLAY_CONTEXT,
@@ -102,5 +104,8 @@ public class CommerceInventoryWarehousePortlet extends MVCPortlet {
 
 	@Reference
 	private Portal _portal;
+
+	@Reference
+	private RegionService _regionService;
 
 }
