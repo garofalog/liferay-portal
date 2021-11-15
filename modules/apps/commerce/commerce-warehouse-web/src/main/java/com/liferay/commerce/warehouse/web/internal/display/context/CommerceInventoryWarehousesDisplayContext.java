@@ -31,12 +31,16 @@ import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Country;
+import com.liferay.portal.kernel.model.Region;
 import com.liferay.portal.kernel.portlet.PortletURLUtil;
 import com.liferay.portal.kernel.service.CountryService;
+import com.liferay.portal.kernel.service.RegionService;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,13 +62,16 @@ public class CommerceInventoryWarehousesDisplayContext {
 		CommerceChannelService commerceChannelService,
 		CommerceCountryManager commerceCountryManager,
 		CommerceInventoryWarehouseService commerceInventoryWarehouseService,
-		CountryService countryService, HttpServletRequest httpServletRequest) {
+		CountryService countryService, HttpServletRequest httpServletRequest,
+		RegionService regionService) {
 
 		_commerceChannelRelService = commerceChannelRelService;
 		_commerceChannelService = commerceChannelService;
 		_commerceCountryManager = commerceCountryManager;
 		_commerceInventoryWarehouseService = commerceInventoryWarehouseService;
 		_countryService = countryService;
+		_httpServletRequest = httpServletRequest;
+		_regionService = regionService;
 
 		_cpRequestHelper = new CPRequestHelper(httpServletRequest);
 	}
@@ -115,6 +122,15 @@ public class CommerceInventoryWarehousesDisplayContext {
 		}
 
 		return _commerceInventoryWarehouse;
+	}
+
+	public List<Country> getCountries() {
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)_httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		return _countryService.getCompanyCountries(
+			themeDisplay.getCompanyId(), true);
 	}
 
 	public Country getCountry(long countryId) throws PortalException {
@@ -195,6 +211,14 @@ public class CommerceInventoryWarehousesDisplayContext {
 		).setParameter(
 			"orderByType", getOrderByType()
 		).buildPortletURL();
+	}
+
+	public List<Region> getRegions() throws PortalException {
+		Country countryByA2 = _countryService.getCountryByA2(
+			_cpRequestHelper.getCompanyId(),
+			_commerceInventoryWarehouse.getCountryTwoLettersISOCode());
+
+		return _regionService.getRegions(countryByA2.getCountryId(), true);
 	}
 
 	public SearchContainer<CommerceInventoryWarehouse> getSearchContainer()
@@ -339,7 +363,9 @@ public class CommerceInventoryWarehousesDisplayContext {
 		_commerceInventoryWarehouseService;
 	private final CountryService _countryService;
 	private final CPRequestHelper _cpRequestHelper;
+	private final HttpServletRequest _httpServletRequest;
 	private String _keywords;
+	private final RegionService _regionService;
 	private SearchContainer<CommerceInventoryWarehouse> _searchContainer;
 
 }
