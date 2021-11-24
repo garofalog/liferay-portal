@@ -60,63 +60,6 @@ CommerceShipmentDisplayContext commerceShipmentDisplayContext = (CommerceShipmen
 	</aui:form>
 </commerce-ui:modal-content>
 
-<aui:script use="aui-base">
-	var commerceAccount = <portlet:namespace />form.querySelector(
-		'select[name=<portlet:namespace />commerceAccountId]'
-	);
-
-	Liferay.provide(
-		window,
-		'<portlet:namespace />updateAddressField',
-		function <portlet:namespace />updateAddressField(commerceAccountId) {
-			return Liferay.Util.fetch(
-				'/o/headless-commerce-admin-account/v1.0/accounts/' +
-					commerceAccountId +
-					'/accountAddresses/',
-				{
-					headers: new Headers({
-						'Accept': 'application/json',
-						'Content-Type': 'application/json',
-					}),
-					method: 'GET',
-				}
-			)
-				.then((response) => {
-					return response.json();
-				})
-				.then((response) => {
-					var select = A.one('#<portlet:namespace />commerceAddressId');
-
-					response.items.forEach((item) => {
-						var option = A.Node.create(
-							'<option id="<portlet:namespace />commerceAddressId-' +
-								item.id +
-								'" value="' +
-								item.id +
-								'">' +
-								item.street1 +
-								' - ' +
-								item.city +
-								' - ' +
-								item.regionISOCode +
-								' - ' +
-								item.countryISOCode +
-								'</option>'
-						);
-
-						select.append(option);
-					});
-
-					select.show();
-				});
-		}
-	);
-
-	if (commerceAccount) {
-		commerceAccount.addEventListener('change', () => {
-			if (commerceAccount.value) {
-				<portlet:namespace />updateAddressField(commerceAccount.value);
-			}
-		});
-	}
-</aui:script>
+<liferay-frontend:component
+	module="js/add_commerce_shipment"
+/>
