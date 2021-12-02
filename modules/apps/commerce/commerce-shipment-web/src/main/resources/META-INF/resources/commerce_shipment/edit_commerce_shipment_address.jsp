@@ -48,73 +48,23 @@ CommerceAddress shippingAddress = commerceShipmentDisplayContext.getShippingAddr
 
 		<aui:input label="postal-code" name="zip" />
 
-		<aui:select label="country" name="countryId" showEmptyOption="<%= true %>">
+		<aui:select label="country" name="countryId" />
 
-			<%
-			for (Country country : commerceShipmentDisplayContext.getCountries()) {
-			%>
-
-				<aui:option label="<%= country.getTitle(locale) %>" selected="<%= shippingAddress.getCountryId() == country.getCountryId() %>" value="<%= country.getCountryId() %>" />
-
-			<%
-			}
-			%>
-
-		</aui:select>
-
-		<aui:select label="region" name="regionId" showEmptyOption="<%= true %>">
-
-			<%
-			for (Region region : commerceShipmentDisplayContext.getRegions(shippingAddress.getCountryId())) {
-			%>
-
-				<aui:option label="<%= region.getName() %>" selected="<%= shippingAddress.getRegionId() == region.getRegionId() %>" value="<%= shippingAddress.getRegionId() %>" />
-
-			<%
-			}
-			%>
-
-		</aui:select>
+		<aui:select label="region" name="regionId" />
 
 		<aui:input name="phoneNumber" />
 	</aui:form>
 </commerce-ui:modal-content>
 
-<aui:script use="aui-base,liferay-dynamic-select">
-	new Liferay.DynamicSelect([
-		{
-			select: '<portlet:namespace />countryId',
-			selectData: function (callback) {
-				Liferay.Service(
-					'/commerce.commercecountrymanagerimpl/get-shipping-countries',
-					{
-						active: true,
-						companyId: <%= company.getCompanyId() %>,
-						shippingAllowed: true,
-					},
-					callback
-				);
-			},
-			selectDesc: 'nameCurrentValue',
-			selectId: 'countryId',
-			selectSort: '<%= true %>',
-			selectVal: '<%= shippingAddress.getCountryId() %>',
-		},
-		{
-			select: '<portlet:namespace />regionId',
-			selectData: function (callback, selectKey) {
-				Liferay.Service(
-					'/region/get-regions',
-					{
-						active: true,
-						countryId: Number(selectKey),
-					},
-					callback
-				);
-			},
-			selectDesc: 'name',
-			selectId: 'regionId',
-			selectVal: '<%= shippingAddress.getRegionId() %>',
-		},
-	]);
-</aui:script>
+<liferay-frontend:component
+	context='<%=
+		HashMapBuilder.<String, Object>put(
+			"companyId", company.getCompanyId()
+		).put(
+			"countryId", shippingAddress.getCountryId()
+		).put(
+			"regionId", shippingAddress.getRegionId()
+		).build()
+	%>'
+	module="js/edit_commerce_shipment_address"
+/>
