@@ -68,8 +68,6 @@ else {
 	</aui:button-row>
 </aui:form>
 
-<aui:script>
-	function <portlet:namespace />saveCommerceRegion() {
-		submitForm(document.<portlet:namespace />fm);
-	}
-</aui:script>
+<liferay-frontend:component
+	module="js/edit_commerce_region"
+/>

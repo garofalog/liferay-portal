@@ -152,6 +152,10 @@ CommerceRegionsDisplayContext commerceRegionsDisplayContext = (CommerceRegionsDi
 		</aui:form>
 	</div>
 
+	<liferay-frontend:component
+		module="js/commerce_regions"
+	/>
+
 	<aui:script>
 		function <portlet:namespace />deleteCommerceRegions() {
 			if (

@@ -1,4 +1,4 @@
-<%--
+<%@ page import="com.liferay.portal.kernel.util.HashMapBuilder" %><%--
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
@@ -50,7 +50,7 @@ long[] commerceChannelIds = commerceCountriesDisplayContext.getCommerceChannelRe
 						for (CommerceChannel commerceChannel : commerceChannels) {
 						%>
 
-							<aui:input checked="<%= ArrayUtil.contains(commerceChannelIds, commerceChannel.getCommerceChannelId()) %>" label="<%= commerceChannel.getName() %>" name='<%= "commerceChannelId_" + commerceChannel.getCommerceChannelId() %>' onChange='<%= liferayPortletResponse.getNamespace() + "fulfillCommerceChannelIds();" %>' type="checkbox" value="<%= commerceChannel.getCommerceChannelId() %>" />
+							<aui:input checked="<%= ArrayUtil.contains(commerceChannelIds, commerceChannel.getCommerceChannelId()) %>" label="<%= commerceChannel.getName() %>" name='<%= "commerceChannelId_" + commerceChannel.getCommerceChannelId() %>' type="checkbox" value="<%= commerceChannel.getCommerceChannelId() %>" />
 
 						<%
 						}
@@ -69,16 +69,13 @@ long[] commerceChannelIds = commerceCountriesDisplayContext.getCommerceChannelRe
 	</div>
 </aui:form>
 
-<aui:script>
-	function <portlet:namespace />fulfillCommerceChannelIds(e) {
-		var form = window.document['<portlet:namespace />fm'];
-		var values = Liferay.Util.listCheckedExcept(
-			form,
-			'<portlet:namespace />allRowIds'
-		);
-		form['<portlet:namespace />commerceChannelIds'].value = values;
-		return values;
-	}
 
-	<portlet:namespace />fulfillCommerceChannelIds();
-</aui:script>
+<liferay-frontend:component
+	module="js/channels"
+	context='<%=
+		HashMapBuilder.<String, Object>put(
+			"channelId", commerceChannels.getCommerceChannelRelCommerceChannelIds()
+		).build()
+	%>'
+/>
+/>

@@ -81,55 +81,6 @@ CommerceRegionsStarter commerceRegionsStarter = commerceCountriesDisplayContext.
 	</aui:button-row>
 </aui:form>
 
-<aui:script>
-	function <portlet:namespace />saveCommerceCountry() {
-		submitForm(document.<portlet:namespace />fm);
-	}
-</aui:script>
-
-<c:if test="<%= commerceRegionsStarter != null %>">
-	<aui:script use="aui-io-request,aui-parse-content,liferay-notification">
-		A.one('#<portlet:namespace />importCommerceRegionsButton').on(
-			'click',
-			function (event) {
-				var data = {
-					<portlet:namespace />key: '<%= commerceRegionsStarter.getKey() %>',
-				};
-
-				this.attr('disabled', true);
-
-				A.io.request(
-					'<liferay-portlet:actionURL name="/commerce_country/import_commerce_regions" portletName="<%= portletDisplay.getPortletName() %>" />',
-					{
-						data: data,
-						on: {
-							success: function (event, id, obj) {
-								var response = JSON.parse(obj.response);
-
-								if (!response.success) {
-									A.one(
-										'#<portlet:namespace />importCommerceRegionsButton'
-									).attr('disabled', false);
-
-									new Liferay.Notification({
-										closeable: true,
-										delay: {
-											hide: 5000,
-											show: 0,
-										},
-										duration: 500,
-										message:
-											'<liferay-ui:message key="an-unexpected-error-occurred" />',
-										render: true,
-										title: '<liferay-ui:message key="danger" />',
-										type: 'danger',
-									});
-								}
-							},
-						},
-					}
-				);
-			}
-		);
-	</aui:script>
-</c:if>
+<liferay-frontend:component
+	module="js/details"
+/>
