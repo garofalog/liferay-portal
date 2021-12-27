@@ -32,7 +32,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "edit-note"));
 	<portlet:param name="mvcRenderCommandName" value="/commerce_order/edit_commerce_order_note" />
 </portlet:actionURL>
 
-<aui:form action="<%= editCommerceOrderNoteActionURL %>" cssClass="container-fluid container-fluid-max-xl" method="post" name="fm" onSubmit='<%= "event.preventDefault(); " + liferayPortletResponse.getNamespace() + "saveCommerceOrderNote();" %>'>
+<aui:form action="<%= editCommerceOrderNoteActionURL %>" cssClass="container-fluid container-fluid-max-xl" method="post" name="fm" id='<%= liferayPortletResponse.getNamespace() + "saveCommerceOrderNote" %>'>
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= (commerceOrderNote == null) ? Constants.ADD : Constants.UPDATE %>" />
 	<aui:input name="redirect" type="hidden" value="<%= redirect %>" />
 	<aui:input name="commerceOrderNoteId" type="hidden" value="<%= String.valueOf(commerceOrderNote.getCommerceOrderNoteId()) %>" />
@@ -58,8 +58,6 @@ renderResponse.setTitle(LanguageUtil.get(request, "edit-note"));
 	</aui:button-row>
 </aui:form>
 
-<aui:script>
-	function <portlet:namespace />saveCommerceOrderNote() {
-		submitForm(document.<portlet:namespace />fm);
-	}
-</aui:script>
+<liferay-frontend:component
+	module="js/edit_commerce_order_note"
+/>
