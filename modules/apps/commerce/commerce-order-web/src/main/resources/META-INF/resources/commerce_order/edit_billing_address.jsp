@@ -62,78 +62,15 @@ if ((commerceOrder != null) && Validator.isNull(cmd)) {
 	</aui:form>
 </commerce-ui:modal-content>
 
-<aui:script use="liferay-dynamic-select">
-	new Liferay.DynamicSelect([
-		{
-			select: '<portlet:namespace />countryId',
-			selectData: function (callback) {
-				function injectCountryPlaceholder(list) {
-					var callbackList = [
-						{
-							countryId: '0',
-							nameCurrentValue:
-								'- <liferay-ui:message key="select-country" />',
-						},
-					];
-
-					list.forEach((listElement) => {
-						callbackList.push(listElement);
-					});
-
-					callback(callbackList);
-				}
-
-				Liferay.Service(
-					'/commerce.commercecountrymanagerimpl/get-billing-countries',
-					{
-						active: true,
-						billingAllowed: true,
-						companyId: <%= company.getCompanyId() %>,
-					},
-					injectCountryPlaceholder
-				);
-			},
-			selectDesc: 'nameCurrentValue',
-			selectId: 'countryId',
-			selectNullable: <%= false %>,
-			selectSort: '<%= true %>',
-			selectVal:
-				'<%= BeanParamUtil.getLong(billingAddress, request, "countryId") %>',
-		},
-		{
-			select: '<portlet:namespace />regionId',
-			selectData: function (callback, selectKey) {
-				function injectRegionPlaceholder(list) {
-					var callbackList = [
-						{
-							regionId: '0',
-							name: '- <liferay-ui:message key="select-region" />',
-							nameCurrentValue:
-								'- <liferay-ui:message key="select-region" />',
-						},
-					];
-
-					list.forEach((listElement) => {
-						callbackList.push(listElement);
-					});
-
-					callback(callbackList);
-				}
-
-				Liferay.Service(
-					'/region/get-regions',
-					{
-						active: true,
-						countryId: Number(selectKey),
-					},
-					injectRegionPlaceholder
-				);
-			},
-			selectDesc: 'name',
-			selectId: 'regionId',
-			selectNullable: <%= false %>,
-			selectVal:
-				'<%= BeanParamUtil.getLong(billingAddress, request, "regionId") %>',
-		},
-	]);
-</aui:script>
+<liferay-frontend:component
+	context='<%=
+		HashMapBuilder.<String, Object>put(
+			"commerceRegionCode", commerceRegionCode
+		).put(
+			"companyId", company.getCompanyId()
+		).put(
+			"countryTwoLettersISOCode", HtmlUtil.escape(countryTwoLettersISOCode)
+		).build()
+	%>'
+	module="../js/countryRegion"
+/>
