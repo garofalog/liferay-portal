@@ -63,7 +63,8 @@ CommerceAvailabilityEstimateDisplayContext commerceAvailabilityEstimateDisplayCo
 
 		<liferay-frontend:management-bar-action-buttons>
 			<liferay-frontend:management-bar-button
-				href='<%= "javascript:" + liferayPortletResponse.getNamespace() + "deleteCommerceAvailabilityEstimates();" %>'
+				class='<%= liferayPortletResponse.getNamespace() + "deleteCommerceAvailabilityEstimates" %>'
+				href="#"
 				icon="trash"
 				label="delete"
 			/>
@@ -128,24 +129,12 @@ CommerceAvailabilityEstimateDisplayContext commerceAvailabilityEstimateDisplayCo
 		</aui:form>
 	</div>
 
-	<aui:script>
-		function <portlet:namespace />deleteCommerceAvailabilityEstimates() {
-			if (
-				confirm(
-					'<liferay-ui:message key="are-you-sure-you-want-to-delete-the-selected-availability-estimates" />'
-				)
-			) {
-				var form = window.document['<portlet:namespace />fm'];
-
-				form[
-					'<portlet:namespace />deleteCommerceAvailabilityEstimateIds'
-				].value = Liferay.Util.listCheckedExcept(
-					form,
-					'<portlet:namespace />allRowIds'
-				);
-
-				submitForm(form);
-			}
-		}
-	</aui:script>
+	<liferay-frontend:component
+	context='<%=
+		HashMapBuilder.<String, Object>put(
+			"itemSelectorURL", commerceOrderContentDisplayContext.getCSVFileEntryItemSelectorURL()
+		).build()
+	%>'
+	module="js/view"
+/>
 </c:if>
