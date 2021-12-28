@@ -38,14 +38,6 @@ String commercePaymentMethodKey = BeanParamUtil.getString(commerceOrder, request
 					</aui:alert>
 				</aui:col>
 			</aui:row>
-
-			<aui:script use="aui-base">
-				var continueButton = A.one('#<portlet:namespace />continue');
-
-				if (continueButton) {
-					Liferay.Util.toggleDisabled(continueButton, true);
-				}
-			</aui:script>
 		</c:when>
 		<c:otherwise>
 			<ul class="list-group">
@@ -79,12 +71,11 @@ String commercePaymentMethodKey = BeanParamUtil.getString(commerceOrder, request
 	</c:choose>
 </div>
 
-<c:if test="<%= commercePaymentMethods.isEmpty() %>">
-	<aui:script use="aui-base">
-		var value = A.one('#<portlet:namespace />continue');
-
-		if (value) {
-			Liferay.Util.toggleDisabled(value, true);
-		}
-	</aui:script>
-</c:if>
+<liferay-frontend:component
+	context='<%=
+		HashMapBuilder.<String, Object>put(
+			"commercePaymentMethods", commercePaymentMethods
+		).build()
+	%>'
+	module="../js/checkout_step/payment_method"
+	/>

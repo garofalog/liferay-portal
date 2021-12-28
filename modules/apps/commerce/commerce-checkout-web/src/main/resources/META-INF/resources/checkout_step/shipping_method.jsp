@@ -42,13 +42,6 @@ if (Validator.isNull(commerceShippingOptionKey)) {
 				</aui:col>
 			</aui:row>
 
-			<aui:script use="aui-base">
-				var continueButton = A.one('#<portlet:namespace />continue');
-
-				if (continueButton) {
-					Liferay.Util.toggleDisabled(continueButton, true);
-				}
-			</aui:script>
 		</c:when>
 		<c:otherwise>
 			<ul class="list-group">
@@ -99,3 +92,7 @@ if (Validator.isNull(commerceShippingOptionKey)) {
 		</c:otherwise>
 	</c:choose>
 </div>
+
+<liferay-frontend:component
+	module="../js/checkout_step/shipping_method"
+/>

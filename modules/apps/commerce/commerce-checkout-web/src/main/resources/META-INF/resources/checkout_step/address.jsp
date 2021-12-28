@@ -44,7 +44,7 @@ CommerceAddress currentCommerceAddress = baseAddressCheckoutStepDisplayContext.g
 
 <div class="form-group-autofit">
 	<c:if test="<%= !commerceOrder.isGuestOrder() %>">
-		<aui:select label="<%= selectLabel %>" name="commerceAddress" onChange='<%= liferayPortletResponse.getNamespace() + "selectAddress();" %>' wrapperCssClass="commerce-form-group-item-row form-group-item">
+		<aui:select label="<%= selectLabel %>" name="commerceAddress" name="commerceAddress" wrapperCssClass="commerce-form-group-item-row form-group-item">
 			<aui:option label="add-new-address" value="0" />
 
 			<%
@@ -94,10 +94,9 @@ CommerceAddress currentCommerceAddress = baseAddressCheckoutStepDisplayContext.g
 
 	<div class="form-group-autofit">
 		<aui:input disabled="<%= commerceAddressId > 0 %>" label="" name="street1" placeholder="address" wrapperCssClass="form-group-item" />
+		
+		<aui:select label="country" name="countryTwoLettersISOCode" />
 
-		<aui:select disabled="<%= commerceAddressId > 0 %>" label="" name="countryId" placeholder="country" title="country" wrapperCssClass="form-group-item">
-			<aui:validator errorMessage='<%= LanguageUtil.get(request, "please-enter-a-valid-country") %>' name="min">1</aui:validator>
-		</aui:select>
 	</div>
 
 	<c:choose>
@@ -110,7 +109,7 @@ CommerceAddress currentCommerceAddress = baseAddressCheckoutStepDisplayContext.g
 		</c:when>
 		<c:otherwise>
 			<div class="add-street-link form-group-autofit">
-				<aui:a disabled="<%= commerceAddressId > 0 %>" href="javascript:;" label="+-add-address-line" onClick='<%= liferayPortletResponse.getNamespace() + "addStreetAddress();" %>' />
+				<aui:a disabled="<%= commerceAddressId > 0 %>" href="javascript:;" label="+-add-address-line" name='<%= liferayPortletResponse.getNamespace() + "addStreetAddress" %>' />
 			</div>
 
 			<div class="add-street-fields form-group-autofit hide">
@@ -125,8 +124,8 @@ CommerceAddress currentCommerceAddress = baseAddressCheckoutStepDisplayContext.g
 		<aui:input disabled="<%= commerceAddressId > 0 %>" label="" name="zip" placeholder="zip" wrapperCssClass="form-group-item" />
 
 		<aui:input disabled="<%= commerceAddressId > 0 %>" label="" name="city" placeholder="city" wrapperCssClass="form-group-item" />
-
-		<aui:select disabled="<%= commerceAddressId > 0 %>" label="" name="regionId" placeholder="region" title="region" wrapperCssClass="form-group-item" />
+		
+		<aui:select label="region" name="commerceRegionCode" />
 
 		<aui:input disabled="<%= commerceAddressId > 0 %>" id="commerceRegionIdInput" label="" name="regionId" placeholder="regionId" title="region" wrapperCssClass="d-none form-group-item" />
 
@@ -149,305 +148,17 @@ CommerceAddress currentCommerceAddress = baseAddressCheckoutStepDisplayContext.g
 	</div>
 </c:if>
 
-<aui:script>
-	Liferay.provide(
-		window,
-		'<portlet:namespace />addStreetAddress',
-		function <portlet:namespace />addStreetAddress() {
-			var A = AUI();
-
-			var addStreetFields = A.one('.add-street-fields');
-			var addStreetLink = A.one('.add-street-link');
-
-			if (addStreetFields) {
-				addStreetFields.show();
-			}
-			if (addStreetLink) {
-				addStreetLink.hide();
-			}
-		},
-		['aui-base']
-	);
-
-	Liferay.provide(
-		window,
-		'<portlet:namespace />clearAddressFields',
-		function <portlet:namespace />clearAddressFields() {
-			var A = AUI();
-
-			A.all('.address-fields select').set('selectedIndex', 0);
-			A.all('.address-fields input').val('');
-
-			var useAsBillingField = A.one('#<portlet:namespace />use-as-billing');
-
-			if (useAsBillingField) {
-				useAsBillingField.attr(
-					'checked',
-					<%= baseAddressCheckoutStepDisplayContext.isShippingUsedAsBilling() %>
-				);
-			}
-		},
-		['aui-base']
-	);
-
-	Liferay.provide(
-		window,
-		'<portlet:namespace />selectAddress',
-		function <portlet:namespace />selectAddress() {
-			var A = AUI();
-
-			var commerceAddress = A.one('#<portlet:namespace />commerceAddress');
-			var commerceAddressParamName = A.one(
-				'#<%= liferayPortletResponse.getNamespace() + paramName %>'
-			);
-			var newAddress = A.one('#<portlet:namespace />newAddress');
-
-			if (newAddress && commerceAddress && commerceAddressParamName) {
-				var commerceAddressVal = commerceAddress.val();
-
-				if (commerceAddressVal === '0') {
-					<portlet:namespace />clearAddressFields();
-					<portlet:namespace />toggleAddressFields(false);
-				}
-				else {
-					<portlet:namespace />updateAddressFields(
-						commerceAddress.get('selectedIndex')
-					);
-					Liferay.Form.get(
-						'<portlet:namespace />fm'
-					).formValidator.validate();
-				}
-
-				commerceAddressParamName.val(commerceAddressVal);
-				newAddress.val(Number(commerceAddressVal === '0'));
-			}
-		},
-		['aui-base']
-	);
-
-	Liferay.provide(
-		window,
-		'<portlet:namespace />toggleAddressFields',
-		function <portlet:namespace />toggleAddressFields(state) {
-			var A = AUI();
-
-			Liferay.Util.toggleDisabled(A.all('.address-fields input'), state);
-			Liferay.Util.toggleDisabled(A.all('.address-fields select'), state);
-
-			var commerceRegionIdSelect = A.one(
-				'#<portlet:namespace />regionId'
-			).getDOMNode();
-			var commerceRegionIdInput = A.one(
-				'#<portlet:namespace />commerceRegionIdInput'
-			).getDOMNode();
-			var commerceRegionIdName = A.one(
-				'#<portlet:namespace />commerceRegionIdName'
-			).getDOMNode();
-
-			commerceRegionIdSelect.setAttribute(
-				'name',
-				'<portlet:namespace />regionId'
-			);
-			commerceRegionIdSelect.parentElement.classList.remove('d-none');
-
-			commerceRegionIdInput.setAttribute(
-				'name',
-				'commerceRegionIdInputDisabled'
-			);
-			commerceRegionIdInput.parentElement.classList.add('d-none');
-			commerceRegionIdName.setAttribute(
-				'name',
-				'commerceRegionIdInputDisabled'
-			);
-			commerceRegionIdName.parentElement.classList.add('d-none');
-		},
-		['aui-base']
-	);
-
-	Liferay.provide(
-		window,
-		'<portlet:namespace />updateAddressFields',
-		function <portlet:namespace />updateAddressFields(selectedVal) {
-			if (!selectedVal || selectedVal === '0') {
-				return;
-			}
-
-			var A = AUI();
-
-			var commerceAddress = A.one('#<portlet:namespace />commerceAddress');
-
-			if (commerceAddress) {
-				<portlet:namespace />addStreetAddress();
-				<portlet:namespace />toggleAddressFields(true);
-
-				var city = A.one('#<portlet:namespace />city');
-				var countryId = A.one('#<portlet:namespace />countryId');
-				var commerceRegionIdInput = A.one(
-					'#<portlet:namespace />commerceRegionIdInput'
-				).getDOMNode();
-				var commerceRegionIdName = A.one(
-					'#<portlet:namespace />commerceRegionIdName'
-				).getDOMNode();
-				var commerceRegionIdSelect = A.one(
-					'#<portlet:namespace />regionId'
-				).getDOMNode();
-				var name = A.one('#<portlet:namespace />name');
-				var phoneNumber = A.one('#<portlet:namespace />phoneNumber');
-				var street1 = A.one('#<portlet:namespace />street1');
-				var street2 = A.one('#<portlet:namespace />street2');
-				var street3 = A.one('#<portlet:namespace />street3');
-				var zip = A.one('#<portlet:namespace />zip');
-
-				if (
-					city &&
-					countryId &&
-					commerceRegionIdInput &&
-					commerceRegionIdSelect &&
-					commerceRegionIdName &&
-					name &&
-					phoneNumber &&
-					street1 &&
-					street2 &&
-					street3 &&
-					zip
-				) {
-					var selectedOption = commerceAddress
-						.get('options')
-						.item(selectedVal);
-
-					city.val(selectedOption.getData('city'));
-					countryId.val(selectedOption.getData('country'));
-					name.val(selectedOption.getData('name'));
-					phoneNumber.val(selectedOption.getData('phone-number'));
-					street1.val(selectedOption.getData('street-1'));
-					street2.val(selectedOption.getData('street-2'));
-					street3.val(selectedOption.getData('street-3'));
-					zip.val(selectedOption.getData('zip'));
-
-					commerceRegionIdSelect.setAttribute(
-						'name',
-						'commerceRegionIdSelectIgnore'
-					);
-					commerceRegionIdSelect.parentElement.classList.add('d-none');
-
-					commerceRegionIdInput.value = selectedOption.getData('region');
-					commerceRegionIdInput.setAttribute(
-						'name',
-						'<portlet:namespace />regionId'
-					);
-					commerceRegionIdInput.parentElement.classList.add('d-none');
-
-					commerceRegionIdName.setAttribute(
-						'name',
-						'commerceRegionIdNameIgnore'
-					);
-					commerceRegionIdName.parentElement.classList.remove('d-none');
-
-					Liferay.Service(
-						'/region/get-regions',
-						{
-							active: true,
-							countryId: parseInt(
-								selectedOption.getData('country'),
-								10
-							),
-						},
-						function setUIOnlyInputRegionName(regions) {
-							for (var i = 0; i < regions.length; i++) {
-								if (
-									regions[i].regionId ===
-									selectedOption.getData('region')
-								) {
-									commerceRegionIdName.value = regions[i].name;
-
-									break;
-								}
-							}
-						}
-					);
-				}
-			}
-		},
-		['aui-base']
-	);
-</aui:script>
-
-<aui:script>
-	Liferay.component(
-		'<portlet:namespace />countrySelects',
-		new Liferay.DynamicSelect([
-			{
-				select: '<portlet:namespace />countryId',
-				selectData: function (callback) {
-					function injectCountryPlaceholder(list) {
-						var callbackList = [
-							{
-								countryId: '0',
-								nameCurrentValue:
-									'- <liferay-ui:message key="select-country" />',
-							},
-						];
-
-						list.forEach((listElement) => {
-							callbackList.push(listElement);
-						});
-
-						callback(callbackList);
-					}
-
-					Liferay.Service(
-						'/commerce.commercecountrymanagerimpl/<%= baseAddressCheckoutStepDisplayContext.getCommerceCountrySelectionMethodName() %>-by-channel-id',
-						{
-							channelId: <%= commerceContext.getCommerceChannelId() %>,
-							end: -1,
-							start: -1,
-						},
-						injectCountryPlaceholder
-					);
-				},
-				selectDesc: 'nameCurrentValue',
-				selectId: 'countryId',
-				selectNullable: <%= false %>,
-				selectSort: '<%= true %>',
-				selectVal:
-					'<%= BeanParamUtil.getLong(currentCommerceAddress, request, "countryId", 0) %>',
-			},
-			{
-				select: '<portlet:namespace />regionId',
-				selectData: function (callback, selectKey) {
-					function injectRegionPlaceholder(list) {
-						var callbackList = [
-							{
-								regionId: '0',
-								name:
-									'- <liferay-ui:message key="select-region" />',
-								nameCurrentValue:
-									'- <liferay-ui:message key="select-region" />',
-							},
-						];
-
-						list.forEach((listElement) => {
-							callbackList.push(listElement);
-						});
-
-						callback(callbackList);
-					}
-
-					Liferay.Service(
-						'/region/get-regions',
-						{
-							active: true,
-							countryId: Number(selectKey),
-						},
-						injectRegionPlaceholder
-					);
-				},
-				selectDesc: 'name',
-				selectId: 'regionId',
-				selectNullable: <%= false %>,
-				selectVal:
-					'<%= BeanParamUtil.getLong(currentCommerceAddress, request, "regionId", 0) %>',
-			},
-		])
-	);
-</aui:script>
+<liferay-frontend:component
+	context='<%=
+		HashMapBuilder.<String, Object>put(
+			"commerceRegionCode", BeanParamUtil.getLong(currentCommerceAddress, request, "regionId", 0)
+		).put(
+			"companyId", company.getCompanyId()
+		).put(
+			"countryTwoLettersISOCode", BeanParamUtil.getLong(currentCommerceAddress, request, "countryId", 0)
+		).put(
+			"isShippingUsedAsBilling", baseAddressCheckoutStepDisplayContext.isShippingUsedAsBilling()
+		).build()
+	%>'
+	module="js/checkout_step/address"
+/>
