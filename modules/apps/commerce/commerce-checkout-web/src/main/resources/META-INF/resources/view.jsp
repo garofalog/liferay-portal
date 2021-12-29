@@ -93,7 +93,7 @@ CheckoutDisplayContext checkoutDisplayContext = (CheckoutDisplayContext)request.
 
 						<portlet:actionURL name="/commerce_checkout/save_step" var="saveStepURL" />
 
-						<aui:form action="<%= saveStepURL %>" data-senna-off="<%= checkoutDisplayContext.isSennaDisabled() %>" method="post" name="fm" onSubmit='<%= "event.preventDefault(); " + liferayPortletResponse.getNamespace() + "saveCheckoutStep();" %>'>
+						<aui:form action="<%= saveStepURL %>" data-senna-off="<%= checkoutDisplayContext.isSennaDisabled() %>" method="post" name="fm">
 							<aui:input name="checkoutStepName" type="hidden" value="<%= currentCheckoutStepName %>" />
 							<aui:input name="commerceOrderUuid" type="hidden" value="<%= checkoutDisplayContext.getCommerceOrderUuid() %>" />
 							<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
@@ -118,14 +118,13 @@ CheckoutDisplayContext checkoutDisplayContext = (CheckoutDisplayContext)request.
 							</c:if>
 						</aui:form>
 
-						<aui:script>
-							function <portlet:namespace />saveCheckoutStep() {
-								submitForm(document.<portlet:namespace />fm);
-							}
-						</aui:script>
 					</c:otherwise>
 				</c:choose>
 			</div>
 		</div>
 	</c:otherwise>
 </c:choose>
+
+<liferay-frontend:component
+	module="js/view"
+/>
