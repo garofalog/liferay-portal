@@ -12,18 +12,19 @@
  * details.
  */
 
-import slugify from 'commerce-frontend-js/utilities/slugify';
 import {debounce} from 'frontend-js-web';
 
-export default function ({namespace}) {
-	const keyInput = document.getElementById(`${namespace}key`);
-	const nameInput = document.getElementById(`${namespace}name`);
+export default function ({cpOptionCategory, namespace}) {
+	if (cpOptionCategory === null) {
+		const titleInput = document.getElementById(`${namespace}title`);
+		const keyInput = document.getElementById(`${namespace}key`);
 
-	nameInput.addEventListener(
-		'input',
-		debounce(() => {
-			keyInput.value = slugify(nameInput.value);
-		}),
-		200
-	);
+		titleInput.addEventListener(
+			'input',
+			debounce.default(() => {
+				keyInput.value = titleInput.value;
+			}),
+			200
+		);
+	}
 }

@@ -16,16 +16,12 @@
 
 <%@ include file="/init.jsp" %>
 
-<%
-CPOptionCategory cpOptionCategory = (CPOptionCategory)request.getAttribute(CPWebKeys.CP_OPTION_CATEGORY);
-%>
-
 <liferay-ui:error-marker
 	key="<%= WebKeys.ERROR_SECTION %>"
 	value="details"
 />
 
-<aui:model-context bean="<%= cpOptionCategory %>" model="<%= CPOptionCategory.class %>" />
+<aui:model-context bean="<%= (CPOptionCategory)request.getAttribute(CPWebKeys.CP_OPTION_CATEGORY) %>" model="<%= CPOptionCategory.class %>" />
 
 <liferay-ui:error exception="<%= CPOptionCategoryKeyException.class %>" message="that-key-is-already-being-used" />
 
@@ -43,17 +39,6 @@ CPOptionCategory cpOptionCategory = (CPOptionCategory)request.getAttribute(CPWeb
 	</aui:fieldset>
 </commerce-ui:panel>
 
-<c:if test="<%= cpOptionCategory == null %>">
-	<aui:script require="commerce-frontend-js/utilities/debounce as debounce">
-		var form = document.getElementById('<portlet:namespace />fm');
-
-		var keyInput = form.querySelector('#<portlet:namespace />key');
-		var titleInput = form.querySelector('#<portlet:namespace />title');
-
-		var handleOnTitleInput = function () {
-			keyInput.value = titleInput.value;
-		};
-
-		titleInput.addEventListener('input', debounce.default(handleOnTitleInput, 200));
-	</aui:script>
-</c:if>
+<liferay-frontend:component
+	module="../js/option_category/details"
+/>

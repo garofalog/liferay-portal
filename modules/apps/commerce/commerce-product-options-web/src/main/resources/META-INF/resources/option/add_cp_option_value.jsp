@@ -23,7 +23,7 @@ long cpOptionId = ParamUtil.getLong(request, "cpOptionId");
 <commerce-ui:modal-content
 	title='<%= LanguageUtil.get(request, "create-new-option-value") %>'
 >
-	<aui:form cssClass="container-fluid container-fluid-max-xl" method="post" name="fm" onSubmit='<%= "event.preventDefault(); " + liferayPortletResponse.getNamespace() + "apiSubmit();" %>'>
+	<aui:form cssClass="container-fluid container-fluid-max-xl" method="post" name="fm">
 		<aui:input autoFocus="<%= true %>" name="name" required="<%= true %>" type="text" />
 
 		<aui:input helpMessage="key-help" name="key" required="<%= true %>" />
@@ -48,6 +48,6 @@ long cpOptionId = ParamUtil.getLong(request, "cpOptionId");
 				"windowState", LiferayWindowState.MAXIMIZED.toString()
 			).build()
 		%>'
-		module="js/add_cp_option_value"
+		module="../js/option/add_cp_option_value"
 	/>
 </commerce-ui:modal-content>

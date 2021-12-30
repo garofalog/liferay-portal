@@ -18,53 +18,48 @@ import slugify from 'commerce-frontend-js/utilities/slugify';
 import {debounce} from 'frontend-js-web';
 
 export default function ({
-	cpOptionId,
 	defaultLanguageId,
 	editOptionURL,
 	namespace,
 	windowState,
 }) {
-	const form = document.getElementById(namespace + 'fm');
-	const keyInput = form.querySelector('#' + namespace + 'key');
-	const nameInput = form.querySelector('#' + namespace + 'name');
-	const priorityInput = form.querySelector('#' + namespace + 'priority');
+	const keyInput = document.getElementById(`${namespace}key`);
+	const nameInput = document.getElementById(`${namespace}name`);
 	const handleOnNameInput = () => {
 		keyInput.value = slugify(nameInput.value);
 	};
 	nameInput.addEventListener('input', debounce(handleOnNameInput, 200));
 
 	const AdminCatalogResource = ServiceProvider.AdminCatalogAPI('v1');
-
-	Liferay.provide(
-		window,
-		namespace + 'apiSubmit',
-		() => {
-			modalUtils.isSubmitting();
-			const formattedData = {
-				id: '',
-				key: '',
-				name: {},
-				priority: 0,
-			};
-
-			formattedData.key = keyInput.value;
-			formattedData.name[defaultLanguageId] = nameInput.value;
-			formattedData.id = cpOptionId;
-			formattedData.priority = priorityInput.value;
-
-			AdminCatalogResource.createOptionValue(cpOptionId, formattedData)
-				.then(() => {
-					const redirectURL = new Liferay.PortletURL.createURL(
-						editOptionURL
-					);
-
-					redirectURL.setParameter('p_p_state', windowState);
-					redirectURL.setParameter('cpOptionId', cpOptionId);
-
-					modalUtils.closeAndRedirect(redirectURL);
-				})
-				.catch(modalUtils.onSubmitFail);
-		},
-		['liferay-portlet-url']
+	const addCpOptionSubmitButton = document.getElementsByName(
+		`${namespace}fm`
 	);
+	addCpOptionSubmitButton.addEventListener('submit', (event) => {
+		event.preventDefault();
+		modalUtils.isSubmitting();
+
+		const formattedData = {
+			fieldType: document.getElementById(
+				`${namespace}DDMFormFieldTypeName`
+			).value,
+			key: keyInput.value,
+			name: {
+				[defaultLanguageId]: nameInput.value,
+			},
+		};
+
+		AdminCatalogResource.createOption(formattedData)
+			.then((cpOption) => {
+				const redirectURL = new Liferay.PortletURL.createURL(
+					editOptionURL
+				);
+
+				redirectURL.setParameter('p_p_state', windowState);
+
+				redirectURL.setParameter('cpOptionId', cpOption.id);
+
+				modalUtils.closeAndRedirect(redirectURL);
+			})
+			.catch(modalUtils.onSubmitFail);
+	});
 }

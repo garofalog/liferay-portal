@@ -94,8 +94,9 @@ renderResponse.setTitle(LanguageUtil.get(request, "specifications"));
 		</c:if>
 
 		<liferay-frontend:management-bar-button
-			href='<%= "javascript:" + liferayPortletResponse.getNamespace() + "deleteCPOptionCategories();" %>'
+			href="#"
 			icon="times"
+			id="deleteCPOptionCategories"
 			label="delete"
 		/>
 	</liferay-frontend:management-bar-action-buttons>
@@ -181,29 +182,15 @@ renderResponse.setTitle(LanguageUtil.get(request, "specifications"));
 	</div>
 </div>
 
-<aui:script>
-	function <portlet:namespace />deleteCPOptionCategories() {
-		if (
-			confirm(
-				'<liferay-ui:message key="are-you-sure-you-want-to-delete-the-selected-specification-groups" />'
-			)
-		) {
-			var form = window.document['<portlet:namespace />fm'];
+<portlet:actionURL name="/cp_specification_options/edit_cp_option_category" var="editCPOptionCategoryActionURL" />
 
-			form.setAttribute('method', 'post');
-			form['<portlet:namespace /><%= Constants.CMD %>'].value =
-				'<%= Constants.DELETE %>';
-			form[
-				'<portlet:namespace />deleteCPOptionCategoryIds'
-			].value = Liferay.Util.listCheckedExcept(
-				form,
-				'<portlet:namespace />allRowIds'
-			);
-
-			submitForm(
-				form,
-				'<portlet:actionURL name="/cp_specification_options/edit_cp_option_category" />'
-			);
-		}
-	}
-</aui:script>
+<liferay-frontend:component
+	context='<%=
+		HashMapBuilder.<String, Object>put(
+			Constants.CMD, Constants.DELETE
+		).put(
+			"editCPOptionCategoryActionURL", editCPOptionCategoryActionURL.toString()
+		).build()
+	%>'
+	module="js/view_cp_option_categories"
+/>
