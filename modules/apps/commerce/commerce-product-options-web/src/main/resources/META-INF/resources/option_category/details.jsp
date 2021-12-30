@@ -43,17 +43,6 @@ CPOptionCategory cpOptionCategory = (CPOptionCategory)request.getAttribute(CPWeb
 	</aui:fieldset>
 </commerce-ui:panel>
 
-<c:if test="<%= cpOptionCategory == null %>">
-	<aui:script require="commerce-frontend-js/utilities/debounce as debounce">
-		var form = document.getElementById('<portlet:namespace />fm');
-
-		var keyInput = form.querySelector('#<portlet:namespace />key');
-		var titleInput = form.querySelector('#<portlet:namespace />title');
-
-		var handleOnTitleInput = function () {
-			keyInput.value = titleInput.value;
-		};
-
-		titleInput.addEventListener('input', debounce.default(handleOnTitleInput, 200));
-	</aui:script>
-</c:if>
+<liferay-frontend:component
+	module="../js/option_category/details"
+/>
