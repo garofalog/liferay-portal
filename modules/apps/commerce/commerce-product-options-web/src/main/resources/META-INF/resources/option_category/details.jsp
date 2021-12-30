@@ -16,16 +16,12 @@
 
 <%@ include file="/init.jsp" %>
 
-<%
-CPOptionCategory cpOptionCategory = (CPOptionCategory)request.getAttribute(CPWebKeys.CP_OPTION_CATEGORY);
-%>
-
 <liferay-ui:error-marker
 	key="<%= WebKeys.ERROR_SECTION %>"
 	value="details"
 />
 
-<aui:model-context bean="<%= cpOptionCategory %>" model="<%= CPOptionCategory.class %>" />
+<aui:model-context bean="<%= (CPOptionCategory)request.getAttribute(CPWebKeys.CP_OPTION_CATEGORY) %>" model="<%= CPOptionCategory.class %>" />
 
 <liferay-ui:error exception="<%= CPOptionCategoryKeyException.class %>" message="that-key-is-already-being-used" />
 

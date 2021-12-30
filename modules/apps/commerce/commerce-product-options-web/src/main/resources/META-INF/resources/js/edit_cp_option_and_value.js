@@ -19,7 +19,11 @@ export default function ({namespace}) {
 	const keyInput = document.getElementById(`${namespace}key`);
 	const nameInput = document.getElementById(`${namespace}name`);
 
-	nameInput.addEventListener('input', debounce(()=>{
-		keyInput.value = slugify(nameInput.value);
-	}), 200);
+	nameInput.addEventListener(
+		'input',
+		debounce(() => {
+			keyInput.value = slugify(nameInput.value);
+		}),
+		200
+	);
 }

@@ -94,9 +94,9 @@ renderResponse.setTitle(LanguageUtil.get(request, "specifications"));
 		</c:if>
 
 		<liferay-frontend:management-bar-button
-			id="deleteCPOptionCategories"
 			href="#"
 			icon="times"
+			id="deleteCPOptionCategories"
 			label="delete"
 		/>
 	</liferay-frontend:management-bar-action-buttons>
@@ -182,15 +182,15 @@ renderResponse.setTitle(LanguageUtil.get(request, "specifications"));
 	</div>
 </div>
 
-<portlet:actionURL name="/cp_specification_options/edit_cp_option_category" var="editCPActionURL"/>
+<portlet:actionURL name="/cp_specification_options/edit_cp_option_category" var="editCPOptionCategoryActionURL" />
 
 <liferay-frontend:component
 	context='<%=
 		HashMapBuilder.<String, Object>put(
 			Constants.CMD, Constants.DELETE
 		).put(
-		"editCPActionURL", editCPActionURL.toString()
+			"editCPOptionCategoryActionURL", editCPOptionCategoryActionURL.toString()
 		).build()
 	%>'
-	module="js/view_cp_action_URL"
+	module="js/view_cp_option_categories"
 />

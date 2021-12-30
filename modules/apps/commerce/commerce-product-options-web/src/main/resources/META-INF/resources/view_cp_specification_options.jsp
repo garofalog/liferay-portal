@@ -101,8 +101,9 @@ renderResponse.setTitle(LanguageUtil.get(request, "specifications"));
 		</c:if>
 
 		<liferay-frontend:management-bar-button
-			href='<%= "javascript:" + liferayPortletResponse.getNamespace() + "deleteCPSpecificationOptions();" %>'
+			href="#"
 			icon="times"
+			id="deleteCPSpecificationOptions"
 			label="delete"
 		/>
 	</liferay-frontend:management-bar-action-buttons>
@@ -195,15 +196,15 @@ renderResponse.setTitle(LanguageUtil.get(request, "specifications"));
 	</div>
 </div>
 
-<portlet:actionURL name="/cp_specification_options/edit_cp_specification_option" var="editCPActionURL" />
+<portlet:actionURL name="/cp_specification_options/edit_cp_specification_option" var="editCPSpecificationOptionActionURL" />
 
 <liferay-frontend:component
 	context='<%=
 		HashMapBuilder.<String, Object>put(
 			Constants.CMD, Constants.DELETE
 		).put(
-		"editCPActionURL", editCPActionURL.toString()
+			"editCPSpecificationOptionActionURL", editCPSpecificationOptionActionURL.toString()
 		).build()
 	%>'
-	module="js/view_cp_action_URL"
+	module="js/view_cp_specification_options"
 />

@@ -62,7 +62,6 @@ if (cpOptionValue != null) {
 			<liferay-ui:error exception="<%= CPOptionValueKeyException.class %>" focusField="key" message="that-key-is-already-being-used" />
 
 			<aui:fieldset>
-
 				<aui:input id="name" name="name" wrapperCssClass="commerce-product-option-value-title" />
 				<aui:input helpMessage="key-help" id="key" name="key" />
 				<aui:input label="position" name="priority" />
