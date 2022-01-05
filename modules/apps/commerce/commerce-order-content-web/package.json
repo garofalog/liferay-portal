@@ -1,4 +1,8 @@
 {
+	"dependencies": {
+		"commerce-frontend-js": "*",
+		"frontend-js-web": "*"
+	},
 	"name": "@liferay/commerce-order-content-web",
 	"scripts": {
 		"build": "liferay-npm-scripts build",

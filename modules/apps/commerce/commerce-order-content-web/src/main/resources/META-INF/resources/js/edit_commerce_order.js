@@ -12,10 +12,20 @@
  * details.
  */
 
-export default function ({commerceOrderImporterTypeKey, title, url}) {
-	document
-		.querySelector(`.${commerceOrderImporterTypeKey}`)
-		.addEventListener('click', (event) => {
+import {delegate} from 'commerce-frontend-js';
+
+export default function ({
+	commerceOrderImporterTypeKey,
+	namespace,
+	title,
+	url,
+}) {
+	const commerceOrderImporterTypeKeyIcon = document.querySelector(
+		`.${commerceOrderImporterTypeKey}`
+	);
+
+	if (commerceOrderImporterTypeKeyIcon) {
+		commerceOrderImporterTypeKeyIcon.addEventListener('click', (event) => {
 			event.preventDefault();
 
 			Liferay.Util.openModal({
@@ -25,4 +35,95 @@ export default function ({commerceOrderImporterTypeKey, title, url}) {
 				url,
 			});
 		});
+	}
+
+	const orderTransition = document.getElementById(`${orderTransition}`);
+
+	if (orderTransition) {
+		delegate(
+			'click',
+			(event) => {
+				var link = event.currentTarget;
+
+				var workflowTaskId = parseInt(
+					link.getData('workflowTaskId'),
+					10
+				);
+
+				var transitionForm = document.getElementById(
+					`${namespace}transitionFm`
+				);
+
+				document.getElementById(
+					`${namespace}transitionCommerceOrderId`
+				).value = link.getData('commerceOrderId');
+
+				document.getElementById(
+					`${namespace}workflowTaskId`
+				).value = workflowTaskId;
+				document.getElementById(
+					`${namespace}transitionName`
+				).value = link.getData('transitionName');
+
+				if (workflowTaskId <= 0) {
+					submitForm(transitionForm);
+
+					return;
+				}
+
+				var transitionComments = document.getElementById(
+					`${namespace}transitionComments`
+				);
+
+				transitionComments.style.display = 'block';
+
+				var dialog = Liferay.Util.Window.getWindow({
+					dialog: {
+						bodyContent: transitionForm,
+						destroyOnHide: true,
+						height: 400,
+						resizable: false,
+						toolbars: {
+							footer: [
+								{
+									cssClass: 'btn-primary mr-2',
+									label: Liferay.Language.get('done'),
+									on: {
+										click() {
+											submitForm(transitionForm);
+										},
+									},
+								},
+								{
+									cssClass: 'btn-cancel',
+									label: Liferay.Language.get('cancel'),
+									on: {
+										click() {
+											dialog.style.display = 'none';
+										},
+									},
+								},
+							],
+							header: [
+								{
+									cssClass: 'close',
+									discardDefaultButtonCssClasses: true,
+									labelHTML:
+										'<span aria-hidden="true">&times;</span>',
+									on: {
+										click() {
+											dialog.style.display = 'none';
+										},
+									},
+								},
+							],
+						},
+						width: 720,
+					},
+					title: link.innerText,
+				});
+			},
+			'.transition-link'
+		);
+	}
 }

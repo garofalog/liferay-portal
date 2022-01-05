@@ -74,20 +74,20 @@ if (commerceOrder != null) {
 <div class="commerce-panel">
 	<div class="commerce-panel__content">
 		<div class="align-items-center row">
-			<div class="col-md-3">
+			<div class="col-lg-3">
 				<div class="commerce-order-title">
 					<%= HtmlUtil.escape(commerceAccount.getName()) %>
 				</div>
 			</div>
 
-			<div class="col-md-3">
+			<div class="col-lg-3">
 				<dl class="commerce-list">
 					<dt><liferay-ui:message key="total" /></dt>
 					<dd><%= HtmlUtil.escape(totalOrderCommerceMoney.format(locale)) %></dd>
 				</dl>
 			</div>
 
-			<div class="col-md-3">
+			<div class="col-lg-3">
 				<dl class="commerce-list">
 					<dt><liferay-ui:message key="notes" /></dt>
 					<dd>
@@ -106,28 +106,28 @@ if (commerceOrder != null) {
 
 	<div class="commerce-panel__content">
 		<div class="align-items-center row">
-			<div class="col-md-3">
+			<div class="col-lg-3">
 				<dl class="commerce-list">
 					<dt><liferay-ui:message key="account-id" /></dt>
 					<dd><%= commerceAccount.getCommerceAccountId() %></dd>
 				</dl>
 			</div>
 
-			<div class="col-md-3">
+			<div class="col-lg-3">
 				<dl class="commerce-list">
 					<dt><liferay-ui:message key="order-id" /></dt>
 					<dd><%= commerceOrder.getCommerceOrderId() %></dd>
 				</dl>
 			</div>
 
-			<div class="col-md-3">
+			<div class="col-lg-3">
 				<dl class="commerce-list">
 					<dt><liferay-ui:message key="order-type" /></dt>
 					<dd><%= commerceOrderContentDisplayContext.getCommerceOrderTypeName(languageId) %></dd>
 				</dl>
 			</div>
 
-			<div class="col-md-3">
+			<div class="col-lg-3">
 				<dl class="commerce-list">
 					<dt><liferay-ui:message key="order-date" /></dt>
 					<dd>
@@ -142,12 +142,12 @@ if (commerceOrder != null) {
 
 <c:if test="<%= commerceOrderContentDisplayContext.isShowPurchaseOrderNumber() %>">
 	<div class="row">
-		<div class="col-md-12">
+		<div class="col-12">
 			<div class="commerce-panel">
 				<div class="commerce-panel__title"><liferay-ui:message key="purchase-order-number" /></div>
 				<div class="commerce-panel__content">
 					<div class="row">
-						<div class="col-md-6">
+						<div class="col-lg-6">
 							<dl class="commerce-list">
 								<%= HtmlUtil.escape(commerceOrder.getPurchaseOrderNumber()) %>
 							</dl>
@@ -160,12 +160,12 @@ if (commerceOrder != null) {
 </c:if>
 
 <div class="row">
-	<div class="col-md-6">
+	<div class="col-lg-6">
 		<div class="commerce-panel">
 			<div class="commerce-panel__title"><liferay-ui:message key="billing-address" /></div>
 			<div class="commerce-panel__content">
 				<div class="row">
-					<div class="col-md-12">
+					<div class="col">
 						<c:if test="<%= billingCommerceAddress != null %>">
 							<p><%= HtmlUtil.escape(billingCommerceAddress.getStreet1()) %></p>
 
@@ -185,12 +185,12 @@ if (commerceOrder != null) {
 		</div>
 	</div>
 
-	<div class="col-md-6">
+	<div class="col-lg-6">
 		<div class="commerce-panel">
 			<div class="commerce-panel__title"><liferay-ui:message key="shipping-address" /></div>
 			<div class="commerce-panel__content">
 				<div class="row">
-					<div class="col-md-12">
+					<div class="col">
 						<c:if test="<%= shippingCommerceAddress != null %>">
 							<p><%= HtmlUtil.escape(shippingCommerceAddress.getStreet1()) %></p>
 
@@ -221,13 +221,13 @@ if (commerceOrder != null) {
 		<aui:input name="commerceOrderId" type="hidden" value="<%= String.valueOf(commerceOrder.getCommerceOrderId()) %>" />
 	</aui:form>
 
-	<aui:button cssClass="btn btn-lg btn-secondary" onClick='<%= liferayPortletResponse.getNamespace() + "reorderCommerceOrder();" %>' value="reorder" />
+	<aui:button cssClass="btn btn-lg btn-secondary" name="reorderCommerceOrder" value="reorder" />
 
 	<liferay-util:dynamic-include key="com.liferay.commerce.order.content.web#/place_order_detail_cta#" />
 </div>
 
 <div class="row">
-	<div class="col-md-12">
+	<div class="col">
 
 		<%
 		java.util.Map<String, String> contextParams = new java.util.HashMap<>();
@@ -251,10 +251,7 @@ if (commerceOrder != null) {
 </div>
 
 <div class="row">
-	<div class="col-md-9">
-	</div>
-
-	<div class="col-md-3">
+	<div class="col-lg-3 offset-lg-9">
 		<div class="commerce-panel">
 			<div class="commerce-panel__content">
 				<dl class="commerce-list">
@@ -317,27 +314,6 @@ if (commerceOrder != null) {
 	</div>
 </div>
 
-<aui:script>
-	function <portlet:namespace />viewCommerceOrderShipments(uri) {
-		Liferay.Util.openWindow({
-			dialog: {
-				centered: true,
-				destroyOnClose: true,
-				modal: true,
-			},
-			dialogIframe: {
-				bodyCssClass: 'dialog',
-			},
-			id: 'viewCommerceOrderShipmentsDialog',
-			title: '',
-			uri: uri,
-		});
-	}
-
-	function <portlet:namespace />reorderCommerceOrder() {
-		document.<portlet:namespace />fm.<portlet:namespace /><%= Constants.CMD %>.value =
-			'reorder';
-
-		submitForm(document.<portlet:namespace />fm);
-	}
-</aui:script>
+<liferay-frontend:component
+	module="js/view_commerce_order_details"
+/>

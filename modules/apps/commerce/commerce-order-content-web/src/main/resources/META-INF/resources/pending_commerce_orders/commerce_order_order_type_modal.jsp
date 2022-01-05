@@ -50,54 +50,17 @@ CommerceChannel commerceChannel = commerceOrderContentDisplayContext.fetchCommer
 	<portlet:param name="mvcRenderCommandName" value="/commerce_open_order_content/edit_commerce_order" />
 </portlet:renderURL>
 
-<aui:script require="commerce-frontend-js/utilities/eventsDefinitions as events, commerce-frontend-js/ServiceProvider/index as ServiceProvider">
-	Liferay.provide(window, '<portlet:namespace />addOrder', () => {
-		window.parent.Liferay.fire(events.IS_LOADING_MODAL, {
-			isLoading: true,
-		});
-
-		var form = document.getElementById('<portlet:namespace />fm');
-
-		var orderTypeId = form.querySelector(
-			'#<portlet:namespace />commerceOrderTypeId'
-		).value;
-
-		var CartResource = ServiceProvider.default.DeliveryCartAPI('v1');
-
-		CartResource.createCartByChannelId(
-			'<%= commerceChannel.getCommerceChannelId() %>',
-			{
-				accountId:
-					'<%= commerceOrderContentDisplayContext.getCommerceAccountId() %>',
-				currencyCode: '<%= commerceChannel.getCommerceCurrencyCode() %>',
-				orderTypeId: orderTypeId,
-			}
-		)
-			.then((order) => {
-				Liferay.fire(
-					events.CURRENT_ORDER_UPDATED,
-					Object.assign({}, order)
-				);
-
-				var redirectURL = new Liferay.Util.PortletURL.createPortletURL(
-					'<%= editCommerceOrderRenderURL.toString() %>',
-					{
-						commerceOrderId: order.id,
-						p_auth: Liferay.authToken,
-						p_p_state: '<%= LiferayWindowState.MAXIMIZED.toString() %>',
-					}
-				);
-				window.parent.Liferay.fire(events.CLOSE_MODAL, {
-					redirectURL: redirectURL.toString(),
-					successNotification: {
-						showSuccessNotification: true,
-						message:
-							'<liferay-ui:message key="your-request-completed-successfully" />',
-					},
-				});
-			})
-			.catch((error) => {
-				return Promise.reject(error);
-			});
-	});
-</aui:script>
+<liferay-frontend:component
+	context='<%=
+		HashMapBuilder.<String, Object>put(
+			"commerceAccountId", commerceOrderContentDisplayContext.getCommerceAccountId()
+		).put(
+			"commerceChannelId", commerceChannel.getCommerceChannelId()
+		).put(
+			"commerceCurrencyCode", commerceChannel.getCommerceCurrencyCode()
+		).put(
+			"editCommerceOrderRenderURL", editCommerceOrderRenderURL.toString()
+		).build()
+	%>'
+	module="js/commerce_order_order_type_modal"
+/>

@@ -68,15 +68,6 @@ CommerceAccount commerceAccount = commerceOrderContentDisplayContext.getCommerce
 					<portlet:param name="mvcRenderCommandName" value="/commerce_order_content/view_commerce_order_order_type_modal" />
 				</portlet:renderURL>
 
-				<aui:script require="commerce-frontend-js/utilities/eventsDefinitions as events">
-					document.querySelector('#add-order').addEventListener('click', (e) => {
-						e.preventDefault();
-						Liferay.fire(events.OPEN_MODAL, {
-							id: 'add-order-modal',
-						});
-					});
-				</aui:script>
-
 				<commerce-ui:modal
 					id="add-order-modal"
 					refreshPageOnClose="<%= true %>"
@@ -86,3 +77,7 @@ CommerceAccount commerceAccount = commerceOrderContentDisplayContext.getCommerce
 		</c:if>
 	</div>
 </liferay-ddm:template-renderer>
+
+<liferay-frontend:component
+	module="js/view"
+/>

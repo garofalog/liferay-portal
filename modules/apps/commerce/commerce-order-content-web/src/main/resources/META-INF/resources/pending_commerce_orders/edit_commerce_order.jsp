@@ -538,16 +538,6 @@ List<String> errorMessages = (List<String>)request.getAttribute(CommerceWebKeys.
 
 <%@ include file="/pending_commerce_orders/transition.jspf" %>
 
-<aui:script use="aui-base">
-	var orderTransition = A.one('#<portlet:namespace />orderTransition');
-
-	if (orderTransition) {
-		orderTransition.delegate(
-			'click',
-			(event) => {
-				<portlet:namespace />transition(event);
-			},
-			'.transition-link'
-		);
-	}
-</aui:script>
+<liferay-frontend:component
+	module="js/edit_commerce_order"
+/>
