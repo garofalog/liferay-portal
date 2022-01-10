@@ -123,31 +123,14 @@ int selectedYearlyMode = yearlyCPSubscriptionTypeDisplayContext.getSelectedYearl
 				<aui:validator name="min">1</aui:validator>
 			</aui:input>
 		</div>
-
-		<aui:script>
-			function changeYearlyDeliveryCPSubscriptionTypeSettingsMode() {
-				var A = AUI();
-
-				if (
-					A.one('#<portlet:namespace />deliveryYearlyMode').val() ==
-					'<%= CPSubscriptionTypeConstants.MODE_EXACT_DAY_OF_YEAR %>'
-				) {
-					A.one(
-						'#<portlet:namespace />deliveryExactDayOfYearInputContainer'
-					).removeClass('hide');
-				}
-				else {
-					if (
-						!A.one(
-							'#<portlet:namespace />deliveryExactDayOfYearInputContainer'
-						).hasClass('hide')
-					) {
-						A.one(
-							'#<portlet:namespace />deliveryExactDayOfYearInputContainer'
-						).addClass('hide');
-					}
-				}
-			}
-		</aui:script>
 	</c:otherwise>
 </c:choose>
+
+<liferay-frontend:component
+	context='<%=
+		HashMapBuilder.<String, Object>put(
+			"modeExactdayOfYear",CPSubscriptionTypeConstants.MODE_EXACT_DAY_OF_YEAR
+		).build()
+	%>'
+	module="js/yearly"
+/>

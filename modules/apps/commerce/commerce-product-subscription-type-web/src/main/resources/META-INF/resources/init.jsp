@@ -22,9 +22,11 @@
 taglib uri="http://liferay.com/tld/frontend" prefix="liferay-frontend" %><%@
 taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %>
 
+
 <%@ page import="com.liferay.commerce.product.subscription.type.web.internal.constants.CPSubscriptionTypeConstants" %><%@
 page import="com.liferay.commerce.product.subscription.type.web.internal.display.context.MonthlyCPSubscriptionTypeDisplayContext" %><%@
 page import="com.liferay.commerce.product.subscription.type.web.internal.display.context.WeeklyCPSubscriptionTypeDisplayContext" %><%@
+page import="com.liferay.portal.kernel.util.HashMapBuilder" %><%@
 page import="com.liferay.commerce.product.subscription.type.web.internal.display.context.YearlyCPSubscriptionTypeDisplayContext" %><%@
 page import="com.liferay.petra.string.StringPool" %>
 

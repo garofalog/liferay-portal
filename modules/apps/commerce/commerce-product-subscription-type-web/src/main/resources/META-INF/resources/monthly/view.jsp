@@ -95,30 +95,14 @@ int selectedMonthlyMode = monthlyCPSubscriptionTypeDisplayContext.getSelectedMon
 			</aui:input>
 		</div>
 
-		<aui:script>
-			function changeMonthlyDeliveryCPSubscriptionTypeSettingsMode() {
-				var A = AUI();
-
-				if (
-					A.one('#<portlet:namespace />deliveryMonthlyMode').val() ==
-					'<%= CPSubscriptionTypeConstants.MODE_EXACT_DAY_OF_MONTH %>'
-				) {
-					A.one(
-						'#<portlet:namespace />deliveryMonthDayInputContainer'
-					).removeClass('hide');
-				}
-				else {
-					if (
-						!A.one(
-							'#<portlet:namespace />deliveryMonthDayInputContainer'
-						).hasClass('hide')
-					) {
-						A.one(
-							'#<portlet:namespace />deliveryMonthDayInputContainer'
-						).addClass('hide');
-					}
-				}
-			}
-		</aui:script>
 	</c:otherwise>
 </c:choose>
+
+<liferay-frontend:component
+	context='<%=
+		HashMapBuilder.<String, Object>put(
+			"modeExactDayOfMonth",CPSubscriptionTypeConstants.MODE_EXACT_DAY_OF_MONTH
+		).build()
+	%>'
+	module="js/monthly"
+/>
