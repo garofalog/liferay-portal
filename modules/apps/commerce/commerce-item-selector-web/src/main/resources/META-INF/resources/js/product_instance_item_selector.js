@@ -12,25 +12,21 @@
  * details.
  */
 
-
-export default function ({ itemSelectedEventName, namespace}) {
-const cpInstanceSelectorWrapper = document.getElementById(`${namespace}cpInstanceSelectorWrapper`);
+export default function ({itemSelectedEventName, namespace}) {
+	const cpInstanceSelectorWrapper = document.getElementById(
+		`${namespace}cpInstanceSelectorWrapper`
+	);
 
 	const searchContainer = Liferay.SearchContainer.get(
 		`${namespace}cpInstances`
 	);
 
 	searchContainer.on('rowToggled', () => {
-		Liferay.Util.getOpener().Liferay.fire(
-			itemSelectedEventName,
-			{
-				data: Liferay.Util.listCheckedExcept(
-					cpInstanceSelectorWrapper,
-					`${namespace}allRowIds`
-				),
-			}
-		);
+		Liferay.Util.getOpener().Liferay.fire(itemSelectedEventName, {
+			data: Liferay.Util.listCheckedExcept(
+				cpInstanceSelectorWrapper,
+				`${namespace}allRowIds`
+			),
+		});
 	});
-				
 }
-

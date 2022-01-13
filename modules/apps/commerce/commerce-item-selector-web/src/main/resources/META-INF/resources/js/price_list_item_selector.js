@@ -12,25 +12,21 @@
  * details.
  */
 
-
-export default function ({ itemSelectedEventName, namespace}) {
-const commercePriceListSelectorWrapper = document.getElementById(`${namespace}commercePriceListSelectorWrapper`);
+export default function ({itemSelectedEventName, namespace}) {
+	const commercePriceListSelectorWrapper = document.getElementById(
+		`${namespace}commercePriceListSelectorWrapper`
+	);
 
 	const searchContainer = Liferay.SearchContainer.get(
 		`${namespace}commercePriceLists`
 	);
 
 	searchContainer.on('rowToggled', () => {
-		Liferay.Util.getOpener().Liferay.fire(
-			itemSelectedEventName,
-			{
-				data: Liferay.Util.listCheckedExcept(
-					commercePriceListSelectorWrapper,
-					`${namespace}allRowIds`
-				),
-			}
-		);
+		Liferay.Util.getOpener().Liferay.fire(itemSelectedEventName, {
+			data: Liferay.Util.listCheckedExcept(
+				commercePriceListSelectorWrapper,
+				`${namespace}allRowIds`
+			),
+		});
 	});
-				
 }
-

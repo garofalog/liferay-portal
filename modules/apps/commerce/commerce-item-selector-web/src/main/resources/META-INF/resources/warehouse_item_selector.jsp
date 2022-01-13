@@ -90,7 +90,6 @@ for (ManagementBarFilterItem managementBarFilterItem : managementBarFilterItems)
 </div>
 
 <aui:script use="liferay-search-container">
-	
 </aui:script>
 
 <liferay-frontend:component

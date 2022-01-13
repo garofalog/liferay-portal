@@ -99,11 +99,10 @@ PortletURL portletURL = commerceProductInstanceItemSelectorViewDisplayContext.ge
 	</liferay-ui:search-container>
 </div>
 
-
 <liferay-frontend:component
 	context='<%=
 		HashMapBuilder.<String, Object>put(
-			"itemSelectedEventName", HtmlUtil.escapeJS(itemSelectedEventName)	
+			"itemSelectedEventName", HtmlUtil.escapeJS(itemSelectedEventName)
 		).build()
 	%>'
 	module="js/product_instance_item_selector"

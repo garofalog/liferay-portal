@@ -12,25 +12,21 @@
  * details.
  */
 
-
-export default function ({ itemSelectedEventName, namespace}) {
-const commerceCountrySelectorWrapper = document.getElementById(`${namespace}commerceCountrySelectorWrapper`);
+export default function ({itemSelectedEventName, namespace}) {
+	const commerceCountrySelectorWrapper = document.getElementById(
+		`${namespace}commerceCountrySelectorWrapper`
+	);
 
 	const searchContainer = Liferay.SearchContainer.get(
 		`${namespace}commerceCountries`
 	);
 
 	searchContainer.on('rowToggled', () => {
-		Liferay.Util.getOpener().Liferay.fire(
-			itemSelectedEventName,
-			{
-				data: Liferay.Util.listCheckedExcept(
-					commerceCountrySelectorWrapper,
-					`${namespace}allRowIds`
-				),
-			}
-		);
+		Liferay.Util.getOpener().Liferay.fire(itemSelectedEventName, {
+			data: Liferay.Util.listCheckedExcept(
+				commerceCountrySelectorWrapper,
+				`${namespace}allRowIds`
+			),
+		});
 	});
-				
 }
-
