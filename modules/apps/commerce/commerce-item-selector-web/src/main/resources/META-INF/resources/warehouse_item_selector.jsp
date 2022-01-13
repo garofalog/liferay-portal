@@ -90,23 +90,14 @@ for (ManagementBarFilterItem managementBarFilterItem : managementBarFilterItems)
 </div>
 
 <aui:script use="liferay-search-container">
-	var commerceInventoryWarehouseSelectorWrapper = A.one(
-		'#<portlet:namespace />commerceInventoryWarehouseSelectorWrapper'
-	);
-
-	var searchContainer = Liferay.SearchContainer.get(
-		'<portlet:namespace />commerceInventoryWarehouses'
-	);
-
-	searchContainer.on('rowToggled', (event) => {
-		Liferay.Util.getOpener().Liferay.fire(
-			'<%= HtmlUtil.escapeJS(itemSelectedEventName) %>',
-			{
-				data: Liferay.Util.listCheckedExcept(
-					commerceInventoryWarehouseSelectorWrapper,
-					'<portlet:namespace />allRowIds'
-				),
-			}
-		);
-	});
+	
 </aui:script>
+
+<liferay-frontend:component
+	context='<%=
+		HashMapBuilder.<String, Object>put(
+			"itemSelectedEventName", HtmlUtil.escapeJS(itemSelectedEventName)
+		).build()
+	%>'
+	module="js/warehouse_item_selector"
+/>

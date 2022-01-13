@@ -99,24 +99,12 @@ PortletURL portletURL = commerceProductInstanceItemSelectorViewDisplayContext.ge
 	</liferay-ui:search-container>
 </div>
 
-<aui:script use="liferay-search-container">
-	var cpInstanceSelectorWrapper = A.one(
-		'#<portlet:namespace />cpInstanceSelectorWrapper'
-	);
 
-	var searchContainer = Liferay.SearchContainer.get(
-		'<portlet:namespace />cpInstances'
-	);
-
-	searchContainer.on('rowToggled', (event) => {
-		Liferay.Util.getOpener().Liferay.fire(
-			'<%= HtmlUtil.escapeJS(commerceProductInstanceItemSelectorViewDisplayContext.getItemSelectedEventName()) %>',
-			{
-				data: Liferay.Util.listCheckedExcept(
-					cpInstanceSelectorWrapper,
-					'<portlet:namespace />allRowIds'
-				),
-			}
-		);
-	});
-</aui:script>
+<liferay-frontend:component
+	context='<%=
+		HashMapBuilder.<String, Object>put(
+			"itemSelectedEventName", HtmlUtil.escapeJS(itemSelectedEventName)	
+		).build()
+	%>'
+	module="js/product_instance_item_selector"
+/>

@@ -105,24 +105,11 @@ PortletURL portletURL = commerceCountryItemSelectorViewDisplayContext.getPortlet
 	</liferay-ui:search-container>
 </div>
 
-<aui:script use="liferay-search-container">
-	var commerceCountrySelectorWrapper = A.one(
-		'#<portlet:namespace />commerceCountrySelectorWrapper'
-	);
-
-	var searchContainer = Liferay.SearchContainer.get(
-		'<portlet:namespace />commerceCountries'
-	);
-
-	searchContainer.on('rowToggled', (event) => {
-		Liferay.Util.getOpener().Liferay.fire(
-			'<%= HtmlUtil.escapeJS(itemSelectedEventName) %>',
-			{
-				data: Liferay.Util.listCheckedExcept(
-					commerceCountrySelectorWrapper,
-					'<portlet:namespace />allRowIds'
-				),
-			}
-		);
-	});
-</aui:script>
+<liferay-frontend:component
+	context='<%=
+		HashMapBuilder.<String, Object>put(
+			"itemSelectedEventName", HtmlUtil.escapeJS(itemSelectedEventName)
+		).build()
+	%>'
+	module="js/country_item_selector"
+/>

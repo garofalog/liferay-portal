@@ -111,24 +111,11 @@ PortletURL portletURL = commercePriceListItemSelectorViewDisplayContext.getPortl
 	</liferay-ui:search-container>
 </div>
 
-<aui:script use="liferay-search-container">
-	var commercePriceListSelectorWrapper = A.one(
-		'#<portlet:namespace />commercePriceListSelectorWrapper'
-	);
-
-	var searchContainer = Liferay.SearchContainer.get(
-		'<portlet:namespace />commercePriceLists'
-	);
-
-	searchContainer.on('rowToggled', (event) => {
-		Liferay.Util.getOpener().Liferay.fire(
-			'<%= HtmlUtil.escapeJS(itemSelectedEventName) %>',
-			{
-				data: Liferay.Util.listCheckedExcept(
-					commercePriceListSelectorWrapper,
-					'<portlet:namespace />allRowIds'
-				),
-			}
-		);
-	});
-</aui:script>
+<liferay-frontend:component
+	context='<%=
+		HashMapBuilder.<String, Object>put(
+			"itemSelectedEventName", HtmlUtil.escapeJS(itemSelectedEventName)
+		).build()
+	%>'
+	module="js/price_list_item_selector"
+/>
