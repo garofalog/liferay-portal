@@ -120,6 +120,8 @@ renderResponse.setTitle((batchPlannerPlan == null) ? LanguageUtil.get(request, "
 						).setResourceID(
 							"/batch_planner/edit_import_batch_planner_plan"
 						).buildString()
+					).put(
+						"mappedFields", editBatchPlannerPlanDisplayContext.getSelectedBatchPlannerPlanMappings()
 					).build()
 				%>'
 			/>
