@@ -12,12 +12,15 @@
  * details.
  */
 
+import {State} from '@liferay/frontend-js-state-web';
+
 import {
 	CSV_FORMAT,
 	JSONL_FORMAT,
 	JSON_FORMAT,
 	PARSE_FILE_CHUNK_SIZE,
 } from './constants';
+import fileFormatAtom from './fileFormatAtom';
 
 export function extractFieldsFromCSV(content, fieldSeparator = ',') {
 	if (content.indexOf('\n') > -1) {
@@ -123,6 +126,8 @@ const parseOperators = {
 
 export default function parseFile({file, onComplete, onError, options}) {
 	const extension = file.name.substring(file.name.lastIndexOf('.') + 1);
+
+	State.writeAtom(fileFormatAtom, {format: extension});
 
 	return parseInChunk({
 		chunkParser: parseOperators[extension],
