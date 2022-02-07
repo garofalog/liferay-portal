@@ -195,6 +195,7 @@ const Poller = (
 		dispatchIfMounted({type: LOADING});
 		try {
 			const blobUrl = await requestTaskFile(state.taskId);
+
 			download(blobUrl, EXPORT_FILE_NAME);
 
 			dispatchIfMounted({type: STOP_LOADING});

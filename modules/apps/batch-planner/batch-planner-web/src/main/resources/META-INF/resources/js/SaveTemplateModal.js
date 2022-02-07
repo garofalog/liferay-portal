@@ -24,6 +24,7 @@ import {HEADERS, TEMPLATE_CREATED} from './constants';
 
 async function saveTemplate(formDataQuerySelector, updateData, url) {
 	const mainFormData = document.querySelector(formDataQuerySelector);
+
 	const formData = new FormData(mainFormData);
 
 	for (const [key, value] of Object.entries(updateData)) {
