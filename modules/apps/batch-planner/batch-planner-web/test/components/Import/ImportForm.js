@@ -78,20 +78,11 @@ describe('ImportForm', () => {
 	it('must have button disabled with no selection', () => {
 		const {getByText} = render(<ImportForm {...BASE_PROPS} />);
 
-		act(() => {
-			Liferay.fire(SCHEMA_SELECTED_EVENT, {
-				schema: SCHEMA,
-			});
-			Liferay.fire(FILE_SCHEMA_EVENT, {
-				schema: fileSchema,
-			});
-		});
-
 		expect(getByText(Liferay.Language.get('import'))).toBeDisabled();
 	});
 
 	it('must select the item on user click dropdown item', () => {
-		const selectedField = 'type';
+		const selectedField = 'currencyCode';
 		const {getAllByRole} = render(<ImportForm {...BASE_PROPS} />);
 
 		act(() => {
@@ -117,7 +108,7 @@ describe('ImportForm', () => {
 	});
 
 	it('must not show previously selected items on other dropdowns', () => {
-		const selectedField = 'type';
+		const selectedField = 'id';
 		const {getAllByRole} = render(<ImportForm {...BASE_PROPS} />);
 
 		act(() => {
