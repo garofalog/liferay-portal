@@ -18,6 +18,7 @@ import React, {useEffect, useMemo, useRef, useState} from 'react';
 
 import SaveTemplate from '../SaveTemplate';
 import {
+	FILE_FORMATTED_CONTENT,
 	FILE_SCHEMA_EVENT,
 	SCHEMA_SELECTED_EVENT,
 	TEMPLATE_SELECTED_EVENT,
@@ -39,6 +40,7 @@ function ImportForm({
 	const [dbFields, setDbFields] = useState();
 	const [formEvaluated, setFormEvaluated] = useState(false);
 	const [fileFields, setFileFields] = useState();
+	const [fileContent, setFileContent] = useState();
 	const [fieldsSelections, setFieldsSelections] = useState({});
 	const [mappingsToBeEvaluated, setMappingsToBeEvaluated] = useState(
 		mappedFields
@@ -96,12 +98,16 @@ function ImportForm({
 				setMappingsToBeEvaluated(template.mappings);
 			}
 		}
-
+		function handlesFileFormattedContent({fileContent}) {
+			setFileContent(fileContent);
+		}
+		Liferay.on(FILE_FORMATTED_CONTENT, handlesFileFormattedContent);
 		Liferay.on(FILE_SCHEMA_EVENT, handleFileSchemaUpdate);
 		Liferay.on(SCHEMA_SELECTED_EVENT, handleSchemaUpdated);
 		Liferay.on(TEMPLATE_SELECTED_EVENT, handleTemplateSelect);
 
 		return () => {
+			Liferay.detach(FILE_FORMATTED_CONTENT, handlesFileFormattedContent);
 			Liferay.detach(FILE_SCHEMA_EVENT, handleFileSchemaUpdate);
 			Liferay.detach(SCHEMA_SELECTED_EVENT, handleSchemaUpdated);
 			Liferay.detach(TEMPLATE_SELECTED_EVENT, handleTemplateSelect);
@@ -166,12 +172,19 @@ function ImportForm({
 					/>
 
 					<ImportSubmit
+						dbFields={dbFields}
+						disabled={
+							!formIsValid
+						}
 						evaluateForm={() => setFormEvaluated(true)}
+						fileContent={fileContent}
+						fileFields={fileFields}
 						formDataQuerySelector={formDataQuerySelector}
 						formImportURL={formImportURL}
 						formIsValid={formIsValid}
 						formIsVisible={formIsVisible}
 						portletNamespace={portletNamespace}
+						setFileContent={setFileContent}
 					/>
 				</div>
 			</div>
