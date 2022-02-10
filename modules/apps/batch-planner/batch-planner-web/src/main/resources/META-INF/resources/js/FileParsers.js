@@ -14,16 +14,35 @@
 
 import {
 	CSV_FORMAT,
+	FILE_FORMATTED_CONTENT,
 	JSONL_FORMAT,
 	JSON_FORMAT,
 	PARSE_FILE_CHUNK_SIZE,
 } from './constants';
 
+const CSVToJSON = (csv) => {
+	const lines = csv.split('\n');
+	const keys = lines[0].split(',');
+
+	const content = lines.slice(1).map((line) => {
+		return line.split(',').reduce((acc, cur, i) => {
+			const toAdd = {};
+			toAdd[keys[i]] = cur;
+
+			return {...acc, ...toAdd};
+		}, {});
+	});
+
+	Liferay.fire(FILE_FORMATTED_CONTENT, {
+		fileContent: content,
+	});
+};
+
 export function extractFieldsFromCSV(content, fieldSeparator = ',') {
 	if (content.indexOf('\n') > -1) {
 		const splitLines = content.split('\n');
-
 		const firstNoEmptyLine = splitLines.find((line) => line.length > 0);
+		CSVToJSON(content);
 
 		return firstNoEmptyLine.split(fieldSeparator);
 	}

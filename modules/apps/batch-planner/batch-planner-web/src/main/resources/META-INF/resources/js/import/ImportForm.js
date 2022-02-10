@@ -18,6 +18,7 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 
 import SaveTemplate from '../SaveTemplate';
 import {
+	FILE_FORMATTED_CONTENT,
 	FILE_SCHEMA_EVENT,
 	SCHEMA_SELECTED_EVENT,
 	TEMPLATE_SELECTED_EVENT,
@@ -37,6 +38,7 @@ function ImportForm({
 }) {
 	const [fileFields, setFileFields] = useState();
 	const [dbFields, setDbFields] = useState();
+	const [fileContent, setFileContent] = useState();
 	const [fieldsSelections, setFieldsSelections] = useState({});
 	const useTemplateMappingRef = useRef();
 
@@ -89,11 +91,15 @@ function ImportForm({
 				useTemplateMappingRef.current = false;
 			}
 		}
+		function handlesFileFormattedContent({fileContent}) {
+			setFileContent(fileContent);
+		}
 
 		const handleTemplateDirty = () => {
 			useTemplateMappingRef.current = false;
 		};
 
+		Liferay.on(FILE_FORMATTED_CONTENT, handlesFileFormattedContent);
 		Liferay.on(SCHEMA_SELECTED_EVENT, handleSchemaUpdated);
 		Liferay.on(FILE_SCHEMA_EVENT, handleFileSchemaUpdate);
 		Liferay.on(TEMPLATE_SELECTED_EVENT, handleTemplateSelect);
@@ -130,7 +136,7 @@ function ImportForm({
 
 	return (
 		<>
-			{fileFields && (dbFields || fileFields) && (
+			{fileFields?.length !== 0 && dbFields?.length !== 0 && (
 				<div className="card import-mapping-table">
 					<h4 className="card-header">
 						{Liferay.Language.get('import-mappings')}
@@ -172,10 +178,14 @@ function ImportForm({
 					</span>
 
 					<ImportSubmit
+						dbFields={dbFields}
 						disabled={disableButtons}
+						fileContent={fileContent}
+						fileFields={fileFields}
 						formDataQuerySelector={formDataQuerySelector}
 						formImportURL={formImportURL}
 						portletNamespace={portletNamespace}
+						setFileContent={setFileContent}
 					/>
 				</div>
 			</div>
