@@ -14,6 +14,7 @@
 
 import {
 	CSV_FORMAT,
+	FILE_FORMATTED_CONTENT,
 	JSONL_FORMAT,
 	JSON_FORMAT,
 	PARSE_FILE_CHUNK_SIZE,
@@ -59,10 +60,17 @@ export function extractFieldsFromCSV(
 ) {
 	if (content.indexOf('\n') > -1) {
 		const splitLines = content.split('\n');
-
 		const firstNoEmptyLine = splitLines.find((line) => line.length > 0);
 
 		const firstLineColumns = parseCSV(firstNoEmptyLine, csvSeparator)[0];
+		const contentLineColumns = parseCSV(content, csvSeparator).slice(
+			1,
+			content.length
+		);
+
+		Liferay.fire(FILE_FORMATTED_CONTENT, {
+			fileContent: contentLineColumns,
+		});
 
 		if (csvContainsHeaders) {
 			return firstLineColumns;
@@ -76,49 +84,35 @@ export function extractFieldsFromCSV(
 }
 
 export function extractFieldsFromJSONL(content) {
-	let contentToParse;
+	const contentLines = content.replace(/\r?\n/g, ',');
+	const jsonStringContent = '[' + contentLines + ']';
 
-	if (content.indexOf('\n') > -1) {
-		const splitLines = content.split('\n');
+	const jsonContent = JSON.parse(jsonStringContent);
 
-		contentToParse = splitLines.find((line) => line.length > 0);
-	}
-	else {
-		contentToParse = content;
-	}
+	const firstLine = Object.keys(jsonContent[0]);
+	const contentLineColumns = jsonContent
+		.map((row) => Object.values(row))
+		.slice(1, content.length);
 
-	try {
-		const data = JSON.parse(contentToParse);
+	Liferay.fire(FILE_FORMATTED_CONTENT, {
+		fileContent: contentLineColumns,
+	});
 
-		return Object.keys(data);
-	}
-	catch (error) {
-		console.error(error);
-
-		return;
-	}
+	return firstLine;
 }
 
 export function extractFieldsFromJSON(content) {
-	const jsonArray = content.split('');
-	let parsedJSON;
+	const jsonfile = JSON.parse(content);
+	const firstLine = Object.keys(jsonfile[0]);
+	const contentLineColumns = jsonfile
+		.map((row) => Object.values(row))
+		.slice(1, content.length);
 
-	jsonArray.shift();
+	Liferay.fire(FILE_FORMATTED_CONTENT, {
+		fileContent: contentLineColumns,
+	});
 
-	for (let index = 0; index < jsonArray.length - 1; index++) {
-		if (jsonArray[index] === '}') {
-			const partialJson = jsonArray.slice(0, index + 1).join('');
-
-			try {
-				parsedJSON = JSON.parse(partialJson);
-
-				return Object.keys(parsedJSON);
-			}
-			catch (error) {
-				console.error(error);
-			}
-		}
-	}
+	return firstLine;
 }
 
 function parseInChunk({

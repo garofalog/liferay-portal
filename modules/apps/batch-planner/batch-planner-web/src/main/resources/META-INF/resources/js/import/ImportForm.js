@@ -18,6 +18,7 @@ import React, {useEffect, useMemo, useRef, useState} from 'react';
 
 import SaveTemplate from '../SaveTemplate';
 import {
+	FILE_FORMATTED_CONTENT,
 	FILE_SCHEMA_EVENT,
 	SCHEMA_SELECTED_EVENT,
 	TEMPLATE_SELECTED_EVENT,
@@ -39,10 +40,12 @@ function ImportForm({
 	const [dbFields, setDbFields] = useState();
 	const [formEvaluated, setFormEvaluated] = useState(false);
 	const [fileFields, setFileFields] = useState();
+	const [fileContent, setFileContent] = useState();
 	const [fieldsSelections, setFieldsSelections] = useState({});
 	const [mappingsToBeEvaluated, setMappingsToBeEvaluated] = useState(
 		mappedFields
 	);
+	const [fileContentPreview, setFileContentPreview] = useState([]);
 	const useTemplateMappingRef = useRef();
 
 	const formIsValid = useMemo(() => {
@@ -56,6 +59,26 @@ function ImportForm({
 
 		return !requiredFieldNotFilled;
 	}, [fieldsSelections, dbFields]);
+
+	useEffect(() => {
+		const filedsIndex = [];
+		if (Object.keys(fieldsSelections)?.length > 0) {
+			fileFields.filter((element, index) => {
+				if (Object.values(fieldsSelections).indexOf(element) > -1) {
+					filedsIndex.push(index);
+				}
+			});
+
+			const filePreview = fileContent?.map((row) => {
+				return row?.filter((element, index) => {
+					if (filedsIndex.includes(index)) {
+						return element;
+					}
+				});
+			});
+			setFileContentPreview(filePreview);
+		}
+	}, [fileFields, fieldsSelections, fileContent]);
 
 	const updateFieldMapping = (fileField, dbFieldName) => {
 		setFieldsSelections((prevSelections) => ({
@@ -96,12 +119,16 @@ function ImportForm({
 				setMappingsToBeEvaluated(template.mappings);
 			}
 		}
-
+		function handlesFileFormattedContent({fileContent}) {
+			setFileContent(fileContent);
+		}
+		Liferay.on(FILE_FORMATTED_CONTENT, handlesFileFormattedContent);
 		Liferay.on(FILE_SCHEMA_EVENT, handleFileSchemaUpdate);
 		Liferay.on(SCHEMA_SELECTED_EVENT, handleSchemaUpdated);
 		Liferay.on(TEMPLATE_SELECTED_EVENT, handleTemplateSelect);
 
 		return () => {
+			Liferay.detach(FILE_FORMATTED_CONTENT, handlesFileFormattedContent);
 			Liferay.detach(FILE_SCHEMA_EVENT, handleFileSchemaUpdate);
 			Liferay.detach(SCHEMA_SELECTED_EVENT, handleSchemaUpdated);
 			Liferay.detach(TEMPLATE_SELECTED_EVENT, handleTemplateSelect);
@@ -166,12 +193,17 @@ function ImportForm({
 					/>
 
 					<ImportSubmit
+						disabled={!formIsValid}
 						evaluateForm={() => setFormEvaluated(true)}
+						fieldsSelections={fieldsSelections}
+						fileContent={fileContentPreview}
+						fileFields={fileFields}
 						formDataQuerySelector={formDataQuerySelector}
 						formImportURL={formImportURL}
 						formIsValid={formIsValid}
 						formIsVisible={formIsVisible}
 						portletNamespace={portletNamespace}
+						setFileContent={setFileContent}
 					/>
 				</div>
 			</div>
