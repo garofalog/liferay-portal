@@ -62,12 +62,9 @@ export function extractFieldsFromCSV(
 		const splitLines = content.split('\n');
 		const firstNoEmptyLine = splitLines.find((line) => line.length > 0);
 
-		const lineColumns = parseCSV(firstNoEmptyLine, csvSeparator);
-		console.log(lineColumns)
-		const firstLineColumns = lineColumns[0];
-		console.log(firstLineColumns)
+		const lineColumns = parseCSV(content, csvSeparator);
+		const firstLineColumns = firstNoEmptyLine.split(',');
 		const contentLineColumns = lineColumns.slice(1, lineColumns.length);
-		console.log(contentLineColumns)
 
 		Liferay.fire(FILE_FORMATTED_CONTENT, {
 			fileContent: contentLineColumns,

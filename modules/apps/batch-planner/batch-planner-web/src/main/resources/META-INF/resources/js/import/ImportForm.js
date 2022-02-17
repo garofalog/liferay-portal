@@ -86,7 +86,6 @@ function ImportForm({
 
 			if (newSchema) {
 				const newDBFields = getFieldsFromSchema(newSchema);
-
 				setDbFields(newDBFields);
 			}
 		}
@@ -193,7 +192,6 @@ function ImportForm({
 
 					<ImportSubmit
 						dbFields={dbFields}
-						disabled={dbFields && fileFields}
 						evaluateForm={() => setFormEvaluated(true)}
 						fileContent={fileContent}
 						fileFields={fileFields}
