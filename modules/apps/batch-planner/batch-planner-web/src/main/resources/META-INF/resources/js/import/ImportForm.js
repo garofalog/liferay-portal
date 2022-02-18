@@ -173,9 +173,7 @@ function ImportForm({
 
 					<ImportSubmit
 						dbFields={dbFields}
-						disabled={
-							!formIsValid
-						}
+						disabled={!formIsValid}
 						evaluateForm={() => setFormEvaluated(true)}
 						fileContent={fileContent}
 						fileFields={fileFields}

@@ -12,13 +12,11 @@
  * details.
  */
 
-import ClayButton from '@clayui/button';
 import ClayModal from '@clayui/modal';
-import ClayTable from '@clayui/table';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import CellPreview from './CellPreview';
+import ImportPreviewModal from './ImportPreviewModal';
 import ImportProcessModal from './ImportProcessModal';
 
 const ImportModal = ({
@@ -50,86 +48,14 @@ const ImportModal = ({
 	return (
 		<ClayModal observer={observer} size={startImport ? 'lg' : 'md'}>
 			{!startImport && (
-				<>
-					<ClayModal.Header>
-						{Liferay.Language.get('preview')}
-					</ClayModal.Header>
-
-					<ClayModal.Body>
-						<ClayTable>
-							<ClayTable.Head>
-								<ClayTable.Row>
-									{Array.from(fileFields).map(
-										(element, index) => {
-											return (
-												<ClayTable.Cell
-													headingCell
-													key={index}
-												>
-													{element}
-												</ClayTable.Cell>
-											);
-										}
-									)}
-								</ClayTable.Row>
-							</ClayTable.Head>
-
-							<ClayTable.Body>
-								{fileContent.map((row, index) => {
-									return (
-										<ClayTable.Row key={index}>
-											{Object.values(row).map(
-												(cell, cellIndex) => {
-													return (
-														<CellPreview
-															cell={cell}
-															cellIndex={
-																cellIndex
-															}
-															fileRows={
-																fileContent
-															}
-															handleEditCell={
-																handleEditCell
-															}
-															key={cellIndex}
-															rowIndex={index}
-														/>
-													);
-												}
-											)}
-										</ClayTable.Row>
-									);
-								})}
-							</ClayTable.Body>
-						</ClayTable>
-					</ClayModal.Body>
-
-					<ClayModal.Footer
-						last={
-							<ClayButton.Group spaced>
-								<ClayButton
-									displayType="secondary"
-									onClick={closeModal}
-								>
-									{Liferay.Language.get('cancel')}
-								</ClayButton>
-
-								<ClayButton
-									disabled={
-										dbFields.length === 0 ||
-										fileContent.length === 0
-									}
-									displayType="primary"
-									onClick={() => setStartImport(true)}
-									type="submit"
-								>
-									{Liferay.Language.get('start-import')}
-								</ClayButton>
-							</ClayButton.Group>
-						}
-					/>
-				</>
+				<ImportPreviewModal
+					closeModal={closeModal}
+					dbFields={dbFields}
+					fileContent={fileContent}
+					fileFields={fileFields}
+					handleEditCell={handleEditCell}
+					setStartImport={setStartImport}
+				/>
 			)}
 
 			{startImport && (
