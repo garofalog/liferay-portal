@@ -14,7 +14,6 @@
 
 import {
 	CSV_FORMAT,
-	FILE_FORMATTED_CONTENT,
 	JSONL_FORMAT,
 	JSON_FORMAT,
 	PARSE_FILE_CHUNK_SIZE,
@@ -60,15 +59,10 @@ export function extractFieldsFromCSV(
 ) {
 	if (content.indexOf('\n') > -1) {
 		const splitLines = content.split('\n');
+
 		const firstNoEmptyLine = splitLines.find((line) => line.length > 0);
 
-		const lineColumns = parseCSV(content, csvSeparator);
-		const firstLineColumns = firstNoEmptyLine.split(',');
-		const contentLineColumns = lineColumns.slice(1, lineColumns.length);
-
-		Liferay.fire(FILE_FORMATTED_CONTENT, {
-			fileContent: contentLineColumns,
-		});
+		const firstLineColumns = parseCSV(firstNoEmptyLine, csvSeparator)[0];
 
 		if (csvContainsHeaders) {
 			return firstLineColumns;

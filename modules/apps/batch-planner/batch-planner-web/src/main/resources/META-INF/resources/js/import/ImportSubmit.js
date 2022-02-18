@@ -20,28 +20,21 @@ import React, {useCallback, useState} from 'react';
 import ImportModal from './ImportModal';
 
 function ImportSubmit({
-	dbFields,
 	evaluateForm,
-	fileContent,
-	fileFields,
 	formDataQuerySelector,
 	formImportURL,
 	formIsValid,
 	portletNamespace,
-	setFileContent,
 }) {
-	const [visibleModalPreview, setVisibleModalPreview] = useState(undefined);
-	const [startImport, setStartImport] = useState(undefined);
-
+	const [visible, setVisible] = useState(false);
 	const {observer, onClose} = useModal({
-		onClose: () => setVisibleModalPreview(false),
+		onClose: () => setVisible(false),
 	});
-
-	const showPreviewModal = useCallback(() => {
+	const onButtonClick = useCallback(() => {
 		evaluateForm(true);
 
 		if (formIsValid) {
-			setVisibleModalPreview(true);
+			setVisible(true);
 		}
 	}, [evaluateForm, formIsValid]);
 
@@ -50,25 +43,19 @@ function ImportSubmit({
 			<ClayButton
 				displayType="primary"
 				id={`${portletNamespace}-import-submit`}
-				onClick={() => showPreviewModal()}
+				onClick={onButtonClick}
 				type="button"
 			>
-				{Liferay.Language.get('next')}
+				{Liferay.Language.get('import')}
 			</ClayButton>
 
-			{visibleModalPreview && (
+			{visible && (
 				<ImportModal
 					closeModal={onClose}
-					dbFields={dbFields}
-					fileContent={fileContent}
-					fileFields={fileFields}
 					formDataQuerySelector={formDataQuerySelector}
 					formSubmitURL={formImportURL}
 					namespace={portletNamespace}
 					observer={observer}
-					setFileContent={setFileContent}
-					setStartImport={setStartImport}
-					startImport={startImport}
 				/>
 			)}
 		</span>

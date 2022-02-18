@@ -37,6 +37,5 @@ export const SCHEMA_SELECTED_EVENT = 'schema-selected';
 export const TEMPLATE_CREATED = 'TEMPLATE_CREATED';
 export const TEMPLATE_SELECTED_EVENT = 'template-selected';
 export const TEMPLATE_SOILED = 'template-soiled';
-export const FILE_FORMATTED_CONTENT = 'file-formatted-content';
 
 export const IMPORT_FILE_FORMATS = [CSV_FORMAT, JSON_FORMAT, JSONL_FORMAT];
