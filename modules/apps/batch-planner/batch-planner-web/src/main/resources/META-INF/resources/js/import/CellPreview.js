@@ -23,13 +23,9 @@ const CellPreview = ({cell, cellIndex, handleEditCell, rowIndex}) => {
 	return (
 		<ClayTable.Cell key={cellIndex}>
 			{!isCellEditing && (
-				<div
-					onClick={() => {
-						setIsCellEditing(true);
-					}}
-				>
+				<>
 					{cellValue}
-				</div>
+				</>
 			)}
 
 			{isCellEditing && (
