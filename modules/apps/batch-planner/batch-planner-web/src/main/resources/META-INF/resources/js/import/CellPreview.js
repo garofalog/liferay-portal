@@ -22,11 +22,7 @@ const CellPreview = ({cell, cellIndex, handleEditCell, rowIndex}) => {
 
 	return (
 		<ClayTable.Cell key={cellIndex}>
-			{!isCellEditing && (
-				<>
-					{cellValue}
-				</>
-			)}
+			{!isCellEditing && <>{cellValue}</>}
 
 			{isCellEditing && (
 				<ClayForm.Group>
