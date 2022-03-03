@@ -84,49 +84,33 @@ export function extractFieldsFromCSV(
 }
 
 export function extractFieldsFromJSONL(content) {
-	let contentToParse;
-
 	if (content.indexOf('\n') > -1) {
-		const splitLines = content.split('\n');
+		const contentLines = content.replace(/\r?\n/g, ',');
+		const jsonStringContent = '[' + contentLines + ']';
 
-		contentToParse = splitLines.find((line) => line.length > 0);
-	}
-	else {
-		contentToParse = content;
-	}
+		const jsonContent = JSON.parse(jsonStringContent);
 
-	try {
-		const data = JSON.parse(contentToParse);
+		const firstLine = Object.keys(jsonContent[0]);
+		const contentLineColumns = jsonContent.slice(1, content.length);
 
-		return Object.keys(data);
-	}
-	catch (error) {
-		console.error(error);
+		Liferay.fire(FILE_FORMATTED_CONTENT, {
+			fileContent: contentLineColumns,
+		});
 
-		return;
+		return firstLine;
 	}
 }
 
 export function extractFieldsFromJSON(content) {
-	const jsonArray = content.split('');
-	let parsedJSON;
+	const jsonfile = JSON.parse(content);
+	const firstLine = Object.keys(jsonfile[0]);
+	const contentLineColumns = jsonfile.slice(1, content.length);
 
-	jsonArray.shift();
+	Liferay.fire(FILE_FORMATTED_CONTENT, {
+		fileContent: contentLineColumns,
+	});
 
-	for (let index = 0; index < jsonArray.length - 1; index++) {
-		if (jsonArray[index] === '}') {
-			const partialJson = jsonArray.slice(0, index + 1).join('');
-
-			try {
-				parsedJSON = JSON.parse(partialJson);
-
-				return Object.keys(parsedJSON);
-			}
-			catch (error) {
-				console.error(error);
-			}
-		}
-	}
+	return firstLine;
 }
 
 function parseInChunk({
