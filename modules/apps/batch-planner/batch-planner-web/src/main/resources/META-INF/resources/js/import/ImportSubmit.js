@@ -21,9 +21,9 @@ import React, {useCallback, useState} from 'react';
 import ImportModal from './ImportModal';
 
 function ImportSubmit({
-	dbFields,
 	disabled,
 	evaluateForm,
+	fieldsSelections,
 	fileContent,
 	fileFields,
 	formDataQuerySelector,
@@ -72,7 +72,7 @@ function ImportSubmit({
 			{visibleModalPreview && (
 				<ImportModal
 					closeModal={onClose}
-					dbFields={dbFields}
+					fieldsSelections={fieldsSelections}
 					fileContent={fileContent}
 					fileFields={fileFields}
 					formDataQuerySelector={formDataQuerySelector}

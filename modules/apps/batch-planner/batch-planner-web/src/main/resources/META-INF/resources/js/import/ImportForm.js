@@ -45,6 +45,7 @@ function ImportForm({
 	const [mappingsToBeEvaluated, setMappingsToBeEvaluated] = useState(
 		mappedFields
 	);
+	const [fileContentPreview, setFileContentPreview] = useState([]);
 	const useTemplateMappingRef = useRef();
 
 	const formIsValid = useMemo(() => {
@@ -58,6 +59,26 @@ function ImportForm({
 
 		return !requiredFieldNotFilled;
 	}, [fieldsSelections, dbFields]);
+
+	useEffect(() => {
+		const filedsIndex = [];
+		if (Object.keys(fieldsSelections)?.length > 0) {
+			fileFields.filter((element, index) => {
+				if (Object.values(fieldsSelections).indexOf(element) > -1) {
+					filedsIndex.push(index);
+				}
+			});
+
+			const filePreview = fileContent?.map((row) => {
+				return row?.filter((element, index) => {
+					if (filedsIndex.includes(index)) {
+						return element;
+					}
+				});
+			});
+			setFileContentPreview(filePreview);
+		}
+	}, [fileFields, fieldsSelections, fileContent]);
 
 	const updateFieldMapping = (fileField, dbFieldName) => {
 		setFieldsSelections((prevSelections) => ({
@@ -172,10 +193,10 @@ function ImportForm({
 					/>
 
 					<ImportSubmit
-						dbFields={dbFields}
 						disabled={!formIsValid}
 						evaluateForm={() => setFormEvaluated(true)}
-						fileContent={fileContent}
+						fieldsSelections={fieldsSelections}
+						fileContent={fileContentPreview}
 						fileFields={fileFields}
 						formDataQuerySelector={formDataQuerySelector}
 						formImportURL={formImportURL}

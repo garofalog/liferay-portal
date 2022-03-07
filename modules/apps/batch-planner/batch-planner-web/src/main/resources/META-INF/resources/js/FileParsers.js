@@ -84,27 +84,29 @@ export function extractFieldsFromCSV(
 }
 
 export function extractFieldsFromJSONL(content) {
-	if (content.indexOf('\n') > -1) {
-		const contentLines = content.replace(/\r?\n/g, ',');
-		const jsonStringContent = '[' + contentLines + ']';
+	const contentLines = content.replace(/\r?\n/g, ',');
+	const jsonStringContent = '[' + contentLines + ']';
 
-		const jsonContent = JSON.parse(jsonStringContent);
+	const jsonContent = JSON.parse(jsonStringContent);
 
-		const firstLine = Object.keys(jsonContent[0]);
-		const contentLineColumns = jsonContent.slice(1, content.length);
+	const firstLine = Object.keys(jsonContent[0]);
+	const contentLineColumns = jsonContent
+		.map((row) => Object.values(row))
+		.slice(1, content.length);
 
-		Liferay.fire(FILE_FORMATTED_CONTENT, {
-			fileContent: contentLineColumns,
-		});
+	Liferay.fire(FILE_FORMATTED_CONTENT, {
+		fileContent: contentLineColumns,
+	});
 
-		return firstLine;
-	}
+	return firstLine;
 }
 
 export function extractFieldsFromJSON(content) {
 	const jsonfile = JSON.parse(content);
 	const firstLine = Object.keys(jsonfile[0]);
-	const contentLineColumns = jsonfile.slice(1, content.length);
+	const contentLineColumns = jsonfile
+		.map((row) => Object.values(row))
+		.slice(1, content.length);
 
 	Liferay.fire(FILE_FORMATTED_CONTENT, {
 		fileContent: contentLineColumns,

@@ -21,12 +21,15 @@ import CellPreview from './CellPreview';
 
 const ImportPreviewModal = ({
 	closeModal,
-	dbFields,
+	fieldsSelections,
 	fileContent,
-	fileFields,
 	handleEditCell,
 	setStartImport,
 }) => {
+	const fileFieldsToMap = fieldsSelections
+		? Object.values(fieldsSelections)
+		: {};
+
 	return (
 		<>
 			<ClayModal.Header>
@@ -37,18 +40,20 @@ const ImportPreviewModal = ({
 				<ClayTable>
 					<ClayTable.Head>
 						<ClayTable.Row>
-							{Array.from(fileFields).map((element, index) => {
-								return (
-									<ClayTable.Cell headingCell key={index}>
-										{element}
-									</ClayTable.Cell>
-								);
-							})}
+							{Array.from(fileFieldsToMap).map(
+								(element, index) => {
+									return (
+										<ClayTable.Cell headingCell key={index}>
+											{element}
+										</ClayTable.Cell>
+									);
+								}
+							)}
 						</ClayTable.Row>
 					</ClayTable.Head>
 
 					<ClayTable.Body>
-						{fileContent.map((row, index) => {
+						{fileContent?.map((row, index) => {
 							return (
 								<ClayTable.Row key={index}>
 									{Object.values(row).map(
@@ -85,9 +90,10 @@ const ImportPreviewModal = ({
 						</ClayButton>
 
 						<ClayButton
+							data-testid="start-import"
 							disabled={
-								dbFields.length === 0 ||
-								fileContent.length === 0
+								fieldsSelections?.length === 0 &&
+								fileContent?.length === 0
 							}
 							displayType="primary"
 							onClick={() => setStartImport(true)}
