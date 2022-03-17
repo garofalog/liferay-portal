@@ -173,8 +173,8 @@ function ImportForm({
 			setDbFields(newDBFields);
 		}
 
-		function handleFileSchemaUpdate({contentItemDetails, firstItemDetails, schema}) {
-			setFileContent(contentItemDetails);
+		function handleFileSchemaUpdate({fileContent, firstItemDetails, schema}) {
+			setFileContent(fileContent);
 			setFileFields(schema);
 			setDemoFileValues(firstItemDetails);
 		}
