@@ -14,7 +14,6 @@
 
 import {
 	CSV_FORMAT,
-	FILE_FORMATTED_CONTENT,
 	JSONL_FORMAT,
 	JSON_FORMAT,
 	PARSE_FILE_CHUNK_SIZE,
@@ -79,10 +78,6 @@ export function extractFieldsFromCSV(
 			content.length
 		);
 
-		Liferay.fire(FILE_FORMATTED_CONTENT, {
-			fileContent: contentItemDetails,
-		});
-
 		return {
 			contentItemDetails,
 			firstItemDetails: getItemDetails(firstItemData, schema),
@@ -97,10 +92,6 @@ export function extractFieldsFromCSV(
 		const schema = new Array(firstItemData.length)
 			.fill()
 			.map((_, index) => index);
-
-		Liferay.fire(FILE_FORMATTED_CONTENT, {
-			fileContent: contentItemDetails,
-		});
 
 		return {
 			contentItemDetails,
@@ -120,12 +111,6 @@ export function extractFieldsFromJSONL(content) {
 		const data = Object.keys(jsonContent[0]);
 
 		const schema = Object.values(data);
-
-		Liferay.fire(FILE_FORMATTED_CONTENT, {
-			fileContent: jsonContent
-				.map((row) => Object.values(row))
-				.slice(1, content.length),
-		});
 
 		return {
 			contentItemDetails: jsonContent
@@ -151,10 +136,6 @@ export function extractFieldsFromJSON(content) {
 		.map((row) => Object.values(row))
 		.slice(1, content.length);
 
-	Liferay.fire(FILE_FORMATTED_CONTENT, {
-		fileContent: contentLineColumns,
-	});
-
 	for (let index = 0; index < jsonArray.length - 1; index++) {
 		if (jsonArray[index] === '}') {
 			const partialJson = jsonArray.slice(0, index + 1).join('');
@@ -165,6 +146,7 @@ export function extractFieldsFromJSON(content) {
 				const schema = Object.keys(parsedJSON);
 
 				return {
+					contentLineColumns,
 					firstItemDetails: getItemDetails(
 						Object.values(parsedJSON),
 						schema
@@ -211,6 +193,7 @@ function parseInChunk({
 
 		if (parsedData) {
 			return onComplete({
+				contentItemDetails: parsedData.contentItemDetails,
 				extension,
 				firstItemDetails: parsedData.firstItemDetails,
 				schema: parsedData.schema,
