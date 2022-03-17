@@ -69,17 +69,17 @@ export function extractFieldsFromCSV(
 ) {
 	const splitLines = content.split('\n');
 	const newLineFound = content.indexOf('\n') > -1;
-	let contentItemDetails;
+	let fileContent;
 
 	if (csvContainsHeaders && splitLines.length > 2) {
 		const [schema, firstItemData] = parseCSV(content, csvSeparator);
-		contentItemDetails = parseCSV(content, csvSeparator).slice(
+		fileContent = parseCSV(content, csvSeparator).slice(
 			1,
 			content.length
 		);
 
 		return {
-			contentItemDetails,
+			fileContent,
 			firstItemDetails: getItemDetails(firstItemData, schema),
 			schema,
 		};
@@ -87,14 +87,14 @@ export function extractFieldsFromCSV(
 
 	if (!csvContainsHeaders && newLineFound) {
 		const [firstItemData] = parseCSV(splitLines[0], csvSeparator);
-		contentItemDetails = parseCSV(content, csvSeparator);
+		fileContent = parseCSV(content, csvSeparator);
 
 		const schema = new Array(firstItemData.length)
 			.fill()
 			.map((_, index) => index);
 
 		return {
-			contentItemDetails,
+			fileContent,
 			firstItemDetails: getItemDetails(firstItemData, schema),
 			schema,
 		};
@@ -103,7 +103,7 @@ export function extractFieldsFromCSV(
 
 export function extractFieldsFromJSONL(content) {
 	const contentLines = content.replace(/\r?\n/g, ',');
-	const jsonStringContent = '[' + contentLines + ']';
+	const jsonStringContent = `[${contentLines}]`;
 
 	const jsonContent = JSON.parse(jsonStringContent);
 
@@ -113,7 +113,7 @@ export function extractFieldsFromJSONL(content) {
 		const schema = Object.values(data);
 
 		return {
-			contentItemDetails: jsonContent
+			fileContent: jsonContent
 				.map((row) => Object.values(row))
 				.slice(1, content.length),
 			firstItemDetails: getItemDetails(Object.values(data), schema),
@@ -193,7 +193,7 @@ function parseInChunk({
 
 		if (parsedData) {
 			return onComplete({
-				contentItemDetails: parsedData.contentItemDetails,
+				fileContent: parsedData.fileContent,
 				extension,
 				firstItemDetails: parsedData.firstItemDetails,
 				schema: parsedData.schema,
