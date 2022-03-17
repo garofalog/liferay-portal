@@ -78,8 +78,8 @@ function FileUpload({portletNamespace}) {
 		}
 
 		const onComplete = ({
-			fileContent,
 			extension,
+			fileContent,
 			firstItemDetails,
 			schema,
 		}) => {

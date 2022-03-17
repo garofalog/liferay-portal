@@ -15,12 +15,13 @@
 import ClayButton from '@clayui/button';
 import ClayModal from '@clayui/modal';
 import ClayTable from '@clayui/table';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 
 import CellPreview from './CellPreview';
 
 const ImportPreviewModal = ({
 	closeModal,
+	csvHeaders,
 	fieldsSelections,
 	fileContent,
 	handleEditCell,
@@ -29,6 +30,48 @@ const ImportPreviewModal = ({
 	const fileFieldsToMap = fieldsSelections
 		? Object.keys(fieldsSelections)
 		: {};
+	const [fileContentPreview, setFileContentPreview] = useState([]);
+
+	const fieldsIndexes = (csvHeaders, fieldsSelections) => {
+		const fieldsIndex = [];
+		Object.keys(fieldsSelections).filter((element, index) => {
+			if (
+				csvHeaders &&
+				Object.keys(fieldsSelections).indexOf(element) > -1
+			) {
+				fieldsIndex.push(index);
+			}
+		});
+
+		Object.values(fieldsSelections).filter((element) => {
+			if (
+				!csvHeaders &&
+				Object.values(fieldsSelections).indexOf(element.toString()) > -1
+			) {
+				fieldsIndex.push(parseInt(element, 10));
+			}
+		});
+
+		return fieldsIndex;
+	};
+
+	const previewContent = (fieldsIndex, fileContent) => {
+		return fileContent.slice(0,10).map((row) => {
+			return row.filter((element, index) => {
+				if (fieldsIndex.includes(index)) {
+					return element;
+				}
+			});
+		})
+	};
+
+	useEffect(() => {
+		if (Object.keys(fieldsSelections)?.length > 0) {
+			const fieldsIndex = fieldsIndexes(csvHeaders, fieldsSelections);
+			const previewLimitedToTenContent = previewContent(fieldsIndex, fileContent);
+			setFileContentPreview(previewLimitedToTenContent);
+		}
+	}, [fieldsSelections, fileContent, csvHeaders]);
 
 	return (
 		<>
@@ -54,7 +97,7 @@ const ImportPreviewModal = ({
 					</ClayTable.Head>
 
 					<ClayTable.Body className="inline-scroller w-100">
-						{fileContent?.map((row, index) => {
+						{fileContentPreview?.map((row, index) => {
 							return (
 								<ClayTable.Row key={index}>
 									{Object.values(row).map(
@@ -63,7 +106,9 @@ const ImportPreviewModal = ({
 												<CellPreview
 													cell={cell}
 													cellIndex={cellIndex}
-													fileRows={fileContent}
+													fileRows={
+														fileContentPreview
+													}
 													handleEditCell={
 														handleEditCell
 													}
@@ -94,7 +139,7 @@ const ImportPreviewModal = ({
 							data-testid="start-import"
 							disabled={
 								fieldsSelections?.length === 0 &&
-								fileContent?.length === 0
+								fileContentPreview?.length === 0
 							}
 							displayType="primary"
 							onClick={() => setStartImport(true)}

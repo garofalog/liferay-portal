@@ -67,7 +67,6 @@ function ImportForm({
 	const [mappingsToBeEvaluated, setMappingsToBeEvaluated] = useState(
 		mappedFields
 	);
-	const [fileContentPreview, setFileContentPreview] = useState([]);
 	const useTemplateMappingRef = useRef();
 	const [formIsValid, setFormIsValid] = useState(false);
 	const [csvHeaders, setCsvHeaders] = useState(true);
@@ -95,48 +94,6 @@ function ImportForm({
 	useEffect(() => {
 		setFieldsSelections({});
 	}, [csvHeaders]);
-
-	useEffect(() => {
-		const fieldsIndex = [];
-		let filePreview;
-		if (Object.keys(fieldsSelections)?.length > 0) {
-			fileFields.filter((element, index) => {
-				if (csvHeaders) {
-					if (Object.values(fieldsSelections).indexOf(element) > -1) {
-						fieldsIndex.push(index);
-					}
-				}
-				else {
-					if (
-						Object.values(fieldsSelections).indexOf(
-							element.toString()
-						) > -1
-					) {
-						fieldsIndex.push(parseInt(index, 10));
-					}
-				}
-			});
-			if (!csvHeaders) {
-				filePreview = fileContent?.map((row) => {
-					return row.filter((element, index) => {
-						if (fieldsIndex.includes(index)) {
-							return element;
-						}
-					});
-				});
-			}
-			else {
-				filePreview = fileContent?.map((row) => {
-					return row.filter((element, index) => {
-						if (fieldsIndex.includes(index)) {
-							return element;
-						}
-					});
-				});
-			}
-			setFileContentPreview(filePreview);
-		}
-	}, [fileFields, fieldsSelections, fileContent, csvHeaders]);
 
 	const updateFieldMapping = (fileField, dbFieldName) => {
 		setFieldsSelections((prevSelections) => ({
@@ -173,7 +130,12 @@ function ImportForm({
 			setDbFields(newDBFields);
 		}
 
-		function handleFileSchemaUpdate({fileContent, firstItemDetails, schema}) {
+		function handleFileSchemaUpdate({
+			fileContent,
+			firstItemDetails,
+			schema,
+		}) {
+			debugger;
 			setFileContent(fileContent);
 			setFileFields(schema);
 			setDemoFileValues(firstItemDetails);
@@ -236,7 +198,6 @@ function ImportForm({
 											<ImportMappingItem
 												dbField={dbField}
 												fileFields={fileFields}
-												formEvaluated={formEvaluated}
 												key={dbField.name}
 												portletNamespace={
 													portletNamespace
@@ -342,11 +303,12 @@ function ImportForm({
 				/>
 
 				<ImportSubmit
+					csvHeaders={csvHeaders}
 					dbFields={dbFields}
 					disabled={!formIsValid}
 					evaluateForm={() => setFormEvaluated(true)}
 					fieldsSelections={fieldsSelections}
-					fileContent={fileContentPreview}
+					fileContent={fileContent}
 					fileFields={fileFields}
 					formDataQuerySelector={formDataQuerySelector}
 					formImportURL={formImportURL}

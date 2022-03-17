@@ -21,6 +21,7 @@ import React, {useCallback, useState} from 'react';
 import ImportModal from './ImportModal';
 
 function ImportSubmit({
+	csvHeaders,
 	disabled,
 	evaluateForm,
 	fieldsSelections,
@@ -72,6 +73,7 @@ function ImportSubmit({
 			{visibleModalPreview && (
 				<ImportModal
 					closeModal={onClose}
+					csvHeaders={csvHeaders}
 					fieldsSelections={fieldsSelections}
 					fileContent={fileContent}
 					fileFields={fileFields}

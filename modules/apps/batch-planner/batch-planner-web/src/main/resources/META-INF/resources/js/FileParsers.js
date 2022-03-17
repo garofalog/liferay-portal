@@ -73,10 +73,7 @@ export function extractFieldsFromCSV(
 
 	if (csvContainsHeaders && splitLines.length > 2) {
 		const [schema, firstItemData] = parseCSV(content, csvSeparator);
-		fileContent = parseCSV(content, csvSeparator).slice(
-			1,
-			content.length
-		);
+		fileContent = parseCSV(content, csvSeparator).slice(1, content.length);
 
 		return {
 			fileContent,
@@ -193,8 +190,8 @@ function parseInChunk({
 
 		if (parsedData) {
 			return onComplete({
-				fileContent: parsedData.fileContent,
 				extension,
+				fileContent: parsedData.fileContent,
 				firstItemDetails: parsedData.firstItemDetails,
 				schema: parsedData.schema,
 			});

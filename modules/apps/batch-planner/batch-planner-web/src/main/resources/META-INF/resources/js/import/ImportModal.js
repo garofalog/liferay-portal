@@ -21,6 +21,7 @@ import ImportProcessModal from './ImportProcessModal';
 
 const ImportModal = ({
 	closeModal,
+	csvHeaders,
 	dbFields,
 	fieldsSelections,
 	fileContent,
@@ -51,6 +52,7 @@ const ImportModal = ({
 			{!startImport && (
 				<ImportPreviewModal
 					closeModal={closeModal}
+					csvHeaders={csvHeaders}
 					dbFields={dbFields}
 					fieldsSelections={fieldsSelections}
 					fileContent={fileContent}
