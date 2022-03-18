@@ -72,6 +72,7 @@ function FileUpload({portletNamespace}) {
 				fileContent: null,
 				firstItemDetails: null,
 				schema: null,
+				options: null
 			});
 
 			return;
@@ -82,12 +83,14 @@ function FileUpload({portletNamespace}) {
 			fileContent,
 			firstItemDetails,
 			schema,
+			options
 		}) => {
 			updateExtensionInputValue(portletNamespace, extension);
 			Liferay.fire(FILE_SCHEMA_EVENT, {
 				fileContent,
 				firstItemDetails,
 				schema,
+				options
 			});
 		};
 
@@ -102,7 +105,7 @@ function FileUpload({portletNamespace}) {
 			file: fileToBeUploaded,
 			onComplete,
 			onError,
-			options: parserOptions,
+			options: parserOptions.csvContainsHeaders,
 		});
 	}, [
 		fileExtension,

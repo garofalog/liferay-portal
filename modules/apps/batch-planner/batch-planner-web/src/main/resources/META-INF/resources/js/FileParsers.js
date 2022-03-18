@@ -100,7 +100,11 @@ export function extractFieldsFromCSV(
 
 export function extractFieldsFromJSONL(content) {
 	const contentLines = content.replace(/\r?\n/g, ',');
-	const jsonStringContent = `[${contentLines}]`;
+	let jsonStringContent = `[${contentLines}]`;
+	if(contentLines.charAt(contentLines.length - 1) === '}') {
+		jsonStringContent = `[${contentLines}]`;
+	}
+	jsonStringContent = '[]';
 
 	const jsonContent = JSON.parse(jsonStringContent);
 
@@ -125,34 +129,36 @@ export function extractFieldsFromJSONL(content) {
 }
 
 export function extractFieldsFromJSON(content) {
-	const jsonArray = content.split('');
-	jsonArray.shift();
-
-	const jsonfile = JSON.parse(content);
-	const contentLineColumns = jsonfile
-		.map((row) => Object.values(row))
-		.slice(1, content.length);
-
-	for (let index = 0; index < jsonArray.length - 1; index++) {
-		if (jsonArray[index] === '}') {
-			const partialJson = jsonArray.slice(0, index + 1).join('');
-
-			try {
-				const parsedJSON = JSON.parse(partialJson);
-
-				const schema = Object.keys(parsedJSON);
-
-				return {
-					contentLineColumns,
-					firstItemDetails: getItemDetails(
-						Object.values(parsedJSON),
-						schema
-					),
-					schema,
-				};
-			}
-			catch (error) {
-				console.error(error);
+	if(content.charAt(content.length - 1) === ']') {
+		const jsonArray = content.split('');
+		jsonArray.shift();
+	
+		const jsonfile = JSON.parse(content);
+		const contentLineColumns = jsonfile
+			.map((row) => Object.values(row))
+			.slice(1, content.length);
+	
+		for (let index = 0; index < jsonArray.length - 1; index++) {
+			if (jsonArray[index] === '}') {
+				const partialJson = jsonArray.slice(0, index + 1).join('');
+	
+				try {
+					const parsedJSON = JSON.parse(partialJson);
+	
+					const schema = Object.keys(parsedJSON);
+	
+					return {
+						contentLineColumns,
+						firstItemDetails: getItemDetails(
+							Object.values(parsedJSON),
+							schema
+						),
+						schema,
+					};
+				}
+				catch (error) {
+					console.error(error);
+				}
 			}
 		}
 	}
@@ -194,6 +200,7 @@ function parseInChunk({
 				fileContent: parsedData.fileContent,
 				firstItemDetails: parsedData.firstItemDetails,
 				schema: parsedData.schema,
+				options
 			});
 		}
 		else if (offset >= fileSize) {

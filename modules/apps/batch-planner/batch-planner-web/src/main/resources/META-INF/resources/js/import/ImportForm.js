@@ -134,11 +134,12 @@ function ImportForm({
 			fileContent,
 			firstItemDetails,
 			schema,
+			options
 		}) {
-			debugger;
 			setFileContent(fileContent);
 			setFileFields(schema);
 			setDemoFileValues(firstItemDetails);
+			setCsvHeaders(options);
 		}
 
 		function handleTemplateSelect({template}) {
@@ -147,17 +148,11 @@ function ImportForm({
 			}
 		}
 
-		function handleCsvHeaders({csvContainsHeaders}) {
-			setCsvHeaders(csvContainsHeaders);
-		}
-
-		Liferay.on(CSV_HEADERS, handleCsvHeaders);
 		Liferay.on(FILE_SCHEMA_EVENT, handleFileSchemaUpdate);
 		Liferay.on(SCHEMA_SELECTED_EVENT, handleSchemaUpdated);
 		Liferay.on(TEMPLATE_SELECTED_EVENT, handleTemplateSelect);
 
 		return () => {
-			Liferay.detach(CSV_HEADERS, handleCsvHeaders);
 			Liferay.detach(FILE_SCHEMA_EVENT, handleFileSchemaUpdate);
 			Liferay.detach(SCHEMA_SELECTED_EVENT, handleSchemaUpdated);
 			Liferay.detach(TEMPLATE_SELECTED_EVENT, handleTemplateSelect);
@@ -198,6 +193,7 @@ function ImportForm({
 											<ImportMappingItem
 												dbField={dbField}
 												fileFields={fileFields}
+												formEvaluated={formEvaluated}
 												key={dbField.name}
 												portletNamespace={
 													portletNamespace
