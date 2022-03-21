@@ -14,7 +14,6 @@
 
 import {
 	CSV_FORMAT,
-	FILE_FORMATTED_CONTENT,
 	JSONL_FORMAT,
 	JSON_FORMAT,
 	PARSE_FILE_CHUNK_SIZE,
@@ -74,10 +73,7 @@ export function extractFieldsFromCSV(
 
 	if (csvContainsHeaders && splitLines.length > 2) {
 		const [schema, firstItemData] = parseCSV(content, csvSeparator);
-		fileContent = parseCSV(content, csvSeparator).slice(
-			1,
-			content.length
-		);
+		fileContent = parseCSV(content, csvSeparator).slice(1, content.length);
 
 		return {
 			fileContent,
@@ -93,10 +89,6 @@ export function extractFieldsFromCSV(
 		const schema = new Array(firstItemData.length)
 			.fill()
 			.map((_, index) => index);
-
-		Liferay.fire(FILE_FORMATTED_CONTENT, {
-			fileContent: contentItemDetails,
-		});
 
 		return {
 			fileContent,
@@ -198,8 +190,8 @@ function parseInChunk({
 
 		if (parsedData) {
 			return onComplete({
-				fileContent: parsedData.fileContent,
 				extension,
+				fileContent: parsedData.fileContent,
 				firstItemDetails: parsedData.firstItemDetails,
 				schema: parsedData.schema,
 			});

@@ -19,7 +19,6 @@ import React, {useEffect, useRef, useState} from 'react';
 
 import SaveTemplate from '../SaveTemplate';
 import {
-	CSV_HEADERS,
 	FILE_SCHEMA_EVENT,
 	SCHEMA_SELECTED_EVENT,
 	TEMPLATE_SELECTED_EVENT,
@@ -67,7 +66,6 @@ function ImportForm({
 	const [mappingsToBeEvaluated, setMappingsToBeEvaluated] = useState(
 		mappedFields
 	);
-	const [fileContentPreview, setFileContentPreview] = useState([]);
 	const useTemplateMappingRef = useRef();
 	const [formIsValid, setFormIsValid] = useState(false);
 	const [csvHeaders, setCsvHeaders] = useState(true);
@@ -80,8 +78,7 @@ function ImportForm({
 			: false;
 
 		if (
-			fieldsSelections &&
-			Object.keys(fieldsSelections).length > 0 &&
+			fieldsSelections.length > 0 &&
 			dbFields.optional?.length > 0 &&
 			!requiredFieldNotFilled
 		) {
@@ -96,53 +93,19 @@ function ImportForm({
 		setFieldsSelections({});
 	}, [csvHeaders]);
 
-	useEffect(() => {
-		const fieldsIndex = [];
-		let filePreview;
-		if (Object.keys(fieldsSelections)?.length > 0) {
-			fileFields.filter((element, index) => {
-				if (csvHeaders) {
-					if (Object.values(fieldsSelections).indexOf(element) > -1) {
-						fieldsIndex.push(index);
-					}
-				}
-				else {
-					if (
-						Object.values(fieldsSelections).indexOf(
-							element.toString()
-						) > -1
-					) {
-						fieldsIndex.push(parseInt(index, 10));
-					}
-				}
-			});
-			if (!csvHeaders) {
-				filePreview = fileContent?.map((row) => {
-					return row.filter((element, index) => {
-						if (fieldsIndex.includes(index)) {
-							return element;
-						}
-					});
-				});
-			}
-			else {
-				filePreview = fileContent?.map((row) => {
-					return row.filter((element, index) => {
-						if (fieldsIndex.includes(index)) {
-							return element;
-						}
-					});
-				});
-			}
-			setFileContentPreview(filePreview);
+	const updateFieldMapping = (fileField, dbFieldName, fileFields) => {
+		if(csvHeaders) {
+			setFieldsSelections((prevSelections) => ({
+				...prevSelections,
+				[dbFieldName]: fileFields.indexOf(fileField),
+			}));
+		} else {
+			setFieldsSelections((prevSelections) => ({
+				...prevSelections,
+				[dbFieldName]: fileField,
+			}));
 		}
-	}, [fileFields, fieldsSelections, fileContent, csvHeaders]);
-
-	const updateFieldMapping = (fileField, dbFieldName) => {
-		setFieldsSelections((prevSelections) => ({
-			...prevSelections,
-			[dbFieldName]: fileField,
-		}));
+		
 
 		Liferay.fire(TEMPLATE_SOILED_EVENT);
 	};
@@ -151,8 +114,6 @@ function ImportForm({
 		const dbFieldsUnordered = [...dbFields.optional, ...dbFields.required];
 
 		if (
-			dbFields.optional.length &&
-			dbFields.required.length &&
 			fileFields &&
 			!useTemplateMappingRef.current
 		) {
@@ -161,22 +122,29 @@ function ImportForm({
 				fileFields,
 				dbFieldsUnordered
 			);
-
-			setFieldsSelections(availableMappings);
+				
+	
+				setFieldsSelections(availableMappings);
+	
 		}
 	}, [dbFields, fileFields, mappingsToBeEvaluated]);
 
 	useEffect(() => {
 		function handleSchemaUpdated({schema}) {
 			const newDBFields = getFieldsFromSchema(schema);
-
 			setDbFields(newDBFields);
 		}
 
-		function handleFileSchemaUpdate({fileContent, firstItemDetails, schema}) {
+		function handleFileSchemaUpdate({
+			fileContent,
+			firstItemDetails,
+			options,
+			schema,
+		}) {
 			setFileContent(fileContent);
 			setFileFields(schema);
 			setDemoFileValues(firstItemDetails);
+			setCsvHeaders(options);
 		}
 
 		function handleTemplateSelect({template}) {
@@ -184,24 +152,12 @@ function ImportForm({
 				setMappingsToBeEvaluated(template.mappings);
 			}
 		}
-		function handlesFileFormattedContent({fileContent}) {
-			setFileContent(fileContent);
-		}
-		function handleCsvHeaders({csvContainsHeaders}) {
-			setCsvHeaders(csvContainsHeaders);
-		}
 
-		function handleCsvHeaders({csvContainsHeaders}) {
-			setCsvHeaders(csvContainsHeaders);
-		}
-
-		Liferay.on(CSV_HEADERS, handleCsvHeaders);
 		Liferay.on(FILE_SCHEMA_EVENT, handleFileSchemaUpdate);
 		Liferay.on(SCHEMA_SELECTED_EVENT, handleSchemaUpdated);
 		Liferay.on(TEMPLATE_SELECTED_EVENT, handleTemplateSelect);
 
 		return () => {
-			Liferay.detach(CSV_HEADERS, handleCsvHeaders);
 			Liferay.detach(FILE_SCHEMA_EVENT, handleFileSchemaUpdate);
 			Liferay.detach(SCHEMA_SELECTED_EVENT, handleSchemaUpdated);
 			Liferay.detach(TEMPLATE_SELECTED_EVENT, handleTemplateSelect);
@@ -319,7 +275,9 @@ function ImportForm({
 												) =>
 													updateFieldMapping(
 														selectedFileField,
-														dbField.name
+														dbFields.optional[
+															selectedFileField
+														]
 													)
 												}
 											/>
@@ -352,14 +310,13 @@ function ImportForm({
 					disabled={!formIsValid}
 					evaluateForm={() => setFormEvaluated(true)}
 					fieldsSelections={fieldsSelections}
-					fileContent={fileContentPreview}
+					fileContent={fileContent}
 					fileFields={fileFields}
 					formDataQuerySelector={formDataQuerySelector}
 					formImportURL={formImportURL}
 					formIsValid={formIsValid}
 					formIsVisible={formIsVisible}
 					portletNamespace={portletNamespace}
-					setFileContent={setFileContent}
 				/>
 			</div>
 		</>

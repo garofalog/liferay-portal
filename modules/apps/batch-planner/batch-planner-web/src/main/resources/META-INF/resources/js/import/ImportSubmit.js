@@ -31,10 +31,9 @@ function ImportSubmit({
 	formIsValid,
 	formIsVisible,
 	portletNamespace,
-	setFileContent,
 }) {
 	const [visibleModalPreview, setVisibleModalPreview] = useState(undefined);
-	const [startImport, setStartImport] = useState(undefined);
+	const [startImport, setStartImport] = useState(false);
 
 	const {observer, onClose} = useModal({
 		onClose: () => setVisibleModalPreview(false),
@@ -63,7 +62,7 @@ function ImportSubmit({
 				disabled={disabled}
 				displayType="primary"
 				id={`${portletNamespace}-import-submit`}
-				onClick={() => showPreviewModal()}
+				onClick={showPreviewModal}
 				type="button"
 			>
 				{Liferay.Language.get('next')}
@@ -79,7 +78,6 @@ function ImportSubmit({
 					formSubmitURL={formImportURL}
 					namespace={portletNamespace}
 					observer={observer}
-					setFileContent={setFileContent}
 					setStartImport={setStartImport}
 					startImport={startImport}
 				/>

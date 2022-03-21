@@ -29,23 +29,9 @@ const ImportModal = ({
 	formSubmitURL,
 	observer,
 	portletNamespace,
-	setFileContent,
 	setStartImport,
 	startImport,
 }) => {
-	const handleEditCell = (newValue, cellIndex, rowIndex) => {
-		const newRow = fileContent[rowIndex];
-		const newFileContent = fileContent;
-		Object.entries(newRow).forEach(([key], index) => {
-			if (cellIndex === index) {
-				newRow[key] = newValue;
-			}
-		});
-
-		newFileContent.splice(rowIndex, 1, newRow);
-		setFileContent(newFileContent);
-	};
-
 	return (
 		<ClayModal observer={observer} size={startImport ? 'lg' : 'md'}>
 			{!startImport && (
@@ -55,7 +41,6 @@ const ImportModal = ({
 					fieldsSelections={fieldsSelections}
 					fileContent={fileContent}
 					fileFields={fileFields}
-					handleEditCell={handleEditCell}
 					setStartImport={setStartImport}
 				/>
 			)}
