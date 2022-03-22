@@ -22,7 +22,7 @@ import CellPreview from './CellPreview';
 const ImportPreviewModal = ({
 	closeModal,
 	fieldsSelections,
-	fileContent,
+	fileContentPreview,
 	setStartImport,
 }) => {
 	const fileFieldsToMap = fieldsSelections
@@ -53,7 +53,7 @@ const ImportPreviewModal = ({
 					</ClayTable.Head>
 
 					<ClayTable.Body className="inline-scroller w-100">
-						{fileContent?.map((row, index) => {
+						{fileContentPreview.map((row, index) => {
 							return (
 								<ClayTable.Row key={index}>
 									{Object.values(row).map(
@@ -62,7 +62,9 @@ const ImportPreviewModal = ({
 												<CellPreview
 													cell={cell}
 													cellIndex={cellIndex}
-													fileRows={fileContent}
+													fileRows={
+														fileContentPreview
+													}
 													key={cellIndex}
 													rowIndex={index}
 												/>
@@ -90,7 +92,7 @@ const ImportPreviewModal = ({
 							data-testid="start-import"
 							disabled={
 								fieldsSelections?.length === 0 &&
-								fileContent?.length === 0
+								fileContentPreview?.length === 0
 							}
 							displayType="primary"
 							onClick={() => setStartImport(true)}

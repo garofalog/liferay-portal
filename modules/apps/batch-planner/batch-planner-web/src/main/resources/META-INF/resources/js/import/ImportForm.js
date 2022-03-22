@@ -345,7 +345,7 @@ function ImportForm({
 					disabled={!formIsValid}
 					evaluateForm={() => setFormEvaluated(true)}
 					fieldsSelections={fieldsSelections}
-					fileContent={fileContentPreview}
+					fileContentPreview={fileContentPreview}
 					fileFields={fileFields}
 					formDataQuerySelector={formDataQuerySelector}
 					formImportURL={formImportURL}

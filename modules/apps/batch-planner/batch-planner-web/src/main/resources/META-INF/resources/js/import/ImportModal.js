@@ -23,7 +23,7 @@ const ImportModal = ({
 	closeModal,
 	dbFields,
 	fieldsSelections,
-	fileContent,
+	fileContentPreview,
 	fileFields,
 	formDataQuerySelector,
 	formSubmitURL,
@@ -39,7 +39,7 @@ const ImportModal = ({
 					closeModal={closeModal}
 					dbFields={dbFields}
 					fieldsSelections={fieldsSelections}
-					fileContent={fileContent}
+					fileContentPreview={fileContentPreview}
 					fileFields={fileFields}
 					setStartImport={setStartImport}
 				/>

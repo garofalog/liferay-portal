@@ -24,7 +24,7 @@ function ImportSubmit({
 	disabled,
 	evaluateForm,
 	fieldsSelections,
-	fileContent,
+	fileContentPreview,
 	fileFields,
 	formDataQuerySelector,
 	formImportURL,
@@ -73,7 +73,7 @@ function ImportSubmit({
 				<ImportModal
 					closeModal={onClose}
 					fieldsSelections={fieldsSelections}
-					fileContent={fileContent}
+					fileContentPreview={fileContentPreview}
 					fileFields={fileFields}
 					formDataQuerySelector={formDataQuerySelector}
 					formSubmitURL={formImportURL}
