@@ -23,12 +23,11 @@ const ImportPreviewModal = ({
 	closeModal,
 	fieldsSelections,
 	fileContent,
-	handleEditCell,
 	setStartImport,
 }) => {
 	const fileFieldsToMap = fieldsSelections
 		? Object.keys(fieldsSelections)
-		: {};
+		: [];
 
 	return (
 		<>
@@ -64,9 +63,6 @@ const ImportPreviewModal = ({
 													cell={cell}
 													cellIndex={cellIndex}
 													fileRows={fileContent}
-													handleEditCell={
-														handleEditCell
-													}
 													key={cellIndex}
 													rowIndex={index}
 												/>
