@@ -73,10 +73,7 @@ export function extractFieldsFromCSV(
 
 	if (csvContainsHeaders && splitLines.length > 2) {
 		const [schema, firstItemData] = parseCSV(content, csvSeparator);
-		fileContent = parseCSV(content, csvSeparator).slice(
-			1,
-			content.length
-		);
+		fileContent = parseCSV(content, csvSeparator).slice(1, content.length);
 
 		return {
 			fileContent,
@@ -92,7 +89,6 @@ export function extractFieldsFromCSV(
 		const schema = new Array(firstItemData.length)
 			.fill()
 			.map((_, index) => index);
-
 
 		return {
 			fileContent,
@@ -123,8 +119,6 @@ export function extractFieldsFromJSONL(content) {
 	}
 	catch (error) {
 		console.error(error);
-
-		return;
 	}
 }
 
@@ -194,8 +188,8 @@ function parseInChunk({
 
 		if (parsedData) {
 			return onComplete({
-				fileContent: parsedData.fileContent,
 				extension,
+				fileContent: parsedData.fileContent,
 				firstItemDetails: parsedData.firstItemDetails,
 				schema: parsedData.schema,
 			});

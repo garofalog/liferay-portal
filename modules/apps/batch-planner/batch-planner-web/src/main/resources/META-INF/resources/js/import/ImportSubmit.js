@@ -63,7 +63,7 @@ function ImportSubmit({
 				disabled={disabled}
 				displayType="primary"
 				id={`${portletNamespace}-import-submit`}
-				onClick={() => showPreviewModal()}
+				onClick={showPreviewModal}
 				type="button"
 			>
 				{Liferay.Language.get('next')}
