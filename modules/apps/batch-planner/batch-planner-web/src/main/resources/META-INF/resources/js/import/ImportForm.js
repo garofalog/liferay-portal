@@ -15,7 +15,7 @@
 import ClayLink from '@clayui/link';
 import ClayTable from '@clayui/table';
 import PropTypes from 'prop-types';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState, useMemo} from 'react';
 
 import SaveTemplate from '../SaveTemplate';
 import {
@@ -66,7 +66,6 @@ function ImportForm({
 	const [mappingsToBeEvaluated, setMappingsToBeEvaluated] = useState(
 		mappedFields
 	);
-	const [fileContentPreview, setFileContentPreview] = useState([]);
 	const useTemplateMappingRef = useRef();
 	const [formIsValid, setFormIsValid] = useState(false);
 	const [csvHeaders, setCsvHeaders] = useState(true);
@@ -79,8 +78,7 @@ function ImportForm({
 			: false;
 
 		if (
-			fieldsSelections &&
-			Object.values(fieldsSelections).length > 0 &&
+			fieldsSelections.length > 0 &&
 			!Object.values(fieldsSelections).some(
 				(element) => element === ''
 			) &&
@@ -98,7 +96,7 @@ function ImportForm({
 		setFieldsSelections({});
 	}, [csvHeaders]);
 
-	useEffect(() => {
+	const fileContentPreview = useMemo(() => {
 		const fieldsIndex = [];
 		let filePreview;
 		if (Object.keys(fieldsSelections)?.length > 0) {
@@ -136,7 +134,7 @@ function ImportForm({
 					});
 				});
 			}
-			setFileContentPreview(filePreview);
+			return filePreview;
 		}
 	}, [fileFields, fieldsSelections, fileContent, csvHeaders]);
 
@@ -347,9 +345,7 @@ function ImportForm({
 					dbFields={dbFields}
 					disabled={!formIsValid}
 					evaluateForm={() => setFormEvaluated(true)}
-					fieldsSelections={fieldsSelections}
 					fileContentPreview={fileContentPreview}
-					fileFields={fileFields}
 					formDataQuerySelector={formDataQuerySelector}
 					formImportURL={formImportURL}
 					formIsValid={formIsValid}
