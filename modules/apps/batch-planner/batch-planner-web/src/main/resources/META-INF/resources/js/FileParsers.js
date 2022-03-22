@@ -14,7 +14,6 @@
 
 import {
 	CSV_FORMAT,
-	FILE_FORMATTED_CONTENT,
 	JSONL_FORMAT,
 	JSON_FORMAT,
 	PARSE_FILE_CHUNK_SIZE,
@@ -94,9 +93,6 @@ export function extractFieldsFromCSV(
 			.fill()
 			.map((_, index) => index);
 
-		Liferay.fire(FILE_FORMATTED_CONTENT, {
-			fileContent: contentItemDetails,
-		});
 
 		return {
 			fileContent,
