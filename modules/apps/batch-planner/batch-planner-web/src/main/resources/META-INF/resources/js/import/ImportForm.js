@@ -81,7 +81,9 @@ function ImportForm({
 		if (
 			fieldsSelections &&
 			Object.values(fieldsSelections).length > 0 &&
-			!Object.values(fieldsSelections).some(element => element === "") &&
+			!Object.values(fieldsSelections).some(
+				(element) => element === ''
+			) &&
 			dbFields.optional?.length > 0 &&
 			!requiredFieldNotFilled
 		) {

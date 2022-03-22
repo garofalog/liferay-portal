@@ -99,58 +99,63 @@ export function extractFieldsFromCSV(
 }
 
 export function extractFieldsFromJSONL(content) {
-	const contentLines = content.replace(/\r?\n/g, ',');
-	const jsonStringContent = `[${contentLines}]`;
+	if (content.trim().charAt(content.length - 1) === '}') {
+		const contentLines = content.replace(/\r?\n/g, ',');
 
-	const jsonContent = JSON.parse(jsonStringContent);
+		const jsonStringContent = `[${contentLines}]`;
 
-	try {
-		const data = Object.keys(jsonContent[0]);
+		const jsonContent = JSON.parse(jsonStringContent);
 
-		const schema = Object.values(data);
+		try {
+			const data = Object.keys(jsonContent[0]);
 
-		return {
-			fileContent: jsonContent
-				.map((row) => Object.values(row))
-				.slice(1, content.length),
-			firstItemDetails: getItemDetails(Object.values(data), schema),
-			schema,
-		};
-	}
-	catch (error) {
-		console.error(error);
+			const schema = Object.values(data);
+
+			return {
+				fileContent: jsonContent
+					.map((row) => Object.values(row))
+					.slice(1, content.length),
+				firstItemDetails: getItemDetails(Object.values(data), schema),
+				schema,
+			};
+		}
+		catch (error) {
+			console.error(error);
+		}
 	}
 }
 
 export function extractFieldsFromJSON(content) {
-	const jsonArray = content.split('');
-	jsonArray.shift();
+	if (content.trim().charAt(content.length - 1) === ']') {
+		const jsonArray = content.split('');
+		jsonArray.shift();
 
-	const jsonfile = JSON.parse(content);
-	const contentLineColumns = jsonfile
-		.map((row) => Object.values(row))
-		.slice(1, content.length);
+		const jsonfile = JSON.parse(content);
+		const contentLineColumns = jsonfile
+			.map((row) => Object.values(row))
+			.slice(1, content.length);
 
-	for (let index = 0; index < jsonArray.length - 1; index++) {
-		if (jsonArray[index] === '}') {
-			const partialJson = jsonArray.slice(0, index + 1).join('');
+		for (let index = 0; index < jsonArray.length - 1; index++) {
+			if (jsonArray[index] === '}') {
+				const partialJson = jsonArray.slice(0, index + 1).join('');
 
-			try {
-				const parsedJSON = JSON.parse(partialJson);
+				try {
+					const parsedJSON = JSON.parse(partialJson);
 
-				const schema = Object.keys(parsedJSON);
+					const schema = Object.keys(parsedJSON);
 
-				return {
-					contentLineColumns,
-					firstItemDetails: getItemDetails(
-						Object.values(parsedJSON),
-						schema
-					),
-					schema,
-				};
-			}
-			catch (error) {
-				console.error(error);
+					return {
+						contentLineColumns,
+						firstItemDetails: getItemDetails(
+							Object.values(parsedJSON),
+							schema
+						),
+						schema,
+					};
+				}
+				catch (error) {
+					console.error(error);
+				}
 			}
 		}
 	}
