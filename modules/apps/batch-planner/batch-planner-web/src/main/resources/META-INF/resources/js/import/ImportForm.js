@@ -15,7 +15,7 @@
 import ClayLink from '@clayui/link';
 import ClayTable from '@clayui/table';
 import PropTypes from 'prop-types';
-import React, {useEffect, useRef, useState, useMemo} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 
 import SaveTemplate from '../SaveTemplate';
 import {
@@ -77,18 +77,34 @@ function ImportForm({
 			  )
 			: false;
 
+		const containsEmptyValue = Object.values(fieldsSelections).some(
+			(element) => element === ''
+		);
+
 		if (
-			fieldsSelections.length > 0 &&
-			!Object.values(fieldsSelections).some(
-				(element) => element === ''
-			) &&
+			Object.values(fieldsSelections).length > 0 &&
+			!containsEmptyValue &&
 			dbFields.optional?.length > 0 &&
 			!requiredFieldNotFilled
 		) {
+			setFormIsValid(false);
+		}
+		else if (containsEmptyValue) {
+			const cleanSelectedFields = Object.entries(fieldsSelections).reduce(
+				(updatedSelectedFields, [key, value]) => {
+					if (value !== '') {
+						updatedSelectedFields[key] = value;
+					}
+
+					return updatedSelectedFields;
+				},
+				{}
+			);
+			setFieldsSelections(cleanSelectedFields);
 			setFormIsValid(true);
 		}
 		else {
-			setFormIsValid(false);
+			setFormIsValid(true);
 		}
 	}, [fieldsSelections, dbFields]);
 
@@ -134,6 +150,7 @@ function ImportForm({
 					});
 				});
 			}
+
 			return filePreview;
 		}
 	}, [fileFields, fieldsSelections, fileContent, csvHeaders]);

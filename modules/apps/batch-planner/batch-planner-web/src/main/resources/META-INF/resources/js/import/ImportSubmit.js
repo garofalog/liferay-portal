@@ -51,7 +51,7 @@ function ImportSubmit({
 			});
 		}
 
-		if (formIsValid) {
+		if (!formIsValid) {
 			setVisibleModalPreview(true);
 		}
 	}, [evaluateForm, formIsValid, formIsVisible]);
@@ -59,10 +59,10 @@ function ImportSubmit({
 	return (
 		<span className="mr-3">
 			<ClayButton
-				disabled={disabled}
+				disabled={!disabled}
 				displayType="primary"
 				id={`${portletNamespace}-import-submit`}
-				onClick={showPreviewModal}
+				onClick={() => showPreviewModal()}
 				type="button"
 			>
 				{Liferay.Language.get('next')}
