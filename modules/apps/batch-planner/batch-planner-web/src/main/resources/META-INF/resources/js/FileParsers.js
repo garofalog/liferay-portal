@@ -73,13 +73,18 @@ export function extractFieldsFromCSV(
 
 	if (csvContainsHeaders && splitLines.length > 2) {
 		const [schema, firstItemData] = parseCSV(content, csvSeparator);
-		fileContent = parseCSV(content, csvSeparator).slice(1, content.length);
+		if (firstItemData) {
+			fileContent = parseCSV(content, csvSeparator).slice(
+				1,
+				content.length
+			);
 
-		return {
-			fileContent,
-			firstItemDetails: getItemDetails(firstItemData, schema),
-			schema,
-		};
+			return {
+				fileContent,
+				firstItemDetails: getItemDetails(firstItemData, schema),
+				schema,
+			};
+		}
 	}
 
 	if (!csvContainsHeaders && newLineFound) {
@@ -127,37 +132,14 @@ export function extractFieldsFromJSONL(content) {
 
 export function extractFieldsFromJSON(content) {
 	if (content.trim().charAt(content.length - 1) === ']') {
-		const jsonArray = content.split('');
-		jsonArray.shift();
-
 		const jsonfile = JSON.parse(content);
-		const contentLineColumns = jsonfile
-			.map((row) => Object.values(row))
-			.slice(1, content.length);
+		const fileContent = jsonfile.map((row) => Object.values(row));
 
-		for (let index = 0; index < jsonArray.length - 1; index++) {
-			if (jsonArray[index] === '}') {
-				const partialJson = jsonArray.slice(0, index + 1).join('');
-
-				try {
-					const parsedJSON = JSON.parse(partialJson);
-
-					const schema = Object.keys(parsedJSON);
-
-					return {
-						contentLineColumns,
-						firstItemDetails: getItemDetails(
-							Object.values(parsedJSON),
-							schema
-						),
-						schema,
-					};
-				}
-				catch (error) {
-					console.error(error);
-				}
-			}
-		}
+		return {
+			fileContent,
+			firstItemDetails: fileContent[0],
+			schema: Object.keys(jsonfile[0]),
+		};
 	}
 }
 

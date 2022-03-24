@@ -72,8 +72,11 @@ describe('ImportSubmit', () => {
 		act(() => {
 			fireEvent.click(getByText(Liferay.Language.get('next')));
 		});
-
-		expect(document.querySelector('.modal-content')).toBeInTheDocument();
+		waitFor(() => {
+			expect(
+				document.querySelector('.modal-content')
+			).toBeInTheDocument();
+		});
 	});
 
 	it('must start polling import status and enable button when import process is completed', async () => {

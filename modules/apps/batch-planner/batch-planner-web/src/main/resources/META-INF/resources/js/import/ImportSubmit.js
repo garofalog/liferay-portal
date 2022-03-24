@@ -23,6 +23,7 @@ import ImportModal from './ImportModal';
 function ImportSubmit({
 	disabled,
 	evaluateForm,
+	fieldsSelections,
 	fileContentPreview,
 	formDataQuerySelector,
 	formImportURL,
@@ -70,6 +71,7 @@ function ImportSubmit({
 			{visibleModalPreview && (
 				<ImportModal
 					closeModal={onClose}
+					fieldsSelections={fieldsSelections}
 					fileContentPreview={fileContentPreview}
 					formDataQuerySelector={formDataQuerySelector}
 					formSubmitURL={formImportURL}

@@ -21,7 +21,7 @@ import ImportProcessModal from './ImportProcessModal';
 
 const ImportModal = ({
 	closeModal,
-	dbFields,
+	fieldsSelections,
 	fileContentPreview,
 	formDataQuerySelector,
 	formSubmitURL,
@@ -35,7 +35,7 @@ const ImportModal = ({
 			{!startImport && (
 				<ImportPreviewModal
 					closeModal={closeModal}
-					dbFields={dbFields}
+					fieldsSelections={fieldsSelections}
 					fileContentPreview={fileContentPreview}
 					setStartImport={setStartImport}
 				/>

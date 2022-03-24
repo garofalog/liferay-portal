@@ -342,9 +342,9 @@ function ImportForm({
 				/>
 
 				<ImportSubmit
-					dbFields={dbFields}
 					disabled={!formIsValid}
 					evaluateForm={() => setFormEvaluated(true)}
+					fieldsSelections={fieldsSelections}
 					fileContentPreview={fileContentPreview}
 					formDataQuerySelector={formDataQuerySelector}
 					formImportURL={formImportURL}
