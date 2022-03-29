@@ -45,11 +45,7 @@ if (Validator.isNotNull(backURL)) {
 	<aui:input name="mvccVersion" type="hidden" value="<%= (commerceInventoryWarehouse == null) ? 0 : commerceInventoryWarehouse.getMvccVersion() %>" />
 
 	<%-- form-navigator --%>
-
 </aui:form>
-
-
-
 
 <liferay-ui:error exception="<%= CommerceInventoryWarehouseActiveException.class %>" message="please-add-geolocation-information-to-the-warehouse-to-activate" />
 <liferay-ui:error exception="<%= CommerceInventoryWarehouseNameException.class %>" message="please-enter-a-valid-name" />
@@ -57,35 +53,36 @@ if (Validator.isNotNull(backURL)) {
 
 <aui:model-context bean="<%= commerceInventoryWarehouse %>" model="<%= CommerceInventoryWarehouse.class %>" />
 
-<aui:form action="" cssClass="pt-4" method="post" name="fm">
-	<div class="mt-4 row">
-		<div class="col-lg-6">
-			<commerce-ui:panel
-				title='<%= LanguageUtil.get(request, "details") %>'
-			>
+<div class="container">
+	<aui:form action="" cssClass="pt-4" method="post" name="fm">
+		<div class="mt-4 row">
+			<div class="col-lg-6">
+				<commerce-ui:panel
+					title='<%= LanguageUtil.get(request, "details") %>'
+				>
 					<aui:input name="name" required="<%= true %>" />
 
 					<aui:input name="description" />
 
 					<aui:input checked="<%= (commerceInventoryWarehouse == null) ? false : commerceInventoryWarehouse.isActive() %>" inlineLabel="right" labelCssClass="simple-toggle-switch" name='<%= LanguageUtil.get(request, "make-active") %>' type="toggle-switch" />
-			</commerce-ui:panel>
-		</div>
+				</commerce-ui:panel>
+			</div>
 
-		<div class="col-lg-6 d-flex">
-			<commerce-ui:panel
-				bodyClasses="flex-fill"
-				title='<%= LanguageUtil.get(request, "geolocation") %>'
-			>
+			<div class="col-lg-6">
+				<commerce-ui:panel
+					bodyClasses="flex-fill"
+					title='<%= LanguageUtil.get(request, "geolocation") %>'
+				>
 					<aui:input name="latitude" />
 
 					<aui:input name="longitude" />
-			</commerce-ui:panel>
-		</div>
+				</commerce-ui:panel>
+			</div>
 
-		<div class="col">
-			<commerce-ui:panel
-				title='<%= LanguageUtil.get(request, "address") %>'
-			>
+			<div class="col">
+				<commerce-ui:panel
+					title='<%= LanguageUtil.get(request, "address") %>'
+				>
 					<div class="row">
 						<div class="col-lg-6">
 							<aui:input name="street1" />
@@ -105,10 +102,11 @@ if (Validator.isNotNull(backURL)) {
 							<aui:input label="postal-code" name="zip" />
 						</div>
 					</div>
-			</commerce-ui:panel>
+				</commerce-ui:panel>
+			</div>
 		</div>
-	</div>
-</aui:form>
+	</aui:form>
+</div>
 
 <liferay-frontend:component
 	context='<%=

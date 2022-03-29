@@ -264,14 +264,13 @@ long commerceAccountId = CommerceUtil.getCommerceAccountId((CommerceContext)requ
 <liferay-frontend:component
 	context='<%=
 		HashMapBuilder.<String, Object>put(
-			"cpDefinitionId", cpDefinitionId
+			"authToken", AuthTokenUtil.getToken(request, plid, CPPortletKeys.CP_CONTENT_WEB)
 		).put(
 			"checkCPInstanceURL", checkCPInstanceURL
 		).put(
-			"viewAttachmentURL", cpContentHelper.getViewAttachmentURL(liferayPortletRequest, liferayPortletResponse)
+			"cpDefinitionId", cpDefinitionId
 		).put(
-			"authToken", AuthTokenUtil.getToken(request, plid, CPPortletKeys.CP_CONTENT_WEB)
-		
+			"viewAttachmentURL", cpContentHelper.getViewAttachmentURL(liferayPortletRequest, liferayPortletResponse)
 		).build()
 	%>'
 	module="../js/view"
