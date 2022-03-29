@@ -17,37 +17,42 @@ package com.liferay.commerce.warehouse.web.internal.display.context;
 import com.liferay.commerce.country.CommerceCountryManager;
 import com.liferay.commerce.inventory.model.CommerceInventoryWarehouse;
 import com.liferay.commerce.inventory.service.CommerceInventoryWarehouseService;
-import com.liferay.commerce.product.constants.CPPortletKeys;
 import com.liferay.commerce.product.display.context.helper.CPRequestHelper;
+import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.model.CommerceChannelRel;
 import com.liferay.commerce.product.service.CommerceChannelRelService;
 import com.liferay.commerce.product.service.CommerceChannelService;
-import com.liferay.commerce.util.CommerceUtil;
+import com.liferay.commerce.product.servlet.taglib.ui.constants.CPDefinitionScreenNavigationConstants;
+import com.liferay.frontend.taglib.clay.data.set.servlet.taglib.util.ClayDataSetActionDropdownItem;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.servlet.taglib.ManagementBarFilterItem;
 import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Country;
 import com.liferay.portal.kernel.model.Region;
+import com.liferay.portal.kernel.portlet.LiferayWindowState;
+import com.liferay.portal.kernel.portlet.PortletProvider;
+import com.liferay.portal.kernel.portlet.PortletProviderUtil;
+import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.PortletURLUtil;
-import com.liferay.portal.kernel.portlet.SearchOrderByUtil;
 import com.liferay.portal.kernel.service.CountryService;
 import com.liferay.portal.kernel.service.RegionService;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.kernel.util.WebKeys;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
 import javax.portlet.PortletException;
+import javax.portlet.PortletRequest;
 import javax.portlet.PortletURL;
 
 import javax.servlet.http.HttpServletRequest;
@@ -75,6 +80,64 @@ public class CommerceInventoryWarehousesDisplayContext {
 		_regionService = regionService;
 
 		_cpRequestHelper = new CPRequestHelper(httpServletRequest);
+	}
+
+	public List<DropdownItem> getBulkActionDropdownItems() {
+		return ListUtil.fromArray(
+			new ClayDataSetActionDropdownItem(
+				PortletURLBuilder.createActionURL(
+					_cpRequestHelper.getRenderResponse()
+				).setActionName(
+					"/cp_definitions/edit_cp_definition"
+				).setCMD(
+					Constants.DELETE
+				).buildString(),
+				"trash", "delete", "delete",
+				LanguageUtil.get(_httpServletRequest, "delete"), "delete",
+				null));
+	}
+
+	public List<ClayDataSetActionDropdownItem>
+			getClayDataSetActionDropdownItems()
+		throws PortalException {
+
+		return ListUtil.fromArray(
+			new ClayDataSetActionDropdownItem(
+				PortletURLBuilder.create(
+					PortletProviderUtil.getPortletURL(
+						_httpServletRequest, CPDefinition.class.getName(),
+						PortletProvider.Action.MANAGE)
+				).setMVCRenderCommandName(
+					"/cp_definitions/edit_cp_definition"
+				).setParameter(
+					"cpDefinitionId", "{id}"
+				).setParameter(
+					"screenNavigationCategoryKey",
+					CPDefinitionScreenNavigationConstants.CATEGORY_KEY_DETAILS
+				).buildString(),
+				"view", "view", LanguageUtil.get(_httpServletRequest, "view"),
+				"get", null, null),
+			new ClayDataSetActionDropdownItem(
+				"/o/headless-commerce-admin-catalog/v1.0/products/{productId}",
+				"trash", "delete",
+				LanguageUtil.get(_httpServletRequest, "delete"), "delete",
+				"delete", "async"),
+			new ClayDataSetActionDropdownItem(
+				PortletURLBuilder.create(
+					PortletURLFactoryUtil.create(
+						_cpRequestHelper.getRenderRequest(),
+						_cpRequestHelper.getPortletId(),
+						PortletRequest.RENDER_PHASE)
+				).setMVCRenderCommandName(
+					"/cp_definitions/duplicate_cp_definition"
+				).setParameter(
+					"cpDefinitionId", "{id}"
+				).setWindowState(
+					LiferayWindowState.POP_UP
+				).buildString(),
+				"paste", "duplicate",
+				LanguageUtil.get(_httpServletRequest, "duplicate"), "post",
+				"update", "modal"));
 	}
 
 	public long[] getCommerceChannelRelCommerceChannelIds()
@@ -125,15 +188,6 @@ public class CommerceInventoryWarehousesDisplayContext {
 		return _commerceInventoryWarehouse;
 	}
 
-	public List<Country> getCountries() {
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)_httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
-		return _countryService.getCompanyCountries(
-			themeDisplay.getCompanyId(), true);
-	}
-
 	public Country getCountry(long countryId) throws PortalException {
 		return _countryService.getCountry(countryId);
 	}
@@ -149,6 +203,12 @@ public class CommerceInventoryWarehousesDisplayContext {
 		return ParamUtil.getString(
 			_cpRequestHelper.getRenderRequest(), "countryTwoLettersISOCode",
 			null);
+	}
+
+	public CreationMenu getCreationMenu() throws Exception {
+		CreationMenu creationMenu = new CreationMenu();
+
+		return creationMenu;
 	}
 
 	public List<ManagementBarFilterItem> getManagementBarFilterItems()
@@ -174,30 +234,6 @@ public class CommerceInventoryWarehousesDisplayContext {
 		return managementBarFilterItems;
 	}
 
-	public String getOrderByCol() {
-		if (Validator.isNotNull(_orderByCol)) {
-			return _orderByCol;
-		}
-
-		_orderByCol = SearchOrderByUtil.getOrderByCol(
-			_cpRequestHelper.getRenderRequest(),
-			CPPortletKeys.COMMERCE_INVENTORY_WAREHOUSE, "name");
-
-		return _orderByCol;
-	}
-
-	public String getOrderByType() {
-		if (Validator.isNotNull(_orderByType)) {
-			return _orderByType;
-		}
-
-		_orderByType = SearchOrderByUtil.getOrderByType(
-			_cpRequestHelper.getRenderRequest(),
-			CPPortletKeys.COMMERCE_INVENTORY_WAREHOUSE, "asc");
-
-		return _orderByType;
-	}
-
 	public PortletURL getPortletURL() {
 		return PortletURLBuilder.createRenderURL(
 			_cpRequestHelper.getRenderResponse()
@@ -219,10 +255,6 @@ public class CommerceInventoryWarehousesDisplayContext {
 
 				return null;
 			}
-		).setParameter(
-			"orderByCol", getOrderByCol()
-		).setParameter(
-			"orderByType", getOrderByType()
 		).buildPortletURL();
 	}
 
@@ -232,75 +264,6 @@ public class CommerceInventoryWarehousesDisplayContext {
 			_commerceInventoryWarehouse.getCountryTwoLettersISOCode());
 
 		return _regionService.getRegions(countryByA2.getCountryId(), true);
-	}
-
-	public SearchContainer<CommerceInventoryWarehouse> getSearchContainer()
-		throws PortalException {
-
-		if (_searchContainer != null) {
-			return _searchContainer;
-		}
-
-		Boolean active = null;
-		String countryTwoLettersIsoCode = getCountryTwoLettersIsoCode();
-
-		String emptyResultsMessage = "no-warehouses-were-found";
-		boolean search = _isSearch();
-
-		String navigation = _getNavigation();
-
-		if (navigation.equals("active")) {
-			active = Boolean.TRUE;
-			emptyResultsMessage = "there-are-no-active-warehouses";
-		}
-		else if (navigation.equals("inactive")) {
-			active = Boolean.FALSE;
-			emptyResultsMessage = "there-are-no-inactive-warehouses";
-		}
-
-		if (Validator.isNotNull(countryTwoLettersIsoCode)) {
-			emptyResultsMessage += "-in-x";
-
-			Country country = getCountry(countryTwoLettersIsoCode);
-
-			emptyResultsMessage = LanguageUtil.format(
-				_cpRequestHelper.getRequest(), emptyResultsMessage,
-				country.getTitle(_cpRequestHelper.getLocale()));
-		}
-
-		_searchContainer = new SearchContainer<>(
-			_cpRequestHelper.getRenderRequest(), getPortletURL(), null,
-			emptyResultsMessage);
-
-		if (!search && hasManageCommerceInventoryWarehousePermission()) {
-			_searchContainer.setEmptyResultsMessageCssClass(
-				"taglib-empty-result-message-header-has-plus-btn");
-		}
-
-		_searchContainer.setOrderByCol(getOrderByCol());
-		_searchContainer.setOrderByComparator(
-			CommerceUtil.getCommerceInventoryWarehouseOrderByComparator(
-				getOrderByCol(), getOrderByType()));
-		_searchContainer.setOrderByType(getOrderByType());
-
-		Boolean navigationActive = active;
-
-		_searchContainer.setResultsAndTotal(
-			() -> _commerceInventoryWarehouseService.search(
-				_cpRequestHelper.getCompanyId(), navigationActive,
-				countryTwoLettersIsoCode, _getKeywords(),
-				_searchContainer.getStart(), _searchContainer.getEnd(),
-				CommerceUtil.getCommerceInventoryWarehouseSort(
-					_searchContainer.getOrderByCol(),
-					_searchContainer.getOrderByType())),
-			_commerceInventoryWarehouseService.
-				searchCommerceInventoryWarehousesCount(
-					_cpRequestHelper.getCompanyId(), navigationActive,
-					countryTwoLettersIsoCode, _getKeywords()));
-
-		_searchContainer.setSearch(search);
-
-		return _searchContainer;
 	}
 
 	public boolean hasManageCommerceInventoryWarehousePermission() {
@@ -373,6 +336,5 @@ public class CommerceInventoryWarehousesDisplayContext {
 	private final HttpServletRequest _httpServletRequest;
 	private String _keywords;
 	private final RegionService _regionService;
-	private SearchContainer<CommerceInventoryWarehouse> _searchContainer;
 
 }
