@@ -60,5 +60,4 @@ CommerceInventoryWarehousesDisplayContext commerceInventoryWarehousesDisplayCont
 		selectionType="multiple"
 		style="fluid"
 	/>
-
 </c:if>
