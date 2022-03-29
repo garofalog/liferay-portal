@@ -24,6 +24,8 @@ import com.liferay.commerce.product.model.CommerceChannelRel;
 import com.liferay.commerce.product.service.CommerceChannelRelService;
 import com.liferay.commerce.product.service.CommerceChannelService;
 import com.liferay.commerce.util.CommerceUtil;
+import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.servlet.taglib.ManagementBarFilterItem;
 import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
 import com.liferay.petra.string.StringPool;
@@ -32,6 +34,9 @@ import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Country;
+import com.liferay.portal.kernel.portlet.LiferayWindowState;
+import com.liferay.portal.kernel.portlet.PortletProvider;
+import com.liferay.portal.kernel.portlet.PortletProviderUtil;
 import com.liferay.portal.kernel.portlet.PortletURLUtil;
 import com.liferay.portal.kernel.portlet.SearchOrderByUtil;
 import com.liferay.portal.kernel.service.CountryService;
@@ -68,6 +73,16 @@ public class CommerceInventoryWarehousesDisplayContext {
 		_countryService = countryService;
 
 		_cpRequestHelper = new CPRequestHelper(httpServletRequest);
+	}
+
+	public String getAddCommerceWarehouseRenderURL() throws Exception {
+		return PortletURLBuilder.createRenderURL(
+			_cpRequestHelper.getLiferayPortletResponse()
+		).setMVCRenderCommandName(
+			"/commerce_warehouse/add_commerce_warehouse"
+		).setWindowState(
+			LiferayWindowState.POP_UP
+		).buildString();
 	}
 
 	public long[] getCommerceChannelRelCommerceChannelIds()
@@ -277,6 +292,47 @@ public class CommerceInventoryWarehousesDisplayContext {
 		_searchContainer.setSearch(search);
 
 		return _searchContainer;
+	}
+
+	public CreationMenu getWarehouseCreationMenu() {
+		CreationMenu creationMenu = new CreationMenu();
+
+		if (hasManageCommerceInventoryWarehousePermission()) {
+			creationMenu.addDropdownItem(
+				dropdownItem -> {
+					dropdownItem.setHref(getAddCommerceWarehouseRenderURL());
+					dropdownItem.setLabel(
+						LanguageUtil.get(
+							_cpRequestHelper.getRequest(), "add-warehouse"));
+					dropdownItem.setTarget("modal");
+				});
+		}
+
+		return creationMenu;
+	}
+
+	public List<FDSActionDropdownItem> getWarehouseFDSActionDropdownItems()
+		throws PortalException {
+
+		return ListUtil.fromArray(
+			new FDSActionDropdownItem(
+				PortletURLBuilder.create(
+					PortletProviderUtil.getPortletURL(
+						_cpRequestHelper.getRequest(),
+						CommerceInventoryWarehouse.class.getName(),
+						PortletProvider.Action.MANAGE)
+				).setMVCRenderCommandName(
+					"/commerce_inventory_warehouse/edit_commerce_inventory_warehouse"
+				).setRedirect(
+					_cpRequestHelper.getCurrentURL()
+				).setParameter(
+					"commerceWarehouseId", "{id}"
+				).setParameter(
+					"screenNavigationCategoryKey", "details"
+				).buildString(),
+				"pencil", "edit",
+				LanguageUtil.get(_cpRequestHelper.getRequest(), "edit"), "get",
+				null, null));
 	}
 
 	public boolean hasManageCommerceInventoryWarehousePermission() {
