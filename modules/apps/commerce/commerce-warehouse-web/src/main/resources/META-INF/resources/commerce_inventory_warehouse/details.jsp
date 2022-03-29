@@ -38,11 +38,11 @@ String commerceRegionCode = BeanParamUtil.getString(commerceInventoryWarehouse, 
 			<commerce-ui:panel
 				title='<%= LanguageUtil.get(request, "details") %>'
 			>
-					<aui:input name="name" required="<%= true %>" />
+				<aui:input name="name" required="<%= true %>" />
 
-					<aui:input name="description" />
+				<aui:input name="description" />
 
-					<aui:input checked="<%= (commerceInventoryWarehouse == null) ? false : commerceInventoryWarehouse.isActive() %>" inlineLabel="right" labelCssClass="simple-toggle-switch" name='<%= LanguageUtil.get(request, "make-active") %>' type="toggle-switch" />
+				<aui:input checked="<%= (commerceInventoryWarehouse == null) ? false : commerceInventoryWarehouse.isActive() %>" inlineLabel="right" labelCssClass="simple-toggle-switch" name='<%= LanguageUtil.get(request, "make-active") %>' type="toggle-switch" />
 			</commerce-ui:panel>
 		</div>
 
@@ -51,9 +51,9 @@ String commerceRegionCode = BeanParamUtil.getString(commerceInventoryWarehouse, 
 				bodyClasses="flex-fill"
 				title='<%= LanguageUtil.get(request, "geolocation") %>'
 			>
-					<aui:input name="latitude" />
+				<aui:input name="latitude" />
 
-					<aui:input name="longitude" />
+				<aui:input name="longitude" />
 			</commerce-ui:panel>
 		</div>
 
@@ -61,25 +61,25 @@ String commerceRegionCode = BeanParamUtil.getString(commerceInventoryWarehouse, 
 			<commerce-ui:panel
 				title='<%= LanguageUtil.get(request, "address") %>'
 			>
-					<div class="row">
-						<div class="col-lg-6">
-							<aui:input name="street1" />
+				<div class="row">
+					<div class="col-lg-6">
+						<aui:input name="street1" />
 
-							<aui:input name="street3" />
+						<aui:input name="street3" />
 
-							<aui:select label="region" name="commerceRegionCode" />
+						<aui:select label="region" name="commerceRegionCode" />
 
-							<aui:input name="city" />
-						</div>
-
-						<div class="col-lg-6">
-							<aui:input name="street2" />
-
-							<aui:select label="country" name="countryTwoLettersISOCode" />
-
-							<aui:input label="postal-code" name="zip" />
-						</div>
+						<aui:input name="city" />
 					</div>
+
+					<div class="col-lg-6">
+						<aui:input name="street2" />
+
+						<aui:select label="country" name="countryTwoLettersISOCode" />
+
+						<aui:input label="postal-code" name="zip" />
+					</div>
+				</div>
 			</commerce-ui:panel>
 		</div>
 	</div>
