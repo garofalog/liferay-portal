@@ -48,7 +48,7 @@ String commerceRegionCode = BeanParamUtil.getString(commerceInventoryWarehouse, 
 
 					<aui:input name="description" />
 
-					<aui:input checked="<%= (commerceInventoryWarehouse == null) ? false : commerceInventoryWarehouse.isActive() %>" inlineLabel="right" labelCssClass="simple-toggle-switch" name="active" type="toggle-switch" />
+					<aui:input checked="<%= (commerceInventoryWarehouse == null) ? false : commerceInventoryWarehouse.isActive() %>" inlineLabel="right" labelCssClass="simple-toggle-switch" name='<%= LanguageUtil.get(request, "make-active") %>' type="toggle-switch" />
 				</aui:fieldset>
 			</commerce-ui:panel>
 		</div>
