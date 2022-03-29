@@ -26,11 +26,6 @@ String countryTwoLettersISOCode = BeanParamUtil.getString(commerceInventoryWareh
 String commerceRegionCode = BeanParamUtil.getString(commerceInventoryWarehouse, request, "commerceRegionCode");
 %>
 
-<liferay-ui:error-marker
-	key="<%= WebKeys.ERROR_SECTION %>"
-	value="details"
-/>
-
 <liferay-ui:error exception="<%= CommerceInventoryWarehouseActiveException.class %>" message="please-add-geolocation-information-to-the-warehouse-to-activate" />
 <liferay-ui:error exception="<%= CommerceInventoryWarehouseNameException.class %>" message="please-enter-a-valid-name" />
 <liferay-ui:error exception="<%= MVCCException.class %>" message="this-item-is-no-longer-valid-please-try-again" />
@@ -43,13 +38,11 @@ String commerceRegionCode = BeanParamUtil.getString(commerceInventoryWarehouse, 
 			<commerce-ui:panel
 				title='<%= LanguageUtil.get(request, "details") %>'
 			>
-				<aui:fieldset>
 					<aui:input name="name" required="<%= true %>" />
 
 					<aui:input name="description" />
 
 					<aui:input checked="<%= (commerceInventoryWarehouse == null) ? false : commerceInventoryWarehouse.isActive() %>" inlineLabel="right" labelCssClass="simple-toggle-switch" name='<%= LanguageUtil.get(request, "make-active") %>' type="toggle-switch" />
-				</aui:fieldset>
 			</commerce-ui:panel>
 		</div>
 
@@ -58,11 +51,9 @@ String commerceRegionCode = BeanParamUtil.getString(commerceInventoryWarehouse, 
 				bodyClasses="flex-fill"
 				title='<%= LanguageUtil.get(request, "geolocation") %>'
 			>
-				<aui:fieldset>
 					<aui:input name="latitude" />
 
 					<aui:input name="longitude" />
-				</aui:fieldset>
 			</commerce-ui:panel>
 		</div>
 
@@ -70,7 +61,6 @@ String commerceRegionCode = BeanParamUtil.getString(commerceInventoryWarehouse, 
 			<commerce-ui:panel
 				title='<%= LanguageUtil.get(request, "address") %>'
 			>
-				<aui:fieldset>
 					<div class="row">
 						<div class="col-lg-6">
 							<aui:input name="street1" />
@@ -90,7 +80,6 @@ String commerceRegionCode = BeanParamUtil.getString(commerceInventoryWarehouse, 
 							<aui:input label="postal-code" name="zip" />
 						</div>
 					</div>
-				</aui:fieldset>
 			</commerce-ui:panel>
 		</div>
 	</div>
