@@ -97,6 +97,19 @@ public class CommerceInventoryWarehouseTable
 			"longitude", Double.class, Types.DOUBLE, Column.FLAG_DEFAULT);
 	public final Column<CommerceInventoryWarehouseTable, String> type =
 		createColumn("type_", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<CommerceInventoryWarehouseTable, Integer> status =
+		createColumn(
+			"status", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
+	public final Column<CommerceInventoryWarehouseTable, Long> statusByUserId =
+		createColumn(
+			"statusByUserId", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
+	public final Column<CommerceInventoryWarehouseTable, String>
+		statusByUserName = createColumn(
+			"statusByUserName", String.class, Types.VARCHAR,
+			Column.FLAG_DEFAULT);
+	public final Column<CommerceInventoryWarehouseTable, Date> statusDate =
+		createColumn(
+			"statusDate", Date.class, Types.TIMESTAMP, Column.FLAG_DEFAULT);
 
 	private CommerceInventoryWarehouseTable() {
 		super("CIWarehouse", CommerceInventoryWarehouseTable::new);

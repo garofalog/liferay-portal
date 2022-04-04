@@ -69,6 +69,10 @@ public class CommerceInventoryWarehouseWrapper
 		attributes.put("latitude", getLatitude());
 		attributes.put("longitude", getLongitude());
 		attributes.put("type", getType());
+		attributes.put("status", getStatus());
+		attributes.put("statusByUserId", getStatusByUserId());
+		attributes.put("statusByUserName", getStatusByUserName());
+		attributes.put("statusDate", getStatusDate());
 
 		return attributes;
 	}
@@ -209,6 +213,30 @@ public class CommerceInventoryWarehouseWrapper
 
 		if (type != null) {
 			setType(type);
+		}
+
+		Integer status = (Integer)attributes.get("status");
+
+		if (status != null) {
+			setStatus(status);
+		}
+
+		Long statusByUserId = (Long)attributes.get("statusByUserId");
+
+		if (statusByUserId != null) {
+			setStatusByUserId(statusByUserId);
+		}
+
+		String statusByUserName = (String)attributes.get("statusByUserName");
+
+		if (statusByUserName != null) {
+			setStatusByUserName(statusByUserName);
+		}
+
+		Date statusDate = (Date)attributes.get("statusDate");
+
+		if (statusDate != null) {
+			setStatusDate(statusDate);
 		}
 	}
 
@@ -527,6 +555,56 @@ public class CommerceInventoryWarehouseWrapper
 	}
 
 	/**
+	 * Returns the status of this commerce inventory warehouse.
+	 *
+	 * @return the status of this commerce inventory warehouse
+	 */
+	@Override
+	public int getStatus() {
+		return model.getStatus();
+	}
+
+	/**
+	 * Returns the status by user ID of this commerce inventory warehouse.
+	 *
+	 * @return the status by user ID of this commerce inventory warehouse
+	 */
+	@Override
+	public long getStatusByUserId() {
+		return model.getStatusByUserId();
+	}
+
+	/**
+	 * Returns the status by user name of this commerce inventory warehouse.
+	 *
+	 * @return the status by user name of this commerce inventory warehouse
+	 */
+	@Override
+	public String getStatusByUserName() {
+		return model.getStatusByUserName();
+	}
+
+	/**
+	 * Returns the status by user uuid of this commerce inventory warehouse.
+	 *
+	 * @return the status by user uuid of this commerce inventory warehouse
+	 */
+	@Override
+	public String getStatusByUserUuid() {
+		return model.getStatusByUserUuid();
+	}
+
+	/**
+	 * Returns the status date of this commerce inventory warehouse.
+	 *
+	 * @return the status date of this commerce inventory warehouse
+	 */
+	@Override
+	public Date getStatusDate() {
+		return model.getStatusDate();
+	}
+
+	/**
 	 * Returns the street1 of this commerce inventory warehouse.
 	 *
 	 * @return the street1 of this commerce inventory warehouse
@@ -616,9 +694,89 @@ public class CommerceInventoryWarehouseWrapper
 		return model.isActive();
 	}
 
+	/**
+	 * Returns <code>true</code> if this commerce inventory warehouse is approved.
+	 *
+	 * @return <code>true</code> if this commerce inventory warehouse is approved; <code>false</code> otherwise
+	 */
+	@Override
+	public boolean isApproved() {
+		return model.isApproved();
+	}
+
+	/**
+	 * Returns <code>true</code> if this commerce inventory warehouse is denied.
+	 *
+	 * @return <code>true</code> if this commerce inventory warehouse is denied; <code>false</code> otherwise
+	 */
+	@Override
+	public boolean isDenied() {
+		return model.isDenied();
+	}
+
+	/**
+	 * Returns <code>true</code> if this commerce inventory warehouse is a draft.
+	 *
+	 * @return <code>true</code> if this commerce inventory warehouse is a draft; <code>false</code> otherwise
+	 */
+	@Override
+	public boolean isDraft() {
+		return model.isDraft();
+	}
+
+	/**
+	 * Returns <code>true</code> if this commerce inventory warehouse is expired.
+	 *
+	 * @return <code>true</code> if this commerce inventory warehouse is expired; <code>false</code> otherwise
+	 */
+	@Override
+	public boolean isExpired() {
+		return model.isExpired();
+	}
+
 	@Override
 	public boolean isGeolocated() {
 		return model.isGeolocated();
+	}
+
+	/**
+	 * Returns <code>true</code> if this commerce inventory warehouse is inactive.
+	 *
+	 * @return <code>true</code> if this commerce inventory warehouse is inactive; <code>false</code> otherwise
+	 */
+	@Override
+	public boolean isInactive() {
+		return model.isInactive();
+	}
+
+	/**
+	 * Returns <code>true</code> if this commerce inventory warehouse is incomplete.
+	 *
+	 * @return <code>true</code> if this commerce inventory warehouse is incomplete; <code>false</code> otherwise
+	 */
+	@Override
+	public boolean isIncomplete() {
+		return model.isIncomplete();
+	}
+
+	/**
+	 * Returns <code>true</code> if this commerce inventory warehouse is pending.
+	 *
+	 * @return <code>true</code> if this commerce inventory warehouse is pending; <code>false</code> otherwise
+	 */
+	@Override
+	public boolean isPending() {
+		return model.isPending();
+	}
+
+	/**
+	 * Returns <code>true</code> if this commerce inventory warehouse is scheduled.
+	 *
+	 * @return <code>true</code> if this commerce inventory warehouse is scheduled; <code>false</code> otherwise
+	 */
+	@Override
+	public boolean isScheduled() {
+		return model.isScheduled();
 	}
 
 	@Override
@@ -912,6 +1070,56 @@ public class CommerceInventoryWarehouseWrapper
 	@Override
 	public void setPrimaryKey(long primaryKey) {
 		model.setPrimaryKey(primaryKey);
+	}
+
+	/**
+	 * Sets the status of this commerce inventory warehouse.
+	 *
+	 * @param status the status of this commerce inventory warehouse
+	 */
+	@Override
+	public void setStatus(int status) {
+		model.setStatus(status);
+	}
+
+	/**
+	 * Sets the status by user ID of this commerce inventory warehouse.
+	 *
+	 * @param statusByUserId the status by user ID of this commerce inventory warehouse
+	 */
+	@Override
+	public void setStatusByUserId(long statusByUserId) {
+		model.setStatusByUserId(statusByUserId);
+	}
+
+	/**
+	 * Sets the status by user name of this commerce inventory warehouse.
+	 *
+	 * @param statusByUserName the status by user name of this commerce inventory warehouse
+	 */
+	@Override
+	public void setStatusByUserName(String statusByUserName) {
+		model.setStatusByUserName(statusByUserName);
+	}
+
+	/**
+	 * Sets the status by user uuid of this commerce inventory warehouse.
+	 *
+	 * @param statusByUserUuid the status by user uuid of this commerce inventory warehouse
+	 */
+	@Override
+	public void setStatusByUserUuid(String statusByUserUuid) {
+		model.setStatusByUserUuid(statusByUserUuid);
+	}
+
+	/**
+	 * Sets the status date of this commerce inventory warehouse.
+	 *
+	 * @param statusDate the status date of this commerce inventory warehouse
+	 */
+	@Override
+	public void setStatusDate(Date statusDate) {
+		model.setStatusDate(statusDate);
 	}
 
 	/**
