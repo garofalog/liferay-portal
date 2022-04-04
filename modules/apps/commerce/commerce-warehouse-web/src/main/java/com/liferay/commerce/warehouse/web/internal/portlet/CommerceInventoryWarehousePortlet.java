@@ -43,11 +43,9 @@ import org.osgi.service.component.annotations.Reference;
 	enabled = false, immediate = true,
 	property = {
 		"com.liferay.portlet.add-default-resource=true",
-		"com.liferay.portlet.css-class-wrapper=portlet-commerce-warehouses",
 		"com.liferay.portlet.display-category=category.hidden",
-		"com.liferay.portlet.header-portlet-css=/css/main.css",
 		"com.liferay.portlet.layout-cacheable=true",
-		"com.liferay.portlet.preferences-owned-by-group=true",
+		"com.liferay.portlet.preferences-owned-by-group=false",
 		"com.liferay.portlet.preferences-unique-per-layout=false",
 		"com.liferay.portlet.private-request-attributes=false",
 		"com.liferay.portlet.private-session-attributes=false",
@@ -77,7 +75,7 @@ public class CommerceInventoryWarehousePortlet extends MVCPortlet {
 					_commerceCountryManager, _commerceInventoryWarehouseService,
 					_countryService,
 					_portal.getHttpServletRequest(renderRequest),
-					_regionService);
+					_regionService, _portal);
 
 		renderRequest.setAttribute(
 			WebKeys.PORTLET_DISPLAY_CONTEXT,
