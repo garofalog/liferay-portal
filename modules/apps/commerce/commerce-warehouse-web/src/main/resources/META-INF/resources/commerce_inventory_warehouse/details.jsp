@@ -30,17 +30,26 @@ String commerceRegionCode = BeanParamUtil.getString(commerceInventoryWarehouse, 
 <liferay-ui:error exception="<%= CommerceInventoryWarehouseNameException.class %>" message="please-enter-a-valid-name" />
 <liferay-ui:error exception="<%= MVCCException.class %>" message="this-item-is-no-longer-valid-please-try-again" />
 
-<aui:model-context bean="<%= commerceInventoryWarehouse %>" model="<%= CommerceInventoryWarehouse.class %>" />
+<portlet:actionURL name="/commerce_inventory_warehouse/edit_commerce_inventory_warehouse" var="editCommerceInventoryWarehouseActionURL" />
 
-<aui:form action="" cssClass="pt-4" method="post" name="fm">
+<aui:form action="<%= editCommerceInventoryWarehouseActionURL %>" cssClass="pt-4" method="post" name="fm">
+	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= (commerceInventoryWarehouse == null) ? Constants.ADD : Constants.UPDATE %>" />
+	<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
+	<aui:input name="externalReferenceCode" type="hidden" value="<%= commerceInventoryWarehouse.getExternalReferenceCode() %>" />
+	<aui:input name="commerceInventoryWarehouseId" type="hidden" value="<%= commerceInventoryWarehouse.getCommerceInventoryWarehouseId() %>" />
+	<aui:input name="name" type="hidden" value="<%= (commerceInventoryWarehouse == null) ? null : commerceInventoryWarehouse.getName() %>" />
+	<aui:input name="workflowAction" type="hidden" value="<%= String.valueOf(WorkflowConstants.ACTION_SAVE_DRAFT) %>" />
+
+	<aui:model-context bean="<%= commerceInventoryWarehouse %>" model="<%= CommerceInventoryWarehouse.class %>" />
+
 	<div class="mt-4 row">
 		<div class="col-lg-6">
 			<commerce-ui:panel
 				title='<%= LanguageUtil.get(request, "details") %>'
 			>
-				<aui:input name="name" required="<%= true %>" />
+				<aui:input localized="<%= true %>" name="label" required="<%= true %>" value="<%= commerceInventoryWarehouse.getLabel(locale) %>" />
 
-				<aui:input name="description" />
+				<aui:input localized="<%= true %>" name="description" type="textarea" value="<%= commerceInventoryWarehouse.getDescription(locale) %>" />
 
 				<aui:input checked="<%= (commerceInventoryWarehouse == null) ? false : commerceInventoryWarehouse.isActive() %>" inlineLabel="right" labelCssClass="simple-toggle-switch" name='<%= LanguageUtil.get(request, "make-active") %>' type="toggle-switch" />
 			</commerce-ui:panel>
