@@ -49,6 +49,12 @@ public class CommerceInventoryWarehouseTableFDSView extends BaseTableFDSView {
 
 		fdsTableSchemaBuilder.addFDSTableSchemaField("city", "city");
 
+		FDSTableSchemaField statusField =
+			fdsTableSchemaBuilder.addFDSTableSchemaField(
+				"workflowStatusInfo", "status");
+
+		statusField.setContentRenderer("status");
+
 		FDSTableSchemaField activeField =
 			fdsTableSchemaBuilder.addFDSTableSchemaField("active", "active");
 
