@@ -14,8 +14,8 @@
 
 package com.liferay.headless.commerce.admin.inventory.internal.resource.v1_0;
 
-import com.liferay.headless.commerce.admin.inventory.dto.v1_0.Warehouse;
-import com.liferay.headless.commerce.admin.inventory.resource.v1_0.WarehouseResource;
+import com.liferay.headless.commerce.admin.inventory.dto.v1_0.WarehouseOrderType;
+import com.liferay.headless.commerce.admin.inventory.resource.v1_0.WarehouseOrderTypeResource;
 import com.liferay.petra.function.UnsafeBiConsumer;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
@@ -65,80 +65,135 @@ import javax.ws.rs.core.UriInfo;
  */
 @Generated("")
 @javax.ws.rs.Path("/v1.0")
-public abstract class BaseWarehouseResourceImpl
+public abstract class BaseWarehouseOrderTypeResourceImpl
 	implements EntityModelResource,
-			   VulcanBatchEngineTaskItemDelegate<Warehouse>, WarehouseResource {
+			   VulcanBatchEngineTaskItemDelegate<WarehouseOrderType>,
+			   WarehouseOrderTypeResource {
 
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouses/by-externalReferenceCode/{externalReferenceCode}'  -u 'test@liferay.com:test'
+	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouse-order-types/{warehouseOrderTypeId}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "warehouseOrderTypeId"
 			)
 		}
 	)
 	@io.swagger.v3.oas.annotations.tags.Tags(
-		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Warehouse")}
+		value = {
+			@io.swagger.v3.oas.annotations.tags.Tag(name = "WarehouseOrderType")
+		}
 	)
 	@javax.ws.rs.DELETE
-	@javax.ws.rs.Path(
-		"/warehouses/by-externalReferenceCode/{externalReferenceCode}"
-	)
+	@javax.ws.rs.Path("/warehouse-order-types/{warehouseOrderTypeId}")
 	@javax.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
-	public Response deleteWarehouseByExternalReferenceCode(
+	public void deleteWarehouseOrderType(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("externalReferenceCode")
-			String externalReferenceCode)
+			@javax.ws.rs.PathParam("warehouseOrderTypeId")
+			Long warehouseOrderTypeId)
 		throws Exception {
-
-		Response.ResponseBuilder responseBuilder = Response.ok();
-
-		return responseBuilder.build();
 	}
 
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouses/by-externalReferenceCode/{externalReferenceCode}'  -u 'test@liferay.com:test'
+	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouse-order-types/batch'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "callbackURL"
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {
+			@io.swagger.v3.oas.annotations.tags.Tag(name = "WarehouseOrderType")
+		}
+	)
+	@javax.ws.rs.Consumes("application/json")
+	@javax.ws.rs.DELETE
+	@javax.ws.rs.Path("/warehouse-order-types/batch")
+	@javax.ws.rs.Produces("application/json")
+	@Override
+	public Response deleteWarehouseOrderTypeBatch(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@javax.ws.rs.QueryParam("callbackURL")
+			String callbackURL,
+			Object object)
+		throws Exception {
+
+		vulcanBatchEngineImportTaskResource.setContextAcceptLanguage(
+			contextAcceptLanguage);
+		vulcanBatchEngineImportTaskResource.setContextCompany(contextCompany);
+		vulcanBatchEngineImportTaskResource.setContextHttpServletRequest(
+			contextHttpServletRequest);
+		vulcanBatchEngineImportTaskResource.setContextUriInfo(contextUriInfo);
+		vulcanBatchEngineImportTaskResource.setContextUser(contextUser);
+
+		Response.ResponseBuilder responseBuilder = Response.accepted();
+
+		return responseBuilder.entity(
+			vulcanBatchEngineImportTaskResource.deleteImportTask(
+				WarehouseOrderType.class.getName(), callbackURL, object)
+		).build();
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouses/by-externalReferenceCode/{externalReferenceCode}/warehouse-order-types'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "externalReferenceCode"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "page"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "pageSize"
 			)
 		}
 	)
 	@io.swagger.v3.oas.annotations.tags.Tags(
-		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Warehouse")}
+		value = {
+			@io.swagger.v3.oas.annotations.tags.Tag(name = "WarehouseOrderType")
+		}
 	)
 	@javax.ws.rs.GET
 	@javax.ws.rs.Path(
-		"/warehouses/by-externalReferenceCode/{externalReferenceCode}"
+		"/warehouses/by-externalReferenceCode/{externalReferenceCode}/warehouse-order-types"
 	)
 	@javax.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
-	public Warehouse getWarehouseByExternalReferenceCode(
-			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("externalReferenceCode")
-			String externalReferenceCode)
+	public Page<WarehouseOrderType>
+			getWarehousByExternalReferenceCodeWarehouseOrderTypesPage(
+				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+				@javax.validation.constraints.NotNull
+				@javax.ws.rs.PathParam("externalReferenceCode")
+				String externalReferenceCode,
+				@javax.ws.rs.core.Context Pagination pagination)
 		throws Exception {
 
-		return new Warehouse();
+		return Page.of(Collections.emptyList());
 	}
 
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouses/by-externalReferenceCode/{externalReferenceCode}' -d $'{"active": ___, "city": ___, "countryISOCode": ___, "description": ___, "externalReferenceCode": ___, "id": ___, "label": ___, "latitude": ___, "longitude": ___, "mvccVersion": ___, "name": ___, "regionISOCode": ___, "street1": ___, "street2": ___, "street3": ___, "type": ___, "warehouseItems": ___, "zip": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouses/by-externalReferenceCode/{externalReferenceCode}/warehouse-order-types' -d $'{"orderTypeExternalReferenceCode": ___, "orderTypeId": ___, "priority": ___, "warehouseExternalReferenceCode": ___, "warehouseId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -149,128 +204,44 @@ public abstract class BaseWarehouseResourceImpl
 		}
 	)
 	@io.swagger.v3.oas.annotations.tags.Tags(
-		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Warehouse")}
+		value = {
+			@io.swagger.v3.oas.annotations.tags.Tag(name = "WarehouseOrderType")
+		}
 	)
 	@javax.ws.rs.Consumes({"application/json", "application/xml"})
-	@javax.ws.rs.PATCH
 	@javax.ws.rs.Path(
-		"/warehouses/by-externalReferenceCode/{externalReferenceCode}"
+		"/warehouses/by-externalReferenceCode/{externalReferenceCode}/warehouse-order-types"
 	)
+	@javax.ws.rs.POST
 	@javax.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
-	public Response patchWarehouseByExternalReferenceCode(
-			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("externalReferenceCode")
-			String externalReferenceCode,
-			Warehouse warehouse)
+	public WarehouseOrderType
+			postWarehousByExternalReferenceCodeWarehouseOrderType(
+				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+				@javax.validation.constraints.NotNull
+				@javax.ws.rs.PathParam("externalReferenceCode")
+				String externalReferenceCode,
+				WarehouseOrderType warehouseOrderType)
 		throws Exception {
 
-		Response.ResponseBuilder responseBuilder = Response.ok();
-
-		return responseBuilder.build();
+		return new WarehouseOrderType();
 	}
 
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouses/{id}'  -u 'test@liferay.com:test'
+	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouses/{id}/warehouse-order-types'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "id"
-			)
-		}
-	)
-	@io.swagger.v3.oas.annotations.tags.Tags(
-		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Warehouse")}
-	)
-	@javax.ws.rs.DELETE
-	@javax.ws.rs.Path("/warehouses/{id}")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
-	@Override
-	public Response deleteWarehouseId(
-			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull @javax.ws.rs.PathParam("id")
-			Long id)
-		throws Exception {
-
-		Response.ResponseBuilder responseBuilder = Response.ok();
-
-		return responseBuilder.build();
-	}
-
-	/**
-	 * Invoke this method with the command line:
-	 *
-	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouses/{id}'  -u 'test@liferay.com:test'
-	 */
-	@io.swagger.v3.oas.annotations.Parameters(
-		value = {
+			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "id"
-			)
-		}
-	)
-	@io.swagger.v3.oas.annotations.tags.Tags(
-		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Warehouse")}
-	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/warehouses/{id}")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
-	@Override
-	public Warehouse getWarehouseId(
-			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull @javax.ws.rs.PathParam("id")
-			Long id)
-		throws Exception {
-
-		return new Warehouse();
-	}
-
-	/**
-	 * Invoke this method with the command line:
-	 *
-	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouses/{id}' -d $'{"active": ___, "city": ___, "countryISOCode": ___, "description": ___, "externalReferenceCode": ___, "id": ___, "label": ___, "latitude": ___, "longitude": ___, "mvccVersion": ___, "name": ___, "regionISOCode": ___, "street1": ___, "street2": ___, "street3": ___, "type": ___, "warehouseItems": ___, "zip": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
-	 */
-	@io.swagger.v3.oas.annotations.Parameters(
-		value = {
-			@io.swagger.v3.oas.annotations.Parameter(
-				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "id"
-			)
-		}
-	)
-	@io.swagger.v3.oas.annotations.tags.Tags(
-		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Warehouse")}
-	)
-	@javax.ws.rs.Consumes({"application/json", "application/xml"})
-	@javax.ws.rs.PATCH
-	@javax.ws.rs.Path("/warehouses/{id}")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
-	@Override
-	public Response patchWarehouseId(
-			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull @javax.ws.rs.PathParam("id")
-			Long id,
-			Warehouse warehouse)
-		throws Exception {
-
-		Response.ResponseBuilder responseBuilder = Response.ok();
-
-		return responseBuilder.build();
-	}
-
-	/**
-	 * Invoke this method with the command line:
-	 *
-	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouses'  -u 'test@liferay.com:test'
-	 */
-	@io.swagger.v3.oas.annotations.Parameters(
-		value = {
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "search"
+			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "filter"
@@ -290,13 +261,21 @@ public abstract class BaseWarehouseResourceImpl
 		}
 	)
 	@io.swagger.v3.oas.annotations.tags.Tags(
-		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Warehouse")}
+		value = {
+			@io.swagger.v3.oas.annotations.tags.Tag(name = "WarehouseOrderType")
+		}
 	)
 	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/warehouses")
+	@javax.ws.rs.Path("/warehouses/{id}/warehouse-order-types")
 	@javax.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
-	public Page<Warehouse> getWarehousesPage(
+	public Page<WarehouseOrderType> getWarehousIdWarehouseOrderTypesPage(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@javax.validation.constraints.NotNull @javax.ws.rs.PathParam("id")
+			Long id,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@javax.ws.rs.QueryParam("search")
+			String search,
 			@javax.ws.rs.core.Context Filter filter,
 			@javax.ws.rs.core.Context Pagination pagination,
 			@javax.ws.rs.core.Context Sort[] sorts)
@@ -308,90 +287,54 @@ public abstract class BaseWarehouseResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouses' -d $'{"active": ___, "city": ___, "countryISOCode": ___, "description": ___, "externalReferenceCode": ___, "id": ___, "label": ___, "latitude": ___, "longitude": ___, "mvccVersion": ___, "name": ___, "regionISOCode": ___, "street1": ___, "street2": ___, "street3": ___, "type": ___, "warehouseItems": ___, "zip": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
-	 */
-	@io.swagger.v3.oas.annotations.tags.Tags(
-		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Warehouse")}
-	)
-	@javax.ws.rs.Consumes({"application/json", "application/xml"})
-	@javax.ws.rs.Path("/warehouses")
-	@javax.ws.rs.POST
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
-	@Override
-	public Warehouse postWarehouse(Warehouse warehouse) throws Exception {
-		return new Warehouse();
-	}
-
-	/**
-	 * Invoke this method with the command line:
-	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouses/batch'  -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouses/{id}/warehouse-order-types' -d $'{"orderTypeExternalReferenceCode": ___, "orderTypeId": ___, "priority": ___, "warehouseExternalReferenceCode": ___, "warehouseId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
-				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "callbackURL"
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "id"
 			)
 		}
 	)
 	@io.swagger.v3.oas.annotations.tags.Tags(
-		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Warehouse")}
+		value = {
+			@io.swagger.v3.oas.annotations.tags.Tag(name = "WarehouseOrderType")
+		}
 	)
-	@javax.ws.rs.Consumes("application/json")
-	@javax.ws.rs.Path("/warehouses/batch")
+	@javax.ws.rs.Consumes({"application/json", "application/xml"})
+	@javax.ws.rs.Path("/warehouses/{id}/warehouse-order-types")
 	@javax.ws.rs.POST
-	@javax.ws.rs.Produces("application/json")
+	@javax.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
-	public Response postWarehouseBatch(
+	public WarehouseOrderType postWarehousIdWarehouseOrderType(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("callbackURL")
-			String callbackURL,
-			Object object)
+			@javax.validation.constraints.NotNull @javax.ws.rs.PathParam("id")
+			Long id,
+			WarehouseOrderType warehouseOrderType)
 		throws Exception {
 
-		vulcanBatchEngineImportTaskResource.setContextAcceptLanguage(
-			contextAcceptLanguage);
-		vulcanBatchEngineImportTaskResource.setContextCompany(contextCompany);
-		vulcanBatchEngineImportTaskResource.setContextHttpServletRequest(
-			contextHttpServletRequest);
-		vulcanBatchEngineImportTaskResource.setContextUriInfo(contextUriInfo);
-		vulcanBatchEngineImportTaskResource.setContextUser(contextUser);
-
-		Response.ResponseBuilder responseBuilder = Response.accepted();
-
-		return responseBuilder.entity(
-			vulcanBatchEngineImportTaskResource.postImportTask(
-				Warehouse.class.getName(), callbackURL, null, object)
-		).build();
+		return new WarehouseOrderType();
 	}
 
 	@Override
 	@SuppressWarnings("PMD.UnusedLocalVariable")
 	public void create(
-			java.util.Collection<Warehouse> warehouses,
+			java.util.Collection<WarehouseOrderType> warehouseOrderTypes,
 			Map<String, Serializable> parameters)
 		throws Exception {
-
-		UnsafeConsumer<Warehouse, Exception> warehouseUnsafeConsumer =
-			warehouse -> postWarehouse(warehouse);
-
-		if (contextBatchUnsafeConsumer != null) {
-			contextBatchUnsafeConsumer.accept(
-				warehouses, warehouseUnsafeConsumer);
-		}
-		else {
-			for (Warehouse warehouse : warehouses) {
-				warehouseUnsafeConsumer.accept(warehouse);
-			}
-		}
 	}
 
 	@Override
 	public void delete(
-			java.util.Collection<Warehouse> warehouses,
+			java.util.Collection<WarehouseOrderType> warehouseOrderTypes,
 			Map<String, Serializable> parameters)
 		throws Exception {
+
+		for (WarehouseOrderType warehouseOrderType : warehouseOrderTypes) {
+			deleteWarehouseOrderType(
+				warehouseOrderType.getWarehouseOrderTypeId());
+		}
 	}
 
 	@Override
@@ -410,12 +353,12 @@ public abstract class BaseWarehouseResourceImpl
 	}
 
 	@Override
-	public Page<Warehouse> read(
+	public Page<WarehouseOrderType> read(
 			Filter filter, Pagination pagination, Sort[] sorts,
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		return getWarehousesPage(filter, pagination, sorts);
+		return null;
 	}
 
 	@Override
@@ -442,7 +385,7 @@ public abstract class BaseWarehouseResourceImpl
 
 	@Override
 	public void update(
-			java.util.Collection<Warehouse> warehouses,
+			java.util.Collection<WarehouseOrderType> warehouseOrderTypes,
 			Map<String, Serializable> parameters)
 		throws Exception {
 	}
@@ -453,8 +396,8 @@ public abstract class BaseWarehouseResourceImpl
 
 	public void setContextBatchUnsafeConsumer(
 		UnsafeBiConsumer
-			<java.util.Collection<Warehouse>,
-			 UnsafeConsumer<Warehouse, Exception>, Exception>
+			<java.util.Collection<WarehouseOrderType>,
+			 UnsafeConsumer<WarehouseOrderType, Exception>, Exception>
 				contextBatchUnsafeConsumer) {
 
 		this.contextBatchUnsafeConsumer = contextBatchUnsafeConsumer;
@@ -609,8 +552,9 @@ public abstract class BaseWarehouseResourceImpl
 
 	protected AcceptLanguage contextAcceptLanguage;
 	protected UnsafeBiConsumer
-		<java.util.Collection<Warehouse>, UnsafeConsumer<Warehouse, Exception>,
-		 Exception> contextBatchUnsafeConsumer;
+		<java.util.Collection<WarehouseOrderType>,
+		 UnsafeConsumer<WarehouseOrderType, Exception>, Exception>
+			contextBatchUnsafeConsumer;
 	protected com.liferay.portal.kernel.model.Company contextCompany;
 	protected HttpServletRequest contextHttpServletRequest;
 	protected HttpServletResponse contextHttpServletResponse;
@@ -627,6 +571,6 @@ public abstract class BaseWarehouseResourceImpl
 		vulcanBatchEngineImportTaskResource;
 
 	private static final com.liferay.portal.kernel.log.Log _log =
-		LogFactoryUtil.getLog(BaseWarehouseResourceImpl.class);
+		LogFactoryUtil.getLog(BaseWarehouseOrderTypeResourceImpl.class);
 
 }
