@@ -16,8 +16,10 @@ package com.liferay.headless.commerce.admin.inventory.internal.dto.v1_0;
 
 import com.liferay.commerce.inventory.model.CommerceInventoryWarehouse;
 import com.liferay.commerce.inventory.service.CommerceInventoryWarehouseService;
-import com.liferay.headless.commerce.admin.inventory.dto.v1_0.Warehouse;
-import com.liferay.headless.commerce.core.util.LanguageUtils;
+import com.liferay.commerce.product.model.CommerceChannel;
+import com.liferay.commerce.product.model.CommerceChannelRel;
+import com.liferay.commerce.product.service.CommerceChannelRelService;
+import com.liferay.headless.commerce.admin.inventory.dto.v1_0.WarehouseChannel;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
 
@@ -25,59 +27,55 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * @author Alessio Antonio Rendina
+ * @author Crescenzo Rega
  */
 @Component(
 	enabled = false,
-	property = "dto.class.name=com.liferay.commerce.inventory.model.CommerceInventoryWarehouse",
-	service = {DTOConverter.class, WarehouseDTOConverter.class}
+	property = "dto.class.name=com.liferay.commerce.inventory.model.CommerceChannelRel",
+	service = {DTOConverter.class, WarehouseChannelDTOConverter.class}
 )
-public class WarehouseDTOConverter
-	implements DTOConverter<CommerceInventoryWarehouse, Warehouse> {
+public class WarehouseChannelDTOConverter
+	implements DTOConverter<CommerceChannelRel, WarehouseChannel> {
 
 	@Override
 	public String getContentType() {
-		return Warehouse.class.getSimpleName();
+		return WarehouseChannel.class.getSimpleName();
 	}
 
 	@Override
-	public Warehouse toDTO(DTOConverterContext dtoConverterContext)
+	public WarehouseChannel toDTO(DTOConverterContext dtoConverterContext)
 		throws Exception {
+
+		CommerceChannelRel commerceWarehouseChannelRel =
+			_commerceChannelRelService.getCommerceChannelRel(
+				(Long)dtoConverterContext.getId());
+
+		CommerceChannel commerceChannel =
+			commerceWarehouseChannelRel.getCommerceChannel();
 
 		CommerceInventoryWarehouse commerceInventoryWarehouse =
 			_commerceInventoryWarehouseService.getCommerceInventoryWarehouse(
-				(Long)dtoConverterContext.getId());
+				commerceWarehouseChannelRel.getClassPK());
 
-		return new Warehouse() {
+		return new WarehouseChannel() {
 			{
 				actions = dtoConverterContext.getActions();
-				active = commerceInventoryWarehouse.isActive();
-				city = commerceInventoryWarehouse.getCity();
-				countryISOCode =
-					commerceInventoryWarehouse.getCountryTwoLettersISOCode();
-				description = LanguageUtils.getLanguageIdMap(
-					commerceInventoryWarehouse.getDescriptionMap());
-				externalReferenceCode =
+				channelExternalReferenceCode =
+					commerceChannel.getExternalReferenceCode();
+				channelId = commerceChannel.getCommerceChannelId();
+				warehouseChannelId =
+					commerceWarehouseChannelRel.getCommerceChannelRelId();
+				warehouseExternalReferenceCode =
 					commerceInventoryWarehouse.getExternalReferenceCode();
-				id =
+				warehouseId =
 					commerceInventoryWarehouse.
 						getCommerceInventoryWarehouseId();
-				label = LanguageUtils.getLanguageIdMap(
-					commerceInventoryWarehouse.getLabelMap());
-				latitude = commerceInventoryWarehouse.getLatitude();
-				longitude = commerceInventoryWarehouse.getLongitude();
-				mvccVersion = commerceInventoryWarehouse.getMvccVersion();
-				name = commerceInventoryWarehouse.getName();
-				regionISOCode =
-					commerceInventoryWarehouse.getCommerceRegionCode();
-				street1 = commerceInventoryWarehouse.getStreet1();
-				street2 = commerceInventoryWarehouse.getStreet2();
-				street3 = commerceInventoryWarehouse.getStreet3();
-				type = commerceInventoryWarehouse.getType();
-				zip = commerceInventoryWarehouse.getZip();
 			}
 		};
 	}
+
+	@Reference
+	private CommerceChannelRelService _commerceChannelRelService;
 
 	@Reference
 	private CommerceInventoryWarehouseService
