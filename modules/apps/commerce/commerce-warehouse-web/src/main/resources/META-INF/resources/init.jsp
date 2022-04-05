@@ -23,6 +23,7 @@ taglib uri="http://liferay.com/tld/commerce-ui" prefix="commerce-ui" %><%@
 taglib uri="http://liferay.com/tld/expando" prefix="liferay-expando" %><%@
 taglib uri="http://liferay.com/tld/frontend" prefix="liferay-frontend" %><%@
 taglib uri="http://liferay.com/tld/frontend-data-set" prefix="frontend-data-set" %><%@
+taglib uri="http://liferay.com/tld/portlet" prefix="liferay-portlet" %><%@
 taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %><%@
 taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 
@@ -30,23 +31,21 @@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 page import="com.liferay.commerce.inventory.exception.CommerceInventoryWarehouseNameException" %><%@
 page import="com.liferay.commerce.inventory.exception.MVCCException" %><%@
 page import="com.liferay.commerce.inventory.model.CommerceInventoryWarehouse" %><%@
-page import="com.liferay.commerce.inventory.model.CommerceInventoryWarehouseItem" %><%@
-page import="com.liferay.commerce.product.model.CPInstance" %><%@
 page import="com.liferay.commerce.product.model.CommerceChannel" %><%@
 page import="com.liferay.commerce.warehouse.web.internal.constants.CommerceInventoryWarehouseFDSNames" %><%@
-page import="com.liferay.commerce.warehouse.web.internal.display.context.CommerceInventoryWarehouseItemsDisplayContext" %><%@
 page import="com.liferay.commerce.warehouse.web.internal.display.context.CommerceInventoryWarehousesDisplayContext" %><%@
-page import="com.liferay.petra.string.StringPool" %><%@
+page import="com.liferay.commerce.warehouse.web.internal.servlet.taglib.ui.constants.CommerceInventoryWarehouseScreenNavigationConstants" %><%@
 page import="com.liferay.portal.kernel.bean.BeanParamUtil" %><%@
-page import="com.liferay.portal.kernel.dao.search.ResultRow" %><%@
 page import="com.liferay.portal.kernel.language.LanguageUtil" %><%@
+page import="com.liferay.portal.kernel.portlet.LiferayWindowState" %><%@
 page import="com.liferay.portal.kernel.util.ArrayUtil" %><%@
 page import="com.liferay.portal.kernel.util.Constants" %><%@
 page import="com.liferay.portal.kernel.util.HashMapBuilder" %><%@
 page import="com.liferay.portal.kernel.util.HtmlUtil" %><%@
 page import="com.liferay.portal.kernel.util.ParamUtil" %><%@
 page import="com.liferay.portal.kernel.util.Validator" %><%@
-page import="com.liferay.portal.kernel.util.WebKeys" %>
+page import="com.liferay.portal.kernel.util.WebKeys" %><%@
+page import="com.liferay.portal.kernel.workflow.WorkflowConstants" %>
 
 <%@ page import="java.util.List" %>
 
@@ -57,3 +56,7 @@ page import="com.liferay.portal.kernel.util.WebKeys" %>
 <liferay-theme:defineObjects />
 
 <portlet:defineObjects />
+
+<%
+String redirect = ParamUtil.getString(request, "redirect");
+%>
