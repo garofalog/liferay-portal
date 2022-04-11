@@ -20,15 +20,49 @@
 CPSearchResultsDisplayContext cpSearchResultsDisplayContext = (CPSearchResultsDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
 %>
 
+<liferay-ui:tabs
+	names='<%= StringUtil.merge(cpSearchResultsDisplayContext.getCPTypes(), ",") %>'
+	refresh="<%= false %>"
+>
+
+	<%
+	for (CPType cpType : cpSearchResultsDisplayContext.getCPTypes()) {
+	%>
+
+		<liferay-ui:section>
+			<aui:fieldset markupView="lexicon">
+				<aui:select label='<%= HtmlUtil.escape(cpType.getLabel(locale)) + StringPool.SPACE + LanguageUtil.get(request, "cp-type-list-entry-renderer-key") %>' name='<%= "preferences--" + cpType.getName() + "--cpTypeListEntryRendererKey--" %>'>
+
+					<%
+					for (CPContentListEntryRenderer cpContentListEntryRenderer : cpSearchResultsDisplayContext.getCPContentListEntryRenderers(cpType.getName())) {
+						String key = cpContentListEntryRenderer.getKey();
+					%>
+
+						<aui:option label="<%= HtmlUtil.escape(cpContentListEntryRenderer.getLabel(locale)) %>" selected="<%= key.equals(cpSearchResultsDisplayContext.getCPTypeListEntryRendererKey(cpType.getName())) %>" value="<%= key %>" />
+
+					<%
+					}
+					%>
+
+				</aui:select>
+			</aui:fieldset>
+		</liferay-ui:section>
+
+	<%
+	}
+	%>
+
+</liferay-ui:tabs>
+
 <div id="<portlet:namespace />configuration-tabs">
-	<ul class="nav nav-tabs">
+	<ul class="nav nav-tabs" role="tablist">
 
 		<%
 		for (CPType cpType : cpSearchResultsDisplayContext.getCPTypes()) {
 		%>
 
 			<li class="nav-item">
-				<a class="nav-link" href="#<%= cpType.getName() %>"><%= HtmlUtil.escape(cpType.getLabel(locale)) %></a>
+				<a class="nav-link nav-link" data-toggle="tab" href="#<%= cpType.getName() %>"><%= HtmlUtil.escape(cpType.getLabel(locale)) %></a>
 			</li>
 
 		<%
@@ -36,41 +70,4 @@ CPSearchResultsDisplayContext cpSearchResultsDisplayContext = (CPSearchResultsDi
 		%>
 
 	</ul>
-
-	<div class="tab-content">
-
-		<%
-		for (CPType cpType : cpSearchResultsDisplayContext.getCPTypes()) {
-		%>
-
-			<div id="<%= cpType.getName() %>">
-				<aui:fieldset markupView="lexicon">
-					<aui:select label='<%= HtmlUtil.escape(cpType.getLabel(locale)) + StringPool.SPACE + LanguageUtil.get(request, "cp-type-list-entry-renderer-key") %>' name='<%= "preferences--" + cpType.getName() + "--cpTypeListEntryRendererKey--" %>'>
-
-						<%
-						for (CPContentListEntryRenderer cpContentListEntryRenderer : cpSearchResultsDisplayContext.getCPContentListEntryRenderers(cpType.getName())) {
-							String key = cpContentListEntryRenderer.getKey();
-						%>
-
-							<aui:option label="<%= HtmlUtil.escape(cpContentListEntryRenderer.getLabel(locale)) %>" selected="<%= key.equals(cpSearchResultsDisplayContext.getCPTypeListEntryRendererKey(cpType.getName())) %>" value="<%= key %>" />
-
-						<%
-						}
-						%>
-
-					</aui:select>
-				</aui:fieldset>
-			</div>
-
-		<%
-		}
-		%>
-
-	</div>
 </div>
-
-<aui:script use="aui-tabview">
-	new A.TabView({
-		srcNode: '#<portlet:namespace />configuration-tabs',
-	}).render();
-</aui:script>
