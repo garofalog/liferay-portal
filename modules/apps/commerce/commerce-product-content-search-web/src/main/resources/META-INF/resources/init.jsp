@@ -42,6 +42,7 @@ page import="com.liferay.commerce.product.content.search.web.internal.display.co
 page import="com.liferay.commerce.product.content.search.web.internal.portlet.CPSearchResultsPortlet" %><%@
 page import="com.liferay.commerce.product.type.CPType" %><%@
 page import="com.liferay.petra.string.StringPool" %><%@
+page import="com.liferay.petra.string.StringUtil" %><%@
 page import="com.liferay.portal.kernel.dao.search.SearchContainer" %><%@
 page import="com.liferay.portal.kernel.language.LanguageUtil" %><%@
 page import="com.liferay.portal.kernel.search.facet.Facet" %><%@
