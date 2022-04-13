@@ -47,17 +47,20 @@
 </span>
 
 <c:if test="<%= Validator.isNotNull(namespace) %>">
-	<aui:script require="commerce-frontend-js/components/price/entry as Price">
-		const componentId = '<%= namespace + "price" %>';
+	<div id="<%= namespace + "price" %>"></div>
 
-		const initialProps = {
-			displayDiscountLevels: <%= displayDiscountLevels %>,
-			namespace: '<%= namespace %>',
-			netPrice: <%= netPrice %>,
-			price: <%= jsonSerializer.serializeDeep(priceModel) %>,
-			standalone: true,
-		};
-
-		Price.default(componentId, componentId, initialProps);
-	</aui:script>
+	<liferay-frontend:component
+		context='<%=
+			HashMapBuilder.<String, Object>put(
+				"displayDiscountLevels", displayDiscountLevels
+			).put(
+				"netPrice", netPrice
+			).put(
+				"price", jsonSerializer.serializeDeep(priceModel)
+			).put(
+				"standalone", true
+			).build()
+		%>'
+		module="js/price"
+	/>
 </c:if>
