@@ -17,29 +17,31 @@ import itemFinder from 'commerce-frontend-js/components/item_finder/entry';
 import {UPDATE_DATASET_DISPLAY} from 'commerce-frontend-js/utilities/eventsDefinitions';
 
 export default function ({
-	datasetId,
-	warehouseExternalReferenceCode,
 	commerceInventoryWarehouseId,
+	datasetId,
 	rootPortletId,
+	warehouseExternalReferenceCode,
 }) {
-
-	const CommerceInventoryWarehouseResource = ServiceProvider.AdminInventoryAPI('v1');
+	const CommerceInventoryWarehouseResource = ServiceProvider.AdminInventoryAPI(
+		'v1'
+	);
 
 	function selectItem(orderType) {
 		const orderTypeData = {
-			warehouseExternalReferenceCode,
-			warehouseId: commerceInventoryWarehouseId,
 			orderTypeExternalReferenceCode: orderType.externalReferenceCode,
 			orderTypeId: orderType.id,
+			warehouseExternalReferenceCode,
+			warehouseId: commerceInventoryWarehouseId,
 		};
 
-		return CommerceInventoryWarehouseResource
-			.addWarehouseOrderType(commerceInventoryWarehouseId, orderTypeData)
-			.then(() => {
-				Liferay.fire(UPDATE_DATASET_DISPLAY, {
-					id: datasetId,
-				});
+		return CommerceInventoryWarehouseResource.addWarehouseOrderType(
+			commerceInventoryWarehouseId,
+			orderTypeData
+		).then(() => {
+			Liferay.fire(UPDATE_DATASET_DISPLAY, {
+				id: datasetId,
 			});
+		});
 	}
 
 	itemFinder('itemFinder', 'item-finder-root-order-types', {
