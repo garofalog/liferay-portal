@@ -948,6 +948,75 @@ public class CommerceInventoryWarehouseUtil {
 	}
 
 	/**
+	 * Returns the commerce inventory warehouse where companyId = &#63; and name = &#63; or throws a <code>NoSuchInventoryWarehouseException</code> if it could not be found.
+	 *
+	 * @param companyId the company ID
+	 * @param name the name
+	 * @return the matching commerce inventory warehouse
+	 * @throws NoSuchInventoryWarehouseException if a matching commerce inventory warehouse could not be found
+	 */
+	public static CommerceInventoryWarehouse findByC_N(
+			long companyId, String name)
+		throws com.liferay.commerce.inventory.exception.
+			NoSuchInventoryWarehouseException {
+
+		return getPersistence().findByC_N(companyId, name);
+	}
+
+	/**
+	 * Returns the commerce inventory warehouse where companyId = &#63; and name = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param companyId the company ID
+	 * @param name the name
+	 * @return the matching commerce inventory warehouse, or <code>null</code> if a matching commerce inventory warehouse could not be found
+	 */
+	public static CommerceInventoryWarehouse fetchByC_N(
+		long companyId, String name) {
+
+		return getPersistence().fetchByC_N(companyId, name);
+	}
+
+	/**
+	 * Returns the commerce inventory warehouse where companyId = &#63; and name = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param companyId the company ID
+	 * @param name the name
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching commerce inventory warehouse, or <code>null</code> if a matching commerce inventory warehouse could not be found
+	 */
+	public static CommerceInventoryWarehouse fetchByC_N(
+		long companyId, String name, boolean useFinderCache) {
+
+		return getPersistence().fetchByC_N(companyId, name, useFinderCache);
+	}
+
+	/**
+	 * Removes the commerce inventory warehouse where companyId = &#63; and name = &#63; from the database.
+	 *
+	 * @param companyId the company ID
+	 * @param name the name
+	 * @return the commerce inventory warehouse that was removed
+	 */
+	public static CommerceInventoryWarehouse removeByC_N(
+			long companyId, String name)
+		throws com.liferay.commerce.inventory.exception.
+			NoSuchInventoryWarehouseException {
+
+		return getPersistence().removeByC_N(companyId, name);
+	}
+
+	/**
+	 * Returns the number of commerce inventory warehouses where companyId = &#63; and name = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param name the name
+	 * @return the number of matching commerce inventory warehouses
+	 */
+	public static int countByC_N(long companyId, String name) {
+		return getPersistence().countByC_N(companyId, name);
+	}
+
+	/**
 	 * Returns all the commerce inventory warehouses where companyId = &#63; and active = &#63; and countryTwoLettersISOCode = &#63;.
 	 *
 	 * @param companyId the company ID

@@ -81,7 +81,7 @@ public class CommerceInventoryWarehouseCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(43);
+		StringBundler sb = new StringBundler(45);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -103,6 +103,8 @@ public class CommerceInventoryWarehouseCacheModel
 		sb.append(name);
 		sb.append(", description=");
 		sb.append(description);
+		sb.append(", label=");
+		sb.append(label);
 		sb.append(", active=");
 		sb.append(active);
 		sb.append(", street1=");
@@ -184,6 +186,13 @@ public class CommerceInventoryWarehouseCacheModel
 		}
 		else {
 			commerceInventoryWarehouseImpl.setDescription(description);
+		}
+
+		if (label == null) {
+			commerceInventoryWarehouseImpl.setLabel("");
+		}
+		else {
+			commerceInventoryWarehouseImpl.setLabel(label);
 		}
 
 		commerceInventoryWarehouseImpl.setActive(active);
@@ -269,6 +278,7 @@ public class CommerceInventoryWarehouseCacheModel
 		modifiedDate = objectInput.readLong();
 		name = objectInput.readUTF();
 		description = objectInput.readUTF();
+		label = objectInput.readUTF();
 
 		active = objectInput.readBoolean();
 		street1 = objectInput.readUTF();
@@ -324,6 +334,13 @@ public class CommerceInventoryWarehouseCacheModel
 		}
 		else {
 			objectOutput.writeUTF(description);
+		}
+
+		if (label == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(label);
 		}
 
 		objectOutput.writeBoolean(active);
@@ -399,6 +416,7 @@ public class CommerceInventoryWarehouseCacheModel
 	public long modifiedDate;
 	public String name;
 	public String description;
+	public String label;
 	public boolean active;
 	public String street1;
 	public String street2;

@@ -153,6 +153,8 @@ public class CommerceInventoryWarehousePersistenceTest {
 		newCommerceInventoryWarehouse.setDescription(
 			RandomTestUtil.randomString());
 
+		newCommerceInventoryWarehouse.setLabel(RandomTestUtil.randomString());
+
 		newCommerceInventoryWarehouse.setActive(RandomTestUtil.randomBoolean());
 
 		newCommerceInventoryWarehouse.setStreet1(RandomTestUtil.randomString());
@@ -220,6 +222,9 @@ public class CommerceInventoryWarehousePersistenceTest {
 			existingCommerceInventoryWarehouse.getDescription(),
 			newCommerceInventoryWarehouse.getDescription());
 		Assert.assertEquals(
+			existingCommerceInventoryWarehouse.getLabel(),
+			newCommerceInventoryWarehouse.getLabel());
+		Assert.assertEquals(
 			existingCommerceInventoryWarehouse.isActive(),
 			newCommerceInventoryWarehouse.isActive());
 		Assert.assertEquals(
@@ -279,6 +284,15 @@ public class CommerceInventoryWarehousePersistenceTest {
 	}
 
 	@Test
+	public void testCountByC_N() throws Exception {
+		_persistence.countByC_N(RandomTestUtil.nextLong(), "");
+
+		_persistence.countByC_N(0L, "null");
+
+		_persistence.countByC_N(0L, (String)null);
+	}
+
+	@Test
 	public void testCountByC_A_C() throws Exception {
 		_persistence.countByC_A_C(
 			RandomTestUtil.nextLong(), RandomTestUtil.randomBoolean(), "");
@@ -331,10 +345,10 @@ public class CommerceInventoryWarehousePersistenceTest {
 			"CIWarehouse", "mvccVersion", true, "externalReferenceCode", true,
 			"commerceInventoryWarehouseId", true, "companyId", true, "userId",
 			true, "userName", true, "createDate", true, "modifiedDate", true,
-			"name", true, "description", true, "active", true, "street1", true,
-			"street2", true, "street3", true, "city", true, "zip", true,
-			"commerceRegionCode", true, "countryTwoLettersISOCode", true,
-			"latitude", true, "longitude", true, "type", true);
+			"name", true, "description", true, "label", true, "active", true,
+			"street1", true, "street2", true, "street3", true, "city", true,
+			"zip", true, "commerceRegionCode", true, "countryTwoLettersISOCode",
+			true, "latitude", true, "longitude", true, "type", true);
 	}
 
 	@Test
@@ -646,6 +660,17 @@ public class CommerceInventoryWarehousePersistenceTest {
 				commerceInventoryWarehouse, "getColumnOriginalValue",
 				new Class<?>[] {String.class}, "companyId"));
 		Assert.assertEquals(
+			commerceInventoryWarehouse.getName(),
+			ReflectionTestUtil.invoke(
+				commerceInventoryWarehouse, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "name"));
+
+		Assert.assertEquals(
+			Long.valueOf(commerceInventoryWarehouse.getCompanyId()),
+			ReflectionTestUtil.<Long>invoke(
+				commerceInventoryWarehouse, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "companyId"));
+		Assert.assertEquals(
 			commerceInventoryWarehouse.getExternalReferenceCode(),
 			ReflectionTestUtil.invoke(
 				commerceInventoryWarehouse, "getColumnOriginalValue",
@@ -679,6 +704,8 @@ public class CommerceInventoryWarehousePersistenceTest {
 
 		commerceInventoryWarehouse.setDescription(
 			RandomTestUtil.randomString());
+
+		commerceInventoryWarehouse.setLabel(RandomTestUtil.randomString());
 
 		commerceInventoryWarehouse.setActive(RandomTestUtil.randomBoolean());
 

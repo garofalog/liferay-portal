@@ -63,6 +63,8 @@ public class CommerceInventoryWarehouseTable
 	public final Column<CommerceInventoryWarehouseTable, String> description =
 		createColumn(
 			"description", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<CommerceInventoryWarehouseTable, String> label =
+		createColumn("label", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<CommerceInventoryWarehouseTable, Boolean> active =
 		createColumn(
 			"active_", Boolean.class, Types.BOOLEAN, Column.FLAG_DEFAULT);

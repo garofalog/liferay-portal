@@ -3007,6 +3007,257 @@ public class CommerceInventoryWarehousePersistenceImpl
 	private static final String _FINDER_COLUMN_C_C_COUNTRYTWOLETTERSISOCODE_3 =
 		"(commerceInventoryWarehouse.countryTwoLettersISOCode IS NULL OR commerceInventoryWarehouse.countryTwoLettersISOCode = '')";
 
+	private FinderPath _finderPathFetchByC_N;
+	private FinderPath _finderPathCountByC_N;
+
+	/**
+	 * Returns the commerce inventory warehouse where companyId = &#63; and name = &#63; or throws a <code>NoSuchInventoryWarehouseException</code> if it could not be found.
+	 *
+	 * @param companyId the company ID
+	 * @param name the name
+	 * @return the matching commerce inventory warehouse
+	 * @throws NoSuchInventoryWarehouseException if a matching commerce inventory warehouse could not be found
+	 */
+	@Override
+	public CommerceInventoryWarehouse findByC_N(long companyId, String name)
+		throws NoSuchInventoryWarehouseException {
+
+		CommerceInventoryWarehouse commerceInventoryWarehouse = fetchByC_N(
+			companyId, name);
+
+		if (commerceInventoryWarehouse == null) {
+			StringBundler sb = new StringBundler(6);
+
+			sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			sb.append("companyId=");
+			sb.append(companyId);
+
+			sb.append(", name=");
+			sb.append(name);
+
+			sb.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(sb.toString());
+			}
+
+			throw new NoSuchInventoryWarehouseException(sb.toString());
+		}
+
+		return commerceInventoryWarehouse;
+	}
+
+	/**
+	 * Returns the commerce inventory warehouse where companyId = &#63; and name = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param companyId the company ID
+	 * @param name the name
+	 * @return the matching commerce inventory warehouse, or <code>null</code> if a matching commerce inventory warehouse could not be found
+	 */
+	@Override
+	public CommerceInventoryWarehouse fetchByC_N(long companyId, String name) {
+		return fetchByC_N(companyId, name, true);
+	}
+
+	/**
+	 * Returns the commerce inventory warehouse where companyId = &#63; and name = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param companyId the company ID
+	 * @param name the name
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching commerce inventory warehouse, or <code>null</code> if a matching commerce inventory warehouse could not be found
+	 */
+	@Override
+	public CommerceInventoryWarehouse fetchByC_N(
+		long companyId, String name, boolean useFinderCache) {
+
+		name = Objects.toString(name, "");
+
+		Object[] finderArgs = null;
+
+		if (useFinderCache) {
+			finderArgs = new Object[] {companyId, name};
+		}
+
+		Object result = null;
+
+		if (useFinderCache) {
+			result = finderCache.getResult(_finderPathFetchByC_N, finderArgs);
+		}
+
+		if (result instanceof CommerceInventoryWarehouse) {
+			CommerceInventoryWarehouse commerceInventoryWarehouse =
+				(CommerceInventoryWarehouse)result;
+
+			if ((companyId != commerceInventoryWarehouse.getCompanyId()) ||
+				!Objects.equals(name, commerceInventoryWarehouse.getName())) {
+
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler sb = new StringBundler(4);
+
+			sb.append(_SQL_SELECT_COMMERCEINVENTORYWAREHOUSE_WHERE);
+
+			sb.append(_FINDER_COLUMN_C_N_COMPANYID_2);
+
+			boolean bindName = false;
+
+			if (name.isEmpty()) {
+				sb.append(_FINDER_COLUMN_C_N_NAME_3);
+			}
+			else {
+				bindName = true;
+
+				sb.append(_FINDER_COLUMN_C_N_NAME_2);
+			}
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				queryPos.add(companyId);
+
+				if (bindName) {
+					queryPos.add(name);
+				}
+
+				List<CommerceInventoryWarehouse> list = query.list();
+
+				if (list.isEmpty()) {
+					if (useFinderCache) {
+						finderCache.putResult(
+							_finderPathFetchByC_N, finderArgs, list);
+					}
+				}
+				else {
+					CommerceInventoryWarehouse commerceInventoryWarehouse =
+						list.get(0);
+
+					result = commerceInventoryWarehouse;
+
+					cacheResult(commerceInventoryWarehouse);
+				}
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (CommerceInventoryWarehouse)result;
+		}
+	}
+
+	/**
+	 * Removes the commerce inventory warehouse where companyId = &#63; and name = &#63; from the database.
+	 *
+	 * @param companyId the company ID
+	 * @param name the name
+	 * @return the commerce inventory warehouse that was removed
+	 */
+	@Override
+	public CommerceInventoryWarehouse removeByC_N(long companyId, String name)
+		throws NoSuchInventoryWarehouseException {
+
+		CommerceInventoryWarehouse commerceInventoryWarehouse = findByC_N(
+			companyId, name);
+
+		return remove(commerceInventoryWarehouse);
+	}
+
+	/**
+	 * Returns the number of commerce inventory warehouses where companyId = &#63; and name = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param name the name
+	 * @return the number of matching commerce inventory warehouses
+	 */
+	@Override
+	public int countByC_N(long companyId, String name) {
+		name = Objects.toString(name, "");
+
+		FinderPath finderPath = _finderPathCountByC_N;
+
+		Object[] finderArgs = new Object[] {companyId, name};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs);
+
+		if (count == null) {
+			StringBundler sb = new StringBundler(3);
+
+			sb.append(_SQL_COUNT_COMMERCEINVENTORYWAREHOUSE_WHERE);
+
+			sb.append(_FINDER_COLUMN_C_N_COMPANYID_2);
+
+			boolean bindName = false;
+
+			if (name.isEmpty()) {
+				sb.append(_FINDER_COLUMN_C_N_NAME_3);
+			}
+			else {
+				bindName = true;
+
+				sb.append(_FINDER_COLUMN_C_N_NAME_2);
+			}
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				queryPos.add(companyId);
+
+				if (bindName) {
+					queryPos.add(name);
+				}
+
+				count = (Long)query.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_C_N_COMPANYID_2 =
+		"commerceInventoryWarehouse.companyId = ? AND ";
+
+	private static final String _FINDER_COLUMN_C_N_NAME_2 =
+		"commerceInventoryWarehouse.name = ?";
+
+	private static final String _FINDER_COLUMN_C_N_NAME_3 =
+		"(commerceInventoryWarehouse.name IS NULL OR commerceInventoryWarehouse.name = '')";
+
 	private FinderPath _finderPathWithPaginationFindByC_A_C;
 	private FinderPath _finderPathWithoutPaginationFindByC_A_C;
 	private FinderPath _finderPathCountByC_A_C;
@@ -4441,6 +4692,14 @@ public class CommerceInventoryWarehousePersistenceImpl
 			commerceInventoryWarehouse);
 
 		finderCache.putResult(
+			_finderPathFetchByC_N,
+			new Object[] {
+				commerceInventoryWarehouse.getCompanyId(),
+				commerceInventoryWarehouse.getName()
+			},
+			commerceInventoryWarehouse);
+
+		finderCache.putResult(
 			_finderPathFetchByC_ERC,
 			new Object[] {
 				commerceInventoryWarehouse.getCompanyId(),
@@ -4537,6 +4796,15 @@ public class CommerceInventoryWarehousePersistenceImpl
 			commerceInventoryWarehouseModelImpl) {
 
 		Object[] args = new Object[] {
+			commerceInventoryWarehouseModelImpl.getCompanyId(),
+			commerceInventoryWarehouseModelImpl.getName()
+		};
+
+		finderCache.putResult(_finderPathCountByC_N, args, Long.valueOf(1));
+		finderCache.putResult(
+			_finderPathFetchByC_N, args, commerceInventoryWarehouseModelImpl);
+
+		args = new Object[] {
 			commerceInventoryWarehouseModelImpl.getCompanyId(),
 			commerceInventoryWarehouseModelImpl.getExternalReferenceCode()
 		};
@@ -5086,6 +5354,16 @@ public class CommerceInventoryWarehousePersistenceImpl
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_C",
 			new String[] {Long.class.getName(), String.class.getName()},
 			new String[] {"companyId", "countryTwoLettersISOCode"}, false);
+
+		_finderPathFetchByC_N = new FinderPath(
+			FINDER_CLASS_NAME_ENTITY, "fetchByC_N",
+			new String[] {Long.class.getName(), String.class.getName()},
+			new String[] {"companyId", "name"}, true);
+
+		_finderPathCountByC_N = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_N",
+			new String[] {Long.class.getName(), String.class.getName()},
+			new String[] {"companyId", "name"}, false);
 
 		_finderPathWithPaginationFindByC_A_C = new FinderPath(
 			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_A_C",

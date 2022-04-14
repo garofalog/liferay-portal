@@ -20,6 +20,7 @@ import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.expando.kernel.util.ExpandoBridgeFactoryUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
+import com.liferay.portal.kernel.exception.LocaleException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSON;
 import com.liferay.portal.kernel.model.CacheModel;
@@ -29,8 +30,11 @@ import com.liferay.portal.kernel.model.impl.BaseModelImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.io.Serializable;
 
@@ -43,8 +47,11 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -77,10 +84,10 @@ public class CommerceInventoryWarehouseModelImpl
 		{"userId", Types.BIGINT}, {"userName", Types.VARCHAR},
 		{"createDate", Types.TIMESTAMP}, {"modifiedDate", Types.TIMESTAMP},
 		{"name", Types.VARCHAR}, {"description", Types.VARCHAR},
-		{"active_", Types.BOOLEAN}, {"street1", Types.VARCHAR},
-		{"street2", Types.VARCHAR}, {"street3", Types.VARCHAR},
-		{"city", Types.VARCHAR}, {"zip", Types.VARCHAR},
-		{"commerceRegionCode", Types.VARCHAR},
+		{"label", Types.VARCHAR}, {"active_", Types.BOOLEAN},
+		{"street1", Types.VARCHAR}, {"street2", Types.VARCHAR},
+		{"street3", Types.VARCHAR}, {"city", Types.VARCHAR},
+		{"zip", Types.VARCHAR}, {"commerceRegionCode", Types.VARCHAR},
 		{"countryTwoLettersISOCode", Types.VARCHAR}, {"latitude", Types.DOUBLE},
 		{"longitude", Types.DOUBLE}, {"type_", Types.VARCHAR}
 	};
@@ -99,6 +106,7 @@ public class CommerceInventoryWarehouseModelImpl
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("name", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("description", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("label", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("active_", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("street1", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("street2", Types.VARCHAR);
@@ -113,7 +121,7 @@ public class CommerceInventoryWarehouseModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table CIWarehouse (mvccVersion LONG default 0 not null,externalReferenceCode VARCHAR(75) null,CIWarehouseId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,name VARCHAR(75) null,description VARCHAR(75) null,active_ BOOLEAN,street1 VARCHAR(75) null,street2 VARCHAR(75) null,street3 VARCHAR(75) null,city VARCHAR(75) null,zip VARCHAR(75) null,commerceRegionCode VARCHAR(75) null,countryTwoLettersISOCode VARCHAR(75) null,latitude DOUBLE,longitude DOUBLE,type_ VARCHAR(75) null)";
+		"create table CIWarehouse (mvccVersion LONG default 0 not null,externalReferenceCode VARCHAR(75) null,CIWarehouseId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,name VARCHAR(75) null,description STRING null,label STRING null,active_ BOOLEAN,street1 VARCHAR(75) null,street2 VARCHAR(75) null,street3 VARCHAR(75) null,city VARCHAR(75) null,zip VARCHAR(75) null,commerceRegionCode VARCHAR(75) null,countryTwoLettersISOCode VARCHAR(75) null,latitude DOUBLE,longitude DOUBLE,type_ VARCHAR(75) null)";
 
 	public static final String TABLE_SQL_DROP = "drop table CIWarehouse";
 
@@ -171,8 +179,7 @@ public class CommerceInventoryWarehouseModelImpl
 	public static final long EXTERNALREFERENCECODE_COLUMN_BITMASK = 8L;
 
 	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *		#getColumnBitmask(String)}
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
 	public static final long NAME_COLUMN_BITMASK = 16L;
@@ -347,6 +354,12 @@ public class CommerceInventoryWarehouseModelImpl
 			"description",
 			(BiConsumer<CommerceInventoryWarehouse, String>)
 				CommerceInventoryWarehouse::setDescription);
+		attributeGetterFunctions.put(
+			"label", CommerceInventoryWarehouse::getLabel);
+		attributeSetterBiConsumers.put(
+			"label",
+			(BiConsumer<CommerceInventoryWarehouse, String>)
+				CommerceInventoryWarehouse::setLabel);
 		attributeGetterFunctions.put(
 			"active", CommerceInventoryWarehouse::getActive);
 		attributeSetterBiConsumers.put(
@@ -614,6 +627,15 @@ public class CommerceInventoryWarehouseModelImpl
 		_name = name;
 	}
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public String getOriginalName() {
+		return getColumnOriginalValue("name");
+	}
+
 	@JSON
 	@Override
 	public String getDescription() {
@@ -626,12 +648,213 @@ public class CommerceInventoryWarehouseModelImpl
 	}
 
 	@Override
+	public String getDescription(Locale locale) {
+		String languageId = LocaleUtil.toLanguageId(locale);
+
+		return getDescription(languageId);
+	}
+
+	@Override
+	public String getDescription(Locale locale, boolean useDefault) {
+		String languageId = LocaleUtil.toLanguageId(locale);
+
+		return getDescription(languageId, useDefault);
+	}
+
+	@Override
+	public String getDescription(String languageId) {
+		return LocalizationUtil.getLocalization(getDescription(), languageId);
+	}
+
+	@Override
+	public String getDescription(String languageId, boolean useDefault) {
+		return LocalizationUtil.getLocalization(
+			getDescription(), languageId, useDefault);
+	}
+
+	@Override
+	public String getDescriptionCurrentLanguageId() {
+		return _descriptionCurrentLanguageId;
+	}
+
+	@JSON
+	@Override
+	public String getDescriptionCurrentValue() {
+		Locale locale = getLocale(_descriptionCurrentLanguageId);
+
+		return getDescription(locale);
+	}
+
+	@Override
+	public Map<Locale, String> getDescriptionMap() {
+		return LocalizationUtil.getLocalizationMap(getDescription());
+	}
+
+	@Override
 	public void setDescription(String description) {
 		if (_columnOriginalValues == Collections.EMPTY_MAP) {
 			_setColumnOriginalValues();
 		}
 
 		_description = description;
+	}
+
+	@Override
+	public void setDescription(String description, Locale locale) {
+		setDescription(description, locale, LocaleUtil.getDefault());
+	}
+
+	@Override
+	public void setDescription(
+		String description, Locale locale, Locale defaultLocale) {
+
+		String languageId = LocaleUtil.toLanguageId(locale);
+		String defaultLanguageId = LocaleUtil.toLanguageId(defaultLocale);
+
+		if (Validator.isNotNull(description)) {
+			setDescription(
+				LocalizationUtil.updateLocalization(
+					getDescription(), "Description", description, languageId,
+					defaultLanguageId));
+		}
+		else {
+			setDescription(
+				LocalizationUtil.removeLocalization(
+					getDescription(), "Description", languageId));
+		}
+	}
+
+	@Override
+	public void setDescriptionCurrentLanguageId(String languageId) {
+		_descriptionCurrentLanguageId = languageId;
+	}
+
+	@Override
+	public void setDescriptionMap(Map<Locale, String> descriptionMap) {
+		setDescriptionMap(descriptionMap, LocaleUtil.getDefault());
+	}
+
+	@Override
+	public void setDescriptionMap(
+		Map<Locale, String> descriptionMap, Locale defaultLocale) {
+
+		if (descriptionMap == null) {
+			return;
+		}
+
+		setDescription(
+			LocalizationUtil.updateLocalization(
+				descriptionMap, getDescription(), "Description",
+				LocaleUtil.toLanguageId(defaultLocale)));
+	}
+
+	@JSON
+	@Override
+	public String getLabel() {
+		if (_label == null) {
+			return "";
+		}
+		else {
+			return _label;
+		}
+	}
+
+	@Override
+	public String getLabel(Locale locale) {
+		String languageId = LocaleUtil.toLanguageId(locale);
+
+		return getLabel(languageId);
+	}
+
+	@Override
+	public String getLabel(Locale locale, boolean useDefault) {
+		String languageId = LocaleUtil.toLanguageId(locale);
+
+		return getLabel(languageId, useDefault);
+	}
+
+	@Override
+	public String getLabel(String languageId) {
+		return LocalizationUtil.getLocalization(getLabel(), languageId);
+	}
+
+	@Override
+	public String getLabel(String languageId, boolean useDefault) {
+		return LocalizationUtil.getLocalization(
+			getLabel(), languageId, useDefault);
+	}
+
+	@Override
+	public String getLabelCurrentLanguageId() {
+		return _labelCurrentLanguageId;
+	}
+
+	@JSON
+	@Override
+	public String getLabelCurrentValue() {
+		Locale locale = getLocale(_labelCurrentLanguageId);
+
+		return getLabel(locale);
+	}
+
+	@Override
+	public Map<Locale, String> getLabelMap() {
+		return LocalizationUtil.getLocalizationMap(getLabel());
+	}
+
+	@Override
+	public void setLabel(String label) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_label = label;
+	}
+
+	@Override
+	public void setLabel(String label, Locale locale) {
+		setLabel(label, locale, LocaleUtil.getDefault());
+	}
+
+	@Override
+	public void setLabel(String label, Locale locale, Locale defaultLocale) {
+		String languageId = LocaleUtil.toLanguageId(locale);
+		String defaultLanguageId = LocaleUtil.toLanguageId(defaultLocale);
+
+		if (Validator.isNotNull(label)) {
+			setLabel(
+				LocalizationUtil.updateLocalization(
+					getLabel(), "Label", label, languageId, defaultLanguageId));
+		}
+		else {
+			setLabel(
+				LocalizationUtil.removeLocalization(
+					getLabel(), "Label", languageId));
+		}
+	}
+
+	@Override
+	public void setLabelCurrentLanguageId(String languageId) {
+		_labelCurrentLanguageId = languageId;
+	}
+
+	@Override
+	public void setLabelMap(Map<Locale, String> labelMap) {
+		setLabelMap(labelMap, LocaleUtil.getDefault());
+	}
+
+	@Override
+	public void setLabelMap(
+		Map<Locale, String> labelMap, Locale defaultLocale) {
+
+		if (labelMap == null) {
+			return;
+		}
+
+		setLabel(
+			LocalizationUtil.updateLocalization(
+				labelMap, getLabel(), "Label",
+				LocaleUtil.toLanguageId(defaultLocale)));
 	}
 
 	@JSON
@@ -903,6 +1126,94 @@ public class CommerceInventoryWarehouseModelImpl
 	}
 
 	@Override
+	public String[] getAvailableLanguageIds() {
+		Set<String> availableLanguageIds = new TreeSet<String>();
+
+		Map<Locale, String> descriptionMap = getDescriptionMap();
+
+		for (Map.Entry<Locale, String> entry : descriptionMap.entrySet()) {
+			Locale locale = entry.getKey();
+			String value = entry.getValue();
+
+			if (Validator.isNotNull(value)) {
+				availableLanguageIds.add(LocaleUtil.toLanguageId(locale));
+			}
+		}
+
+		Map<Locale, String> labelMap = getLabelMap();
+
+		for (Map.Entry<Locale, String> entry : labelMap.entrySet()) {
+			Locale locale = entry.getKey();
+			String value = entry.getValue();
+
+			if (Validator.isNotNull(value)) {
+				availableLanguageIds.add(LocaleUtil.toLanguageId(locale));
+			}
+		}
+
+		return availableLanguageIds.toArray(
+			new String[availableLanguageIds.size()]);
+	}
+
+	@Override
+	public String getDefaultLanguageId() {
+		String xml = getDescription();
+
+		if (xml == null) {
+			return "";
+		}
+
+		Locale defaultLocale = LocaleUtil.getDefault();
+
+		return LocalizationUtil.getDefaultLanguageId(xml, defaultLocale);
+	}
+
+	@Override
+	public void prepareLocalizedFieldsForImport() throws LocaleException {
+		Locale defaultLocale = LocaleUtil.fromLanguageId(
+			getDefaultLanguageId());
+
+		Locale[] availableLocales = LocaleUtil.fromLanguageIds(
+			getAvailableLanguageIds());
+
+		Locale defaultImportLocale = LocalizationUtil.getDefaultImportLocale(
+			CommerceInventoryWarehouse.class.getName(), getPrimaryKey(),
+			defaultLocale, availableLocales);
+
+		prepareLocalizedFieldsForImport(defaultImportLocale);
+	}
+
+	@Override
+	@SuppressWarnings("unused")
+	public void prepareLocalizedFieldsForImport(Locale defaultImportLocale)
+		throws LocaleException {
+
+		Locale defaultLocale = LocaleUtil.getDefault();
+
+		String modelDefaultLanguageId = getDefaultLanguageId();
+
+		String description = getDescription(defaultLocale);
+
+		if (Validator.isNull(description)) {
+			setDescription(
+				getDescription(modelDefaultLanguageId), defaultLocale);
+		}
+		else {
+			setDescription(
+				getDescription(defaultLocale), defaultLocale, defaultLocale);
+		}
+
+		String label = getLabel(defaultLocale);
+
+		if (Validator.isNull(label)) {
+			setLabel(getLabel(modelDefaultLanguageId), defaultLocale);
+		}
+		else {
+			setLabel(getLabel(defaultLocale), defaultLocale, defaultLocale);
+		}
+	}
+
+	@Override
 	public CommerceInventoryWarehouse toEscapedModel() {
 		if (_escapedModel == null) {
 			Function<InvocationHandler, CommerceInventoryWarehouse>
@@ -934,6 +1245,7 @@ public class CommerceInventoryWarehouseModelImpl
 		commerceInventoryWarehouseImpl.setModifiedDate(getModifiedDate());
 		commerceInventoryWarehouseImpl.setName(getName());
 		commerceInventoryWarehouseImpl.setDescription(getDescription());
+		commerceInventoryWarehouseImpl.setLabel(getLabel());
 		commerceInventoryWarehouseImpl.setActive(isActive());
 		commerceInventoryWarehouseImpl.setStreet1(getStreet1());
 		commerceInventoryWarehouseImpl.setStreet2(getStreet2());
@@ -978,6 +1290,8 @@ public class CommerceInventoryWarehouseModelImpl
 			this.<String>getColumnOriginalValue("name"));
 		commerceInventoryWarehouseImpl.setDescription(
 			this.<String>getColumnOriginalValue("description"));
+		commerceInventoryWarehouseImpl.setLabel(
+			this.<String>getColumnOriginalValue("label"));
 		commerceInventoryWarehouseImpl.setActive(
 			this.<Boolean>getColumnOriginalValue("active_"));
 		commerceInventoryWarehouseImpl.setStreet1(
@@ -1143,6 +1457,14 @@ public class CommerceInventoryWarehouseModelImpl
 
 		if ((description != null) && (description.length() == 0)) {
 			commerceInventoryWarehouseCacheModel.description = null;
+		}
+
+		commerceInventoryWarehouseCacheModel.label = getLabel();
+
+		String label = commerceInventoryWarehouseCacheModel.label;
+
+		if ((label != null) && (label.length() == 0)) {
+			commerceInventoryWarehouseCacheModel.label = null;
 		}
 
 		commerceInventoryWarehouseCacheModel.active = isActive();
@@ -1331,6 +1653,9 @@ public class CommerceInventoryWarehouseModelImpl
 	private boolean _setModifiedDate;
 	private String _name;
 	private String _description;
+	private String _descriptionCurrentLanguageId;
+	private String _label;
+	private String _labelCurrentLanguageId;
 	private boolean _active;
 	private String _street1;
 	private String _street2;
@@ -1384,6 +1709,7 @@ public class CommerceInventoryWarehouseModelImpl
 		_columnOriginalValues.put("modifiedDate", _modifiedDate);
 		_columnOriginalValues.put("name", _name);
 		_columnOriginalValues.put("description", _description);
+		_columnOriginalValues.put("label", _label);
 		_columnOriginalValues.put("active_", _active);
 		_columnOriginalValues.put("street1", _street1);
 		_columnOriginalValues.put("street2", _street2);
@@ -1441,27 +1767,29 @@ public class CommerceInventoryWarehouseModelImpl
 
 		columnBitmasks.put("description", 512L);
 
-		columnBitmasks.put("active_", 1024L);
+		columnBitmasks.put("label", 1024L);
 
-		columnBitmasks.put("street1", 2048L);
+		columnBitmasks.put("active_", 2048L);
 
-		columnBitmasks.put("street2", 4096L);
+		columnBitmasks.put("street1", 4096L);
 
-		columnBitmasks.put("street3", 8192L);
+		columnBitmasks.put("street2", 8192L);
 
-		columnBitmasks.put("city", 16384L);
+		columnBitmasks.put("street3", 16384L);
 
-		columnBitmasks.put("zip", 32768L);
+		columnBitmasks.put("city", 32768L);
 
-		columnBitmasks.put("commerceRegionCode", 65536L);
+		columnBitmasks.put("zip", 65536L);
 
-		columnBitmasks.put("countryTwoLettersISOCode", 131072L);
+		columnBitmasks.put("commerceRegionCode", 131072L);
 
-		columnBitmasks.put("latitude", 262144L);
+		columnBitmasks.put("countryTwoLettersISOCode", 262144L);
 
-		columnBitmasks.put("longitude", 524288L);
+		columnBitmasks.put("latitude", 524288L);
 
-		columnBitmasks.put("type_", 1048576L);
+		columnBitmasks.put("longitude", 1048576L);
+
+		columnBitmasks.put("type_", 2097152L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}
