@@ -20,7 +20,11 @@ const WAREHOUSE_ORDER_TYPE_PATH = '/warehouse-order-types';
 
 const VERSION = 'v1.0';
 
-function resolvePath(basePath = '', warehouseId = '', warehouseOrderTypeId = '') {
+function resolvePath(
+	basePath = '',
+	warehouseId = '',
+	warehouseOrderTypeId = ''
+) {
 	return `${basePath}${VERSION}${WAREHOUSES_PATH}/${warehouseId}${WAREHOUSE_ORDER_TYPE_PATH}/${warehouseOrderTypeId}`;
 }
 
