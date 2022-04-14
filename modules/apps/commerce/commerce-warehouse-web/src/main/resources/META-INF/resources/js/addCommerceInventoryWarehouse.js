@@ -14,7 +14,7 @@
 
 import ServiceProvider from 'commerce-frontend-js/ServiceProvider/index';
 import {CLOSE_MODAL} from 'commerce-frontend-js/utilities/eventsDefinitions';
-import {createPortletURL} from 'frontend-js-web';
+import {createPortletURL, openToast} from 'frontend-js-web';
 
 export default function ({
 	defaultLanguageId,
@@ -37,46 +37,47 @@ export default function ({
 			label: {
 				[defaultLanguageId]: name,
 			},
-			name: name,
+			name,
 		};
 
 		return CommerceInventoryWarehouseResource.addWarehouse(
 			commerceInventoryWarehouseData
-		).then((payload) => {
-			const redirectURL = createPortletURL(
-				editCommerceInventoryWarehousePortletURL
-			);
+		)
+			.then((payload) => {
+				const redirectURL = createPortletURL(
+					editCommerceInventoryWarehousePortletURL
+				);
 
-			redirectURL.searchParams.append(
-				`${namespace}commerceInventoryWarehouseId`,
-				payload.id
-			);
-			redirectURL.searchParams.append('p_auth', Liferay.authToken);
+				redirectURL.searchParams.append(
+					`${namespace}commerceInventoryWarehouseId`,
+					payload.id
+				);
+				redirectURL.searchParams.append('p_auth', Liferay.authToken);
 
-			window.parent.Liferay.fire(CLOSE_MODAL, {
-				redirectURL: redirectURL.toString(),
-				successNotification: {
-					message: Liferay.Language.get(
-						'your-request-completed-successfully'
+				window.parent.Liferay.fire(CLOSE_MODAL, {
+					redirectURL: redirectURL.toString(),
+					successNotification: {
+						message: Liferay.Language.get(
+							'your-request-completed-successfully'
+						),
+						showSuccessNotification: true,
+					},
+				});
+			})
+			.catch((error) => {
+				const errorsMap = {
+					'please-enter-a-valid-name': Liferay.Language.get(
+						'please-enter-a-valid-name'
 					),
-					showSuccessNotification: true,
-				},
-			});
-		})
-		.catch((error) => {
-			const errorsMap = {
-				'please-enter-a-valid-name': Liferay.Language.get(
-					'please-enter-a-valid-name'
-				),
-			};
+				};
 
-			openToast({
-				message:
-					errorsMap[error.message] ||
-					Liferay.Language.get('an-unexpected-error-occurred'),
-				title: Liferay.Language.get('error'),
-				type: 'danger',
+				openToast({
+					message:
+						errorsMap[error.message] ||
+						Liferay.Language.get('an-unexpected-error-occurred'),
+					title: Liferay.Language.get('error'),
+					type: 'danger',
+				});
 			});
-		});
 	});
 }
