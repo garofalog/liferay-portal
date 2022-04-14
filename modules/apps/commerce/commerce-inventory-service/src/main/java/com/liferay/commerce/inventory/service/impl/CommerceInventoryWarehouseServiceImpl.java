@@ -62,52 +62,6 @@ public class CommerceInventoryWarehouseServiceImpl
 				commerceCountryCode, latitude, longitude, serviceContext);
 	}
 
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
-	 *             #addCommerceInventoryWarehouse(String, String, String,
-	 *             boolean, String, String, String, String, String, String,
-	 *             String, double, double, serviceContext)}
-	 */
-	@Deprecated
-	@Override
-	public CommerceInventoryWarehouse addCommerceInventoryWarehouse(
-			String name, String description, boolean active, String street1,
-			String street2, String street3, String city, String zip,
-			String commerceRegionCode, String commerceCountryCode,
-			double latitude, double longitude, String externalReferenceCode,
-			ServiceContext serviceContext)
-		throws PortalException {
-
-		return addCommerceInventoryWarehouse(
-			externalReferenceCode, name, description, active, street1, street2,
-			street3, city, zip, commerceRegionCode, commerceCountryCode,
-			latitude, longitude, serviceContext);
-	}
-
-	@Override
-	public CommerceInventoryWarehouse addCommerceInventoryWarehouse(
-			String externalReferenceCode, String name, String description,
-			boolean active, String street1, String street2, String street3,
-			String city, String zip, String commerceRegionCode,
-			String commerceCountryCode, double latitude, double longitude,
-			ServiceContext serviceContext)
-		throws PortalException {
-
-		PortletResourcePermission portletResourcePermission =
-			_commerceInventoryWarehouseModelResourcePermission.
-				getPortletResourcePermission();
-
-		portletResourcePermission.check(
-			getPermissionChecker(), null,
-			CommerceInventoryActionKeys.ADD_WAREHOUSE);
-
-		return commerceInventoryWarehouseLocalService.
-			addCommerceInventoryWarehouse(
-				externalReferenceCode, name, description, active, street1,
-				street2, street3, city, zip, commerceRegionCode,
-				commerceCountryCode, latitude, longitude, serviceContext);
-	}
-
 	@Override
 	public CommerceInventoryWarehouse deleteCommerceInventoryWarehouse(
 			long commerceInventoryWarehouseId)
@@ -137,19 +91,6 @@ public class CommerceInventoryWarehouseServiceImpl
 		}
 
 		return commerceInventoryWarehouse;
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
-	 *             #fetchByExternalReferenceCode(String, long)}
-	 */
-	@Deprecated
-	@Override
-	public CommerceInventoryWarehouse fetchByExternalReferenceCode(
-			long companyId, String externalReferenceCode)
-		throws PortalException {
-
-		return fetchByExternalReferenceCode(externalReferenceCode, companyId);
 	}
 
 	@Override
@@ -376,27 +317,6 @@ public class CommerceInventoryWarehouseServiceImpl
 		return commerceInventoryWarehouseLocalService.
 			updateCommerceInventoryWarehouse(
 				commerceInventoryWarehouseId, nameMap, descriptionMap, active,
-				street1, street2, street3, city, zip, commerceRegionCode,
-				commerceCountryCode, latitude, longitude, mvccVersion,
-				serviceContext);
-	}
-
-	@Override
-	public CommerceInventoryWarehouse updateCommerceInventoryWarehouse(
-			long commerceInventoryWarehouseId, String name, String description,
-			boolean active, String street1, String street2, String street3,
-			String city, String zip, String commerceRegionCode,
-			String commerceCountryCode, double latitude, double longitude,
-			long mvccVersion, ServiceContext serviceContext)
-		throws PortalException {
-
-		_commerceInventoryWarehouseModelResourcePermission.check(
-			getPermissionChecker(), commerceInventoryWarehouseId,
-			ActionKeys.UPDATE);
-
-		return commerceInventoryWarehouseLocalService.
-			updateCommerceInventoryWarehouse(
-				commerceInventoryWarehouseId, name, description, active,
 				street1, street2, street3, city, zip, commerceRegionCode,
 				commerceCountryCode, latitude, longitude, mvccVersion,
 				serviceContext);
