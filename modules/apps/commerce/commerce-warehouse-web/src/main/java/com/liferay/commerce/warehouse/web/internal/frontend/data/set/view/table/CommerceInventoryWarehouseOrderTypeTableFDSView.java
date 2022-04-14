@@ -21,10 +21,11 @@ import com.liferay.frontend.data.set.view.table.FDSTableSchema;
 import com.liferay.frontend.data.set.view.table.FDSTableSchemaBuilder;
 import com.liferay.frontend.data.set.view.table.FDSTableSchemaBuilderFactory;
 import com.liferay.frontend.data.set.view.table.FDSTableSchemaField;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 import java.util.Locale;
+
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Crescenzo Rega
@@ -34,7 +35,8 @@ import java.util.Locale;
 	property = "frontend.data.set.name=" + CommerceInventoryWarehouseFDSNames.COMMERCE_DATA_SET_KEY_INVENTORY_WAREHOUSE_QUALIFIER_ORDER_TYPES,
 	service = FDSView.class
 )
-public class CommerceInventoryWarehouseOrderTypeTableFDSView extends BaseTableFDSView {
+public class CommerceInventoryWarehouseOrderTypeTableFDSView
+	extends BaseTableFDSView {
 
 	@Override
 	public FDSTableSchema getFDSTableSchema(Locale locale) {

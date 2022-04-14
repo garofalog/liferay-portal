@@ -25,8 +25,7 @@ public class CommerceInventoryWarehouseFDSNames {
 
 	public static final String
 		COMMERCE_DATA_SET_KEY_INVENTORY_WAREHOUSE_QUALIFIER_ORDER_TYPES =
-		"commerceInventoryWarehouseQualifierOrderTypes";
-
+			"commerceInventoryWarehouseQualifierOrderTypes";
 
 	public static final String WAREHOUSES = "warehouses";
 
