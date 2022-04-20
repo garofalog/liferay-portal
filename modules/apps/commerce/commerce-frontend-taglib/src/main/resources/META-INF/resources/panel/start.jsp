@@ -25,21 +25,6 @@ String collapseSwitchId = Validator.isNotNull(collapseSwitchName) ? collapseSwit
 		<h4 class="align-items-center card-header d-flex justify-content-between py-3">
 			<%= HtmlUtil.escape(title) %>
 
-			<c:if test="<%= Validator.isNotNull(actionTargetId) %>">
-				<aui:script require="commerce-frontend-js/utilities/eventsDefinitions as eventsDefinitions">
-					var link = document.getElementById('<%= HtmlUtil.escapeJS(linkId) %>');
-
-					if (link) {
-						link.addEventListener('click', (e) => {
-							e.preventDefault();
-							Liferay.fire(eventsDefinitions.OPEN_MODAL, {
-								id: '<%= HtmlUtil.escapeJS(actionTargetId) %>',
-							});
-						});
-					}
-				</aui:script>
-			</c:if>
-
 			<c:choose>
 				<c:when test="<%= Validator.isNotNull(actionLabel) %>">
 					<clay:link
@@ -57,44 +42,6 @@ String collapseSwitchId = Validator.isNotNull(collapseSwitchName) ? collapseSwit
 					/>
 				</c:when>
 				<c:when test="<%= collapsible || Validator.isNotNull(collapseLabel) || Validator.isNotNull(collapseSwitchName) %>">
-					<aui:script>
-						(function () {
-							var toggleSwitch = document.getElementById(
-								'<%= HtmlUtil.escapeJS(randomNamespace) %>toggle-switch'
-							);
-							var toggleLabel = document.getElementById(
-								'<%= HtmlUtil.escapeJS(randomNamespace) %>toggle-label'
-							);
-							var toggleCheckbox = document.getElementById(
-								'<%=HtmlUtil.escapeJS(collapseSwitchId) %>'
-							);
-							var collapseClickable = true;
-							var collapsableElement = document.getElementById(
-								'<%= HtmlUtil.escapeJS(randomNamespace) %>collapse'
-							);
-
-							[toggleSwitch, toggleLabel].forEach((el) => {
-								el.addEventListener('click', (e) => {
-									e.preventDefault();
-
-									if (collapseClickable) {
-										toggleCheckbox.click();
-										collapsableElement.classList[
-											toggleCheckbox.checked ? 'remove' : 'add'
-										]('show');
-										toggleCheckbox.checked = !toggleCheckbox.checked;
-									}
-
-									collapseClickable = false;
-
-									setTimeout(() => {
-										collapseClickable = true;
-									}, 400);
-								});
-							});
-						})();
-					</aui:script>
-
 					<span class="d-flex mr-n2">
 						<c:if test="<%= Validator.isNotNull(collapseLabel) %>">
 							<label for="<%= HtmlUtil.escapeAttribute(collapseSwitchId) %>" id="<%= HtmlUtil.escapeAttribute(randomNamespace) %>toggle-label">
@@ -130,3 +77,18 @@ String collapseSwitchId = Validator.isNotNull(collapseSwitchName) ? collapseSwit
 
 	<div class="collapse<%= collapsed ? StringPool.BLANK : " show" %>" id="<%= randomNamespace %>collapse">
 		<div class="<%= "card-body" + (Validator.isNotNull(bodyClasses) ? StringPool.SPACE + bodyClasses : StringPool.BLANK) %>">
+
+<liferay-frontend:component
+	context='<%=
+		HashMapBuilder.<String, Object>put(
+			"id", HtmlUtil.escapeJS(actionTargetId)
+		).put(
+			"linkId", HtmlUtil.escapeJS(linkId)
+		).put(
+			"randomNamespace", HtmlUtil.escapeJS(randomNamespace)
+		).put(
+			"validator", Validator.isNotNull(actionTargetId)
+		).build()
+	%>'
+	module="js/panel/start"
+/>
