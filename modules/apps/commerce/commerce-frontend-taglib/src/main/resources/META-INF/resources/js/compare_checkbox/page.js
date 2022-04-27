@@ -1,4 +1,3 @@
-<%--
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
@@ -12,26 +11,22 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
---%>
 
-<%@ include file="/compare_checkbox/init.jsp" %>
+import CompareCheckbox from 'commerce-frontend-js/components/compare_checkbox/entry';
 
-<div class="compare-checkbox-root" id="<%= rootId %>"></div>
-<liferay-frontend:component
-	context='<%=
-		HashMapBuilder.<String, Object>put(
-			"disabled", disabled
-		).put(
-			"inCompare", inCompare
-		).put(
-			"itemId", cpCatalogEntry.getCPDefinitionId()
-		).put(
-			"label", label
-		).put(
-			"pictureUrl", pictureUrl
-		).put(
-			"rootId", rootId
-		).build()
-	%>'
-	module="js/compare_checkbox/page.js"
-/>
+export default function ({
+	rootId,
+	disabled,
+	inCompare,
+	itemId,
+	label,
+	pictureUrl,
+}) {
+	CompareCheckbox(rootId, rootId, {
+		disabled,
+		inCompare,
+		itemId,
+		label,
+		pictureUrl,
+	});
+}
