@@ -1,4 +1,3 @@
-<%--
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
@@ -12,22 +11,14 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
---%>
 
-<%@ include file="/step_tracker/init.jsp" %>
+import StepTracker from 'commerce-frontend-js/components/step_tracker/entry';
 
-<div class="step-tracker-root" id="<%= stepTrackerId %>"></div>
-<liferay-frontend:component
-	context='<%=
-		HashMapBuilder.<String, Object>put(
-			"portletId", portletDisplay.getRootPortletId()
-		).put(
-			"spritemap", HtmlUtil.escapeJS(spritemap)
-		).put(
-			"stepsString", jsonSerializer.serializeDeep(steps)
-		).put(
-			"stepTrackerId", stepTrackerId
-		).build()
-	%>'
-	module="js/step_tracker/page"
-/>
+export default function ({stepTrackerId, portletId, spritemap, stepsString}) {
+	const steps = JSON.parse(stepsString);
+	StepTracker(stepTrackerId, stepTrackerId, {
+		portletId,
+		spritemap,
+		steps,
+	});
+}
