@@ -1,5 +1,6 @@
 {
 	"dependencies": {
+		"frontend-js-web": "*"
 	},
 	"name": "commerce-frontend-taglib",
 	"scripts": {

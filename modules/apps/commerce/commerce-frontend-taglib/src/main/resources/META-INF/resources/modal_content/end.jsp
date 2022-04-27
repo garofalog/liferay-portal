@@ -33,83 +33,11 @@
 	</c:if>
 </div>
 
-<aui:script require="commerce-frontend-js/utilities/eventsDefinitions as events, commerce-frontend-js/utilities/debounce as debounce">
-	function closeModal(isSuccessful) {
-		var eventDetail = {};
-
-		if (isSuccessful) {
-			eventDetail.successNotification = {
-				message:
-					'<%= LanguageUtil.get(request, "your-request-completed-successfully") %>',
-				showSuccessNotification: true,
-			};
-		}
-
-		window.top.Liferay.fire(events.CLOSE_MODAL, eventDetail);
-	}
-
-	window.addEventListener('keyup', (event) => {
-		event.preventDefault();
-
-		if (event.key === 'Escape') {
-			closeModal(false);
-		}
-	});
-
-	<c:if test='<%= SessionMessages.contains(renderRequest, "requestProcessed") %>'>
-		closeModal(true);
-	</c:if>
-
-	window.top.Liferay.fire(events.IS_LOADING_MODAL, {isLoading: false});
-
-	document.querySelectorAll('.modal-closer').forEach((trigger) => {
-		trigger.addEventListener('click', (e) => {
-			e.preventDefault();
-			window.top.Liferay.fire(events.CLOSE_MODAL);
-		});
-	});
-
-	var iframeContent = window.document.querySelector('.modal-iframe-content'),
-		iframeFooter = window.document.querySelector('.modal-iframe-footer'),
-		iframeForm = iframeContent.querySelector('form');
-
-	if (iframeForm) {
-		iframeForm.appendChild(iframeFooter);
-
-		iframeForm.addEventListener('submit', (e) => {
-			window.top.Liferay.fire(events.IS_LOADING_MODAL, {isLoading: true});
-
-			var form = Liferay.Form.get(iframeForm.id);
-
-			if (!form || !form.formValidator || !form.formValidator.validate) {
-				e.preventDefault();
-				return window.top.Liferay.fire(events.IS_LOADING_MODAL, {
-					isLoading: false,
-				});
-			}
-
-			form.formValidator.validate();
-
-			if (form.formValidator.hasErrors()) {
-				e.preventDefault();
-				return window.top.Liferay.fire(events.IS_LOADING_MODAL, {
-					isLoading: false,
-				});
-			}
-
-			return;
-		});
-	}
-
-	if (iframeContent && iframeFooter) {
-		function adjustBottomSpace() {
-			iframeContent.style.marginBottom = iframeFooter.offsetHeight + 'px';
-		}
-
-		var debouncedAdjustBottomSpace = debounce.default(adjustBottomSpace, 300);
-
-		adjustBottomSpace();
-
-		window.addEventListener('resize', debouncedAdjustBottomSpace);
-	}
-</aui:script>
+<liferay-frontend:component
+	context='<%=
+		HashMapBuilder.<String, Object>put(
+			"requestProcessed", SessionMessages.contains(renderRequest, "requestProcessed")
+		).build()
+	%>'
+	module="js/modal_content/end"
+/>
