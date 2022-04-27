@@ -18,55 +18,35 @@
 
 <div class="cart-root" id="<%= miniCartId %>"></div>
 
-<aui:script require="commerce-frontend-js/components/mini_cart/entry as Cart">
-	var initialProps = {
-		cartActionURLs: {
-			checkoutURL: '<%= HtmlUtil.escapeJS(checkoutURL) %>',
-			orderDetailURL: '<%= HtmlUtil.escapeJS(orderDetailURL) %>',
-			productURLSeparator: '<%= HtmlUtil.escapeJS(productURLSeparator) %>',
-			siteDefaultURL: '<%= HtmlUtil.escapeJS(siteDefaultURL) %>',
-		},
-		displayDiscountLevels: <%= displayDiscountLevels %>,
-		displayTotalItemsQuantity: <%= displayTotalItemsQuantity %>,
-		itemsQuantity: <%= itemsQuantity %>,
-		orderId: <%= orderId %>,
-		spritemap: '<%= HtmlUtil.escapeJS(spritemap) %>',
-		toggleable: <%= toggleable %>,
-	};
-
-	<%
-	if (!cartViews.isEmpty()) {
-	%>
-
-		initialProps.cartViews = {};
-
-		<%
-		for (Map.Entry<String, String> cartView : cartViews.entrySet()) {
-		%>
-
-			initialProps.cartViews['<%= cartView.getKey() %>'] = {
-				contentRendererModuleUrl: '<%= cartView.getValue() %>',
-			};
-
-		<%
-			}
-		}
-
-		if (!labels.isEmpty()) {
-		%>
-
-		initialProps.labels = {};
-
-		<%
-		for (Map.Entry<String, String> label : labels.entrySet()) {
-		%>
-
-			initialProps.labels['<%= label.getKey() %>'] = '<%= label.getValue() %>';
-
-	<%
-		}
-	}
-	%>
-
-	Cart.default('<%= miniCartId %>', '<%= miniCartId %>', initialProps);
-</aui:script>
+<liferay-frontend:component
+	context='<%=
+		HashMapBuilder.<String, Object>put(
+			"cartViews", cartViews
+		).put(
+			"checkoutURL", HtmlUtil.escapeJS(checkoutURL)
+		).put(
+			"displayDiscountLevels", displayDiscountLevels
+		).put(
+			"displayTotalItemsQuantity", displayTotalItemsQuantity
+		).put(
+			"itemsQuantity", itemsQuantity
+		).put(
+			"labels", labels
+		).put(
+			"miniCartId", miniCartId
+		).put(
+			"orderDetailURL", HtmlUtil.escapeJS(orderDetailURL)
+		).put(
+			"orderId", orderId
+		).put(
+			"productURLSeparator", HtmlUtil.escapeJS(productURLSeparator)
+		).put(
+			"siteDefaultURL", HtmlUtil.escapeJS(siteDefaultURL)
+		).put(
+			"spritemap", HtmlUtil.escapeJS(spritemap)
+		).put(
+			"toggleable", toggleable
+		).build()
+	%>'
+	module="js/mini_cart/page"
+/>
