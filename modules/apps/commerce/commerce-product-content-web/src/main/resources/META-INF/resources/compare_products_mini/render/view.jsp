@@ -28,6 +28,26 @@ List<CPCatalogEntry> cpCatalogEntries = cpCompareContentHelper.getCPCatalogEntri
 
 <div id="mini-compare-root"></div>
 
+<liferay-frontend:component
+	context='<%=
+		HashMapBuilder.<String, Object>put(
+			"commerceChannelGroupId", commerceContext.getCommerceChannelGroupId()
+		).put(
+			"compareProductsURL", cpCompareContentHelper.getCompareProductsURL(themeDisplay)
+		).put(
+			"items", cpCatalogEntries
+		).put(
+			"itemsLimit", cpCompareContentHelper.getProductsLimit(portletDisplay)
+		).put(
+			"portletNamespace", cpCompareContentHelper.getCompareContentPortletNamespace()
+		).put(
+			"spritemap", themeDisplay.getPathThemeImages() + "/clay/icons.svg"
+		).build()
+	%>'
+	module="js/mini_compare"
+/>
+
+<%--
 <aui:script require="commerce-frontend-js/components/mini_compare/entry as MiniCompare">
 	MiniCompare.default('mini-compare', 'mini-compare-root', {
 		commerceChannelGroupId:
@@ -57,3 +77,4 @@ List<CPCatalogEntry> cpCatalogEntries = cpCompareContentHelper.getCPCatalogEntri
 		spritemap: '<%= themeDisplay.getPathThemeImages() + "/clay/icons.svg" %>',
 	});
 </aui:script>
+--%>
