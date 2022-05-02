@@ -45,103 +45,19 @@ if (commerceOrder != null) {
 				/>
 			</a>
 		</div>
-
-		<aui:script>
-			var couponCodeIconRemove = window.document.querySelector(
-				'#<portlet:namespace />couponCodeIconRemove'
-			);
-
-			couponCodeIconRemove.addEventListener(
-				'click',
-				(event) => {
-					var actionURL =
-						'<%= PortalUtil.getPortalURL(request) + "/o/commerce-ui/order/" + commerceOrder.getCommerceOrderId() + "/coupon-code" %>';
-
-					Liferay.Util.fetch(actionURL, {
-						method: 'post',
-					})
-						.then((res) => {
-							return res.json();
-						})
-						.then((payload) => {
-							if (payload.success) {
-								window.location.reload();
-							}
-							else {
-								new Liferay.Notification({
-									closeable: true,
-									delay: {
-										hide: 5000,
-										show: 0,
-									},
-									duration: 500,
-									message:
-										'<liferay-ui:message key="please-enter-a-valid-coupon-code" />',
-									render: true,
-									title: '<liferay-ui:message key="danger" />',
-									type: 'danger',
-								});
-							}
-						});
-				},
-				{
-					once: true,
-				}
-			);
-		</aui:script>
 	</c:when>
 	<c:otherwise>
 		<aui:input label="" name="couponCode" placeholder="enter-promo-code" type="text" />
 
 		<aui:button name="applyCouponCodeButton" type="submit" value="apply" />
-
-		<aui:script>
-			var applyCouponCodeButton = window.document.querySelector(
-				'#<portlet:namespace />applyCouponCodeButton'
-			);
-
-			applyCouponCodeButton.addEventListener(
-				'click',
-				(event) => {
-					var actionURL =
-						'<%= PortalUtil.getPortalURL(request) + "/o/commerce-ui/order/" + commerceOrder.getCommerceOrderId() + "/coupon-code/" %>';
-
-					actionURL =
-						actionURL +
-						window.document.querySelector('#<portlet:namespace />couponCode')
-							.value;
-
-					Liferay.Util.fetch(actionURL, {
-						method: 'post',
-					})
-						.then((res) => {
-							return res.json();
-						})
-						.then((payload) => {
-							if (payload.success) {
-								window.location.reload();
-							}
-							else {
-								new Liferay.Notification({
-									closeable: true,
-									delay: {
-										hide: 5000,
-										show: 0,
-									},
-									duration: 500,
-									message:
-										'<liferay-ui:message key="please-enter-a-valid-coupon-code" />',
-									render: true,
-									title: '<liferay-ui:message key="danger" />',
-									type: 'danger',
-								});
-							}
-						});
-				},
-				{
-					once: true,
-				}
-			);
-		</aui:script>
 	</c:otherwise>
 </c:choose>
+
+<liferay-frontend:component
+	context='<%=
+		HashMapBuilder.<String, Object>put(
+			"actionURL", PortalUtil.getPortalURL(request) + "/o/commerce-ui/order/" + commerceOrder.getCommerceOrderId() + "/coupon-code"
+		).build()
+	%>'
+	module="js/channels"
+/>
