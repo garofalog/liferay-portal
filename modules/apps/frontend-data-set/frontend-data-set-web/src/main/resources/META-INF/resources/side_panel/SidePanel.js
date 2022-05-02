@@ -20,7 +20,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import Modal from '../modal/Modal';
+import Modal from 'commerce-frontend-js/components/modal/entry';
 import debounce from '../utils/debounce';
 import {
 	CLOSE_SIDE_PANEL,

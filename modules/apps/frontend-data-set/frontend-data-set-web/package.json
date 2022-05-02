@@ -1,5 +1,6 @@
 {
 	"dependencies": {
+		"commerce-frontend-js": "*"
 	},
 	"main": "index.js",
 	"name": "@liferay/frontend-data-set-web",

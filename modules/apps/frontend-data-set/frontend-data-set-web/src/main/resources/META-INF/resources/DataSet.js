@@ -36,7 +36,7 @@ import {
 	getFilterSelectedItemsLabel,
 	getOdataFilterString,
 } from './management_bar/components/filters/Filter';
-import Modal from './modal/Modal';
+import Modal from 'commerce-frontend-js/components/modal/entry';
 import SidePanel from './side_panel/SidePanel';
 import {
 	DATASET_ACTION_PERFORMED,
