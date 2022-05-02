@@ -19,10 +19,12 @@ import {
 import {debounce} from 'frontend-js-web';
 
 export default function ({requestProcessed}) {
-	const modalClosers = document.querySelectorAll('.modal-closer');
-	const iframeContent = document.querySelector('.modal-iframe-content'),
+	const modalClosers = document.querySelectorAll('.modal-closer'),
+		iframeContent = document.querySelector('.modal-iframe-content'),
 		iframeFooter = document.querySelector('.modal-iframe-footer'),
-		iframeForm = iframeContent.querySelector('form');
+		iframeForm = iframeContent.querySelector('form'),
+		modalWrapper = document.querySelector('.modal-backdrop .clay-modal');
+
 	let debouncedAdjustBottomSpace;
 
 	const closeModal = (isSuccessful) => {
@@ -46,16 +48,14 @@ export default function ({requestProcessed}) {
 
 	function handleCloseModal(event) {
 		event.preventDefault();
-
-		if (event.key === 'Escape') {
-			closeModal(false);
-		}
+		closeModal(false);
 	}
 
 	function handleModalClosers(event) {
 		event.preventDefault();
 		Liferay.fire(CLOSE_MODAL);
 	}
+
 
 	function handleFormSubmit(event) {
 		event.preventDefault();
@@ -81,7 +81,19 @@ export default function ({requestProcessed}) {
 		}
 	}
 
-	window.addEventListener('keyup', handleCloseModal);
+	const closeDropDownOnClickOutside = (event) => {
+		if (
+			event.target !== modalWrapper &&
+			modalWrapper.classList.contains('show') &&
+			event.target.parentNode !== modalWrapper
+		) {
+			modalWrapper.classList.remove('show');
+		}
+	};
+
+	window.addEventListener('keyup', handleModalClosers);
+
+	window.addEventListener('mouseup', closeDropDownOnClickOutside);
 
 	if (requestProcessed) {
 		closeModal(true);
@@ -90,7 +102,7 @@ export default function ({requestProcessed}) {
 	Liferay.fire(IS_LOADING_MODAL, {isLoading: false});
 
 	modalClosers.forEach((trigger) => {
-		trigger.addEventListener('click', handleModalClosers);
+		trigger.addEventListener('click', handleCloseModal);
 	});
 
 	if (iframeForm) {
