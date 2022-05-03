@@ -111,21 +111,14 @@ public class InfoBoxTag extends IncludeTag {
 	}
 
 	@Override
-	protected String getEndPage() {
-		return _END_PAGE;
-	}
-
-	@Override
-	protected String getStartPage() {
-		return _START_PAGE;
+	protected String getPage() {
+		return _PAGE;
 	}
 
 	private static final String _ATTRIBUTE_NAMESPACE =
 		"liferay-commerce:info-box:";
 
-	private static final String _END_PAGE = "/info_box/end.jsp";
-
-	private static final String _START_PAGE = "/info_box/start.jsp";
+	private static final String _PAGE = "/info_box/page.jsp";
 
 	private String _actionLabel;
 	private String _actionTargetId;

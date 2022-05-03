@@ -27,21 +27,6 @@ String linkId = PortalUtil.generateRandomKey(request, "info-box") + "_action-lin
 		</c:if>
 
 		<c:if test="<%= Validator.isNotNull(actionLabel) %>">
-			<c:if test="<%= Validator.isNotNull(actionTargetId) %>">
-				<aui:script require="commerce-frontend-js/utilities/eventsDefinitions as eventsDefinitions">
-					var link = document.getElementById('<%= HtmlUtil.escapeJS(linkId) %>');
-
-					if (link) {
-						link.addEventListener('click', (e) => {
-							e.preventDefault();
-							Liferay.fire(eventsDefinitions.OPEN_MODAL, {
-								id: '<%= HtmlUtil.escapeJS(actionTargetId) %>',
-							});
-						});
-					}
-				</aui:script>
-			</c:if>
-
 			<clay:link
 				href='<%= Validator.isNotNull(actionUrl) ? actionUrl : "#" %>'
 				id="<%= HtmlUtil.escape(linkId) %>"
@@ -51,3 +36,20 @@ String linkId = PortalUtil.generateRandomKey(request, "info-box") + "_action-lin
 	</header>
 
 	<div class="description">
+	</div>
+</div>
+
+<liferay-frontend:component
+	context='<%=
+		HashMapBuilder.<String, Object>put(
+			"actionLabelValidator", Validator.isNotNull(actionLabel)
+		).put(
+			"actionTargetId", HtmlUtil.escapeJS(actionTargetId)
+		).put(
+			"actionTargetIdValidator", Validator.isNotNull(actionTargetId)
+		).put(
+			"linkId", HtmlUtil.escapeJS(linkId)
+		).build()
+	%>'
+	module="js/info_box/page"
+/>
