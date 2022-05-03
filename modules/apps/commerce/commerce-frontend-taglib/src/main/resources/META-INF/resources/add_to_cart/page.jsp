@@ -41,6 +41,8 @@ if (alignment.equals("full-width")) {
 	buttonCssClasses = buttonCssClasses.concat(" btn-block");
 	wrapperCssClasses = wrapperCssClasses.concat(" align-items-center");
 }
+
+JSONSerializer jsonSerializer = JSONFactoryUtil.createJSONSerializer();
 %>
 
 <div class="add-to-cart mb-2" id="<%= addToCartId %>">
@@ -53,39 +55,43 @@ if (alignment.equals("full-width")) {
 	</div>
 </div>
 
-<aui:script require="commerce-frontend-js/components/add_to_cart/entry as AddToCart">
-	const props = {
-		accountId: <%= commerceAccountId %>,
-		cartId: <%= commerceOrderId %>,
-		channel: {
-			currencyCode: '<%= commerceCurrencyCode %>',
-			groupId: <%= commerceChannelGroupId %>,
-			id: <%= commerceChannelId %>,
-		},
-		cpInstance: {
-			inCart: <%= inCart %>,
-			skuId: <%= cpInstanceId %>,
-			skuOptions: <%= skuOptions %> || [],
-			stockQuantity: <%= stockQuantity %>,
-		},
-		disabled: <%= disabled %>,
-		settings: {
-			alignment: '<%= alignment %>',
-			iconOnly: <%= iconOnly %>,
-			inline: <%= inline %>,
-			namespace: '<%= namespace %>',
-			size: '<%= size %>',
-		},
-	};
-
-	<c:if test="<%= productSettingsModel != null %>">
-
-		<%
-		JSONSerializer jsonSerializer = JSONFactoryUtil.createJSONSerializer();
-		%>
-
-		props.settings.quantityDetails = <%= jsonSerializer.serializeDeep(productSettingsModel) %>;
-	</c:if>
-
-	AddToCart.default('<%= addToCartId %>', '<%= addToCartId %>', props);
-</aui:script>
+<liferay-frontend:component
+	context='<%=
+		HashMapBuilder.<String, Object>put(
+			"accountId", commerceAccountId
+		).put(
+			"addToCartId", addToCartId
+		).put(
+			"alignment", alignment
+		).put(
+			"alignment", alignment
+		).put(
+			"cartId", commerceOrderId
+		).put(
+			"currencyCode", commerceCurrencyCode
+		).put(
+			"disabled", disabled
+		).put(
+			"groupId", commerceChannelGroupId
+		).put(
+			"iconOnly", iconOnly
+		).put(
+			"id", commerceChannelId
+		).put(
+			"inCart", inCart
+		).put(
+			"inline", inline
+		).put(
+			"productSettingsModel", productSettingsModel
+		).put(
+			"quantityDetails", jsonSerializer.serializeDeep(productSettingsModel)
+		).put(
+			"size", size
+		).put(
+			"skuId", cpInstanceId
+		).put(
+			"skuOptions", skuOptions
+		).build()
+	%>'
+	module="js/add_to_cart/page"
+/>
