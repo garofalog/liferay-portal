@@ -195,5 +195,5 @@ Gallery.propTypes = {
 		})
 	),
 	namespace: PropTypes.string,
-	viewCPAttachmentURL: PropTypes.string.isRequired,
+	viewCPAttachmentURL: PropTypes.string
 };
