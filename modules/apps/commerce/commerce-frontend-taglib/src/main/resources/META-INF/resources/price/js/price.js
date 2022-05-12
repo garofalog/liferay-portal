@@ -15,6 +15,7 @@
 import Price from 'commerce-frontend-js/components/price/entry';
 
 export default function ({
+	compact,
 	displayDiscountLevels,
 	namespace,
 	netPrice,
@@ -22,6 +23,7 @@ export default function ({
 	standalone,
 }) {
 	Price(`${namespace}price`, `${namespace}price`, {
+		compact,
 		displayDiscountLevels,
 		namespace,
 		netPrice,

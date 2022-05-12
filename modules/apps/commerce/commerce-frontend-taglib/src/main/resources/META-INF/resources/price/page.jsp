@@ -16,42 +16,14 @@
 
 <%@ include file="/price/init.jsp" %>
 
-<span class="<%= Validator.isNotNull(namespace) ? namespace + "price price" : "price" %><%= compact ? " compact" : StringPool.BLANK %>" id="<%= Validator.isNotNull(namespace) ? namespace + "price" : "" %>">
-	<liferay-util:include page="/price/default.jsp" servletContext="<%= application %>" />
-
-	<c:choose>
-		<c:when test="<%= compact %>">
-			<c:choose>
-				<c:when test="<%= Validator.isNull(priceModel.getDiscount()) %>">
-					<c:if test="<%= Validator.isNotNull(priceModel.getPromoPrice()) %>">
-						<liferay-util:include page="/price/promo.jsp" servletContext="<%= application %>" />
-					</c:if>
-				</c:when>
-				<c:otherwise>
-					<c:if test="<%= Validator.isNotNull(priceModel.getFinalPrice()) %>">
-						<liferay-util:include page="/price/discount.jsp" servletContext="<%= application %>" />
-					</c:if>
-				</c:otherwise>
-			</c:choose>
-		</c:when>
-		<c:otherwise>
-			<c:if test="<%= Validator.isNotNull(priceModel.getPromoPrice()) %>">
-				<liferay-util:include page="/price/promo.jsp" servletContext="<%= application %>" />
-			</c:if>
-
-			<c:if test="<%= Validator.isNotNull(priceModel.getFinalPrice()) %>">
-				<liferay-util:include page="/price/discount.jsp" servletContext="<%= application %>" />
-			</c:if>
-		</c:otherwise>
-	</c:choose>
-</span>
-
 <c:if test="<%= Validator.isNotNull(namespace) %>">
 	<div id="<%= namespace + "price" %>"></div>
 
 	<liferay-frontend:component
 		context='<%=
 			HashMapBuilder.<String, Object>put(
+				"compact", compact
+			).put(
 				"displayDiscountLevels", displayDiscountLevels
 			).put(
 				"netPrice", netPrice
@@ -61,6 +33,6 @@
 				"standalone", true
 			).build()
 		%>'
-		module="js/price"
+		module="price/js/price"
 	/>
 </c:if>
