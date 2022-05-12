@@ -16,8 +16,7 @@
 
 <%@ include file="/price/init.jsp" %>
 
-<c:if test="<%= Validator.isNotNull(namespace) %>">
-	<div id="<%= namespace + "price" %>"></div>
+	<div id="<%= namespace + "priceciao" %>"></div>
 
 	<liferay-frontend:component
 		context='<%=
@@ -35,4 +34,3 @@
 		%>'
 		module="price/js/price"
 	/>
-</c:if>
