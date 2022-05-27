@@ -55,7 +55,7 @@ function AddToCart({
 	const cart = useCommerceCart(
 		{
 			UUID: initialCartUUID,
-			id: initialCartId,
+			id: initialCartId === 0 ? null : initialCartId,
 		},
 		channel.groupId
 	);
@@ -160,58 +160,60 @@ function AddToCart({
 	const spacer = settings.size === 'sm' ? 1 : 3;
 
 	return (
-		<div
-			className={classnames({
-				'add-to-cart-wrapper': true,
-				'align-items-center':
-					settings.alignment === 'full-width' ||
-					settings.alignment === 'center',
-				'd-flex': true,
-				'flex-column': !settings.inline,
-			})}
-		>
-			<QuantitySelector
-				allowedQuantities={
-					settings.productConfiguration?.allowedOrderQuantities
-				}
-				disabled={initialDisabled || !account?.id}
-				max={settings.productConfiguration?.maxOrderQuantity}
-				min={settings.productConfiguration?.minOrderQuantity}
-				onUpdate={({errors, value: quantity}) =>
-					setCpInstance({
-						...cpInstance,
-						quantity,
-						validQuantity: !errors.length,
-					})
-				}
-				quantity={cpInstance.quantity}
-				ref={inputRef}
-				size={settings.size}
-				step={settings.productConfiguration?.multipleOrderQuantity}
-			/>
+		<div className="add-to-cart mb-2">
+			<div
+				className={classnames({
+					'add-to-cart-wrapper': true,
+					'align-items-center':
+						settings.alignment === 'full-width' ||
+						settings.alignment === 'center',
+					'd-flex': true,
+					'flex-column': !settings.inline,
+				})}
+			>
+				<QuantitySelector
+					allowedQuantities={
+						settings.productConfiguration?.allowedOrderQuantities
+					}
+					disabled={initialDisabled || !account?.id}
+					max={settings.productConfiguration?.maxOrderQuantity}
+					min={settings.productConfiguration?.minOrderQuantity}
+					onUpdate={({errors, value: quantity}) =>
+						setCpInstance({
+							...cpInstance,
+							quantity,
+							validQuantity: !errors.length,
+						})
+					}
+					quantity={cpInstance.quantity}
+					ref={inputRef}
+					size={settings.size}
+					step={settings.productConfiguration?.multipleOrderQuantity}
+				/>
 
-			<AddToCartButton
-				accountId={account.id}
-				cartId={cart.id}
-				channel={channel}
-				className={`${spaceDirection}-${spacer}`}
-				cpInstances={[cpInstance]}
-				disabled={buttonDisabled}
-				notAllowed={!cpInstance.validQuantity}
-				onAdd={() => {
-					setCpInstance({...cpInstance, inCart: true});
-				}}
-				onClick={
-					cpInstance.validQuantity
-						? null
-						: (event) => {
-								event.preventDefault();
+				<AddToCartButton
+					accountId={account.id}
+					cartId={cart.id}
+					channel={channel}
+					className={`${spaceDirection}-${spacer}`}
+					cpInstances={[cpInstance]}
+					disabled={buttonDisabled}
+					notAllowed={!cpInstance.validQuantity}
+					onAdd={() => {
+						setCpInstance({...cpInstance, inCart: true});
+					}}
+					onClick={
+						cpInstance.validQuantity
+							? null
+							: (event) => {
+									event.preventDefault();
 
-								inputRef.current.focus();
-						  }
-				}
-				settings={settings}
-			/>
+									inputRef.current.focus();
+							  }
+					}
+					settings={settings}
+				/>
+			</div>
 		</div>
 	);
 }
