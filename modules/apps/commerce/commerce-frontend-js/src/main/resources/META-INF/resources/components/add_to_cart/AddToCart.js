@@ -80,6 +80,18 @@ function AddToCart({
 		return false;
 	}, [account, cpInstance, initialDisabled]);
 
+	const spaceDirection = settings.inline ? 'ml' : 'mt';
+	const spacer = settings.size === 'sm' ? 1 : 3;
+	const buttonCssClasses = `btn btn-add-to-cart btn-${size} ${spaceDirection}-${spacer}${
+		settings.iconOnly ? ' icon-only' : ''
+	}${settings.alignment === 'full-width' ? ' btn-block' : ''}`;
+	const selectorCssClasses = `form-control quantity-selector form-control-${size}`;
+	const wrapperCssClasses = `add-to-cart-wrapper align-items-center d-flex${
+		settings.inline ? ' flex-column' : ''
+	}${settings.alignment === 'center' ? ' align-items-center' : ''}${
+		settings.alignment === 'full-width' ? ' align-items-center' : ''
+	}`;
+
 	useEffect(() => {
 		setCpInstance({
 			...initialCpInstance,
@@ -156,62 +168,64 @@ function AddToCart({
 		};
 	}, [handleCPInstanceReplaced, settings.namespace]);
 
-	const spaceDirection = settings.inline ? 'ml' : 'mt';
-	const spacer = settings.size === 'sm' ? 1 : 3;
-
 	return (
-		<div
-			className={classnames({
-				'add-to-cart-wrapper': true,
-				'align-items-center':
-					settings.alignment === 'full-width' ||
-					settings.alignment === 'center',
-				'd-flex': true,
-				'flex-column': !settings.inline,
-			})}
-		>
-			<QuantitySelector
-				allowedQuantities={
-					settings.productConfiguration?.allowedOrderQuantities
-				}
-				disabled={initialDisabled || !account?.id}
-				max={settings.productConfiguration?.maxOrderQuantity}
-				min={settings.productConfiguration?.minOrderQuantity}
-				onUpdate={({errors, value: quantity}) =>
-					setCpInstance({
-						...cpInstance,
-						quantity,
-						validQuantity: !errors.length,
-					})
-				}
-				quantity={cpInstance.quantity}
-				ref={inputRef}
-				size={settings.size}
-				step={settings.productConfiguration?.multipleOrderQuantity}
-			/>
+		<div className={wrapperCssClasses}>
+			<div className={selectorCssClasses} skeleton></div>
 
-			<AddToCartButton
-				accountId={account.id}
-				cartId={cart.id}
-				channel={channel}
-				className={`${spaceDirection}-${spacer}`}
-				cpInstances={[cpInstance]}
-				disabled={buttonDisabled}
-				notAllowed={!cpInstance.validQuantity}
-				onAdd={() => {
-					setCpInstance({...cpInstance, inCart: true});
-				}}
-				onClick={
-					cpInstance.validQuantity
-						? null
-						: (event) => {
-								event.preventDefault();
+			<div
+				className={classnames({
+					'add-to-cart-wrapper': true,
+					'align-items-center':
+						settings.alignment === 'full-width' ||
+						settings.alignment === 'center',
+					'd-flex': true,
+					'flex-column': !settings.inline,
+				})}
+			>
+				<QuantitySelector
+					allowedQuantities={
+						settings.productConfiguration?.allowedOrderQuantities
+					}
+					disabled={initialDisabled || !account?.id}
+					max={settings.productConfiguration?.maxOrderQuantity}
+					min={settings.productConfiguration?.minOrderQuantity}
+					onUpdate={({errors, value: quantity}) =>
+						setCpInstance({
+							...cpInstance,
+							quantity,
+							validQuantity: !errors.length,
+						})
+					}
+					quantity={cpInstance.quantity}
+					ref={inputRef}
+					size={settings.size}
+					step={settings.productConfiguration?.multipleOrderQuantity}
+				/>
 
-								inputRef.current.focus();
-						  }
-				}
-				settings={settings}
-			/>
+				<AddToCartButton
+					accountId={account.id}
+					cartId={cart.id}
+					channel={channel}
+					className={`${spaceDirection}-${spacer}`}
+					cpInstances={[cpInstance]}
+					disabled={buttonDisabled}
+					notAllowed={!cpInstance.validQuantity}
+					onAdd={() => {
+						setCpInstance({...cpInstance, inCart: true});
+					}}
+					onClick={
+						cpInstance.validQuantity
+							? null
+							: (event) => {
+									event.preventDefault();
+
+									inputRef.current.focus();
+							  }
+					}
+					settings={settings}
+				/>
+			</div>
+			<button className={buttonCssClasses} skeleton></button>
 		</div>
 	);
 }
