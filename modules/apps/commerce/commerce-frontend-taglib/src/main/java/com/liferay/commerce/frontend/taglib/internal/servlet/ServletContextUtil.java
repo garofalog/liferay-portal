@@ -30,6 +30,7 @@ import com.liferay.commerce.service.CommerceOrderTypeLocalService;
 import com.liferay.frontend.js.loader.modules.extender.npm.NPMResolver;
 import com.liferay.info.item.renderer.InfoItemRendererTracker;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
+import com.liferay.portal.template.react.renderer.ReactRenderer;
 
 import javax.servlet.ServletContext;
 
@@ -115,6 +116,10 @@ public class ServletContextUtil {
 
 	public static ProductHelper getProductHelper() {
 		return _servletContextUtil._getProductHelper();
+	}
+
+	public static ReactRenderer getReactRenderer() {
+		return _servletContextUtil._getReactRenderer();
 	}
 
 	public static ServletContext getServletContext() {
@@ -231,6 +236,11 @@ public class ServletContextUtil {
 		_productHelper = productHelper;
 	}
 
+	@Reference(unbind = "-")
+	protected void setReactRenderer(ReactRenderer reactRenderer) {
+		_reactRenderer = reactRenderer;
+	}
+
 	@Reference(
 		target = "(osgi.web.symbolicname=com.liferay.commerce.frontend.taglib)",
 		unbind = "-"
@@ -305,6 +315,10 @@ public class ServletContextUtil {
 		return _productHelper;
 	}
 
+	private ReactRenderer _getReactRenderer() {
+		return _reactRenderer;
+	}
+
 	private ServletContext _getServletContext() {
 		return _servletContext;
 	}
@@ -327,6 +341,7 @@ public class ServletContextUtil {
 	private InfoItemRendererTracker _infoItemRendererTracker;
 	private NPMResolver _npmResolver;
 	private ProductHelper _productHelper;
+	private ReactRenderer _reactRenderer;
 	private ServletContext _servletContext;
 
 }
