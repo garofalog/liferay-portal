@@ -67,6 +67,7 @@ String title = (String)request.getAttribute("liferay-commerce:header:title");
 PortletURL transitionPortletURL = (PortletURL)request.getAttribute("liferay-commerce:header:transitionPortletURL");
 String version = (String)request.getAttribute("liferay-commerce:header:version");
 String wrapperCssClasses = (String)request.getAttribute("liferay-commerce:header:wrapperCssClasses");
+String spritemap = (String)request.getAttribute("liferay-commerce:cart:spritemap");
 
 long beanId = 0;
 

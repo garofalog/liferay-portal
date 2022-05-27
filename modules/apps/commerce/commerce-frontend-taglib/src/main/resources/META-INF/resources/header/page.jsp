@@ -180,6 +180,17 @@ String myWorkflowTasksPortletNamespace = PortalUtil.getPortletNamespace(PortletK
 							</liferay-portlet:renderURL>
 						</div>
 					</div>
+
+					<liferay-frontend:component
+						context='<%=
+							HashMapBuilder.<String, Object>put(
+								"dropDownItems", jsonSerializer.serializeDeep(dropdownItems)
+							).put(
+								"formId", HtmlUtil.escapeJS(action.getFormId())
+							).build()
+						%>'
+						module="js/channels_loop"
+					/>
 				</c:if>
 
 				<c:if test="<%= Validator.isNotNull(actions) && !actions.isEmpty() %>">
@@ -206,6 +217,21 @@ String myWorkflowTasksPortletNamespace = PortalUtil.getPortletNamespace(PortletK
 								href="<%= Validator.isNotNull(action.getHref()) ? action.getHref() : StringPool.POUND %>"
 								id="<%= HtmlUtil.escape(actionId) %>"
 								label="<%= LanguageUtil.get(request, HtmlUtil.escape(action.getLabel())) %>"
+							/>
+
+							<liferay-frontend:component
+								context='<%=
+									HashMapBuilder.<String, Object>put(
+										"actionId", HtmlUtil.escapeJS(actionId)
+									).put(
+										"dropDownItems", jsonSerializer.serializeDeep(dropdownItems)
+									).put(
+										"formId", HtmlUtil.escapeJS(action.getFormId())
+									).put(
+										"submitCheck", submitCheck
+									).build()
+								%>'
+								module="js/channels_loop"
 							/>
 
 						<%
@@ -241,21 +267,11 @@ String myWorkflowTasksPortletNamespace = PortalUtil.getPortletNamespace(PortletK
 <liferay-frontend:component
 	context='<%=
 		HashMapBuilder.<String, Object>put(
-			"actionId", HtmlUtil.escapeJS(actionId)
-		).put(
-			"assignToURL", HtmlUtil.escapeJS(assignToURL)
-			).put(
-			"assignToMeURL", HtmlUtil.escapeJS(assignToMeURL)
-		).put(
 			"dropDownItems", jsonSerializer.serializeDeep(dropdownItems)
 		).put(
-			"formId", HtmlUtil.escapeJS(action.getFormId())
-		).put(
 			"myWorkflowTasksPortletNamespace", myWorkflowTasksPortletNamespace
-			).put(
-			"submitCheck", submitCheck
 		).put(
-			"spritemap", themeDisplay.getPathThemeImages() + "/clay/icons.svg"
+			"spritemap", spritemap
 		).build()
 	%>'
 	module="js/channels"

@@ -8,7 +8,8 @@ export default function ({
 	myWorkflowTasksPortletNamespace,
 	assignToURL,
 	assignToMeURL,
-	dropDownItems,submitCheck,
+	dropDownItems,
+	submitCheck,
 	actionId,
 	formId,
 	spritemapIcon,
@@ -24,7 +25,7 @@ export default function ({
 		),
 		commerceHeader = document.querySelector('.commerce-header'),
 		pageHeader = document.querySelector('.page-header');
-		formWrapper = document.getElementById(formId)
+	formWrapper = document.getElementById(formId);
 
 	function openModal(event) {
 		event.preventDefault();
@@ -108,9 +109,8 @@ export default function ({
 
 	toggleDropdownButton.addEventListener('click', toggleDropdown);
 
-	if(formId !== '' && submitCheck){
+	if (formId !== '' && submitCheck) {
 		actionIdElement.addEventListener('click', formSubmit);
-
 	}
 
 	DropDown('dropdown-header', 'dropdown-header-container', {
@@ -138,7 +138,7 @@ export default function ({
 
 			actionIdElement.removeEventListener('click', formSubmit);
 
-			if(formId !== '' && submitCheck){
+			if (formId !== '' && submitCheck) {
 				actionIdElement.removeEventListener('click', formSubmit);
 			}
 			if (pageHeader) {
