@@ -1,4 +1,5 @@
-#minium .add-to-cart {
+#minium [id$="add-to-cart"] {
+	margin-bottom: 0.5rem !important;
 	.btn-lg {
 		margin: 0 1.25rem;
 		padding: 0 2rem;
@@ -17,6 +18,6 @@
 	}
 }
 
-#minium .product-detail-actions .add-to-cart {
+#minium .product-detail-actions [id$="add-to-cart"] {
 	margin: 0 !important;
 }
