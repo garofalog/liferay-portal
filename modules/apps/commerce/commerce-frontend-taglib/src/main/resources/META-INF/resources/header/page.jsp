@@ -103,15 +103,6 @@ String myWorkflowTasksPortletNamespace = PortalUtil.getPortletNamespace(PortletK
 									small="<%= true %>"
 								/>
 
-								<aui:script require="commerce-frontend-js/utilities/eventsDefinitions as events">
-									document
-										.querySelector('#erc-edit-modal-opener')
-										.addEventListener('click', (e) => {
-											e.preventDefault();
-											Liferay.fire(events.OPEN_MODAL, {id: 'erc-edit-modal'});
-										});
-								</aui:script>
-
 								<commerce-ui:modal
 									id="erc-edit-modal"
 									refreshPageOnClose="<%= true %>"
@@ -172,27 +163,6 @@ String myWorkflowTasksPortletNamespace = PortalUtil.getPortletNamespace(PortletK
 									<portlet:param name="workflowTaskId" value="<%= String.valueOf(reviewWorkflowTask.getWorkflowTaskId()) %>" />
 									<portlet:param name="assigneeUserId" value="<%= String.valueOf(user.getUserId()) %>" />
 								</liferay-portlet:renderURL>
-
-								<aui:script>
-									document
-										.querySelector('#<portlet:namespace />assign-to-me-modal-opener')
-										.addEventListener('click', (e) => {
-											Liferay.Util.openWindow({
-												dialog: {
-													destroyOnHide: true,
-													height: 430,
-													resizable: false,
-													width: 896,
-												},
-												dialogIframe: {
-													bodyCssClass: 'dialog-with-footer task-dialog',
-												},
-												id: '<%= myWorkflowTasksPortletNamespace %>assignToDialog',
-												title: '<liferay-ui:message key="assign-to-me" />',
-												uri: '<%= HtmlUtil.escapeJS(assignToMeURL) %>',
-											});
-										});
-								</aui:script>
 							</c:if>
 
 							<clay:button
@@ -209,45 +179,18 @@ String myWorkflowTasksPortletNamespace = PortalUtil.getPortletNamespace(PortletK
 								<portlet:param name="workflowTaskId" value="<%= String.valueOf(reviewWorkflowTask.getWorkflowTaskId()) %>" />
 							</liferay-portlet:renderURL>
 
-							<aui:script>
-								document
-									.querySelector('#<portlet:namespace />assign-to-modal-opener')
-									.addEventListener('click', (e) => {
-										Liferay.Util.openWindow({
-											dialog: {
-												destroyOnHide: true,
-												height: 430,
-												resizable: false,
-												width: 896,
-											},
-											dialogIframe: {
-												bodyCssClass: 'dialog-with-footer task-dialog',
-											},
-											id: '<%= myWorkflowTasksPortletNamespace %>assignToDialog',
-											title: '<liferay-ui:message key="assign-to-..." />',
-											uri: '<%= HtmlUtil.escapeJS(assignToURL) %>',
-										});
-									});
-
-								function <%= myWorkflowTasksPortletNamespace %>refreshPortlet() {
-									window.location.reload();
-								}
-
-								Liferay.provide(window, '<portlet:namespace />toggleDropdown', () => {
-									var dropdownElement = window.document.querySelector(
-										'#<portlet:namespace />commerce-dropdown-assigned-to'
-									);
-
-									if (dropdownElement) {
-										if (dropdownElement.classList.contains('show')) {
-											dropdownElement.classList.remove('show');
-										}
-										else {
-											dropdownElement.classList.add('show');
-										}
-									}
-								});
-							</aui:script>
+							<liferay-frontend:component
+								context='<%=
+									HashMapBuilder.<String, Object>put(
+										"assignToMeURL", assignToMeURL
+									).put(
+										"assignToURL", assignToURL
+									).put(
+										"myWorkflowTasksPortletNamespace", myWorkflowTasksPortletNamespace
+									).build()
+								%>'
+								module="js/header"
+							/>
 						</div>
 					</div>
 				</c:if>
@@ -278,25 +221,19 @@ String myWorkflowTasksPortletNamespace = PortalUtil.getPortletNamespace(PortletK
 								label="<%= LanguageUtil.get(request, HtmlUtil.escape(action.getLabel())) %>"
 							/>
 
-							<c:if test="<%= submitCheck && Validator.isNotNull(action.getFormId()) %>">
-								<aui:script>
-									document
-										.getElementById('<%= HtmlUtil.escapeJS(actionId) %>')
-										.addEventListener('click', (e) => {
-											e.preventDefault();
-											var form = document.getElementById(
-												'<%= HtmlUtil.escapeJS(action.getFormId()) %>'
-											);
-											if (!form) {
-												throw new Error(
-													'Form with id: ' +
-														<%= HtmlUtil.escapeJS(action.getFormId()) %> +
-														' not found!'
-												);
-											}
-											submitForm(form);
-										});
-								</aui:script>
+							<c:if test="<%= submitCheck %>">
+								<liferay-frontend:component
+									context='<%=
+										HashMapBuilder.<String, Object>put(
+											"actionId", actionId
+										).put(
+											"formId", action.getFormId()
+										).put(
+											"submitCheck", submitCheck
+										).build()
+									%>'
+									module="js/loop"
+								/>
 							</c:if>
 
 						<%
@@ -308,19 +245,25 @@ String myWorkflowTasksPortletNamespace = PortalUtil.getPortletNamespace(PortletK
 
 				<c:if test="<%= Validator.isNotNull(dropdownItems) || Validator.isNotNull(previewUrl) %>">
 					<c:if test="<%= Validator.isNotNull(dropdownItems) && (dropdownItems.size() > 0) %>">
-						<div class="c-ml-3" id="dropdown-header-container">
+						<div class="c-ml-3" id="<portlet:namespace />dropdown-header">
 							<liferay-ui:icon
 								icon="ellipsis-v"
 								markupView="lexicon"
 							/>
 						</div>
 
-						<aui:script require="commerce-frontend-js/components/dropdown/entry as dropdown">
-							dropdown.default('dropdown-header', 'dropdown-header-container', {
-								items: <%= jsonSerializer.serializeDeep(dropdownItems) %>,
-								spritemap: '<%= themeDisplay.getPathThemeImages() + "/clay/icons.svg" %>',
-							});
-						</aui:script>
+						<liferay-frontend:component
+							context='<%=
+								HashMapBuilder.<String, Object>put(
+									"id", "<portlet:namespace />dropdown-header"
+								).put(
+									"items", jsonSerializer.serializeDeep(dropdownItems)
+								).put(
+									"spritemap", themeDisplay.getPathThemeImages() + "/clay/icons.svg"
+								).build()
+							%>'
+							module="js/dropdown"
+						/>
 					</c:if>
 
 					<c:if test="<%= Validator.isNotNull(previewUrl) %>">
@@ -335,32 +278,3 @@ String myWorkflowTasksPortletNamespace = PortalUtil.getPortletNamespace(PortletK
 		</div>
 	</div>
 </div>
-
-<aui:script require="frontend-js-web/liferay/debounce/debounce.es as debounce">
-	var commerceHeader = document.querySelector('.commerce-header');
-	var pageHeader = document.querySelector('.page-header');
-
-	function updateMenuDistanceFromTop() {
-		if (!commerceHeader || !commerceHeader.getClientRects()[0]) return;
-		var distanceFromTop = commerceHeader.getClientRects()[0].bottom;
-		pageHeader.style.top = distanceFromTop + 'px';
-	}
-
-	var debouncedUpdateMenuDistanceFromTop = debounce.default(
-		updateMenuDistanceFromTop,
-		200
-	);
-
-	if (pageHeader) {
-		pageHeader.classList.add('sticky-header-menu');
-		updateMenuDistanceFromTop();
-		window.addEventListener('resize', debouncedUpdateMenuDistanceFromTop);
-
-		Liferay.once('beforeNavigate', () => {
-			window.removeEventListener(
-				'resize',
-				debouncedUpdateMenuDistanceFromTop
-			);
-		});
-	}
-</aui:script>
