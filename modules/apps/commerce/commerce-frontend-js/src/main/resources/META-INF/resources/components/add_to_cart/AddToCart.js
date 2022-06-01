@@ -55,7 +55,7 @@ function AddToCart({
 	const cart = useCommerceCart(
 		{
 			UUID: initialCartUUID,
-			id: initialCartId,
+			id: initialCartId === 0 ? null : initialCartId,
 		},
 		channel.groupId
 	);

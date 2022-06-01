@@ -30,14 +30,22 @@ import com.liferay.commerce.product.content.util.CPContentHelper;
 import com.liferay.commerce.service.CommerceOrderItemLocalService;
 import com.liferay.commerce.util.CommerceUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.template.react.renderer.ComponentDescriptor;
+import com.liferay.portal.template.react.renderer.ReactRenderer;
 import com.liferay.taglib.util.IncludeTag;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
@@ -45,6 +53,7 @@ import javax.servlet.jsp.PageContext;
  * @author Fabio Diego Mastrorilli
  * @author Gianmarco Brunialti Masera
  * @author Ivica Cardic
+ * @author Alessio Antonio Rendina
  */
 public class AddToCartTag extends IncludeTag {
 
@@ -60,20 +69,7 @@ public class AddToCartTag extends IncludeTag {
 			_commerceAccountId = CommerceUtil.getCommerceAccountId(
 				commerceContext);
 
-			_commerceChannelGroupId =
-				commerceContext.getCommerceChannelGroupId();
-			_commerceChannelId = commerceContext.getCommerceChannelId();
-
-			CommerceCurrency commerceCurrency =
-				commerceContext.getCommerceCurrency();
-
-			_commerceCurrencyCode = commerceCurrency.getCode();
-
 			CommerceOrder commerceOrder = commerceContext.getCommerceOrder();
-
-			if (commerceOrder != null) {
-				_commerceOrderId = commerceOrder.getCommerceOrderId();
-			}
 
 			CPSku cpSku = null;
 			boolean hasChildCPDefinitions = false;
@@ -122,6 +118,100 @@ public class AddToCartTag extends IncludeTag {
 						!cpSku.isPublished() || !cpSku.isPurchasable();
 				}
 			}
+
+			Map<String, Object> data = HashMapBuilder.<String, Object>put(
+				"accountId", _commerceAccountId
+			).put(
+				"cartId",
+				() -> {
+					if (commerceOrder != null) {
+						return commerceOrder.getCommerceOrderId();
+					}
+
+					return 0;
+				}
+			).put(
+				"channel",
+				() -> {
+					CommerceCurrency commerceCurrency =
+						commerceContext.getCommerceCurrency();
+
+					return JSONUtil.put(
+						"currencyCode", commerceCurrency.getCode()
+					).put(
+						"groupId", commerceContext.getCommerceChannelGroupId()
+					).put(
+						"id", commerceContext.getCommerceChannelId()
+					);
+				}
+			).put(
+				"cpInstance",
+				JSONUtil.put(
+					"inCart", _inCart
+				).put(
+					"skuId", _cpInstanceId
+				).put(
+					"skuOptions",
+					() -> {
+						if (Validator.isBlank(_skuOptions)) {
+							return JSONFactoryUtil.createJSONArray();
+						}
+
+						return JSONFactoryUtil.createJSONArray(_skuOptions);
+					}
+				).put(
+					"stockQuantity", _stockQuantity
+				)
+			).put(
+				"disabled", _disabled
+			).put(
+				"settings",
+				JSONUtil.put(
+					"alignment", _alignment
+				).put(
+					"iconOnly", _iconOnly
+				).put(
+					"iconOnly", _iconOnly
+				).put(
+					"inline", _inline
+				).put(
+					"namespace", _namespace
+				).put(
+					"productConfiguration",
+					JSONUtil.put(
+						"allowBackOrder", _productSettingsModel.isBackOrders()
+					).put(
+						"allowedOrderQuantities",
+						_productSettingsModel.getAllowedQuantities()
+					).put(
+						"maxOrderQuantity",
+						_productSettingsModel.getMaxQuantity()
+					).put(
+						"minOrderQuantity",
+						_productSettingsModel.getMinQuantity()
+					).put(
+						"multipleOrderQuantity",
+						_productSettingsModel.getMultipleQuantity()
+					)
+				).put(
+					"size", _size
+				)
+			).build();
+
+			HttpServletResponse httpServletResponse =
+				(HttpServletResponse)pageContext.getResponse();
+
+			String randomKey =
+				PortalUtil.generateRandomKey(httpServletRequest, "taglib") +
+					StringPool.UNDERLINE;
+
+			String componentId = randomKey + "add_to_cart";
+
+			_reactRenderer.renderReact(
+				new ComponentDescriptor(
+					"commerce-frontend-js/components/add_to_cart/AddToCart",
+					componentId),
+				data, httpServletRequest, httpServletResponse.getWriter());
 		}
 		catch (Exception exception) {
 			_log.error(exception);
@@ -129,7 +219,7 @@ public class AddToCartTag extends IncludeTag {
 			return SKIP_BODY;
 		}
 
-		return super.doStartTag();
+		return SKIP_BODY;
 	}
 
 	public String getAlignment() {
@@ -168,37 +258,6 @@ public class AddToCartTag extends IncludeTag {
 		_alignment = alignment;
 	}
 
-	@Override
-	public void setAttributes(HttpServletRequest httpServletRequest) {
-		setAttributeNamespace(_ATTRIBUTE_NAMESPACE);
-
-		setNamespacedAttribute(httpServletRequest, "alignment", _alignment);
-		setNamespacedAttribute(
-			httpServletRequest, "commerceAccountId", _commerceAccountId);
-		setNamespacedAttribute(
-			httpServletRequest, "commerceChannelGroupId",
-			_commerceChannelGroupId);
-		setNamespacedAttribute(
-			httpServletRequest, "commerceChannelId", _commerceChannelId);
-		setNamespacedAttribute(
-			httpServletRequest, "commerceCurrencyCode", _commerceCurrencyCode);
-		setNamespacedAttribute(
-			httpServletRequest, "commerceOrderId", _commerceOrderId);
-		setNamespacedAttribute(
-			httpServletRequest, "cpInstanceId", _cpInstanceId);
-		setNamespacedAttribute(httpServletRequest, "disabled", _disabled);
-		setNamespacedAttribute(httpServletRequest, "iconOnly", _iconOnly);
-		setNamespacedAttribute(httpServletRequest, "inCart", _inCart);
-		setNamespacedAttribute(httpServletRequest, "inline", _inline);
-		setNamespacedAttribute(httpServletRequest, "namespace", _namespace);
-		setNamespacedAttribute(
-			httpServletRequest, "productSettingsModel", _productSettingsModel);
-		setNamespacedAttribute(httpServletRequest, "size", _size);
-		setNamespacedAttribute(httpServletRequest, "skuOptions", _skuOptions);
-		setNamespacedAttribute(
-			httpServletRequest, "stockQuantity", _stockQuantity);
-	}
-
 	public void setCPCatalogEntry(CPCatalogEntry cpCatalogEntry) {
 		_cpCatalogEntry = cpCatalogEntry;
 	}
@@ -233,6 +292,7 @@ public class AddToCartTag extends IncludeTag {
 			ServletContextUtil.getCommerceOrderItemLocalService();
 		_cpContentHelper = ServletContextUtil.getCPContentHelper();
 		_productHelper = ServletContextUtil.getProductHelper();
+		_reactRenderer = ServletContextUtil.getReactRenderer();
 	}
 
 	public void setSize(String size) {
@@ -249,12 +309,8 @@ public class AddToCartTag extends IncludeTag {
 
 		_alignment = "center";
 		_commerceAccountId = 0;
-		_commerceChannelGroupId = 0;
-		_commerceChannelId = 0;
-		_commerceCurrencyCode = null;
 		_commerceInventoryEngine = null;
 		_commerceOrderHttpHelper = null;
-		_commerceOrderId = 0;
 		_commerceOrderItemLocalService = null;
 		_cpCatalogEntry = null;
 		_cpContentHelper = null;
@@ -266,31 +322,18 @@ public class AddToCartTag extends IncludeTag {
 		_namespace = StringPool.BLANK;
 		_productHelper = null;
 		_productSettingsModel = null;
+		_reactRenderer = null;
 		_size = "md";
 		_skuOptions = null;
 		_stockQuantity = 0;
 	}
 
-	@Override
-	protected String getPage() {
-		return _PAGE;
-	}
-
-	private static final String _ATTRIBUTE_NAMESPACE =
-		"liferay-commerce:add-to-cart:";
-
-	private static final String _PAGE = "/add_to_cart/page.jsp";
-
 	private static final Log _log = LogFactoryUtil.getLog(AddToCartTag.class);
 
 	private String _alignment = "center";
 	private long _commerceAccountId;
-	private long _commerceChannelGroupId;
-	private long _commerceChannelId;
-	private String _commerceCurrencyCode;
 	private CommerceInventoryEngine _commerceInventoryEngine;
 	private CommerceOrderHttpHelper _commerceOrderHttpHelper;
-	private long _commerceOrderId;
 	private CommerceOrderItemLocalService _commerceOrderItemLocalService;
 	private CPCatalogEntry _cpCatalogEntry;
 	private CPContentHelper _cpContentHelper;
@@ -302,6 +345,7 @@ public class AddToCartTag extends IncludeTag {
 	private String _namespace = StringPool.BLANK;
 	private ProductHelper _productHelper;
 	private ProductSettingsModel _productSettingsModel;
+	private ReactRenderer _reactRenderer;
 	private String _size = "md";
 	private String _skuOptions;
 	private int _stockQuantity;
