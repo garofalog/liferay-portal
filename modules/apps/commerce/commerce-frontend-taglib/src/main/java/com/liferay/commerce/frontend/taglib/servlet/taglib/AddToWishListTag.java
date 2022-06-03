@@ -21,11 +21,29 @@ import com.liferay.commerce.product.catalog.CPCatalogEntry;
 import com.liferay.commerce.product.catalog.CPSku;
 import com.liferay.commerce.product.content.util.CPContentHelper;
 import com.liferay.commerce.util.CommerceUtil;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
+
+import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.template.react.renderer.ComponentDescriptor;
+import com.liferay.portal.template.react.renderer.ReactRenderer;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.taglib.util.IncludeTag;
+import javax.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
+
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -35,6 +53,57 @@ import javax.servlet.jsp.PageContext;
  * @author Gianmarco Brunialti Masera
  */
 public class AddToWishListTag extends IncludeTag {
+
+	private void _writePlaceholder(
+		String componentId, HttpServletRequest httpServletRequest)
+		throws IOException {
+
+		String spaceDirection = GetterUtil.getBoolean(_inline) ? "ml" : "mt";
+		String spacer = _size.equals("sm") ? "1" : "3";
+
+		String buttonCssClasses = StringBundler.concat(
+			"btn btn-add-to-cart btn-", _size, StringPool.SPACE, spaceDirection,
+			StringPool.DASH, spacer);
+
+		String selectorCssClasses =
+			"form-control quantity-selector form-control-" + _size;
+		String wrapperCssClasses =
+			"add-to-cart-wrapper align-items-center d-flex";
+
+		if (GetterUtil.getBoolean(_iconOnly)) {
+			buttonCssClasses = buttonCssClasses.concat(" icon-only");
+		}
+
+		if (!GetterUtil.getBoolean(_inline)) {
+			wrapperCssClasses = wrapperCssClasses.concat(" flex-column");
+		}
+
+		if (_alignment.equals("center")) {
+			wrapperCssClasses = wrapperCssClasses.concat(" align-items-center");
+		}
+
+		if (_alignment.equals("full-width")) {
+			buttonCssClasses = buttonCssClasses.concat(" btn-block");
+			wrapperCssClasses = wrapperCssClasses.concat(" align-items-center");
+		}
+
+		JspWriter jspWriter = pageContext.getOut();
+
+		jspWriter.write("<div class=\"add-to-cart mb-2\" id=\"");
+		jspWriter.write(componentId);
+		jspWriter.write("\">");
+		jspWriter.write("<div class=\"");
+		jspWriter.write(wrapperCssClasses);
+		jspWriter.write("\">");
+		jspWriter.write("<div class=\"");
+		jspWriter.write(selectorCssClasses);
+		jspWriter.write(" skeleton\"></div>");
+		jspWriter.write("<button class=\"");
+		jspWriter.write(buttonCssClasses);
+		jspWriter.write(" skeleton\">");
+		jspWriter.write(LanguageUtil.get(httpServletRequest, "add-to-cart"));
+		jspWriter.write("</button></div></div>");
+	}
 
 	@Override
 	public int doStartTag() throws JspException {
@@ -57,6 +126,39 @@ public class AddToWishListTag extends IncludeTag {
 			if (cpSku != null) {
 				_skuId = cpSku.getCPInstanceId();
 			}
+
+			String randomKey =
+				PortalUtil.generateRandomKey(httpServletRequest, "taglib") +
+				StringPool.UNDERLINE;
+			String _addToWishListId = randomKey + "add_to_wish_list";
+
+			Map<String, Object> data = HashMapBuilder.<String, Object>put(
+				"accountId", _commerceAccountId
+			).put(
+				"cpDefinitionId", _cpCatalogEntry.getCPDefinitionId()
+			).put(
+				"isInWishList", _inWishList
+			).put(
+				"large", _large
+			).put(
+				"skuId", _skuId
+			).build();
+
+			HttpServletResponse httpServletResponse =
+				(HttpServletResponse)pageContext.getResponse();
+
+
+
+
+
+			_writePlaceholder(_addToWishListId, httpServletRequest);
+
+			_reactRenderer.renderReact(
+				new ComponentDescriptor(
+					"commerce-frontend-js/components/add_to_wishlist/AddToWishList",
+					componentId),
+				data, httpServletRequest, httpServletResponse.getWriter());
+
 		}
 		catch (Exception exception) {
 			_log.error(exception);
@@ -64,7 +166,7 @@ public class AddToWishListTag extends IncludeTag {
 			return SKIP_BODY;
 		}
 
-		return super.doStartTag();
+		return SKIP_BODY;
 	}
 
 	public CPCatalogEntry getCPCatalogEntry() {
@@ -103,6 +205,8 @@ public class AddToWishListTag extends IncludeTag {
 		setServletContext(ServletContextUtil.getServletContext());
 
 		_cpContentHelper = ServletContextUtil.getCPContentHelper();
+		_reactRenderer = ServletContextUtil.getReactRenderer();
+
 	}
 
 	public void setSkuId(long skuId) {
@@ -129,8 +233,6 @@ public class AddToWishListTag extends IncludeTag {
 	private static final String _ATTRIBUTE_NAMESPACE =
 		"liferay-commerce:add-to-wish-list:";
 
-	private static final String _PAGE = "/add_to_wish_list/page.jsp";
-
 	private static final Log _log = LogFactoryUtil.getLog(
 		AddToWishListTag.class);
 
@@ -138,6 +240,8 @@ public class AddToWishListTag extends IncludeTag {
 	private CPCatalogEntry _cpCatalogEntry;
 	private CPContentHelper _cpContentHelper;
 	private boolean _inWishList;
+	private ReactRenderer _reactRenderer;
+
 	private boolean _large;
 	private long _skuId;
 
