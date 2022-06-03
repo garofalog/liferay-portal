@@ -12,24 +12,24 @@
  * details.
  */
 export default function ({actionId, formId, submitCheck}) {
-	if (formId) {
-		const actionIdElement = document.getElementById(actionId);
-		if (formId !== '' && submitCheck) {
-			actionIdElement.addEventListener('click', formSubmit);
+	const actionIdElement = document.getElementById(actionId),
+		formWrapper = document.getElementById(formId);
+
+	function formSubmit(event) {
+		event.preventDefault();
+		if (!formWrapper) {
+			throw new Error(`Form with id: ${formId} not found!`);
+
+			submitForm(formWrapper);
 		}
-		actionIdElement.addEventListener('click', (event) => {
-			event.preventDefault();
-			const form = document.getElementById(formId);
-			if (!form) {
-				throw new Error(`Form with id: ${formId} not found!`);
-			}
-			submitForm(form);
-		});
 	}
+
+	if (formId !== '' && submitCheck) {
+		actionIdElement.addEventListener('click', formSubmit);
+	}
+
 	return {
 		dispose() {
-			actionIdElement.removeEventListener('click', formSubmit);
-
 			if (formId !== '' && submitCheck) {
 				actionIdElement.removeEventListener('click', formSubmit);
 			}

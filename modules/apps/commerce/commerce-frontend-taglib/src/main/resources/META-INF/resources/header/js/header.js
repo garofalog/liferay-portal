@@ -6,7 +6,6 @@ export default function ({
 	myWorkflowTasksPortletNamespace,
 	assignToURL,
 	assignToMeURL,
-	formId,
 }) {
 	const assignToMe = document.querySelector(
 			`${namespace}assign-to-me-modal-opener`
@@ -24,24 +23,23 @@ export default function ({
 		Liferay.fire(OPEN_MODAL, {id: 'erc-edit-modal'});
 	}
 
-	function assignToMeModalOpener(event) {
-		Liferay.Util.openWindow({
-			dialog: {
-				destroyOnHide: true,
-				height: 430,
-				resizable: false,
-				width: 896,
-			},
-			dialogIframe: {
-				bodyCssClass: 'dialog-with-footer task-dialog',
-			},
-			id: `${myWorkflowTasksPortletNamespace}assignToDialog`,
-			title: Liferay.Language.get('assign-to-me...'),
-			uri: assignToMeURL,
-		});
-	}
-
-	function assignToModalOpener(event) {
+	function assignToModalOpener() {
+		if (assignToMeURL) {
+			Liferay.Util.openWindow({
+				dialog: {
+					destroyOnHide: true,
+					height: 430,
+					resizable: false,
+					width: 896,
+				},
+				dialogIframe: {
+					bodyCssClass: 'dialog-with-footer task-dialog',
+				},
+				id: `${myWorkflowTasksPortletNamespace}assignToDialog`,
+				title: Liferay.Language.get('assign-to-me...'),
+				uri: assignToMeURL,
+			});
+		}
 		Liferay.Util.openWindow({
 			dialog: {
 				destroyOnHide: true,
@@ -56,15 +54,6 @@ export default function ({
 			title: Liferay.Language.get('assign-to-...'),
 			uri: assignToURL,
 		});
-	}
-
-	function formSubmit(event) {
-		event.preventDefault();
-		if (!formWrapper) {
-			throw new Error('Form with id: ' + formId + ' not found!');
-
-			submitForm(formWrapper);
-		}
 	}
 
 	const toggleDropdown = () => {
@@ -95,32 +84,33 @@ export default function ({
 
 	modalOpener.addEventListener('click', openModal);
 
-	assignToMe.addEventListener('click', assignToMeModalOpener);
-
 	assignTo.addEventListener('click', assignToModalOpener);
+	assignToMe.addEventListener('click', assignToModalOpener);
 
 	toggleDropdownButton.addEventListener('click', toggleDropdown);
 
 	if (pageHeader) {
 		pageHeader.classList.add('sticky-header-menu');
 		updateMenuDistanceFromTop();
-		window.addEventListener('resize', debouncedUpdateMenuDistanceFromTop, {
-			once: true,
-		});
+		document.addEventListener(
+			'resize',
+			debouncedUpdateMenuDistanceFromTop,
+			{
+				once: true,
+			}
+		);
 	}
 
 	return {
 		dispose() {
 			modalOpener.removeEventListener('click', openModal);
 
-			assignToMe.removeEventListener('click', assignToMeModalOpener);
-
 			assignTo.removeEventListener('click', assignToModalOpener);
 
 			toggleDropdownButton.removeEventListener('click', toggleDropdown);
 
 			if (pageHeader) {
-				window.removeEventListener(
+				document.removeEventListener(
 					'resize',
 					debouncedUpdateMenuDistanceFromTop,
 					{once: true}

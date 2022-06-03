@@ -163,6 +163,19 @@ String myWorkflowTasksPortletNamespace = PortalUtil.getPortletNamespace(PortletK
 									<portlet:param name="workflowTaskId" value="<%= String.valueOf(reviewWorkflowTask.getWorkflowTaskId()) %>" />
 									<portlet:param name="assigneeUserId" value="<%= String.valueOf(user.getUserId()) %>" />
 								</liferay-portlet:renderURL>
+
+								<liferay-frontend:component
+									context='<%=
+										HashMapBuilder.<String, Object>put(
+											"assignToMeURL", true
+										).put(
+											"assignToURL", assignToMeURL
+										).put(
+											"myWorkflowTasksPortletNamespace", myWorkflowTasksPortletNamespace
+										).build()
+									%>'
+									module="js/header"
+								/>
 							</c:if>
 
 							<clay:button
@@ -182,7 +195,7 @@ String myWorkflowTasksPortletNamespace = PortalUtil.getPortletNamespace(PortletK
 							<liferay-frontend:component
 								context='<%=
 									HashMapBuilder.<String, Object>put(
-										"assignToMeURL", assignToMeURL
+										"assignToMeURL", false
 									).put(
 										"assignToURL", assignToURL
 									).put(
