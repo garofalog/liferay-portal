@@ -69,8 +69,8 @@ AddToWishList.defaultProps = {
 };
 
 AddToWishList.propTypes = {
-	addToWishListId: PropTypes.string.isRequired,
 	accountId: PropTypes.number,
+	addToWishListId: PropTypes.string.isRequired,
 	cpDefinitionId: PropTypes.number,
 	isInWishList: PropTypes.bool,
 	large: PropTypes.bool,

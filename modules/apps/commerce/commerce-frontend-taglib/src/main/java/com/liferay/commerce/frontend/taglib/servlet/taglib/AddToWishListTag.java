@@ -186,7 +186,6 @@ public class AddToWishListTag extends IncludeTag {
 		jspWriter.write("<div class=\"add-to-wish-list\" id=\"");
 		jspWriter.write(addToWishListId);
 		jspWriter.write("\">");
-
 		jspWriter.write("<button class=\"");
 		jspWriter.write(buttonCssClasses);
 		jspWriter.write(" skeleton\" type=\"button\">");
