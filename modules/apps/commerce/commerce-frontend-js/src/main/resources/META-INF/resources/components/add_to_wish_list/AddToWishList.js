@@ -20,7 +20,13 @@ import React, {useState} from 'react';
 import {showErrorNotification} from '../../utilities/notifications';
 import LegacyWishListResource from './util/LegacyWishListResource';
 
-function AddToWishList({iconOnly, isInWishList, large, ...productInfo}) {
+function AddToWishList({
+	addToWishListId,
+	iconOnly,
+	isInWishList,
+	large,
+	...productInfo
+}) {
 	const [isAdded, setIsAdded] = useState(isInWishList);
 
 	const toggleInWishList = () =>
@@ -35,23 +41,25 @@ function AddToWishList({iconOnly, isInWishList, large, ...productInfo}) {
 	 * for the ClayDropDown in 7.4 GA2
 	 */
 	return (
-		<ClayButton
-			className={`btn-outline-borderless btn-${large ? 'lg' : 'sm'}`}
-			displayType="secondary"
-			onClick={toggleInWishList}
-		>
-			{!iconOnly && (
-				<span className="text-truncate-inline">
-					<span className="font-weight-normal text-truncate">
-						{Liferay.Language.get('add-to-list')}
+		<div className="add-to-wish-list" id={addToWishListId}>
+			<ClayButton
+				className={`btn-outline-borderless btn-${large ? 'lg' : 'sm'}`}
+				displayType="secondary"
+				onClick={toggleInWishList}
+			>
+				{!iconOnly && (
+					<span className="text-truncate-inline">
+						<span className="font-weight-normal text-truncate">
+							{Liferay.Language.get('add-to-list')}
+						</span>
 					</span>
-				</span>
-			)}
+				)}
 
-			<span className="wish-list-icon">
-				<ClayIcon symbol={`heart${isAdded ? '-full' : ''}`} />
-			</span>
-		</ClayButton>
+				<span className="wish-list-icon">
+					<ClayIcon symbol={`heart${isAdded ? '-full' : ''}`} />
+				</span>
+			</ClayButton>
+		</div>
 	);
 }
 
@@ -61,6 +69,7 @@ AddToWishList.defaultProps = {
 };
 
 AddToWishList.propTypes = {
+	addToWishListId: PropTypes.string.isRequired,
 	accountId: PropTypes.number,
 	cpDefinitionId: PropTypes.number,
 	isInWishList: PropTypes.bool,
