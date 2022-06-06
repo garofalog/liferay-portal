@@ -77,12 +77,10 @@ public class AddToWishListTag extends IncludeTag {
 
 			String addToWishListId = randomKey + "add_to_wish_list";
 
-			String addToWishListPath =
-				"commerce-frontend-js/components/add_to_wish_list" +
-					"/AddToWishList";
-
 			Map<String, Object> data = HashMapBuilder.<String, Object>put(
 				"accountId", _commerceAccountId
+			).put(
+				"addToWishListId", addToWishListId
 			).put(
 				"cpDefinitionId", _cpCatalogEntry.getCPDefinitionId()
 			).put(
@@ -99,7 +97,10 @@ public class AddToWishListTag extends IncludeTag {
 			_writePlaceholder(addToWishListId, httpServletRequest);
 
 			_reactRenderer.renderReact(
-				new ComponentDescriptor(addToWishListPath, addToWishListId),
+				new ComponentDescriptor(
+					"commerce-frontend-js/components/add_to_wish_list" +
+						"/AddToWishList",
+					addToWishListId),
 				data, httpServletRequest, httpServletResponse.getWriter());
 		}
 		catch (Exception exception) {
@@ -185,19 +186,16 @@ public class AddToWishListTag extends IncludeTag {
 		jspWriter.write("<div class=\"add-to-wish-list\" id=\"");
 		jspWriter.write(addToWishListId);
 		jspWriter.write("\">");
+
 		jspWriter.write("<button class=\"");
 		jspWriter.write(buttonCssClasses);
-		jspWriter.write(" skeleton\" type=\"button\">\n");
-		jspWriter.write("<span class=\"text-truncate-inline\">\n");
-		jspWriter.write("<span class=\"font-weight-normal text-truncate\">\n");
+		jspWriter.write(" skeleton\" type=\"button\">");
+		jspWriter.write("<span class=\"text-truncate-inline\">");
+		jspWriter.write("<span class=\"font-weight-normal text-truncate\">");
 		jspWriter.write(LanguageUtil.get(httpServletRequest, "add-to-list"));
-		jspWriter.write("</span>\n");
-		jspWriter.write("<span class=\"wish-list-icon\">\n");
+		jspWriter.write("</span></span><span class=\"wish-list-icon\">");
 		jspWriter.write("<svg class=\"lexicon-icon lexicon-icon-heart\"");
-		jspWriter.write(" role=\"presentation\"></svg>");
-		jspWriter.write("</span>\n");
-		jspWriter.write("</button>");
-		jspWriter.write("</div>");
+		jspWriter.write(" role=\"presentation\"></svg></span></button></div>");
 	}
 
 	private static final String _ATTRIBUTE_NAMESPACE =
