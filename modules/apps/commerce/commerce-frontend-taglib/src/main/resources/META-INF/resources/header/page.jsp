@@ -103,14 +103,9 @@ String myWorkflowTasksPortletNamespace = PortalUtil.getPortletNamespace(PortletK
 									small="<%= true %>"
 								/>
 
-								<aui:script require="commerce-frontend-js/utilities/eventsDefinitions as events">
-									document
-										.querySelector('#erc-edit-modal-opener')
-										.addEventListener('click', (e) => {
-											e.preventDefault();
-											Liferay.fire(events.OPEN_MODAL, {id: 'erc-edit-modal'});
-										});
-								</aui:script>
+								<liferay-frontend:component
+									module="header/js/modal"
+								/>
 
 								<commerce-ui:modal
 									id="erc-edit-modal"
