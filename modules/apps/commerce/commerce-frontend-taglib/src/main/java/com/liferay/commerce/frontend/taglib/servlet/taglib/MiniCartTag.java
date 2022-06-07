@@ -37,8 +37,13 @@ import com.liferay.portal.kernel.portlet.PortletProvider;
 import com.liferay.portal.kernel.portlet.PortletProviderUtil;
 import com.liferay.portal.kernel.settings.SystemSettingsLocator;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.template.react.renderer.ComponentDescriptor;
+import com.liferay.portal.template.react.renderer.ReactRenderer;
 import com.liferay.taglib.util.IncludeTag;
 
 import java.util.HashMap;
@@ -48,6 +53,7 @@ import java.util.Map;
 import javax.portlet.PortletURL;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
@@ -119,6 +125,47 @@ public class MiniCartTag extends IncludeTag {
 					"/commerce_checkout/checkout_redirect"
 				).buildString();
 			}
+
+			String randomKey =
+				PortalUtil.generateRandomKey(httpServletRequest, "taglib") +
+					StringPool.UNDERLINE;
+
+			String miniCartId = randomKey + "cart";
+
+			Map<String, Object> data = HashMapBuilder.<String, Object>put(
+				"cartViews", _views
+			).put(
+				"checkoutURL", _checkoutURL
+			).put(
+				"displayDiscountLevels", _isDisplayDiscountLevels()
+			).put(
+				"displayTotalItemsQuantity", _displayTotalItemsQuantity
+			).put(
+				"itemsQuantity", _displayTotalItemsQuantity
+			).put(
+				"labels", _labels
+			).put(
+				"orderDetailURL", _orderDetailURL
+			).put(
+				"orderId", _orderId
+			).put(
+				"productURLSeparator", _productURLSeparator
+			).put(
+				"siteDefaultURL", _siteDefaultURL
+			).put(
+				"spritemap", _spritemap
+			).put(
+				"toggleable", _toggleable
+			).build();
+
+			HttpServletResponse httpServletResponse =
+				(HttpServletResponse)pageContext.getResponse();
+
+			_reactRenderer.renderReact(
+				new ComponentDescriptor(
+					"commerce-frontend-js/components/mini_cart/MiniCart",
+					miniCartId),
+				data, httpServletRequest, httpServletResponse.getWriter());
 		}
 		catch (PortalException portalException) {
 			_log.error(portalException);
@@ -128,8 +175,13 @@ public class MiniCartTag extends IncludeTag {
 			_orderDetailURL = StringPool.BLANK;
 			_orderId = 0;
 		}
+		catch (Exception exception) {
+			_log.error(exception);
 
-		return super.doStartTag();
+			return SKIP_BODY;
+		}
+
+		return SKIP_BODY;
 	}
 
 	public Map<String, String> getLabels() {
@@ -190,14 +242,10 @@ public class MiniCartTag extends IncludeTag {
 		_orderDetailURL = null;
 		_orderId = 0;
 		_productURLSeparator = StringPool.BLANK;
+		_reactRenderer = null;
 		_siteDefaultURL = StringPool.BLANK;
 		_toggleable = true;
 		_views = new HashMap<>();
-	}
-
-	@Override
-	protected String getPage() {
-		return _PAGE;
 	}
 
 	@Override
@@ -269,8 +317,6 @@ public class MiniCartTag extends IncludeTag {
 		}
 	}
 
-	private static final String _PAGE = "/mini_cart/page.jsp";
-
 	private static final Log _log = LogFactoryUtil.getLog(MiniCartTag.class);
 
 	private String _checkoutURL;
@@ -282,6 +328,7 @@ public class MiniCartTag extends IncludeTag {
 	private String _orderDetailURL;
 	private long _orderId;
 	private String _productURLSeparator = StringPool.BLANK;
+	private ReactRenderer _reactRenderer;
 	private String _siteDefaultURL = StringPool.BLANK;
 	private boolean _toggleable = true;
 	private Map<String, String> _views = new HashMap<>();
