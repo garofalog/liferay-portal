@@ -133,15 +133,15 @@ public class MiniCartTag extends IncludeTag {
 			String miniCartId = randomKey + "cart";
 
 			Map<String, Object> data = HashMapBuilder.<String, Object>put(
-				"cartViews", _views
+				"cartViews", getViews()
 			).put(
 				"checkoutURL", _checkoutURL
 			).put(
 				"displayDiscountLevels", _isDisplayDiscountLevels()
 			).put(
-				"displayTotalItemsQuantity", _displayTotalItemsQuantity
+				"displayTotalItemsQuantity", isDisplayTotalItemsQuantity()
 			).put(
-				"itemsQuantity", _displayTotalItemsQuantity
+				"itemsQuantity", _itemsQuantity
 			).put(
 				"labels", _labels
 			).put(
@@ -153,9 +153,9 @@ public class MiniCartTag extends IncludeTag {
 			).put(
 				"siteDefaultURL", _siteDefaultURL
 			).put(
-				"spritemap", _spritemap
+				"spritemap", getSpritemap()
 			).put(
-				"toggleable", _toggleable
+				"toggleable", isToggleable()
 			).build();
 
 			HttpServletResponse httpServletResponse =
