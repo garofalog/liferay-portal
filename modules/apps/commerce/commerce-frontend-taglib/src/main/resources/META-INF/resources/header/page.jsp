@@ -155,6 +155,7 @@ String myWorkflowTasksPortletNamespace = PortalUtil.getPortletNamespace(PortletK
 							<c:if test="<%= !assignedToCurrentUser %>">
 								<clay:button
 									cssClass="dropdown-item transition-link"
+									data-assign="me"
 									displayType="secondary"
 									id='<%= liferayPortletResponse.getNamespace() + "assign-to-me-modal-opener" %>'
 									label='<%= LanguageUtil.get(request, "assign-to-me") %>'
@@ -168,30 +169,21 @@ String myWorkflowTasksPortletNamespace = PortalUtil.getPortletNamespace(PortletK
 									<portlet:param name="assigneeUserId" value="<%= String.valueOf(user.getUserId()) %>" />
 								</liferay-portlet:renderURL>
 
-								<aui:script>
-									document
-										.querySelector('#<portlet:namespace />assign-to-me-modal-opener')
-										.addEventListener('click', (e) => {
-											Liferay.Util.openWindow({
-												dialog: {
-													destroyOnHide: true,
-													height: 430,
-													resizable: false,
-													width: 896,
-												},
-												dialogIframe: {
-													bodyCssClass: 'dialog-with-footer task-dialog',
-												},
-												id: '<%= myWorkflowTasksPortletNamespace %>assignToDialog',
-												title: '<liferay-ui:message key="assign-to-me" />',
-												uri: '<%= HtmlUtil.escapeJS(assignToMeURL) %>',
-											});
-										});
-								</aui:script>
+								<liferay-frontend:component
+									context='<%=
+										HashMapBuilder.<String, Object>put(
+											"assignURL", assignToMeURL
+										).put(
+											"myWorkflowTasksPortletNamespace", myWorkflowTasksPortletNamespace
+										).build()
+									%>'
+									module="header/js/assign"
+								/>
 							</c:if>
 
 							<clay:button
 								cssClass="dropdown-item transition-link"
+								data-assign="other"
 								displayType="secondary"
 								id='<%= liferayPortletResponse.getNamespace() + "assign-to-modal-opener" %>'
 								label='<%= LanguageUtil.get(request, "assign-to-...") %>'
@@ -204,25 +196,16 @@ String myWorkflowTasksPortletNamespace = PortalUtil.getPortletNamespace(PortletK
 								<portlet:param name="workflowTaskId" value="<%= String.valueOf(reviewWorkflowTask.getWorkflowTaskId()) %>" />
 							</liferay-portlet:renderURL>
 
-							<aui:script>
-								document
-									.querySelector('#<portlet:namespace />assign-to-modal-opener')
-									.addEventListener('click', (e) => {
-										Liferay.Util.openWindow({
-											dialog: {
-												destroyOnHide: true,
-												height: 430,
-												resizable: false,
-												width: 896,
-											},
-											dialogIframe: {
-												bodyCssClass: 'dialog-with-footer task-dialog',
-											},
-											id: '<%= myWorkflowTasksPortletNamespace %>assignToDialog',
-											title: '<liferay-ui:message key="assign-to-..." />',
-											uri: '<%= HtmlUtil.escapeJS(assignToURL) %>',
-										});
-									});
+							<liferay-frontend:component
+								context='<%=
+									HashMapBuilder.<String, Object>put(
+										"assignURL", assignToURL
+									).put(
+										"myWorkflowTasksPortletNamespace", myWorkflowTasksPortletNamespace
+									).build()
+								%>'
+								module="header/js/assign"
+							/>
 
 								function <%= myWorkflowTasksPortletNamespace %>refreshPortlet() {
 									window.location.reload();
