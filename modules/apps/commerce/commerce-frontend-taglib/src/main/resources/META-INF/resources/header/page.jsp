@@ -210,7 +210,6 @@ String myWorkflowTasksPortletNamespace = PortalUtil.getPortletNamespace(PortletK
 							<liferay-frontend:component
 								module="header/js/dropdown"
 							/>
-
 						</div>
 					</div>
 				</c:if>
@@ -241,26 +240,18 @@ String myWorkflowTasksPortletNamespace = PortalUtil.getPortletNamespace(PortletK
 								label="<%= LanguageUtil.get(request, HtmlUtil.escape(action.getLabel())) %>"
 							/>
 
-							<c:if test="<%= submitCheck && Validator.isNotNull(action.getFormId()) %>">
-								<aui:script>
-									document
-										.getElementById('<%= HtmlUtil.escapeJS(actionId) %>')
-										.addEventListener('click', (e) => {
-											e.preventDefault();
-											var form = document.getElementById(
-												'<%= HtmlUtil.escapeJS(action.getFormId()) %>'
-											);
-											if (!form) {
-												throw new Error(
-													'Form with id: ' +
-														<%= HtmlUtil.escapeJS(action.getFormId()) %> +
-														' not found!'
-												);
-											}
-											submitForm(form);
-										});
-								</aui:script>
-							</c:if>
+							<liferay-frontend:component
+								context='<%=
+									HashMapBuilder.<String, Object>put(
+										"actionId", HtmlUtil.escapeJS(actionId)
+									).put(
+										"formId", action.getFormId()
+									).put(
+										"submitCheck", submitCheck
+									).build()
+								%>'
+								module="header/js/formSubmit"
+							/>
 
 						<%
 						}
