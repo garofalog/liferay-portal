@@ -293,32 +293,3 @@ String myWorkflowTasksPortletNamespace = PortalUtil.getPortletNamespace(PortletK
 		</div>
 	</div>
 </div>
-
-<aui:script require="frontend-js-web/liferay/debounce/debounce.es as debounce">
-	var commerceHeader = document.querySelector('.commerce-header');
-	var pageHeader = document.querySelector('.page-header');
-
-	function updateMenuDistanceFromTop() {
-		if (!commerceHeader || !commerceHeader.getClientRects()[0]) return;
-		var distanceFromTop = commerceHeader.getClientRects()[0].bottom;
-		pageHeader.style.top = distanceFromTop + 'px';
-	}
-
-	var debouncedUpdateMenuDistanceFromTop = debounce.default(
-		updateMenuDistanceFromTop,
-		200
-	);
-
-	if (pageHeader) {
-		pageHeader.classList.add('sticky-header-menu');
-		updateMenuDistanceFromTop();
-		window.addEventListener('resize', debouncedUpdateMenuDistanceFromTop);
-
-		Liferay.once('beforeNavigate', () => {
-			window.removeEventListener(
-				'resize',
-				debouncedUpdateMenuDistanceFromTop
-			);
-		});
-	}
-</aui:script>
