@@ -207,25 +207,10 @@ String myWorkflowTasksPortletNamespace = PortalUtil.getPortletNamespace(PortletK
 								module="header/js/assign"
 							/>
 
-								function <%= myWorkflowTasksPortletNamespace %>refreshPortlet() {
-									window.location.reload();
-								}
+							<liferay-frontend:component
+								module="header/js/dropdown"
+							/>
 
-								Liferay.provide(window, '<portlet:namespace />toggleDropdown', () => {
-									var dropdownElement = window.document.querySelector(
-										'#<portlet:namespace />commerce-dropdown-assigned-to'
-									);
-
-									if (dropdownElement) {
-										if (dropdownElement.classList.contains('show')) {
-											dropdownElement.classList.remove('show');
-										}
-										else {
-											dropdownElement.classList.add('show');
-										}
-									}
-								});
-							</aui:script>
 						</div>
 					</div>
 				</c:if>
