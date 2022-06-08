@@ -269,12 +269,16 @@ String myWorkflowTasksPortletNamespace = PortalUtil.getPortletNamespace(PortletK
 							/>
 						</div>
 
-						<aui:script require="commerce-frontend-js/components/dropdown/entry as dropdown">
-							dropdown.default('dropdown-header', 'dropdown-header-container', {
-								items: <%= jsonSerializer.serializeDeep(dropdownItems) %>,
-								spritemap: '<%= FrontendIconsUtil.getSpritemap(themeDisplay) %>',
-							});
-						</aui:script>
+						<liferay-frontend:component
+							context='<%=
+								HashMapBuilder.<String, Object>put(
+									"dropDownItems", jsonSerializer.serializeDeep(dropdownItems)
+								).put(
+									"spritemap", themeDisplay.getPathThemeImages() + "/clay/icons.svg"
+								).build()
+							%>'
+							module="header/js/dropDownComponent"
+						/>
 					</c:if>
 
 					<c:if test="<%= Validator.isNotNull(previewUrl) %>">
