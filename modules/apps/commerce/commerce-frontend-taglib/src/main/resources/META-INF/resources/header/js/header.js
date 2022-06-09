@@ -17,11 +17,13 @@ import {debounce} from 'frontend-js-web';
 export default function () {
 	const commerceHeader = document.querySelector('.commerce-header');
 	const pageHeader = document.querySelector('.page-header');
+	let distanceFromTop;
 
 	function updateMenuDistanceFromTop() {
-		if (!commerceHeader || !commerceHeader.getClientRects()[0]) return;
-		const distanceFromTop = commerceHeader.getClientRects()[0].bottom;
-		pageHeader.style.top = distanceFromTop + 'px';
+		if (!commerceHeader || !commerceHeader.getClientRects()[0]) {
+			distanceFromTop = commerceHeader.getClientRects()[0].bottom;
+		}
+		pageHeader.style.top = `${distanceFromTop}px`;
 	}
 
 	var debouncedUpdateMenuDistanceFromTop = debounce(

@@ -14,8 +14,8 @@
 
 export default function ({
 	assignURL,
-	namespace,
 	myWorkflowTasksPortletNamespace,
+	namespace,
 }) {
 	const assignToMe = document.getElementById(
 		`${namespace}assign-to-me-modal-opener`
