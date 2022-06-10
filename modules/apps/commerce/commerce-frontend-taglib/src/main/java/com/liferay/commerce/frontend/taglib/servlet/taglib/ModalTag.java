@@ -17,12 +17,38 @@ package com.liferay.commerce.frontend.taglib.servlet.taglib;
 import com.liferay.commerce.frontend.taglib.internal.servlet.ServletContextUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.frontend.icons.FrontendIconsUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.taglib.util.IncludeTag;
 
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
+
+import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.template.react.renderer.ComponentDescriptor;
+import com.liferay.portal.template.react.renderer.ReactRenderer;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.taglib.util.IncludeTag;
+import javax.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
+
+import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
@@ -30,12 +56,59 @@ import javax.servlet.jsp.PageContext;
  */
 public class ModalTag extends IncludeTag {
 
-	public String getId() {
-		return _id;
+	@Override
+	public int doStartTag() throws JspException {
+		try {
+			HttpServletRequest httpServletRequest = getRequest();
+
+			String randomKey =
+				PortalUtil.generateRandomKey(httpServletRequest, "taglib") +
+				StringPool.UNDERLINE;
+			String modalId = randomKey + "modal-root";
+
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)httpServletRequest.getAttribute(
+					WebKeys.THEME_DISPLAY);
+
+			PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
+
+			Map<String, Object> data = HashMapBuilder.<String, Object>put(
+				"id", _id
+			).put(
+				"onClose", _refreshPageOnClose
+			).put(
+				"portletId", portletDisplay.getRootPortletId()
+			).put(
+				"size", _size
+			).put(
+				"spritemap", _spritemap
+			).put(
+				"title", _title
+			).put(
+				"url", _url
+			).build();
+
+			HttpServletResponse httpServletResponse =
+				(HttpServletResponse)pageContext.getResponse();
+
+			_reactRenderer.renderReact(
+				new ComponentDescriptor(
+					"commerce-frontend-js/components/modal/Modal",
+					modalId),
+				data, httpServletRequest, httpServletResponse.getWriter());
+
+		}
+		catch (Exception exception) {
+			_log.error(exception);
+
+			return SKIP_BODY;
+		}
+
+		return SKIP_BODY;
 	}
 
-	public boolean getRefreshPageOnClose() {
-		return _refreshPageOnClose;
+	public String getId() {
+		return _id;
 	}
 
 	public String getSize() {
@@ -63,10 +136,8 @@ public class ModalTag extends IncludeTag {
 		super.setPageContext(pageContext);
 
 		setServletContext(ServletContextUtil.getServletContext());
-	}
+		_reactRenderer = ServletContextUtil.getReactRenderer();
 
-	public void setRefreshPageOnClose(boolean refreshPageOnClose) {
-		_refreshPageOnClose = refreshPageOnClose;
 	}
 
 	public void setSize(String size) {
@@ -124,13 +195,15 @@ public class ModalTag extends IncludeTag {
 		httpServletRequest.setAttribute("liferay-commerce:modal:url", _url);
 	}
 
-	private static final String _PAGE = "/modal/page.jsp";
-
+	private static final Log _log = LogFactoryUtil.getLog(
+		AddToWishListTag.class);
 	private String _id = StringPool.BLANK;
 	private boolean _refreshPageOnClose;
 	private String _size = StringPool.BLANK;
 	private String _spritemap = StringPool.BLANK;
 	private String _title = StringPool.BLANK;
 	private String _url = StringPool.BLANK;
+	private ReactRenderer _reactRenderer;
+
 
 }
