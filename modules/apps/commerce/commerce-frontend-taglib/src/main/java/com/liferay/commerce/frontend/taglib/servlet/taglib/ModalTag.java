@@ -21,33 +21,18 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.taglib.util.IncludeTag;
-
-import com.liferay.petra.string.StringBundler;
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONUtil;
-import com.liferay.portal.kernel.language.LanguageUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.template.react.renderer.ComponentDescriptor;
 import com.liferay.portal.template.react.renderer.ReactRenderer;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.taglib.util.IncludeTag;
-import javax.servlet.http.HttpServletResponse;
 
-import java.io.IOException;
-
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
@@ -63,7 +48,8 @@ public class ModalTag extends IncludeTag {
 
 			String randomKey =
 				PortalUtil.generateRandomKey(httpServletRequest, "taglib") +
-				StringPool.UNDERLINE;
+					StringPool.UNDERLINE;
+
 			String modalId = randomKey + "modal-root";
 
 			ThemeDisplay themeDisplay =
@@ -93,10 +79,8 @@ public class ModalTag extends IncludeTag {
 
 			_reactRenderer.renderReact(
 				new ComponentDescriptor(
-					"commerce-frontend-js/components/modal/Modal",
-					modalId),
+					"commerce-frontend-js/components/modal/Modal", modalId),
 				data, httpServletRequest, httpServletResponse.getWriter());
-
 		}
 		catch (Exception exception) {
 			_log.error(exception);
@@ -127,6 +111,10 @@ public class ModalTag extends IncludeTag {
 		return _url;
 	}
 
+	public boolean isRefreshPageOnClose() {
+		return _refreshPageOnClose;
+	}
+
 	public void setId(String id) {
 		_id = id;
 	}
@@ -137,7 +125,10 @@ public class ModalTag extends IncludeTag {
 
 		setServletContext(ServletContextUtil.getServletContext());
 		_reactRenderer = ServletContextUtil.getReactRenderer();
+	}
 
+	public void setRefreshPageOnClose(boolean refreshPageOnClose) {
+		_refreshPageOnClose = refreshPageOnClose;
 	}
 
 	public void setSize(String size) {
@@ -161,16 +152,12 @@ public class ModalTag extends IncludeTag {
 		super.cleanUp();
 
 		_id = StringPool.BLANK;
+		_reactRenderer = null;
 		_refreshPageOnClose = false;
 		_size = StringPool.BLANK;
 		_spritemap = StringPool.BLANK;
 		_title = StringPool.BLANK;
 		_url = StringPool.BLANK;
-	}
-
-	@Override
-	protected String getPage() {
-		return _PAGE;
 	}
 
 	@Override
@@ -195,15 +182,14 @@ public class ModalTag extends IncludeTag {
 		httpServletRequest.setAttribute("liferay-commerce:modal:url", _url);
 	}
 
-	private static final Log _log = LogFactoryUtil.getLog(
-		AddToWishListTag.class);
+	private static final Log _log = LogFactoryUtil.getLog(ModalTag.class);
+
 	private String _id = StringPool.BLANK;
+	private ReactRenderer _reactRenderer;
 	private boolean _refreshPageOnClose;
 	private String _size = StringPool.BLANK;
 	private String _spritemap = StringPool.BLANK;
 	private String _title = StringPool.BLANK;
 	private String _url = StringPool.BLANK;
-	private ReactRenderer _reactRenderer;
-
 
 }

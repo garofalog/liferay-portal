@@ -113,6 +113,9 @@ function Modal(props) {
 	}, [close, props.id, visible]);
 
 	useEffect(() => {
+		if (!props.onClose) {
+			window.location.reload();
+		}
 		setOnClose(() => props.onClose);
 	}, [props.onClose]);
 
@@ -151,7 +154,7 @@ function Modal(props) {
 Modal.propTypes = {
 	closeOnSubmit: PropTypes.bool,
 	id: PropTypes.string.isRequired,
-	onClose: PropTypes.func,
+	onClose: PropTypes.bool,
 	portletId: PropTypes.string,
 	size: PropTypes.string,
 	status: PropTypes.string,

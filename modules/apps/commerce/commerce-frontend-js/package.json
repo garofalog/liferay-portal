@@ -1,5 +1,6 @@
 {
 	"dependencies": {
+		"commerce-frontend-js": "*"
 	},
 	"devDependencies": {
 		"clay-css": "^2.16.2",
