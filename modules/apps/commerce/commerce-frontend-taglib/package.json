@@ -1,7 +1,8 @@
 {
 	"dependencies": {
+		"frontend-js-web": "*"
 	},
-	"name": "commerce-frontend-taglib",
+	"name": "@liferay/commerce-frontend-taglib",
 	"scripts": {
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",

@@ -16,7 +16,7 @@ import {
 	CLOSE_MODAL,
 	IS_LOADING_MODAL,
 } from 'commerce-frontend-js/utilities/eventsDefinitions';
-import {debounce} from 'commerce-frontend-js/utilities/debounce';
+import {debounce} from 'frontend-js-web';
 
 export default function ({requestProcessed}) {
 	const modalClosers = document.querySelectorAll('.modal-closer');
