@@ -39,5 +39,5 @@
 			"requestProcessed", SessionMessages.contains(renderRequest, "requestProcessed")
 		).build()
 	%>'
-	module="js/modal_content/end"
+	module="modal_content/js/modalContent"
 />
