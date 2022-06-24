@@ -34,6 +34,7 @@ function Modal({
 	title: titleProp,
 	url: urlProp,
 }) {
+	const [contentRef, setContentRef] = useState(null);
 	const [visible, setVisible] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [onClose, setOnClose] = useState(null);
@@ -56,17 +57,28 @@ function Modal({
 		[onClose, onCloseProp]
 	);
 
+	useEffect(() => {
+		if (contentRef?.contentWindow?.document?.body) {
+			Liferay.fire('iframe-mounted', {
+				id,
+			});
+
+			setVisible(true);
+			setLoading(false);
+		}
+	}, [contentRef, id]);
+
 	const {observer, onClose: closeOnIframeRefresh} = useModal({
 		onClose: doClose,
 	});
 
 	useEffect(() => {
 		function handleOpenEvent(data) {
-			if (id !== data.id || visible || isPageInIframe()) {
+			if (id !== data.id || isPageInIframe()) {
 				return;
 			}
 
-			setLoading(true);
+			setLoading(false);
 			setVisible(true);
 
 			if (data.url) {
@@ -151,7 +163,7 @@ function Modal({
 							maxHeight: '100%',
 						}}
 					>
-						<iframe src={url} title={title} />
+						<iframe ref={setContentRef} src={url} title={title} />
 
 						{loading && (
 							<div className="loader-container">
