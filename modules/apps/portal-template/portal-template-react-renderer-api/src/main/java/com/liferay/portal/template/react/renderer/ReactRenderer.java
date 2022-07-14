@@ -31,4 +31,5 @@ public interface ReactRenderer {
 			HttpServletRequest httpServletRequest, Writer writer)
 		throws IOException;
 
+	void renderReact(ComponentDescriptor componentDescriptor, Map<String, Object> data, HttpServletRequest httpServletRequest);
 }

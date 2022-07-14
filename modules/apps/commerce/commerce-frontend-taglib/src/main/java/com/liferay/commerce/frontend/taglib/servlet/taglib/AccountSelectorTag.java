@@ -28,7 +28,8 @@ import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.frontend.icons.FrontendIconsUtil;
+import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.json.JSONSerializer;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -36,12 +37,16 @@ import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.webserver.WebServerServletTokenUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.template.react.renderer.ComponentDescriptor;
+import com.liferay.portal.template.react.renderer.ReactRenderer;
 import com.liferay.taglib.util.IncludeTag;
+
+import java.util.Map;
 
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletURL;
@@ -54,10 +59,6 @@ import javax.servlet.jsp.PageContext;
  */
 public class AccountSelectorTag extends IncludeTag {
 
-	public String getSpritemap() {
-		return _spritemap;
-	}
-
 	@Override
 	public void setPageContext(PageContext pageContext) {
 		super.setPageContext(pageContext);
@@ -68,21 +69,13 @@ public class AccountSelectorTag extends IncludeTag {
 		setServletContext(ServletContextUtil.getServletContext());
 	}
 
-	public void setSpritemap(String spritemap) {
-		_spritemap = spritemap;
-	}
-
 	@Override
 	protected void cleanUp() {
 		super.cleanUp();
 
 		_commerceOrderTypeLocalService = null;
-		_spritemap = null;
-	}
-
-	@Override
-	protected String getPage() {
-		return _PAGE;
+		_jsonFactory = null;
+		_reactRenderer = null;
 	}
 
 	@Override
@@ -92,25 +85,30 @@ public class AccountSelectorTag extends IncludeTag {
 				(ThemeDisplay)httpServletRequest.getAttribute(
 					WebKeys.THEME_DISPLAY);
 
-			if (Validator.isNull(_spritemap)) {
-				_spritemap = FrontendIconsUtil.getSpritemap(themeDisplay);
-			}
-
 			HttpServletRequest parentHttpServletRequest = getRequest();
 
 			CommerceContext commerceContext =
 				(CommerceContext)parentHttpServletRequest.getAttribute(
 					CommerceWebKeys.COMMERCE_CONTEXT);
 
-			httpServletRequest.setAttribute(
-				"liferay-commerce:account-selector:accountEntryAllowedTypes",
-				commerceContext.getAccountEntryAllowedTypes());
-			httpServletRequest.setAttribute(
-				"liferay-commerce:account-selector:commerceChannelId",
-				commerceContext.getCommerceChannelId());
+			JSONSerializer jsonSerializer = _jsonFactory.createJSONSerializer();
+			String[] accountEntryAllowedTypes =
+				commerceContext.getAccountEntryAllowedTypes();
+
+			int commerceOrderTypesCount =
+				_commerceOrderTypeLocalService.getCommerceOrderTypesCount(
+					themeDisplay.getCompanyId(), true);
+			boolean showOrderTypeModal = false;
+
+			if (commerceOrderTypesCount > 1) {
+				showOrderTypeModal = true;
+			}
+
+			long commerceChannelId = commerceContext.getCommerceChannelId();
 
 			CommerceAccount commerceAccount =
 				commerceContext.getCommerceAccount();
+			CurrentCommerceAccountModel currentCommerceAccountModel = null;
 
 			if (commerceAccount != null) {
 				String thumbnailUrl = null;
@@ -129,17 +127,14 @@ public class AccountSelectorTag extends IncludeTag {
 							commerceAccount.getLogoId()));
 				}
 
-				CurrentCommerceAccountModel currentCommerceAccountModel =
-					new CurrentCommerceAccountModel(
-						commerceAccount.getCommerceAccountId(), thumbnailUrl,
-						commerceAccount.getName());
-
-				httpServletRequest.setAttribute(
-					"liferay-commerce:account-selector:currentCommerceAccount",
-					currentCommerceAccountModel);
+				currentCommerceAccountModel = new CurrentCommerceAccountModel(
+					commerceAccount.getCommerceAccountId(), thumbnailUrl,
+					commerceAccount.getName());
 			}
 
 			CommerceOrder commerceOrder = commerceContext.getCommerceOrder();
+
+			CurrentCommerceOrderModel currentCommerceOrderModel = null;
 
 			if (commerceOrder != null) {
 				String workflowStatusInfoLabel =
@@ -151,42 +146,54 @@ public class AccountSelectorTag extends IncludeTag {
 						LanguageUtil.get(
 							themeDisplay.getLocale(), workflowStatusInfoLabel));
 
-				CurrentCommerceOrderModel currentCommerceOrderModel =
-					new CurrentCommerceOrderModel(
-						commerceOrder.getCommerceOrderId(),
-						workflowStatusModel);
-
-				httpServletRequest.setAttribute(
-					"liferay-commerce:account-selector:currentCommerceOrder",
-					currentCommerceOrderModel);
+				currentCommerceOrderModel = new CurrentCommerceOrderModel(
+					commerceOrder.getCommerceOrderId(), workflowStatusModel);
 			}
 
-			httpServletRequest.setAttribute(
-				"liferay-commerce:account-selector:createNewOrderURL",
-				_getAddCommerceOrderURL(themeDisplay, httpServletRequest));
-			httpServletRequest.setAttribute(
-				"liferay-commerce:account-selector:selectOrderURL",
-				_getEditOrderURL(themeDisplay));
-
-			String setCurrentAccountURL =
+			Map<String, Object> data = HashMapBuilder.<String, Object>put(
+				"accountEntryAllowedTypes",
+				jsonSerializer.serializeDeep(accountEntryAllowedTypes)
+			).put(
+				"commerceChannelId", commerceChannelId
+			).put(
+				"createNewOrderURL", _getAddCommerceOrderURL(themeDisplay)
+			).put(
+				"currentCommerceAccount", currentCommerceAccountModel
+			).put(
+				"currentCommerceOrder", currentCommerceOrderModel
+			).put(
+				"selectOrderURL", _getEditOrderURL(themeDisplay)
+			).put(
+				"setCurrentAccountURL",
 				PortalUtil.getPortalURL(parentHttpServletRequest) +
 					PortalUtil.getPathContext() +
-						"/o/commerce-ui/set-current-account";
+						"/o/commerce-ui/set-current-account"
+			).put(
+				"showOrderTypeModal", _getEditOrderURL(themeDisplay)
+			).put(
+				"showOrderTypeModal", showOrderTypeModal
+			).build();
 
-			httpServletRequest.setAttribute(
-				"liferay-commerce:account-selector:setCurrentAccountURL",
-				setCurrentAccountURL);
+			String randomKey =
+				PortalUtil.generateRandomKey(httpServletRequest, "taglib") +
+					StringPool.UNDERLINE;
 
-			httpServletRequest.setAttribute(
-				"liferay-commerce:account-selector:spritemap", _spritemap);
+			String componentId = randomKey + "account_selector";
+
+			_reactRenderer.renderReact(
+				new ComponentDescriptor(
+					"commerce-frontend-js/components/account_selector" +
+						"/AccountSelector",
+					componentId),
+				data, httpServletRequest);
 		}
 		catch (PortalException portalException) {
 			_log.error(portalException);
 		}
+
 	}
 
-	private String _getAddCommerceOrderURL(
-			ThemeDisplay themeDisplay, HttpServletRequest httpServletRequest)
+	private String _getAddCommerceOrderURL(ThemeDisplay themeDisplay)
 		throws PortalException {
 
 		int commerceOrderTypesCount =
@@ -194,10 +201,6 @@ public class AccountSelectorTag extends IncludeTag {
 				themeDisplay.getCompanyId(), true);
 
 		if (commerceOrderTypesCount > 1) {
-			httpServletRequest.setAttribute(
-				"liferay-commerce:account-selector:showOrderTypeModal",
-				Boolean.TRUE);
-
 			return PortletURLBuilder.create(
 				_getPortletURL(
 					themeDisplay.getRequest(),
@@ -208,10 +211,6 @@ public class AccountSelectorTag extends IncludeTag {
 				LiferayWindowState.POP_UP
 			).buildString();
 		}
-
-		httpServletRequest.setAttribute(
-			"liferay-commerce:account-selector:showOrderTypeModal",
-			Boolean.FALSE);
 
 		long plid = PortalUtil.getPlidFromPortletId(
 			themeDisplay.getScopeGroupId(),
@@ -274,12 +273,11 @@ public class AccountSelectorTag extends IncludeTag {
 			httpServletRequest, portletId, PortletRequest.ACTION_PHASE);
 	}
 
-	private static final String _PAGE = "/account_selector/page.jsp";
-
 	private static final Log _log = LogFactoryUtil.getLog(
 		AccountSelectorTag.class);
 
 	private CommerceOrderTypeLocalService _commerceOrderTypeLocalService;
-	private String _spritemap;
+	private JSONFactory _jsonFactory;
+	private ReactRenderer _reactRenderer;
 
 }
